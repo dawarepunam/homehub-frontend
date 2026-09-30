@@ -1,0 +1,572 @@
+.section {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  padding: 82px 0 95px;
+
+  /* Option 2 - premium soft background */
+  background:
+    radial-gradient(
+      circle at 10% 20%,
+      rgba(201, 154, 67, 0.09),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 75%,
+      rgba(18, 60, 50, 0.08),
+      transparent 30%
+    ),
+    linear-gradient(180deg, #f7f8f5 0%, #eef2ee 100%);
+}
+
+
+/* Decorative background shape */
+
+.section::before {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  left: -220px;
+  top: 120px;
+  border-radius: 50%;
+  background: rgba(201, 148, 61, 0.06);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.section::after {
+  content: "";
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  right: -180px;
+  bottom: 40px;
+  border-radius: 50%;
+  background: rgba(18, 60, 50, 0.06);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+
+.container {
+  position: relative;
+  z-index: 2;
+
+  width: min(1200px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+
+/* =========================
+   HEADING
+========================= */
+
+.heading {
+  text-align: center;
+  margin-bottom: 44px;
+}
+
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  margin-bottom: 12px;
+
+  color: #c8943d;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+
+.eyebrow::before,
+.eyebrow::after {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: #c8943d;
+}
+
+
+.heading h2 {
+  margin: 0;
+
+  color: #123c32;
+  font-size: clamp(34px, 3.4vw, 46px);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+
+.heading p {
+  max-width: 650px;
+
+  margin: 14px auto 0;
+
+  color: #64716c;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+
+/* =========================
+   LOCATION GRID
+========================= */
+
+.locationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+
+/* =========================
+   LOCATION CARD
+========================= */
+
+.locationCard {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 17px;
+
+  min-height: 128px;
+  padding: 18px;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(18, 60, 50, 0.10);
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(247, 249, 246, 0.96)
+    );
+
+  text-decoration: none;
+
+  box-shadow:
+    0 8px 22px rgba(18, 60, 50, 0.07),
+    0 2px 5px rgba(18, 60, 50, 0.04);
+
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease,
+    background 0.35s ease;
+}
+
+
+/* Gold top accent */
+
+.locationCard::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 0;
+  height: 3px;
+
+  background: linear-gradient(
+    90deg,
+    #c8943d,
+    #e2b65f
+  );
+
+  transition: width 0.4s ease;
+}
+
+
+/* Soft hover glow */
+
+.locationCard::after {
+  content: "";
+
+  position: absolute;
+
+  width: 170px;
+  height: 170px;
+
+  right: -100px;
+  bottom: -100px;
+
+  border-radius: 50%;
+
+  background: rgba(201, 148, 61, 0.10);
+
+  transform: scale(0);
+
+  transition: transform 0.45s ease;
+
+  pointer-events: none;
+}
+
+
+.locationCard:hover {
+  transform: translateY(-8px);
+
+  border-color: rgba(201, 148, 61, 0.55);
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #f8f5ed
+    );
+
+  box-shadow:
+    0 20px 40px rgba(18, 60, 50, 0.13),
+    0 5px 12px rgba(201, 148, 61, 0.08);
+}
+
+
+.locationCard:hover::before {
+  width: 100%;
+}
+
+
+.locationCard:hover::after {
+  transform: scale(1);
+}
+
+
+/* =========================
+   IMAGE
+========================= */
+
+.imageWrapper {
+  position: relative;
+
+  width: 88px;
+  height: 88px;
+
+  flex-shrink: 0;
+
+  overflow: hidden;
+
+  border-radius: 16px;
+
+  background: #e9f0ec;
+
+  box-shadow:
+    0 5px 14px rgba(18, 60, 50, 0.12);
+
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+
+.imageWrapper::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(18, 60, 50, 0.05),
+      rgba(201, 148, 61, 0.14)
+    );
+
+  opacity: 0;
+
+  transition: opacity 0.35s ease;
+
+  pointer-events: none;
+}
+
+
+.locationImage {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.35s ease;
+}
+
+
+.locationCard:hover .imageWrapper {
+  transform: scale(1.04);
+
+  box-shadow:
+    0 9px 20px rgba(18, 60, 50, 0.18);
+}
+
+
+.locationCard:hover .locationImage {
+  transform: scale(1.10);
+
+  filter: saturate(1.08);
+}
+
+
+.locationCard:hover .imageWrapper::after {
+  opacity: 1;
+}
+
+
+/* =========================
+   FALLBACK ICON
+========================= */
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 88px;
+  height: 88px;
+
+  flex-shrink: 0;
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #edf4f0,
+      #f8f0df
+    );
+
+  color: #123c32;
+
+  font-size: 30px;
+
+  box-shadow:
+    0 5px 14px rgba(18, 60, 50, 0.08);
+
+  transition:
+    transform 0.35s ease,
+    background 0.35s ease;
+}
+
+
+.locationCard:hover .icon {
+  transform: scale(1.06) rotate(-2deg);
+
+  background:
+    linear-gradient(
+      135deg,
+      #e3eee9,
+      #f4e5c8
+    );
+}
+
+
+/* =========================
+   CARD CONTENT
+========================= */
+
+.cardContent {
+  position: relative;
+  z-index: 2;
+
+  min-width: 0;
+  flex: 1;
+}
+
+
+.cardContent h3 {
+  margin: 0;
+
+  color: #123c32;
+
+  font-size: 20px;
+  font-weight: 800;
+
+  line-height: 1.2;
+
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.locationCard:hover .cardContent h3 {
+  color: #a8782f;
+
+  transform: translateX(2px);
+}
+
+
+.cardContent p {
+  margin: 7px 0 0;
+
+  color: #707c77;
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  transition: color 0.25s ease;
+}
+
+
+.locationCard:hover .cardContent p {
+  color: #56635e;
+}
+
+
+/* =========================
+   ARROW
+========================= */
+
+.arrow {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  color: #c8943d;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  background: rgba(201, 148, 61, 0.08);
+
+  transition:
+    transform 0.35s ease,
+    background 0.35s ease,
+    color 0.35s ease;
+}
+
+
+.locationCard:hover .arrow {
+  transform: translateX(5px);
+
+  color: #ffffff;
+
+  background: #c8943d;
+}
+
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.emptyState {
+  padding: 42px;
+
+  text-align: center;
+
+  color: #7a8581;
+
+  border: 1px dashed rgba(18, 60, 50, 0.20);
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.65);
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+  .section {
+    padding: 68px 0 78px;
+  }
+
+  .container {
+    width: calc(100% - 32px);
+  }
+
+  .locationGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .locationCard {
+    min-height: 120px;
+  }
+
+  .imageWrapper,
+  .icon {
+    width: 78px;
+    height: 78px;
+  }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+  .section {
+    padding: 55px 0 65px;
+  }
+
+  .heading {
+    margin-bottom: 30px;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+  }
+
+  .heading h2 {
+    font-size: 30px;
+  }
+
+  .heading p {
+    font-size: 14px;
+  }
+
+  .locationGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .locationCard {
+    min-height: 104px;
+    padding: 14px;
+    border-radius: 17px;
+  }
+
+  .imageWrapper,
+  .icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 13px;
+  }
+
+  .cardContent h3 {
+    font-size: 18px;
+  }
+
+  .cardContent p {
+    font-size: 13px;
+  }
+
+  .arrow {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+}

@@ -1,0 +1,121 @@
+.hero {
+  position: relative;
+  min-height: 5%;
+  height: 580px;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  overflow: visible;
+  padding-top: 40px;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  width: min(1200px, calc(100% - 48px));
+  margin: 0 auto;
+  padding-top: 25px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border: 1px solid #d9a441;
+  border-radius: 999px;
+  color: #e8b354;
+  background: rgba(4, 28, 22, 0.35);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.badge span {
+  font-size: 18px;
+}
+
+.title {
+  margin: 24px 0 0;
+  color: #ffffff;
+  font-size: clamp(54px, 5.4vw, 82px);
+  line-height: 0.98;
+  font-weight: 800;
+  letter-spacing: -2px;
+}
+
+.title span {
+  color: #e5ad4d;
+}
+
+.description {
+  margin-top: 22px;
+  color: #ffffff;
+  font-size: 23px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+
+/* =========================
+   TABLET
+   ========================= */
+
+@media (max-width: 900px) {
+  .hero {
+    min-height: 720px;
+    height: 720px;
+    padding-top: 40px;
+  }
+
+  .heroContent {
+    width: calc(100% - 32px);
+    padding-top: 10px;
+  }
+
+  .title {
+    font-size: 52px;
+  }
+
+  .description {
+    font-size: 18px;
+  }
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+  .hero {
+    min-height: 760px;
+    height: 760px;
+    padding-top: 30px;
+  }
+
+  .heroContent {
+    width: calc(100% - 28px);
+    padding-top: 5px;
+  }
+
+  .badge {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .badge span {
+    font-size: 14px;
+  }
+
+  .title {
+    margin-top: 20px;
+    font-size: 43px;
+    letter-spacing: -1px;
+  }
+
+  .description {
+    margin-top: 18px;
+    font-size: 16px;
+  }
+}

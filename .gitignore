@@ -39,3 +39,28 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local environment
+.env.local
+
+# Next.js build/cache
+.next/
+
+# Dependencies
+node_modules/
+
+# Log files
+*.log
+
+# Temporary local helper scripts
+add_link_import.js
+clean_page.js
+check_owners.py
+
+# Local API/data dumps
+properties.json
+strapi_resp.json
+strapi_response.json
+
+# Backup files
+*.bak

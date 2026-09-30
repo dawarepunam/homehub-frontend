@@ -1,0 +1,378 @@
+
+.section {
+  width: 100%;
+  padding: 70px 0 75px;
+
+  background:
+    radial-gradient(
+      circle at 8% 15%,
+      rgba(200, 148, 61, 0.10),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 92% 85%,
+      rgba(18, 60, 50, 0.08),
+      transparent 30%
+    ),
+    #eef2ed;
+}
+
+.container {
+  width: min(1150px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+  max-width: 720px;
+  margin: 0 auto 34px;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  margin-bottom: 11px;
+
+  color: #c8943d;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.eyebrow::before,
+.eyebrow::after {
+  content: "";
+
+  width: 22px;
+  height: 1.5px;
+
+  border-radius: 2px;
+
+  background: #c8943d;
+}
+
+.header h2 {
+  margin: 0;
+
+  color: #123c32;
+
+  font-size: clamp(29px, 3vw, 40px);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+}
+
+.header p {
+  max-width: 620px;
+
+  margin: 11px auto 0;
+
+  color: #68746f;
+
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* =========================
+   BENEFITS
+========================= */
+
+.benefits {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+  gap: 12px;
+}
+
+/* =========================
+   ITEM
+========================= */
+
+.item {
+  width: 178px;
+}
+
+/* =========================
+   SMALL BUTTON
+========================= */
+
+.benefitButton {
+  width: 100%;
+  min-height: 62px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 10px 12px;
+
+  border: 1px solid rgba(18, 60, 50, 0.12);
+  border-radius: 13px;
+
+  color: #123c32;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f9fbf8,
+      #e7eee8
+    );
+
+  cursor: pointer;
+
+  text-align: left;
+
+  box-shadow:
+    0 5px 15px rgba(18, 60, 50, 0.06);
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.benefitButton:hover {
+  transform: translateY(-3px);
+
+  border-color: rgba(200, 148, 61, 0.55);
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #edf2ed
+    );
+
+  box-shadow:
+    0 10px 22px rgba(18, 60, 50, 0.10);
+}
+
+.benefitButton.active {
+  border-color: #c8943d;
+
+  background:
+    linear-gradient(
+      145deg,
+      #173f35,
+      #123c32
+    );
+
+  box-shadow:
+    0 10px 24px rgba(18, 60, 50, 0.18);
+}
+
+/* =========================
+   ICON
+========================= */
+
+.icon {
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  color: #123c32;
+
+  background: #dce7df;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.benefitButton:hover .icon {
+  transform: scale(1.05);
+
+  color: #ffffff;
+
+  background: #c8943d;
+}
+
+.benefitButton.active .icon {
+  color: #123c32;
+
+  background: #d8a64e;
+}
+
+/* =========================
+   TITLE
+========================= */
+
+.title {
+  flex: 1;
+
+  color: #123c32;
+
+  font-size: 13px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.benefitButton.active .title {
+  color: #ffffff;
+}
+
+/* =========================
+   PLUS / MINUS
+========================= */
+
+.arrow {
+  flex-shrink: 0;
+
+  color: #c8943d;
+
+  font-size: 17px;
+  line-height: 1;
+  font-weight: 600;
+}
+
+.benefitButton.active .arrow {
+  color: #d8a64e;
+}
+
+/* =========================
+   DESCRIPTION
+========================= */
+
+.description {
+  margin-top: 7px;
+  padding: 12px 13px;
+
+  border: 1px solid rgba(200, 148, 61, 0.22);
+  border-radius: 10px;
+
+  color: #596761;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f8faf7,
+      #e9efea
+    );
+
+  font-size: 11px;
+  line-height: 1.55;
+
+  box-shadow:
+    0 5px 14px rgba(18, 60, 50, 0.05);
+
+  animation: openDetail 0.22s ease;
+}
+
+@keyframes openDetail {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 850px) {
+  .section {
+    padding: 60px 0 65px;
+  }
+
+  .benefits {
+    display: grid;
+
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 10px;
+  }
+
+  .item {
+    width: 100%;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+  .section {
+    padding: 50px 0 55px;
+  }
+
+  .container {
+    width: calc(100% - 28px);
+  }
+
+  .header {
+    margin-bottom: 25px;
+  }
+
+  .header h2 {
+    font-size: 27px;
+  }
+
+  .header p {
+    font-size: 13px;
+  }
+
+  .benefits {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 9px;
+  }
+
+  .benefitButton {
+    min-height: 56px;
+
+    padding: 9px 10px;
+  }
+
+  .icon {
+    width: 29px;
+    height: 29px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+  }
+
+  .title {
+    font-size: 12px;
+  }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 400px) {
+  .benefits {
+    grid-template-columns: 1fr;
+  }
+}
