@@ -24,6 +24,21 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Keep the public home page's responsive containers inside their parent width. */
+.homePage,
+.homePage * {
+  box-sizing: border-box;
+}
+
+.homePage {
+  width: 100%;
+  max-width: 100%;
+}
+
+.homePage img {
+  max-width: 100%;
+}
+
 .home-intro {
   min-height: calc(100vh - 82px);
   display: flex;

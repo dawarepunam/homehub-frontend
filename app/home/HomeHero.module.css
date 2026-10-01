@@ -1,5 +1,7 @@
 .hero {
   position: relative;
+  width: 100%;
+  max-width: 100%;
   min-height: 5%;
   height: 580px;
   background-size: cover;
@@ -15,6 +17,7 @@
   width: min(1200px, calc(100% - 48px));
   margin: 0 auto;
   padding-top: 25px;
+  min-width: 0;
 }
 
 .badge {
@@ -29,6 +32,7 @@
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.3px;
+  max-width: 100%;
 }
 
 .badge span {
@@ -42,6 +46,7 @@
   line-height: 0.98;
   font-weight: 800;
   letter-spacing: -2px;
+  overflow-wrap: anywhere;
 }
 
 .title span {
@@ -54,6 +59,7 @@
   font-size: 23px;
   line-height: 1.5;
   font-weight: 400;
+  overflow-wrap: anywhere;
 }
 
 
@@ -89,9 +95,9 @@
 
 @media (max-width: 600px) {
   .hero {
-    min-height: 760px;
-    height: 760px;
-    padding-top: 30px;
+    min-height: 0;
+    height: auto;
+    padding: 30px 0 34px;
   }
 
   .heroContent {
@@ -102,6 +108,7 @@
   .badge {
     font-size: 12px;
     padding: 8px 12px;
+    line-height: 1.35;
   }
 
   .badge span {

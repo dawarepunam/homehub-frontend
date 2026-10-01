@@ -55,6 +55,7 @@
 
   width: min(1200px, calc(100% - 48px));
   margin: 0 auto;
+  min-width: 0;
 }
 
 
@@ -122,6 +123,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 22px;
+  min-width: 0;
 }
 
 
@@ -162,6 +164,7 @@
     box-shadow 0.35s ease,
     border-color 0.35s ease,
     background 0.35s ease;
+  min-width: 0;
 }
 
 
@@ -392,6 +395,7 @@
   font-weight: 800;
 
   line-height: 1.2;
+  overflow-wrap: anywhere;
 
   transition:
     color 0.25s ease,
@@ -413,6 +417,7 @@
 
   font-size: 14px;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 
   transition: color 0.25s ease;
 }

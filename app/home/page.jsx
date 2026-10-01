@@ -105,7 +105,7 @@ export default async function HomePage() {
   const homePage = await getHomePage();
 
   return (
-    <main>
+    <main className="homePage">
 
       {/* Header */}
       <HomeHeader
