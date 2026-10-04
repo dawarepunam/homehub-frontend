@@ -439,6 +439,19 @@ export async function getHomePage() {
       errorText
     );
 
+    // 404 means the HomePage Single Type entry has not been published yet
+    // (most likely because the production database was reset on Render restart).
+    // Return null instead of throwing so the page renders a graceful fallback
+    // rather than escalating to an HTTP 500.
+    if (response.status === 404) {
+      console.warn(
+        "HomePage entry not found in Strapi (404). " +
+        "The production database may have been reset. " +
+        "Please re-publish the HomePage entry in the Strapi Admin."
+      );
+      return null;
+    }
+
     throw new Error(
       `Failed to fetch HomePage: ${response.status}`
     );
