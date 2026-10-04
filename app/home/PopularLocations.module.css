@@ -1,8 +1,8 @@
-.section {
+﻿.section {
   width: 100%;
   position: relative;
   overflow: hidden;
-  padding: 82px 0 95px;
+  padding: 195px 0 95px;
 
   /* Option 2 - premium soft background */
   background:
@@ -494,7 +494,7 @@
 
 @media (max-width: 900px) {
   .section {
-    padding: 68px 0 78px;
+    padding: 155px 0 78px;
   }
 
   .container {
@@ -524,7 +524,7 @@
 
 @media (max-width: 600px) {
   .section {
-    padding: 55px 0 65px;
+    padding: 40px 0 65px;
   }
 
   .heading {
@@ -600,3 +600,4 @@
     font-size: 16px;
   }
 }
+

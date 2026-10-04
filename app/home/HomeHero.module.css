@@ -1,4 +1,4 @@
-.hero {
+﻿.hero {
   position: relative;
   width: 100%;
   max-width: 100%;
@@ -10,6 +10,8 @@
   /* visible so the absolutely-positioned searchWrapper can hang below */
   overflow: visible;
   padding-top: 40px;
+  /* Ensure the search card (hanging -55px) stays clear of sections below */
+  padding-bottom: 120px;
 }
 
 .heroContent {
@@ -65,7 +67,7 @@
   line-height: 1.5;
   font-weight: 400;
   overflow-wrap: anywhere;
-  /* Allow text to wrap naturally — avoid hard br on small screens */
+  /* Allow text to wrap naturally â€” avoid hard br on small screens */
   max-width: 680px;
 }
 
@@ -136,7 +138,7 @@
 }
 
 /* =========================
-   SMALL MOBILE (320–400px)
+   SMALL MOBILE (320â€“400px)
    ========================= */
 
 @media (max-width: 400px) {
@@ -154,3 +156,4 @@
     padding: 7px 10px;
   }
 }
+
