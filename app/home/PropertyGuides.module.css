@@ -380,3 +380,21 @@
     padding-top: 17px;
   }
 }
+
+/* =========================
+   SMALL MOBILE (320-400px)
+   ========================= */
+
+@media (max-width: 400px) {
+  .container {
+    width: calc(100% - 20px);
+  }
+
+  .grid {
+    gap: 10px;
+  }
+
+  .content h3 {
+    font-size: 16px;
+  }
+}

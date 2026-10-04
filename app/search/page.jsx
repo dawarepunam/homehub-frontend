@@ -49,7 +49,7 @@ export default async function SearchPage({ searchParams }) {
       <HomeHeader header={homePage?.Header} />
 
       {/* Main */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-10">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8">
         <div className="mb-8">
           <Link
             href="/home"

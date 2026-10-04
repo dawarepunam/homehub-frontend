@@ -1,4 +1,30 @@
 @import "tailwindcss";
+
+/* =========================================================
+   GLOBAL RESPONSIVE RESET
+   Prevents horizontal overflow on all screen sizes.
+========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Prevent any child from scrolling the page horizontally */
+  overflow-x: hidden;
+  /* Ensure viewport fills correctly on mobile browsers */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  /* Belt-and-suspenders: also lock horizontal scroll at body level */
+  overflow-x: hidden;
+  /* Safe min-width so nothing forces the viewport wider */
+  min-width: 0;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -24,19 +50,21 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Keep the public home page's responsive containers inside their parent width. */
-.homePage,
-.homePage * {
-  box-sizing: border-box;
-}
+/* =========================================================
+   HOME PAGE WRAPPER SAFETY
+   Locks the public HomePage inside the viewport.
+========================================================= */
 
 .homePage {
   width: 100%;
   max-width: 100%;
+  /* Prevent any overflowing child from creating page-level horizontal scroll */
+  overflow-x: clip;
 }
 
 .homePage img {
   max-width: 100%;
+  height: auto;
 }
 
 .home-intro {

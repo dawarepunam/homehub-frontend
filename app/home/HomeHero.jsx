@@ -39,9 +39,7 @@ export default function HomeHero({ hero, search }) {
         </h1>
 
         <p className={styles.description}>
-          Discover homes, spaces &amp; properties that
-          <br />
-          fit your lifestyle.
+          Discover homes, spaces &amp; properties that fit your lifestyle.
         </p>
       </div>
 

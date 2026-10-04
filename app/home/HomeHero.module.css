@@ -2,11 +2,12 @@
   position: relative;
   width: 100%;
   max-width: 100%;
-  min-height: 5%;
+  /* Desktop: fixed height */
   height: 580px;
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
+  /* visible so the absolutely-positioned searchWrapper can hang below */
   overflow: visible;
   padding-top: 40px;
 }
@@ -33,16 +34,20 @@
   font-weight: 700;
   letter-spacing: 0.3px;
   max-width: 100%;
+  /* Wrap text on very small screens instead of overflowing */
+  white-space: normal;
+  word-break: break-word;
 }
 
 .badge span {
   font-size: 18px;
+  flex-shrink: 0;
 }
 
 .title {
   margin: 24px 0 0;
   color: #ffffff;
-  font-size: clamp(54px, 5.4vw, 82px);
+  font-size: clamp(40px, 5.4vw, 82px);
   line-height: 0.98;
   font-weight: 800;
   letter-spacing: -2px;
@@ -56,10 +61,12 @@
 .description {
   margin-top: 22px;
   color: #ffffff;
-  font-size: 23px;
+  font-size: clamp(16px, 2.2vw, 23px);
   line-height: 1.5;
   font-weight: 400;
   overflow-wrap: anywhere;
+  /* Allow text to wrap naturally — avoid hard br on small screens */
+  max-width: 680px;
 }
 
 
@@ -69,8 +76,8 @@
 
 @media (max-width: 900px) {
   .hero {
-    min-height: 720px;
-    height: 720px;
+    min-height: 680px;
+    height: 680px;
     padding-top: 40px;
   }
 
@@ -93,8 +100,9 @@
    MOBILE
    ========================= */
 
-@media (max-width: 600px) {
+@media (max-width: 650px) {
   .hero {
+    /* Auto height so the hero content + search below it sizes naturally */
     min-height: 0;
     height: auto;
     padding: 30px 0 34px;
@@ -117,12 +125,32 @@
 
   .title {
     margin-top: 20px;
-    font-size: 43px;
+    font-size: clamp(34px, 10vw, 50px);
     letter-spacing: -1px;
   }
 
   .description {
-    margin-top: 18px;
-    font-size: 16px;
+    margin-top: 16px;
+    font-size: 15px;
+  }
+}
+
+/* =========================
+   SMALL MOBILE (320–400px)
+   ========================= */
+
+@media (max-width: 400px) {
+  .title {
+    font-size: 32px;
+    letter-spacing: -0.5px;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 7px 10px;
   }
 }

@@ -528,3 +528,26 @@
     transform: none;
   }
 }
+
+/* =========================
+   SMALL MOBILE (320-400px)
+   ========================= */
+
+@media (max-width: 400px) {
+  .container {
+    width: calc(100% - 20px);
+  }
+
+  .grid {
+    gap: 14px;
+  }
+
+  .card {
+    padding: 18px;
+    min-height: 260px;
+  }
+
+  .card h3 {
+    font-size: 17px;
+  }
+}

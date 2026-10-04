@@ -376,3 +376,17 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   SMALL MOBILE (320-400px)
+   ========================= */
+
+@media (max-width: 400px) {
+  .benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    width: calc(100% - 20px);
+  }
+}

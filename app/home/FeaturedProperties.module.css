@@ -500,3 +500,29 @@
     max-width: 100%;
   }
 }
+
+/* =========================
+   SMALL MOBILE (320-400px)
+   ========================= */
+
+@media (max-width: 400px) {
+  .container {
+    width: calc(100% - 20px);
+  }
+
+  .imageWrapper {
+    height: 190px;
+  }
+
+  .cardContent {
+    padding: 15px;
+  }
+
+  .cardContent h3 {
+    font-size: 18px;
+  }
+
+  .price {
+    font-size: 17px;
+  }
+}

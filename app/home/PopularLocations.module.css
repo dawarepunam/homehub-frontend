@@ -575,3 +575,28 @@
     font-size: 18px;
   }
 }
+
+/* =========================
+   SMALL MOBILE (320-400px)
+   ========================= */
+
+@media (max-width: 400px) {
+  .container {
+    width: calc(100% - 20px);
+  }
+
+  .locationCard {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .imageWrapper,
+  .icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .cardContent h3 {
+    font-size: 16px;
+  }
+}

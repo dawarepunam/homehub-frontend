@@ -1071,3 +1071,32 @@
   background: #d8a64e;
   transform: translateX(5px);
 }   
+
+/* =========================
+   SMALL MOBILE (320-400px)
+   ========================= */
+
+@media (max-width: 400px) {
+  .container {
+    width: calc(100% - 20px);
+    min-width: 0;
+  }
+
+  .categoryGrid {
+    gap: 12px;
+  }
+
+  .cardWrapper {
+    height: 270px;
+  }
+
+  .cardFront,
+  .cardBack {
+    padding: 20px;
+  }
+
+  .frontContent h3,
+  .cardBack h3 {
+    font-size: 21px;
+  }
+}
