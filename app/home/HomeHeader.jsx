@@ -512,15 +512,10 @@ import { useRouter } from "next/navigation";
 import styles from "./HomeHeader.module.css";
 import RoleSelectionModal from "./RoleSelectionModal";
 import { getPropertyNavCategories } from "@/services/property";
+import { getStrapiMedia } from "@/utils/getStrapiMedia";
 
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ||
-  "http://localhost:1337/api";
-
-const STRAPI_BASE_URL = STRAPI_URL.replace(/\/api\/?$/, "");
-
-// Property types that are driven by Strapi property data.
-// These replace Buy/Rent in the header (NOT in the Home Search tabs).
+// Property types driven by real Strapi property data
+// (replace the old Buy / Rent / Commercial Strapi menu items)
 const PROPERTY_TYPE_MENUS = ["Residential", "Commercial", "Industrial"];
 
 export default function HomeHeader({ header }) {
@@ -533,7 +528,6 @@ export default function HomeHeader({ header }) {
 
   // =========================
   // STRAPI-DRIVEN NAV CATEGORIES
-  // Fetched from actual Strapi property data
   // =========================
   const [navCategories, setNavCategories] = useState({
     Residential: [],
@@ -547,9 +541,9 @@ export default function HomeHeader({ header }) {
 
   const router = useRouter();
 
-  const logoUrl = header?.Logo?.url
-    ? `${STRAPI_BASE_URL}${header.Logo.url}`
-    : null;
+  // Use canonical getStrapiMedia — handles relative /uploads/... paths correctly
+  const logoUrl = getStrapiMedia(header?.Logo);
+
 
   // Filter out the old Buy / Rent / Commercial Strapi menu items.
   // We replace them with PROPERTY_TYPE_MENUS driven by actual property data.

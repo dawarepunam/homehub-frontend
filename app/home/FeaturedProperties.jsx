@@ -5,10 +5,7 @@ import toast from "react-hot-toast";
 import styles from "./FeaturedProperties.module.css";
 import RoleSelectionModal from "./RoleSelectionModal";
 import { getUserWishlist, addToWishlist, removeFromWishlist } from "@/services/wishlistService";
-
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ||
-  "http://localhost:1337/api";
+import { getStrapiMedia } from "@/utils/getStrapiMedia";
 
 export default function FeaturedProperties({ data, properties }) {
   // =========================================
@@ -224,20 +221,9 @@ export default function FeaturedProperties({ data, properties }) {
             // IMAGE
             // =====================================
 
-            const coverImage =
-              property?.CoverImage?.url ||
-              property?.CoverImage?.data?.attributes?.url ||
-              property?.CoverImage?.data?.url ||
-              "";
-
-            const imageUrl = coverImage
-              ? coverImage.startsWith("http")
-                ? coverImage
-                : `${STRAPI_URL.replace(
-                    "/api",
-                    ""
-                  )}${coverImage}`
-              : "";
+            // Use canonical utility — handles all Strapi response shapes
+            // and always produces the correct production URL
+            const imageUrl = getStrapiMedia(property?.CoverImage) || "";
 
             // =====================================
             // BASIC PROPERTY DATA

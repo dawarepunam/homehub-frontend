@@ -1,13 +1,11 @@
 import HomeSearch from "./HomeSearch";
 import styles from "./HomeHero.module.css";
-
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337/api";
+import { getStrapiMedia } from "@/utils/getStrapiMedia";
 
 export default function HomeHero({ hero, search }) {
-  const backgroundUrl = hero?.BackgroundImage?.url
-    ? `${STRAPI_URL.replace("/api", "")}${hero.BackgroundImage.url}`
-    : "";
+  // Use the canonical getStrapiMedia utility — handles both Strapi 5 flat
+  // and Strapi 4 nested formats, and always produces the correct production URL.
+  const backgroundUrl = getStrapiMedia(hero?.BackgroundImage) || "";
 
   return (
     <section
@@ -35,7 +33,7 @@ export default function HomeHero({ hero, search }) {
         <h1 className={styles.title}>
           Find a place
           <br />
-          <span>you’ll love.</span>
+          <span>you&apos;ll love.</span>
         </h1>
 
         <p className={styles.description}>
