@@ -18,7 +18,9 @@
 const STRAPI_BASE_URL = (() => {
   const raw =
     process.env.NEXT_PUBLIC_STRAPI_URL ||
-    "http://localhost:1337/api";
+    (process.env.NODE_ENV === "production"
+      ? "https://homehub-backend-kpfk.onrender.com/api"
+      : "http://localhost:1337/api");
   // Remove trailing /api so we get: https://homehub-backend-kpfk.onrender.com
   return raw.replace(/\/api\/?$/, "").replace(/\/$/, "");
 })();
