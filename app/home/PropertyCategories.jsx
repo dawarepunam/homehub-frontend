@@ -1,31 +1,45 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import styles from "./PropertyCategories.module.css";
 
+// Icon mapping — emoji fallbacks
 const ICON_MAP = {
-  home: "⌂", residential: "⌂", apartment: "⌂", villa: "⌂",
-  building: "▥", commercial: "▥", office: "▥", shop: "▥",
-  factory: "▦", industrial: "▦", warehouse: "▦",
-  land: "◫", plot: "◫", agricultural: "◫", leaf: "♧",
+  home: "⌂", residential: "⌂", apartment: "⌂", villa: "⌂", flat: "⌂",
+  building: "▣", commercial: "▣", office: "▣", shop: "▣", retail: "▣",
+  factory: "▥", industrial: "▥", warehouse: "▥", plant: "▥",
+  land: "⊞", plot: "⊞", agricultural: "⊛", leaf: "⊛",
 };
 
 function getIcon(icon) {
   return ICON_MAP[String(icon || "").toLowerCase()] || "⌂";
 }
 
+// ── AGRICULTURAL FILTER ──
+// Excluded from Home display only; Strapi data/schema is untouched.
+const EXCLUDED_CATEGORIES = ["agricultural"];
+
+function isExcluded(category) {
+  const name = (category.Text || category.Name || "").toLowerCase().trim();
+  const slug = (category.Slug || "").toLowerCase().trim();
+  const icon = (category.Icon || "").toLowerCase().trim();
+  return (
+    EXCLUDED_CATEGORIES.includes(name) ||
+    EXCLUDED_CATEGORIES.includes(slug) ||
+    EXCLUDED_CATEGORIES.includes(icon)
+  );
+}
+
 export default function PropertyCategories({ data }) {
-  const [showAll, setShowAll] = useState(false);
   if (!data) return null;
 
-  const categories = Array.isArray(data.PropertyCategories)
-    ? data.PropertyCategories.filter(c => c?.IsActive !== false)
+  const allCategories = Array.isArray(data.PropertyCategories)
+    ? data.PropertyCategories.filter(
+        (c) => c?.IsActive !== false && !isExcluded(c)
+      )
     : [];
 
-  if (categories.length === 0) return null;
-
-  const visible = showAll ? categories : categories.slice(0, 8);
+  if (allCategories.length === 0) return null;
 
   return (
     <section id="property-categories" className={styles.section}>
@@ -39,40 +53,30 @@ export default function PropertyCategories({ data }) {
           </div>
         </div>
 
+        {/* Grid auto-adjusts: 3 cards on desktop, 2 on tablet, 1 on mobile */}
         <div className={styles.grid}>
-          {visible.map((category, index) => {
+          {allCategories.map((category, index) => {
             const name = category.Text || category.Name || "Property";
-            const slug = category.Slug || "";
             return (
               <Link
-                key={category.id || category.documentId || slug || index}
+                key={category.id || category.documentId || name || index}
                 href={`/search?category=${encodeURIComponent(name)}`}
                 className={styles.card}
               >
-                <div className={styles.iconWrapper}>
+                <div className={styles.iconWrapper} aria-hidden="true">
                   <span>{getIcon(category.Icon)}</span>
                 </div>
                 <h3 className={styles.cardTitle}>{name}</h3>
                 {category.Description && (
                   <p className={styles.cardDesc}>{category.Description}</p>
                 )}
-                <span className={styles.cardArrow}>Explore →</span>
+                <span className={styles.cardArrow} aria-hidden="true">
+                  Explore →
+                </span>
               </Link>
             );
           })}
         </div>
-
-        {categories.length > 8 && (
-          <div className={styles.toggleWrapper}>
-            <button
-              type="button"
-              className={styles.toggleBtn}
-              onClick={() => setShowAll(v => !v)}
-            >
-              {showAll ? "Show Less ↑" : `View All ${categories.length} Categories →`}
-            </button>
-          </div>
-        )}
 
       </div>
     </section>

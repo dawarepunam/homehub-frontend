@@ -10,7 +10,7 @@ export default function PopularLocations({ data }) {
   if (!sectionData) return null;
 
   const locations = Array.isArray(sectionData.PopularLocationItem)
-    ? sectionData.PopularLocationItem.filter(l => l?.IsActive !== false)
+    ? sectionData.PopularLocationItem.filter((l) => l?.IsActive !== false)
     : [];
 
   if (locations.length === 0) return null;
@@ -25,7 +25,7 @@ export default function PopularLocations({ data }) {
             <h2>{sectionData.Title || "Popular Locations"}</h2>
             <p>
               {sectionData.Subtitle ||
-                "Discover properties in India's most sought-after cities and localities."}
+                "Discover properties in India's most sought-after cities."}
             </p>
           </div>
         </div>
@@ -44,26 +44,31 @@ export default function PopularLocations({ data }) {
                 href={href}
                 className={styles.card}
               >
-                {imageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={imageUrl}
-                    alt={cityName || "Location"}
-                    className={styles.image}
-                  />
-                ) : (
-                  <div className={styles.iconFallback}>⌖</div>
-                )}
+                {/* ── Fixed aspect-ratio image container ── */}
+                <div className={styles.imageContainer}>
+                  {imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={imageUrl}
+                      alt={cityName || "Location image"}
+                      className={styles.image}
+                    />
+                  ) : (
+                    <div className={styles.iconFallback}>⌖</div>
+                  )}
+                  <div className={styles.imageScrim} aria-hidden="true" />
+                </div>
 
-                <div className={styles.overlay} />
-
+                {/* ── Text content — always below image ── */}
                 <div className={styles.content}>
                   <h3 className={styles.locationName}>
                     {cityName || "Location"}
-                    <span className={styles.locationArrow}>→</span>
+                    <span className={styles.locationArrow} aria-hidden="true">→</span>
                   </h3>
                   {location.Description && (
-                    <span className={styles.locationDesc}>{location.Description}</span>
+                    <span className={styles.locationDesc}>
+                      {location.Description}
+                    </span>
                   )}
                 </div>
               </Link>

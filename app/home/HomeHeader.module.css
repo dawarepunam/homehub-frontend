@@ -1,60 +1,510 @@
-.homeHeader { position: sticky; top: 0; z-index: 100; width: 100%; overflow-x: clip; background: rgba(17, 21, 19, 0.85); border-bottom: 1px solid rgba(255, 255, 255, 0.08); color: #f7f1e5; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
-.headerInner { width: min(1480px, 94%); min-height: 82px; margin: 0 auto; display: flex; align-items: center; gap: 28px; max-width: 100%; }
-.brandSection { display: flex; align-items: center; gap: 11px; flex-shrink: 0; text-decoration: none; min-width: 0; }
-.brandLogo { width: 48px; height: 48px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(200, 148, 61, 0.4); background: #1a201c; flex-shrink: 0; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
-.brandMark { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: #c8943d; color: #111513; font-size: 22px; font-weight: 800; flex-shrink: 0; border: 1px solid #e3a948; }
-.brandText { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.brandName { color: #f7f1e5; font-size: 21px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.1; overflow-wrap: anywhere; }
-.brandTagline { color: #a4b2ac; font-size: 11px; letter-spacing: 1px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: uppercase; font-weight: 600; }
-.mainNavigation { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; overflow: hidden; min-width: 0; }
-.navItemWrapper { position: relative; }
-.navItem { display: flex; align-items: center; gap: 8px; padding: 11px 16px; border: 1px solid transparent; border-radius: 12px; background: transparent; color: #d1dad6; font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: all 0.2s ease; }
-.navItem:hover { background: rgba(200, 148, 61, 0.1); border-color: rgba(200, 148, 61, 0.2); color: #c8943d; transform: translateY(-1px); }
-.navIcon { display: inline-flex; align-items: center; justify-content: center; color: #c8943d; font-size: 16px; }
-.dropdownArrow { color: #8e9c96; font-size: 12px; transition: transform 0.2s ease; }
-.navItem:hover .dropdownArrow { color: #c8943d; transform: translateY(2px); }
-.megaMenu { position: absolute; top: calc(100% + 15px); left: 50%; transform: translateX(-50%); width: 640px; padding: 24px; background: rgba(26, 32, 28, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: #f7f1e5; border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5); animation: megaMenuOpen 0.2s ease-out; }
-.megaMenu::before { content: ""; position: absolute; top: -7px; left: 50%; width: 13px; height: 13px; background: rgba(26, 32, 28, 0.95); border-left: 1px solid rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.08); transform: translateX(-50%) rotate(45deg); }
-@keyframes megaMenuOpen { from { opacity: 0; transform: translate(-50%, -10px); } to { opacity: 1; transform: translate(-50%, 0); } }
-.megaMenuHeader { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 18px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-.megaMenuHeader h3 { margin: 0; color: #f7f1e5; font-size: 18px; font-weight: 700; }
-.megaMenuHeader p { margin: 6px 0 0; color: #8e9c96; font-size: 12px; font-weight: 500; }
-.megaMenuArrow { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: rgba(200, 148, 61, 0.15); color: #c8943d; font-size: 18px; }
-.dropdownGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.dropdownCard { display: flex; align-items: flex-start; gap: 14px; padding: 14px; border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; background: rgba(35, 43, 38, 0.4); text-decoration: none; color: inherit; cursor: pointer; text-align: left; transition: all 0.2s ease; }
-.dropdownCard:hover { background: rgba(200, 148, 61, 0.1); border-color: rgba(200, 148, 61, 0.25); transform: translateY(-2px); }
-.dropdownIcon { width: 42px; height: 42px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #1a201c; color: #c8943d; font-size: 18px; border: 1px solid rgba(255,255,255,0.05); }
-.dropdownCard:hover .dropdownIcon { background: #c8943d; color: #111513; }
-.dropdownTitle { color: #f7f1e5; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.dropdownDescription { color: #8e9c96; font-size: 12px; line-height: 1.4; }
-.cardArrow { margin-left: auto; color: #8e9c96; font-size: 16px; opacity: 0; transform: translateX(-5px); transition: all 0.2s ease; }
-.dropdownCard:hover .cardArrow { opacity: 1; transform: translateX(0); color: #c8943d; }
-.headerActions { display: flex; align-items: center; gap: 12px; }
-.actionButton { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; background: rgba(255,255,255,0.05); color: #f7f1e5; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s ease; }
-.actionButton:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
-.actionButton.highlighted { background: #c8943d; color: #111513; border: none; }
-.actionButton.highlighted:hover { background: #e3a948; box-shadow: 0 6px 16px rgba(200, 148, 61, 0.3); }
-.actionIcon { font-size: 16px; }
-.hamburger { display: none; flex-direction: column; justify-content: space-between; width: 28px; height: 20px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 105; }
-.hamburgerBar { width: 100%; height: 2px; background: #f7f1e5; border-radius: 2px; transition: 0.3s ease; }
-@media (max-width: 850px) { .mainNavigation, .headerActions { display: none; } .hamburger { display: flex; } }
-/* MOBILE DRAWER STYLES */
-.mobileOverlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 100; animation: fadeIn 0.3s ease; }
+/* ============================================================
+   HOME HEADER
+   ============================================================ */
+
+.homeHeader {
+  position: sticky;
+  top: 0;
+  z-index: 200;                       /* high z-index — above hero, above everything */
+  width: 100%;
+  overflow-x: clip;
+  background: rgba(11, 16, 14, 0.92);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  color: #f7f1e5;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.headerInner {
+  width: min(1480px, 94%);
+  min-height: 76px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  max-width: 100%;
+}
+
+/* ── BRAND ── */
+.brandSection {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  flex-shrink: 0;
+  text-decoration: none;
+  min-width: 0;
+}
+.brandLogo {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 11px;
+  border: 1px solid rgba(200, 148, 61, 0.4);
+  background: #1a201c;
+  flex-shrink: 0;
+}
+.brandMark {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: #c8943d;
+  color: #0b100e;
+  font-size: 20px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.brandName {
+  color: #f7f1e5;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.1;
+}
+.brandTagline {
+  color: #6e7e78;
+  font-size: 10px;
+  letter-spacing: 1px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* ── DESKTOP NAV ── */
+.mainNavigation {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  overflow: visible;            /* must be visible so dropdown shows */
+  min-width: 0;
+}
+
+.navItemWrapper {
+  position: relative;
+  /* Extra bottom padding creates an invisible bridge from nav item to dropdown */
+  padding-bottom: 12px;
+  margin-bottom: -12px;         /* cancel the extra space in normal flow */
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 15px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: #c4d0cc;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+.navItem:hover,
+.navItemActive {
+  background: rgba(200, 148, 61, 0.09);
+  border-color: rgba(200, 148, 61, 0.18);
+  color: #d9a441;
+}
+.navIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #c8943d;
+  font-size: 15px;
+}
+.dropdownArrow {
+  color: #6e7e78;
+  font-size: 11px;
+  transition: transform 0.2s ease;
+}
+.dropdownArrowOpen {
+  transform: rotate(180deg);
+  color: #c8943d;
+}
+
+/* ── MEGA MENU ──
+   Key fix: padding-top bridges the 12px gap between
+   the nav item's bottom padding and the panel.
+   The cursor stays within the hover zone the entire time.
+*/
+/* .megaMenu is the INVISIBLE hover-bridge container — no background, no border */
+.megaMenu {
+  position: absolute;
+  top: 100%;                    /* flush to bottom of navItemWrapper */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  /* padding-top creates the invisible bridge so the cursor can
+     cross from the nav button to the panel without gap-closing */
+  padding-top: 12px;
+  z-index: 300;
+  pointer-events: auto;
+  animation: menuFadeIn 0.18s ease-out both;
+}
+
+/* .megaMenuPanel is the VISIBLE styled box */
+.megaMenuPanel {
+  background: rgba(15, 20, 18, 0.98);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 18px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.04);
+  padding: 24px;
+  overflow: hidden;
+}
+
+@keyframes menuFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.megaMenuHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.megaMenuHeader h3 {
+  margin: 0;
+  color: #f7f1e5;
+  font-size: 17px;
+  font-weight: 700;
+}
+.megaMenuHeader p {
+  margin: 5px 0 0;
+  color: #6e7e78;
+  font-size: 12px;
+}
+.megaMenuArrow {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: rgba(200, 148, 61, 0.12);
+  color: #c8943d;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.dropdownGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.dropdownCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 13px;
+  background: rgba(30, 38, 34, 0.5);
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  width: 100%;
+}
+.dropdownCard:hover {
+  background: rgba(200, 148, 61, 0.1);
+  border-color: rgba(200, 148, 61, 0.22);
+  transform: translateY(-2px);
+}
+.dropdownIcon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: rgba(26, 32, 28, 0.8);
+  color: #c8943d;
+  font-size: 17px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.dropdownCard:hover .dropdownIcon {
+  background: #c8943d;
+  color: #0b100e;
+}
+.dropdownTitle {
+  color: #f7f1e5;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.dropdownDescription {
+  color: #6e7e78;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.cardArrow {
+  margin-left: auto;
+  color: #6e7e78;
+  font-size: 15px;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  flex-shrink: 0;
+  align-self: center;
+}
+.dropdownCard:hover .cardArrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: #c8943d;
+}
+
+/* ── HEADER ACTIONS ── */
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #d1dad6;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.actionButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+.highlighted {
+  background: #c8943d !important;
+  color: #0b100e !important;
+  border-color: transparent !important;
+  font-weight: 700;
+}
+.highlighted:hover {
+  background: #e3a948 !important;
+  box-shadow: 0 4px 14px rgba(200, 148, 61, 0.3);
+}
+.actionIcon { font-size: 15px; }
+
+/* ── HAMBURGER ── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 26px;
+  height: 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 105;
+  flex-shrink: 0;
+}
+.hamburgerBar {
+  width: 100%;
+  height: 2px;
+  background: #d1dad6;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.hbTop  { transform: translateY(8px) rotate(45deg); }
+.hbMid  { opacity: 0; }
+.hbBot  { transform: translateY(-8px) rotate(-45deg); }
+
+@media (max-width: 850px) {
+  .mainNavigation,
+  .headerActions { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* ── MOBILE OVERLAY ── */
+.mobileOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 190;
+  animation: fadeIn 0.25s ease;
+}
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.mobileDrawer { position: fixed; top: 0; right: -100%; width: min(320px, 85vw); height: 100vh; background: #111513; border-left: 1px solid rgba(255,255,255,0.08); z-index: 101; display: flex; flex-direction: column; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -10px 0 30px rgba(0,0,0,0.5); overflow-y: auto; }
+
+/* ── MOBILE DRAWER ── */
+.mobileDrawer {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: min(340px, 88vw);
+  height: 100dvh;
+  height: 100vh;
+  background: #0f1311;
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+  z-index: 210;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
 .mobileDrawerOpen { right: 0; }
-.drawerHeader { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+}
 .drawerBrand { display: flex; align-items: center; gap: 10px; }
-.drawerLogo { width: 36px; height: 36px; border-radius: 10px; }
-.drawerLogoMark { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: #c8943d; color: #111513; font-weight: 800; border-radius: 10px; font-size: 18px; }
-.drawerBrandName { color: #f7f1e5; font-size: 18px; font-weight: 700; }
-.drawerClose { background: transparent; border: none; color: #a4b2ac; font-size: 20px; padding: 5px; cursor: pointer; }
-.drawerNav { padding: 24px; flex: 1; }
-.drawerSection { margin-bottom: 24px; }
-.drawerSectionLabel { display: flex; align-items: center; gap: 10px; color: #c8943d; font-size: 13px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px; }
-.drawerLinks { display: flex; flex-direction: column; gap: 12px; }
-.drawerLink { display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #d1dad6; font-size: 15px; font-weight: 500; padding: 8px 12px; border-radius: 8px; transition: background 0.2s; }
-.drawerLink:hover { background: rgba(255,255,255,0.05); color: #c8943d; }
-.drawerActions { padding: 24px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; gap: 12px; }
-.drawerActionButton { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.05); color: #f7f1e5; border: 1px solid rgba(255,255,255,0.1); font-size: 15px; font-weight: 600; cursor: pointer; }
-.drawerHighlighted { background: #c8943d; color: #111513; border: none; }
+.drawerLogo { width: 34px; height: 34px; border-radius: 9px; object-fit: cover; }
+.drawerLogoMark {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #c8943d;
+  color: #0b100e;
+  font-weight: 900;
+  border-radius: 9px;
+  font-size: 17px;
+}
+.drawerBrandName { color: #f7f1e5; font-size: 17px; font-weight: 700; }
+.drawerClose {
+  background: transparent;
+  border: none;
+  color: #6e7e78;
+  font-size: 18px;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 7px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.drawerClose:hover { background: rgba(255,255,255,0.06); color: #f7f1e5; }
+
+.drawerNav { padding: 16px 16px; flex: 1; }
+.drawerSection { margin-bottom: 4px; }
+
+/* Section label is now a button for tap-to-expand */
+.drawerSectionLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #c8943d;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease;
+}
+.drawerSectionLabel:hover { background: rgba(200,148,61,0.06); }
+.drawerSectionIcon { font-size: 15px; }
+
+.drawerChevron {
+  margin-left: auto;
+  font-size: 13px;
+  color: #6e7e78;
+  transition: transform 0.2s ease;
+}
+.drawerChevronOpen {
+  transform: rotate(180deg);
+  color: #c8943d;
+}
+
+.drawerLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0 8px 36px;
+}
+.drawerLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  color: #a4b2ac;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 9px 12px;
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+.drawerLink:hover { background: rgba(255,255,255,0.04); color: #f7f1e5; }
+.drawerLinkArrow { color: #3a4440; font-size: 13px; }
+
+.drawerActions {
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.drawerActionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 13px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #d1dad6;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.drawerActionButton:hover { background: rgba(255,255,255,0.07); }
+.drawerHighlighted {
+  background: #c8943d !important;
+  color: #0b100e !important;
+  border-color: transparent !important;
+  font-weight: 700;
+}
