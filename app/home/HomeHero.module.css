@@ -1,159 +1,183 @@
-﻿.hero {
+/* ============================================================
+   HOME HERO — complete rewrite
+   No absolute positioning for search. Everything is in flow.
+   ============================================================ */
+
+.heroWrapper {
   position: relative;
   width: 100%;
-  max-width: 100%;
-  /* Desktop: fixed height */
-  height: 580px;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  /* visible so the absolutely-positioned searchWrapper can hang below */
-  overflow: visible;
-  padding-top: 40px;
-  /* Ensure the search card (hanging -55px) stays clear of sections below */
-  padding-bottom: 120px;
+  /* Let content determine height */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0b100e;
+  overflow: hidden;
 }
 
-.heroContent {
+/* Background image layer */
+.heroBg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+/* Multi-stop overlay: strong left, lighter right */
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgba(6, 18, 14, 0.96) 0%,
+    rgba(6, 18, 14, 0.82) 35%,
+    rgba(6, 18, 14, 0.55) 65%,
+    rgba(6, 18, 14, 0.45) 100%
+  );
+  z-index: 1;
+}
+
+/* Inner wrapper — stacks content + search vertically */
+.heroInner {
   position: relative;
   z-index: 2;
-  width: min(1200px, calc(100% - 48px));
-  margin: 0 auto;
-  padding-top: 25px;
-  min-width: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 180px 24px 80px;
+  gap: 0;
 }
 
+/* Hero text block */
+.heroContent {
+  width: min(960px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Badge */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 18px;
-  border: 1px solid #d9a441;
+  padding: 8px 18px;
+  border: 1px solid rgba(200, 148, 61, 0.35);
   border-radius: 999px;
-  color: #e8b354;
-  background: rgba(4, 28, 22, 0.35);
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  max-width: 100%;
-  /* Wrap text on very small screens instead of overflowing */
-  white-space: normal;
-  word-break: break-word;
-}
-
-.badge span {
-  font-size: 18px;
-  flex-shrink: 0;
-}
-
-.title {
-  margin: 24px 0 0;
-  color: #ffffff;
-  font-size: clamp(40px, 5.4vw, 82px);
-  line-height: 0.98;
+  background: rgba(11, 16, 14, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #d9a441;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: -2px;
-  overflow-wrap: anywhere;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  width: fit-content;
+  margin-bottom: 28px;
+}
+
+.badgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c8943d;
+  flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* Main headline */
+.title {
+  margin: 0 0 20px;
+  color: #f7f1e5;
+  font-size: clamp(48px, 6vw, 88px);
+  line-height: 1.03;
+  font-weight: 800;
+  letter-spacing: -2.5px;
+  text-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
 .title span {
-  color: #e5ad4d;
+  color: #c8943d;
 }
 
+/* Subtext */
 .description {
-  margin-top: 22px;
-  color: #ffffff;
-  font-size: clamp(16px, 2.2vw, 23px);
-  line-height: 1.5;
+  margin: 0;
+  color: rgba(247, 241, 229, 0.72);
+  font-size: clamp(17px, 2vw, 22px);
+  line-height: 1.55;
   font-weight: 400;
-  overflow-wrap: anywhere;
-  /* Allow text to wrap naturally â€” avoid hard br on small screens */
-  max-width: 680px;
+  max-width: 600px;
 }
 
+/* Search section — below hero text, still inside hero BG */
+.searchContainer {
+  width: min(1180px, 100%);
+  margin-top: 52px;
+}
 
-/* =========================
-   TABLET
-   ========================= */
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1100px) {
+  .heroInner {
+    padding: 160px 20px 70px;
+  }
+}
 
 @media (max-width: 900px) {
-  .hero {
-    min-height: 680px;
-    height: 680px;
-    padding-top: 40px;
+  .heroWrapper {
+    min-height: auto;
   }
-
-  .heroContent {
-    width: calc(100% - 32px);
-    padding-top: 10px;
+  .heroInner {
+    padding: 140px 20px 60px;
   }
-
   .title {
-    font-size: 52px;
+    font-size: clamp(42px, 8vw, 64px);
+    letter-spacing: -1.5px;
   }
-
   .description {
-    font-size: 18px;
+    font-size: 17px;
   }
 }
-
-
-/* =========================
-   MOBILE
-   ========================= */
 
 @media (max-width: 650px) {
-  .hero {
-    /* Auto height so the hero content + search below it sizes naturally */
-    min-height: 0;
-    height: auto;
-    padding: 30px 0 34px;
+  .heroInner {
+    padding: 120px 16px 48px;
+    align-items: flex-start;
   }
-
-  .heroContent {
-    width: calc(100% - 28px);
-    padding-top: 5px;
-  }
-
-  .badge {
-    font-size: 12px;
-    padding: 8px 12px;
-    line-height: 1.35;
-  }
-
-  .badge span {
-    font-size: 14px;
-  }
-
   .title {
-    margin-top: 20px;
-    font-size: clamp(34px, 10vw, 50px);
+    font-size: clamp(38px, 10vw, 52px);
     letter-spacing: -1px;
   }
-
   .description {
-    margin-top: 16px;
     font-size: 15px;
+    max-width: 100%;
+  }
+  .badge {
+    font-size: 10px;
+    padding: 7px 14px;
+  }
+  .searchContainer {
+    margin-top: 36px;
+    width: 100%;
   }
 }
-
-/* =========================
-   SMALL MOBILE (320â€“400px)
-   ========================= */
 
 @media (max-width: 400px) {
+  .heroInner {
+    padding: 100px 14px 40px;
+  }
   .title {
-    font-size: 32px;
+    font-size: 34px;
     letter-spacing: -0.5px;
   }
-
-  .description {
-    font-size: 14px;
-  }
-
-  .badge {
-    font-size: 11px;
-    padding: 7px 10px;
-  }
 }
-

@@ -1,528 +1,297 @@
+/* ==============================================
+   FEATURED PROPERTIES — premium dark property cards
+   ============================================== */
 .section {
-  position: relative;
   width: 100%;
-  padding: 90px 0 105px;
-  overflow: hidden;
-  background:
-    radial-gradient(
-      circle at 8% 15%,
-      rgba(200, 148, 61, 0.10),
-      transparent 28%
-    ),
-    radial-gradient(
-      circle at 92% 85%,
-      rgba(18, 60, 50, 0.10),
-      transparent 32%
-    ),
-    #f3f6f2;
+  padding: 96px 0;
+  background: #0f1311;
 }
-
 .container {
-  width: min(1200px, calc(100% - 48px));
+  width: min(1240px, calc(100% - 48px));
   margin: 0 auto;
-  min-width: 0;
 }
 
-/* =========================
-   HEADING
-========================= */
+.sectionLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #c8943d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.sectionLabel::before {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: #c8943d;
+  border-radius: 2px;
+}
 
 .headingRow {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 30px;
-  margin-bottom: 42px;
-  min-width: 0;
+  gap: 24px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
 }
-
-.heading {
-  max-width: 700px;
-  min-width: 0;
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  color: #c8943d;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 2px;
-}
-
-.eyebrow::before {
-  content: "";
-  width: 28px;
-  height: 2px;
-  border-radius: 2px;
-  background: #c8943d;
-}
-
 .heading h2 {
   margin: 0;
-  color: #123c32;
-  font-size: clamp(32px, 3.5vw, 46px);
-  line-height: 1.12;
+  color: #f7f1e5;
+  font-size: clamp(28px, 3.2vw, 42px);
   font-weight: 800;
   letter-spacing: -1px;
+  line-height: 1.12;
 }
-
 .heading p {
-  max-width: 620px;
-  margin: 13px 0 0;
-  color: #68746f;
-  font-size: 16px;
+  margin: 10px 0 0;
+  color: #8e9c96;
+  font-size: 15px;
   line-height: 1.6;
 }
-
-/* =========================
-   VIEW ALL
-========================= */
-
 .viewAllButton {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-  padding: 13px 19px;
-  border: 1px solid rgba(200, 148, 61, 0.55);
+  gap: 10px;
+  padding: 11px 20px;
+  border: 1px solid rgba(200, 148, 61, 0.35);
   border-radius: 12px;
-  color: #123c32;
-  background: rgba(255, 255, 255, 0.7);
+  color: #d9a441;
+  background: rgba(200, 148, 61, 0.08);
   text-decoration: none;
   font-size: 13px;
-  font-weight: 800;
-  transition:
-    transform 0.25s ease,
-    background 0.25s ease,
-    box-shadow 0.25s ease;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+  white-space: nowrap;
 }
-
 .viewAllButton:hover {
-  transform: translateY(-3px);
-  background: #ffffff;
-  box-shadow: 0 10px 25px rgba(18, 60, 50, 0.12);
+  background: rgba(200, 148, 61, 0.16);
 }
 
-.viewAllButton span {
-  color: #c8943d;
-  font-size: 18px;
-  transition: transform 0.25s ease;
-}
-
-.viewAllButton:hover span {
-  transform: translateX(4px);
-}
-
-/* =========================
-   PROPERTY GRID
-========================= */
-
+/* GRID */
 .propertyGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
 
-/* =========================
-   PROPERTY CARD
-========================= */
-
+/* CARD */
 .propertyCard {
-  position: relative;
-  overflow: hidden;
-  border-radius: 22px;
-  background: #ffffff;
-  border: 1px solid rgba(18, 60, 50, 0.08);
-  box-shadow:
-    0 12px 30px rgba(18, 60, 50, 0.08),
-    0 3px 8px rgba(18, 60, 50, 0.04);
-  transition:
-    transform 0.35s ease,
-    box-shadow 0.35s ease;
-  /* Consistent card height: flex column so bottom aligns across all cards */
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  background: #1a201c;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 22px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
-
 .propertyCard:hover {
-  transform: translateY(-8px);
-  box-shadow:
-    0 24px 48px rgba(18, 60, 50, 0.15),
-    0 8px 18px rgba(200, 148, 61, 0.08);
+  transform: translateY(-6px);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.5);
+  border-color: rgba(200, 148, 61, 0.25);
 }
 
-/* =========================
-   IMAGE
-========================= */
-
+/* IMAGE */
 .imageWrapper {
   position: relative;
   width: 100%;
-  height: 235px;
+  padding-top: 62%;
   overflow: hidden;
-  background: #dfe8e3;
+  background: #0b100e;
 }
-
 .propertyImage {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  display: block;
   object-fit: cover;
-  transition:
-    transform 0.6s ease,
-    filter 0.4s ease;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 .propertyCard:hover .propertyImage {
-  transform: scale(1.07);
-  filter: brightness(0.88);
+  transform: scale(1.05);
 }
-
 .imagePlaceholder {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: #68746f;
-  background:
-    linear-gradient(
-      135deg,
-      #dfe9e4,
-      #cbdad3
-    );
-  font-size: 14px;
-  font-weight: 700;
+  color: #3a4440;
+  font-size: 13px;
+  font-weight: 500;
 }
 
-/* =========================
-   BADGES
-========================= */
-
+/* BADGES */
 .purposeBadge {
   position: absolute;
-  left: 16px;
-  top: 16px;
-  z-index: 3;
-  padding: 7px 11px;
-  border-radius: 8px;
-  color: #ffffff;
-  background: #123c32;
-  font-size: 11px;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(11, 16, 14, 0.8);
+  backdrop-filter: blur(8px);
+  color: #f7f1e5;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.5px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.16);
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 .featuredBadge {
   position: absolute;
-  left: 16px;
-  bottom: 16px;
-  z-index: 3;
-  padding: 6px 10px;
-  border-radius: 7px;
-  color: #123c32;
-  background: #d8a64e;
+  top: 14px;
+  right: 50px;
+  z-index: 2;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #c8943d;
+  color: #0b100e;
   font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 0.8px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
 }
-
-/* =========================
-   FAVORITE
-========================= */
-
 .favoriteButton {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  z-index: 4;
-  width: 38px;
-  height: 38px;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(11, 16, 14, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 50%;
-  color: #ffffff;
-  background: rgba(18, 60, 50, 0.72);
-  backdrop-filter: blur(8px);
   cursor: pointer;
-  font-size: 22px;
-  transition:
-    transform 0.25s ease,
-    background 0.25s ease;
+  font-size: 16px;
+  color: #8e9c96;
+  transition: color 0.2s ease, background 0.2s ease;
 }
-
 .favoriteButton:hover {
-  transform: scale(1.1);
-  background: #c8943d;
+  color: #f34c4c;
+  background: rgba(11, 16, 14, 0.9);
 }
 
-/* =========================
-   CARD CONTENT
-========================= */
-
+/* CARD CONTENT */
 .cardContent {
-  padding: 22px;
-  /* Grow to fill remaining card height so bottom section stays aligned */
+  padding: 20px;
   display: flex;
   flex-direction: column;
+  gap: 10px;
   flex: 1;
-  min-width: 0;
 }
-
 .category {
-  display: inline-block;
-  margin-bottom: 8px;
   color: #c8943d;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
-
-/* Property Type */
 .propertyType {
-  display: inline-block;
+  color: #6e7e78;
+  font-size: 12px;
+  font-weight: 500;
   margin-left: 8px;
-  margin-bottom: 8px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  color: #123c32;
-  background: #edf2ef;
-  font-size: 10px;
-  font-weight: 700;
 }
-
 .cardContent h3 {
   margin: 0;
-  color: #123c32;
-  font-size: 20px;
-  line-height: 1.3;
-  font-weight: 800;
-  /* Max 2 lines — ellipsis on overflow */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  color: #f7f1e5;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
   overflow: hidden;
-  /* Reserve space for exactly 2 lines even when title is short */
-  min-height: calc(20px * 1.3 * 2);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
-
 .location {
   display: flex;
-  align-items: flex-start;
-  gap: 7px;
-  min-height: 40px;
-  margin: 9px 0 0;
-  color: #707c77;
-  font-size: 13px;
-  line-height: 1.5;
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.location span {
-  flex-shrink: 0;
-  color: #c8943d;
-  font-size: 17px;
-}
-
-/* =========================
-   DETAILS
-========================= */
-
-.details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
-  padding-top: 15px;
-  border-top: 1px solid #e7ece9;
-}
-
-.detail {
-  display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 7px 8px;
-  border-radius: 8px;
-  color: #5f6c67;
-  background: #f1f5f2;
-  font-size: 11px;
-}
-
-.detail span {
+  color: #6e7e78;
   font-size: 13px;
+  margin: 0;
 }
 
-.detail strong {
-  color: #123c32;
+/* DETAILS */
+.details {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-wrap: wrap;
+}
+.detail {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 12px;
+  color: #8e9c96;
 }
+.detail span { color: #c8943d; font-size: 14px; }
+.detail strong { color: #d1dad6; font-weight: 600; }
+.detail small { color: #6e7e78; font-size: 11px; }
 
-.detail small {
-  color: #7d8984;
-  font-size: 10px;
-}
-
-/* =========================
-   CARD BOTTOM
-========================= */
-
+/* CARD BOTTOM */
 .cardBottom {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  gap: 15px;
+  padding-top: 2px;
   margin-top: auto;
-  padding-top: 17px;
-  border-top: 1px solid #e7ece9;
-  min-width: 0;
 }
-
 .priceLabel {
   display: block;
-  margin-bottom: 3px;
-  color: #89938f;
+  color: #6e7e78;
   font-size: 10px;
-  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-bottom: 3px;
+  font-weight: 600;
 }
-
 .price {
   display: block;
-  color: #123c32;
-  font-size: 19px;
-  font-weight: 900;
-  overflow-wrap: anywhere;
+  color: #f7f1e5;
+  font-size: 20px;
+  font-weight: 800;
 }
-
 .viewButton {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 10px 13px;
-  border-radius: 9px;
-  color: #ffffff;
-  background: #123c32;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  background: rgba(200, 148, 61, 0.12);
+  border: 1px solid rgba(200, 148, 61, 0.25);
+  color: #c8943d;
+  font-size: 13px;
+  font-weight: 700;
   text-decoration: none;
-  font-size: 11px;
-  font-weight: 800;
   white-space: nowrap;
-  transition:
-    transform 0.25s ease,
-    background 0.25s ease,
-    box-shadow 0.25s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
-
 .viewButton:hover {
-  transform: translateY(-2px);
   background: #c8943d;
-  box-shadow: 0 7px 16px rgba(200, 148, 61, 0.22);
+  color: #0b100e;
 }
 
-.viewButton span {
-  font-size: 16px;
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+  .propertyGrid { grid-template-columns: repeat(2, 1fr); }
 }
-
-/* =========================
-   TABLET
-========================= */
-
-@media (max-width: 950px) {
-  .section {
-    padding: 75px 0 90px;
-  }
-
-  .container {
-    width: calc(100% - 32px);
-  }
-
-  .propertyGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .headingRow {
-    align-items: flex-start;
-  }
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 650px) {
-  .section {
-    padding: 65px 0 75px;
-  }
-
-  .headingRow {
-    flex-direction: column;
-    gap: 20px;
-    margin-bottom: 30px;
-  }
-
-  .heading h2 {
-    font-size: 31px;
-  }
-
-  .heading p {
-    font-size: 14px;
-  }
-
-  .propertyGrid {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-
-  .imageWrapper {
-    height: 220px;
-  }
-
-  .cardContent {
-    padding: 19px;
-  }
-
-  .cardBottom {
-    align-items: center;
-  }
-
-  .viewAllButton {
-    width: fit-content;
-    max-width: 100%;
-  }
-}
-
-/* =========================
-   SMALL MOBILE (320-400px)
-   ========================= */
-
-@media (max-width: 400px) {
-  .container {
-    width: calc(100% - 20px);
-  }
-
-  .imageWrapper {
-    height: 190px;
-  }
-
-  .cardContent {
-    padding: 15px;
-  }
-
-  .cardContent h3 {
-    font-size: 18px;
-  }
-
-  .price {
-    font-size: 17px;
-  }
+@media (max-width: 700px) {
+  .section { padding: 64px 0; }
+  .propertyGrid { grid-template-columns: 1fr; }
+  .headingRow { flex-direction: column; align-items: flex-start; }
 }
