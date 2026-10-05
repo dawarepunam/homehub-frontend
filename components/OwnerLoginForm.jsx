@@ -111,7 +111,7 @@ export default function OwnerLoginForm() {
           localStorage.removeItem("pendingActionRedirect");
           router.replace(pendingRedirect);
         } else {
-          router.replace("/");
+          router.replace("/owner/properties");
         }
       }, 1500);
     } catch (error) {
