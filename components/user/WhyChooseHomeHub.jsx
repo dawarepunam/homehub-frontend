@@ -27,9 +27,9 @@ export default function WhyChooseHomeHub() {
   return (
     <section className="bg-[#F6F0E5] py-16">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mb-12 text-center">
-          <h2 className="text-3xl font-extrabold text-[#0D3326]">Why Choose HomeHub?</h2>
-          <p className="mt-4 text-lg text-[#52645B]">
+        <div className="mx-auto mb-12 flex max-w-3xl flex-col items-center justify-center text-center">
+          <h2 className="text-2xl font-extrabold text-[#0D3326] sm:text-3xl">Why Choose HomeHub?</h2>
+          <p className="mt-4 text-sm text-[#52645B] sm:text-base">
             We make your property journey smooth, transparent, and hassle-free.
           </p>
         </div>

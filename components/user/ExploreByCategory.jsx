@@ -58,14 +58,16 @@ const EXPLORE_CATEGORIES = [
 export default function ExploreByCategory() {
   return (
     <section id="explore-categories" className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-      <h2 className="text-2xl font-extrabold mb-2" style={{ color: "#0D3326" }}>
-        Explore by Category
-      </h2>
-      <p className="text-sm text-[#0D3326]/60 mb-8">
-        Browse properties by type — all results come directly from Strapi.
-      </p>
+      <div className="mx-auto mb-10 flex max-w-3xl flex-col items-center justify-center text-center">
+        <h2 className="text-2xl font-extrabold sm:text-3xl" style={{ color: "#0D3326" }}>
+          Explore by Category
+        </h2>
+        <p className="mt-3 text-sm text-[#0D3326]/70 sm:text-base">
+          Browse properties by type — all results come directly from Strapi.
+        </p>
+      </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-4">
+      <div className="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-4">
         {EXPLORE_CATEGORIES.map((cat) => {
           // Build the href based on filterMode
           const href =

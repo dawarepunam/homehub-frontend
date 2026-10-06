@@ -1190,7 +1190,7 @@ export default function PropertyCard({ property }) {
   =================================================== */
 
   return (
-    <div className="group relative w-full max-w-[270px] h-[460px]" style={{ perspective: "1000px" }}>
+    <div className="group relative w-full max-w-[340px] mx-auto h-[460px]" style={{ perspective: "1000px" }}>
       <article
         className="relative w-full h-full transition-transform duration-500 rounded-[20px]"
         style={{ transformStyle: "preserve-3d" }}

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useMemo } from "react";
@@ -49,10 +49,13 @@ export default function PopularLocations({ properties = [] }) {
   return (
     // id="popular-locations" lets the Back button anchor back to this section.
     <section id="popular-locations" className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
-        <h2 className="text-2xl font-extrabold" style={{ color: "#0D3326" }}>
+      <div className="mx-auto mb-10 flex max-w-3xl flex-col items-center justify-center text-center">
+        <h2 className="text-2xl font-extrabold sm:text-3xl" style={{ color: "#0D3326" }}>
           Explore Popular Locations
         </h2>
+        <p className="mt-3 text-sm text-[#0D3326]/70 sm:text-base">
+          Discover properties in India's most sought-after cities.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

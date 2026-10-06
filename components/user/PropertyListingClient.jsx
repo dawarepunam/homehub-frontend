@@ -65,7 +65,7 @@ function extractPrice(property) {
 
 function SkeletonCard() {
   return (
-    <div className="w-full max-w-[270px] h-[460px] rounded-[20px] border border-[#E5DDD0] bg-white overflow-hidden animate-pulse mx-auto">
+    <div className="w-full max-w-[340px] h-[460px] rounded-[20px] border border-[#E5DDD0] bg-white overflow-hidden animate-pulse mx-auto">
       <div className="h-[220px] bg-[#EAE5DC]" />
       <div className="p-4 flex flex-col gap-3">
         <div className="h-3 w-24 rounded bg-[#EAE5DC]" />
@@ -708,10 +708,10 @@ function ListPropertyRow({ property }) {
   return (
     <div
       onClick={() => router.push(viewRoute)}
-      className="flex gap-5 rounded-2xl border border-[#E5DDD0] bg-white p-4 shadow-sm transition hover:shadow-md hover:border-[#D7AE62] cursor-pointer"
+      className="flex flex-col sm:flex-row gap-5 rounded-2xl border border-[#E5DDD0] bg-white p-4 shadow-sm transition hover:shadow-md hover:border-[#D7AE62] cursor-pointer"
     >
       {/* Image */}
-      <div className="relative h-[130px] w-[200px] shrink-0 overflow-hidden rounded-xl bg-[#EAE5DC]">
+      <div className="relative h-[200px] sm:h-[130px] w-full sm:w-[200px] shrink-0 overflow-hidden rounded-xl bg-[#EAE5DC]">
         <img src={imageUrl} alt={property?.Title || "Property"} className="h-full w-full object-cover" />
         <span className="absolute bottom-2 left-2 rounded-md bg-[#D7AE62] px-2 py-0.5 text-[10px] font-extrabold text-[#0D3326] uppercase">
           {property?.Purpose || ""}

@@ -290,7 +290,7 @@ export default function UserHeader({ headerData }) {
       />
 
       {/* TOP HEADER */}
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4 lg:px-8">
+      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-4 px-6 py-4 lg:px-8">
 
         {/* Logo + Brand */}
         <Link href="/user" className="flex items-center gap-3">
@@ -497,7 +497,7 @@ export default function UserHeader({ headerData }) {
 
       {/* MENU BAR */}
       <div style={{ borderTop: "1px solid rgba(215,174,98,0.15)", background: "rgba(0,0,0,0.15)" }}>
-        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-6 px-6 py-2.5 lg:px-8">
+        <div className="no-scrollbar mx-auto flex max-w-[1400px] items-center gap-4 overflow-x-auto whitespace-nowrap px-6 py-2.5 lg:px-8 sm:gap-6">
           <button
             className="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition"
             style={{ background: "rgba(215,174,98,0.10)", color: "#D7AE62" }}

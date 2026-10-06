@@ -43,9 +43,9 @@ const TOOLS = [
 export default function HomeHubTools() {
   return (
     <section className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-      <div className="mb-8">
-        <h2 className="text-2xl font-extrabold" style={{ color: "#0D3326" }}>HomeHub Tools</h2>
-        <p className="mt-2 text-gray-600">Smart tools to help you make better real estate decisions.</p>
+      <div className="mx-auto mb-10 flex max-w-3xl flex-col items-center justify-center text-center">
+        <h2 className="text-2xl font-extrabold sm:text-3xl" style={{ color: "#0D3326" }}>HomeHub Tools</h2>
+        <p className="mt-3 text-sm text-gray-600 sm:text-base">Smart tools to help you make better real estate decisions.</p>
       </div>
       
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
