@@ -322,8 +322,8 @@ async function parseResponse(response) {
 export async function getLoggedInUser() {
     const token = getAuthToken();
 
-    if (!token) {
-        throw new Error("Please login first.");
+    if (!token || token === "null" || token === "undefined") {
+        return null;
     }
 
     const response = await fetch(`${API_URL}/users/me`, {
@@ -333,6 +333,10 @@ export async function getLoggedInUser() {
         },
         cache: "no-store",
     });
+
+    if (response.status === 401) {
+        return null;
+    }
 
     return await parseResponse(response);
 }
@@ -344,8 +348,8 @@ export async function getLoggedInUser() {
 export async function getUserWishlist() {
     const user = await getLoggedInUser();
 
-    if (!user ? .id) {
-        throw new Error("Logged-in user not found.");
+    if (!user?.id) {
+        return null;
     }
 
     /*
@@ -369,14 +373,16 @@ export async function getUserWishlist() {
         cache: "no-store",
     });
 
+    if (response.status === 401) {
+        return null;
+    }
+
     const result = await parseResponse(response);
 
-    const profiles = result ? .data || [];
+    const profiles = result?.data || [];
 
     if (!profiles.length) {
-        throw new Error(
-            "User profile not found. Please create a User Profile for this account.",
-        );
+        return null;
     }
 
     return profiles[0];

@@ -5128,7 +5128,7 @@ export default function PropertyCard({
 
   const handleProtectedAction = (e, actionType, redirectUrl) => {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    if (!token) {
+    if (!token || token === "null" || token === "undefined") {
       e.preventDefault();
       setPendingAction(actionType);
       setShowLoginPrompt(true);
@@ -6402,6 +6402,7 @@ export default function PropertyCard({
 
             <Link
               href={`/property/${documentId}`}
+              onClick={(e) => handleProtectedAction(e, "view", `/property/${documentId}`)}
               className="
                 rounded-lg
                 bg-[#174B3B]

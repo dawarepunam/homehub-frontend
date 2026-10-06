@@ -26,7 +26,7 @@ export default function FeaturedProperties({ data, properties }) {
     const role = localStorage.getItem("userRole");
     const activeMode = localStorage.getItem("activeMode");
 
-    if (token) {
+    if (token && token !== "null" && token !== "undefined") {
       setIsLoggedIn(true);
       setUserRole(role);
 
