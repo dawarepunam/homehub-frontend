@@ -136,160 +136,87 @@ export default function OwnerRegisterForm() {
   // =====================================================
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#073B4C]">
-      {/* =================================================
-          BACKGROUND DECORATION
-      ================================================= */}
-
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Mustard glow */}
-
-        <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[#D9A441]/20 blur-3xl animate-pulse" />
-
-        {/* Teal glow */}
-
-        <div className="absolute -bottom-32 -right-20 h-96 w-96 rounded-full bg-[#1F7A8C]/30 blur-3xl animate-pulse" />
-
-        {/* Decorative shape */}
-
-        <div className="absolute right-[-70px] top-24 h-72 w-72 rotate-12 rounded-[5rem] border border-[#D9A441]/20 bg-[#D9A441]/10" />
-
-        {/* Floating dots */}
-
-        <div className="absolute left-[8%] top-[18%] h-2 w-2 rounded-full bg-[#D9A441] animate-bounce" />
-
-        <div className="absolute left-[12%] top-[25%] h-1.5 w-1.5 rounded-full bg-[#F2D096] animate-pulse" />
-
-        <div className="absolute bottom-[20%] right-[12%] h-2 w-2 rounded-full bg-[#D9A441] animate-bounce" />
+    <main className="relative min-h-screen w-full bg-[#073B4C] font-sans selection:bg-[#D9A441]/30 selection:text-white">
+      {/* Background gradients for premium feel without being childish */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#1F7A8C]/20 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-[#D9A441]/10 blur-[120px]" />
       </div>
 
-      {/* =================================================
-          MAIN CONTENT
-      ================================================= */}
-
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-6 py-10">
-        <div className="grid w-full gap-10 lg:grid-cols-[1fr_500px] lg:items-center">
-          {/* =================================================
-              LEFT SIDE
-          ================================================= */}
-
-          <section className="hidden lg:block">
-            {/* Brand */}
-
-            <div className="mb-8 flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#D9A441] shadow-lg shadow-black/20">
-                <Building2 size={26} className="text-[#073B4C]" />
+      <div className="relative z-10 flex min-h-screen w-full items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div className="w-full max-w-5xl overflow-hidden rounded-[24px] bg-[#0A485D]/40 border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)] backdrop-blur-md flex flex-col lg:flex-row">
+          
+          {/* LEFT SIDE: Branding and Value Prop */}
+          <div className="relative flex w-full flex-col justify-between p-8 sm:p-12 lg:w-5/12">
+            <div>
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#D9A441] to-[#B68A36] shadow-lg">
+                  <Building2 size={20} className="text-[#073B4C]" />
+                </div>
+                <span className="text-xl font-bold tracking-tight text-white">HomeHub</span>
               </div>
-
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight text-white">
-                  HomeHub
+              
+              <div className="mt-16 sm:mt-24">
+                <span className="inline-block rounded-full border border-[#D9A441]/30 bg-[#D9A441]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#D9A441]">
+                  Seller Portal
+                </span>
+                <h1 className="mt-6 text-4xl font-extrabold leading-tight text-white sm:text-5xl lg:text-4xl xl:text-5xl">
+                  Build Your <br />
+                  <span className="bg-gradient-to-r from-[#D9A441] to-[#F2D096] bg-clip-text text-transparent">Property Business.</span>
                 </h1>
-
-                <p className="text-sm text-[#D7E5E9]">
-                  Property Management Platform
+                <p className="mt-6 max-w-md text-base text-[#B1C9CF] sm:text-lg">
+                  Create your owner account and manage properties, enquiries, and your real-estate business from one professional workspace.
                 </p>
               </div>
             </div>
 
-            {/* Main heading */}
-
-            <div className="max-w-xl">
-              <p className="mb-4 inline-flex rounded-full border border-[#D9A441]/30 bg-[#D9A441]/10 px-4 py-2 text-sm font-medium text-[#F2D096] backdrop-blur-sm">
-                Owner Portal
-              </p>
-
-              <h2 className="text-5xl font-bold leading-tight text-white">
-                Build Your
-                <span className="block text-[#D9A441]">Property Business</span>
-              </h2>
-
-              <p className="mt-6 max-w-lg text-lg leading-8 text-[#D7E5E9]">
-                Create your owner account and manage properties, enquiries, and
-                your real-estate business from one professional workspace.
-              </p>
-            </div>
-
-            {/* Feature cards */}
-
-            <div className="mt-10 grid max-w-xl gap-4 sm:grid-cols-3">
-              <FeatureCard title="List" description="Properties" />
-
-              <FeatureCard title="Manage" description="Enquiries" />
-
-              <FeatureCard title="Grow" description="Business" />
-            </div>
-          </section>
-
-          {/* =================================================
-              REGISTER CARD
-          ================================================= */}
-
-          <section className="relative">
-            {/* Card glow */}
-
-            <div className="absolute -inset-1 rounded-[2rem] bg-gradient-to-r from-[#D9A441]/40 via-[#1F7A8C]/20 to-[#D9A441]/20 blur-xl" />
-
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/20 bg-[#F7F3EA]/95 p-8 shadow-2xl backdrop-blur-xl sm:p-10">
-              {/* Top accent */}
-
-              <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-[#1F7A8C] via-[#D9A441] to-[#1F7A8C]" />
-
-              {/* Mobile brand */}
-
-              <div className="mb-8 lg:hidden">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#D9A441]">
-                    <Building2 size={23} className="text-[#073B4C]" />
-                  </div>
-
-                  <div>
-                    <h1 className="text-2xl font-bold text-[#073B4C]">
-                      HomeHub
-                    </h1>
-
-                    <p className="text-xs text-[#61737A]">Owner Portal</p>
-                  </div>
+            <div className="mt-12 hidden flex-col gap-5 sm:flex lg:mt-24">
+              <div className="flex items-center gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1F7A8C]/20 text-[#D9A441]">
+                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"></path></svg>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-white">List Properties</span>
+                  <span className="text-xs text-[#8BA7AF]">Reach thousands of buyers</span>
                 </div>
               </div>
-
-              {/* Heading */}
-
-              <div className="mb-8">
-                <div className="mb-3 inline-flex items-center rounded-full bg-[#1F7A8C]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#1F7A8C]">
-                  Create Account
+              <div className="flex items-center gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1F7A8C]/20 text-[#D9A441]">
+                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                 </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-white">Grow Business</span>
+                  <span className="text-xs text-[#8BA7AF]">Advanced insights and tools</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                <h2 className="text-3xl font-bold text-[#16313A]">
-                  Become an Owner
+          {/* RIGHT SIDE: Authentication Form */}
+          <div className="w-full bg-white p-8 sm:p-12 lg:w-7/12">
+            <div className="mx-auto max-w-md">
+              <div className="mb-8">
+                <span className="text-xs font-bold uppercase tracking-widest text-[#073B4C]/60">
+                  Create Account
+                </span>
+                <h2 className="mt-2 text-3xl font-bold text-[#073B4C]">
+                  Become a Seller
                 </h2>
-
-                <p className="mt-2 text-sm leading-6 text-[#66767B]">
+                <p className="mt-2 text-sm text-[#5C7680]">
                   Create your account to list and manage properties on HomeHub.
                 </p>
               </div>
 
-              {/* =================================================
-                  FORM
-              ================================================= */}
-
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* FULL NAME */}
-
-                <div>
-                  <label
-                    htmlFor="owner-name"
-                    className="mb-2 block text-sm font-semibold text-[#28434B]"
-                  >
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Full Name */}
+                <div className="space-y-1.5">
+                  <label htmlFor="owner-name" className="text-sm font-medium text-[#073B4C]">
                     Full Name
                   </label>
-
                   <div className="relative">
-                    <UserRound
-                      size={18}
-                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7D8D92]"
-                    />
-
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                      <UserRound size={18} className="text-[#8BA7AF]" />
+                    </div>
                     <input
                       id="owner-name"
                       type="text"
@@ -299,27 +226,20 @@ export default function OwnerRegisterForm() {
                       placeholder="Enter your full name"
                       autoComplete="name"
                       required
-                      className="w-full rounded-2xl border border-[#C8D4D7] bg-white px-12 py-3.5 text-[#16313A] outline-none transition duration-200 placeholder:text-[#99A5A8] hover:border-[#9DAFB4] focus:border-[#1F7A8C] focus:ring-4 focus:ring-[#1F7A8C]/10"
+                      className="block w-full rounded-xl border border-[#D1D9DC] bg-[#FAFAFA] py-3.5 pl-11 pr-4 text-[15px] text-[#073B4C] transition-all placeholder:text-[#8BA7AF] hover:border-[#A4B8BF] hover:bg-white focus:border-[#0F6678] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#0F6678]/10"
                     />
                   </div>
                 </div>
 
-                {/* EMAIL */}
-
-                <div>
-                  <label
-                    htmlFor="owner-email"
-                    className="mb-2 block text-sm font-semibold text-[#28434B]"
-                  >
-                    Email
+                {/* Email Field */}
+                <div className="space-y-1.5">
+                  <label htmlFor="owner-email" className="text-sm font-medium text-[#073B4C]">
+                    Email address
                   </label>
-
                   <div className="relative">
-                    <Mail
-                      size={18}
-                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7D8D92]"
-                    />
-
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                      <Mail size={18} className="text-[#8BA7AF]" />
+                    </div>
                     <input
                       id="owner-email"
                       type="email"
@@ -329,27 +249,20 @@ export default function OwnerRegisterForm() {
                       placeholder="Enter your email"
                       autoComplete="email"
                       required
-                      className="w-full rounded-2xl border border-[#C8D4D7] bg-white px-12 py-3.5 text-[#16313A] outline-none transition duration-200 placeholder:text-[#99A5A8] hover:border-[#9DAFB4] focus:border-[#1F7A8C] focus:ring-4 focus:ring-[#1F7A8C]/10"
+                      className="block w-full rounded-xl border border-[#D1D9DC] bg-[#FAFAFA] py-3.5 pl-11 pr-4 text-[15px] text-[#073B4C] transition-all placeholder:text-[#8BA7AF] hover:border-[#A4B8BF] hover:bg-white focus:border-[#0F6678] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#0F6678]/10"
                     />
                   </div>
                 </div>
 
-                {/* PASSWORD */}
-
-                <div>
-                  <label
-                    htmlFor="owner-password"
-                    className="mb-2 block text-sm font-semibold text-[#28434B]"
-                  >
+                {/* Password Field */}
+                <div className="space-y-1.5">
+                  <label htmlFor="owner-password" className="text-sm font-medium text-[#073B4C]">
                     Password
                   </label>
-
                   <div className="relative">
-                    <LockKeyhole
-                      size={18}
-                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7D8D92]"
-                    />
-
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                      <LockKeyhole size={18} className="text-[#8BA7AF]" />
+                    </div>
                     <input
                       id="owner-password"
                       type={showPassword ? "text" : "password"}
@@ -359,38 +272,28 @@ export default function OwnerRegisterForm() {
                       placeholder="Create password"
                       autoComplete="new-password"
                       required
-                      className="w-full rounded-2xl border border-[#C8D4D7] bg-white px-12 py-3.5 pr-12 text-[#16313A] outline-none transition duration-200 placeholder:text-[#99A5A8] hover:border-[#9DAFB4] focus:border-[#1F7A8C] focus:ring-4 focus:ring-[#1F7A8C]/10"
+                      className="block w-full rounded-xl border border-[#D1D9DC] bg-[#FAFAFA] py-3.5 pl-11 pr-12 text-[15px] text-[#073B4C] transition-all placeholder:text-[#8BA7AF] hover:border-[#A4B8BF] hover:bg-white focus:border-[#0F6678] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#0F6678]/10"
                     />
-
                     <button
                       type="button"
                       onClick={() => setShowPassword((previous) => !previous)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-2 text-[#7D8D92] transition hover:bg-[#EEF3F4] hover:text-[#1F7A8C]"
-                      aria-label={
-                        showPassword ? "Hide password" : "Show password"
-                      }
+                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-[#8BA7AF] transition-colors hover:text-[#073B4C]"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
                 </div>
 
-                {/* CONFIRM PASSWORD */}
-
-                <div>
-                  <label
-                    htmlFor="owner-confirm-password"
-                    className="mb-2 block text-sm font-semibold text-[#28434B]"
-                  >
+                {/* Confirm Password Field */}
+                <div className="space-y-1.5">
+                  <label htmlFor="owner-confirm-password" className="text-sm font-medium text-[#073B4C]">
                     Confirm Password
                   </label>
-
                   <div className="relative">
-                    <LockKeyhole
-                      size={18}
-                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7D8D92]"
-                    />
-
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                      <LockKeyhole size={18} className="text-[#8BA7AF]" />
+                    </div>
                     <input
                       id="owner-confirm-password"
                       type={showConfirmPassword ? "text" : "password"}
@@ -400,109 +303,74 @@ export default function OwnerRegisterForm() {
                       placeholder="Confirm your password"
                       autoComplete="new-password"
                       required
-                      className="w-full rounded-2xl border border-[#C8D4D7] bg-white px-12 py-3.5 pr-12 text-[#16313A] outline-none transition duration-200 placeholder:text-[#99A5A8] hover:border-[#9DAFB4] focus:border-[#1F7A8C] focus:ring-4 focus:ring-[#1F7A8C]/10"
+                      className="block w-full rounded-xl border border-[#D1D9DC] bg-[#FAFAFA] py-3.5 pl-11 pr-12 text-[15px] text-[#073B4C] transition-all placeholder:text-[#8BA7AF] hover:border-[#A4B8BF] hover:bg-white focus:border-[#0F6678] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#0F6678]/10"
                     />
-
                     <button
                       type="button"
-                      onClick={() =>
-                        setShowConfirmPassword((previous) => !previous)
-                      }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-2 text-[#7D8D92] transition hover:bg-[#EEF3F4] hover:text-[#1F7A8C]"
-                      aria-label={
-                        showConfirmPassword ? "Hide password" : "Show password"
-                      }
+                      onClick={() => setShowConfirmPassword((previous) => !previous)}
+                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-[#8BA7AF] transition-colors hover:text-[#073B4C]"
+                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                     >
-                      {showConfirmPassword ? (
-                        <EyeOff size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
                 </div>
 
-                {/* REGISTER BUTTON */}
-
+                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#0F6678] px-5 py-4 font-semibold text-white shadow-lg shadow-[#0F6678]/20 transition duration-300 hover:-translate-y-0.5 hover:bg-[#0B5868] hover:shadow-xl hover:shadow-[#0F6678]/25 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="group relative flex w-full justify-center rounded-xl bg-[#0F6678] px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#0A485D] hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F6678] disabled:cursor-not-allowed disabled:opacity-70 mt-6"
                 >
-                  <span>
-                    {loading ? "Creating Account..." : "Create Owner Account"}
-                  </span>
-
-                  <ArrowRight
-                    size={19}
-                    className="transition duration-300 group-hover:translate-x-1"
-                  />
+                  {loading ? (
+                    <span className="flex items-center gap-2">
+                      <svg className="h-4 w-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                      Creating Account...
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      Create Seller Account
+                      <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                    </span>
+                  )}
                 </button>
               </form>
 
-              {/* LOGIN LINK */}
-
-              <div className="mt-7 text-center text-sm text-[#61737A]">
-                Already have an owner account?
-                <Link
-                  href="/login"
-                  className="ml-1 font-semibold text-[#D08F18] transition hover:text-[#B6750A] hover:underline"
-                >
-                  Owner Login
+              {/* Login Link */}
+              <div className="mt-8 text-center text-sm text-[#5C7680]">
+                Already have a seller account?{" "}
+                <Link href="/login" className="font-semibold text-[#D9A441] hover:text-[#B68A36] hover:underline transition-all">
+                  Seller Login
                 </Link>
               </div>
 
-              {/* DIVIDER */}
-
-              <div className="my-6 flex items-center gap-3">
-                <div className="h-px flex-1 bg-[#D7E0E2]" />
-
-                <span className="text-xs font-medium uppercase tracking-widest text-[#8A979B]">
-                  or
-                </span>
-
-                <div className="h-px flex-1 bg-[#D7E0E2]" />
+              {/* Divider */}
+              <div className="relative mt-8">
+                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                  <div className="w-full border-t border-[#E5E9EA]" />
+                </div>
+                <div className="relative flex justify-center text-xs font-medium leading-6">
+                  <span className="bg-white px-4 text-[#8BA7AF] uppercase tracking-wider">Alternate Registration</span>
+                </div>
               </div>
 
-              {/* USER REGISTER */}
+              {/* Secondary Action */}
+              <div className="mt-8">
+                <Link
+                  href="/user/register"
+                  className="group flex w-full items-center justify-center gap-2 rounded-xl border border-[#D1D9DC] bg-white px-4 py-3 text-sm font-semibold text-[#073B4C] shadow-sm transition-all hover:bg-[#F8FAFB] hover:border-[#A4B8BF]"
+                >
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#E5E9EA] group-hover:bg-[#D1D9DC] transition-colors">
+                    <UserRound size={12} strokeWidth={2.5} />
+                  </span>
+                  Register as Buyer
+                </Link>
+              </div>
 
-              <Link
-                href="/user/register"
-                className="group flex w-full items-center justify-center gap-2 rounded-2xl border border-[#C7D3D6] bg-white px-5 py-3.5 font-semibold text-[#28505A] transition duration-300 hover:-translate-y-0.5 hover:border-[#1F7A8C] hover:bg-[#F5FAFB]"
-              >
-                Register as User
-                <ArrowRight
-                  size={17}
-                  className="transition duration-300 group-hover:translate-x-1"
-                />
-              </Link>
-
-              {/* FOOTER TEXT */}
-
-              <p className="mt-6 text-center text-xs leading-5 text-[#8A979B]">
-                Create your professional Owner account and start managing your
-                properties.
-              </p>
             </div>
-          </section>
+          </div>
         </div>
       </div>
     </main>
-  );
-}
-
-// =====================================================
-// FEATURE CARD
-// =====================================================
-
-function FeatureCard({ title, description }) {
-  return (
-    <div className="group rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-[#D9A441]/30 hover:bg-white/10">
-      <div className="mb-3 h-1.5 w-10 rounded-full bg-[#D9A441] transition-all duration-300 group-hover:w-14" />
-
-      <h3 className="font-semibold text-white">{title}</h3>
-
-      <p className="mt-1 text-sm text-[#C5D8DC]">{description}</p>
-    </div>
   );
 }

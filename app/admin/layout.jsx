@@ -1,4 +1,4 @@
-import AdminFooter from "@/components/admin/AdminFooter";
+import ConditionalAdminFooter from "@/components/admin/ConditionalAdminFooter";
 
 export default function AdminLayout({ children }) {
   return (
@@ -6,7 +6,7 @@ export default function AdminLayout({ children }) {
       <div className="flex-grow flex flex-col">
         {children}
       </div>
-      <AdminFooter />
+      <ConditionalAdminFooter />
     </div>
   );
 }

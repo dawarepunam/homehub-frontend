@@ -83,127 +83,119 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F7F3EA] px-4 py-12">
+    <main className={`relative min-h-screen w-full bg-[#14231C] font-sans selection:bg-[#D9A441]/30 selection:text-white`}>
       <Toaster position="top-center" />
-      <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl border border-gray-100">
-        <div className="mb-8 text-center">
-          <div className="mb-4 flex items-center justify-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#0D3326]">
-              <LockKeyhole className="h-8 w-8 text-[#D7AE62]" />
-            </div>
-          </div>
-          <h1 className="text-3xl font-extrabold text-[#17231E]">
-            Administration Portal
-          </h1>
-          <p className="mt-3 text-gray-500">
-            Secure access to manage the HomeHub platform.
-          </p>
-        </div>
+      
+      {/* Background gradients */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className={`absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#D9A441]/20 blur-[120px]`} />
+        <div className={`absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-[#176B4D]/20 blur-[120px]`} />
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email Address */}
-          <div>
-            <label
-              htmlFor="identifier"
-              className="mb-2 block text-sm font-semibold text-[#17231E]"
-            >
-              Email Address
-            </label>
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                <Mail className="h-5 w-5 text-gray-400" />
+      <div className="relative z-10 flex min-h-screen w-full items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div className={`w-full max-w-md overflow-hidden rounded-[24px] bg-[#0E1A14]/40 border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)] backdrop-blur-md`}>
+          
+          <div className="w-full bg-white p-8 sm:p-10">
+            <div className="mb-8 text-center flex flex-col items-center">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#D9A441] to-[#B68A36] shadow-lg">
+                  <LockKeyhole size={24} className="text-[#14231C]" />
+                </div>
               </div>
-              <input
-                id="identifier"
-                name="identifier"
-                type="email"
-                required
-                value={formData.identifier}
-                onChange={handleChange}
-                placeholder="admin@example.com"
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-12 pr-4 text-gray-800 focus:border-[#D7AE62] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#D7AE62]/20 transition-colors"
-                disabled={loading}
-              />
+              
+              <span className="text-xs font-bold uppercase tracking-widest text-[#14231C]/60">
+                Secure Access
+              </span>
+              <h2 className="mt-2 text-3xl font-bold text-[#14231C]">
+                Administration
+              </h2>
+              <p className="mt-2 text-sm text-[#5C7680]">
+                Sign in to manage the HomeHub platform.
+              </p>
             </div>
-          </div>
 
-          {/* Password */}
-          <div>
-            <label
-              htmlFor="password"
-              className="mb-2 block text-sm font-semibold text-[#17231E]"
-            >
-              Password
-            </label>
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                <LockKeyhole className="h-5 w-5 text-gray-400" />
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email Address */}
+              <div className="space-y-1.5">
+                <label htmlFor="identifier" className="text-sm font-medium text-[#14231C]">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                    <Mail size={18} className="text-[#8BA7AF]" />
+                  </div>
+                  <input
+                    id="identifier"
+                    name="identifier"
+                    type="email"
+                    required
+                    value={formData.identifier}
+                    onChange={handleChange}
+                    placeholder="admin@example.com"
+                    disabled={loading}
+                    className="block w-full rounded-xl border border-[#D1D9DC] bg-[#FAFAFA] py-3.5 pl-11 pr-4 text-[15px] text-[#14231C] transition-all placeholder:text-[#8BA7AF] hover:border-[#A4B8BF] hover:bg-white focus:border-[#D9A441] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#D9A441]/10"
+                  />
+                </div>
               </div>
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                required
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter admin password"
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-12 pr-12 text-gray-800 focus:border-[#D7AE62] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#D7AE62]/20 transition-colors"
-                disabled={loading}
-              />
+
+              {/* Password */}
+              <div className="space-y-1.5">
+                <label htmlFor="password" className="text-sm font-medium text-[#14231C]">
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                    <LockKeyhole size={18} className="text-[#8BA7AF]" />
+                  </div>
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Enter admin password"
+                    disabled={loading}
+                    className="block w-full rounded-xl border border-[#D1D9DC] bg-[#FAFAFA] py-3.5 pl-11 pr-12 text-[15px] text-[#14231C] transition-all placeholder:text-[#8BA7AF] hover:border-[#A4B8BF] hover:bg-white focus:border-[#D9A441] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#D9A441]/10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-4 text-[#8BA7AF] transition-colors hover:text-[#14231C]"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Submit Button */}
               <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600"
+                type="submit"
+                disabled={loading}
+                className="group relative flex w-full justify-center rounded-xl bg-[#14231C] px-4 py-3.5 text-sm font-semibold text-[#D9A441] shadow-sm transition-all hover:bg-[#0E1A14] hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-70 mt-6"
               >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5" />
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="h-4 w-4 animate-spin text-[#D9A441]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    Authenticating...
+                  </span>
                 ) : (
-                  <Eye className="h-5 w-5" />
+                  "Login to Administration"
                 )}
               </button>
+            </form>
+
+            <div className="mt-8 text-center">
+              <Link
+                href="/"
+                className="inline-flex items-center text-sm font-semibold text-[#5C7680] hover:text-[#14231C] transition-colors"
+              >
+                ← Back to Home
+              </Link>
             </div>
           </div>
-
-          {/* Options */}
-          <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center text-gray-600 cursor-pointer">
-              <input
-                type="checkbox"
-                className="mr-2 h-4 w-4 rounded border-gray-300 text-[#0D3326] focus:ring-[#0D3326]"
-              />
-              Remember me
-            </label>
-            <a href="#" className="font-semibold text-[#0D3326] hover:text-[#D7AE62] transition-colors">
-              Forgot password?
-            </a>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex w-full items-center justify-center rounded-xl bg-[#0D3326] px-6 py-4 text-base font-bold text-white transition-all hover:bg-[#1a4a39] disabled:opacity-70 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
-          >
-            {loading ? (
-              <div className="flex items-center gap-2">
-                <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Authenticating...
-              </div>
-            ) : (
-              "Login to Administration"
-            )}
-          </button>
-        </form>
-
-        <div className="mt-8 text-center">
-          <Link
-            href="/"
-            className="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-[#0D3326] transition-colors"
-          >
-            ← Back to Home
-          </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

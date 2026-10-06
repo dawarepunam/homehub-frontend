@@ -46,7 +46,7 @@
 // }
 
 import Providers from "@/components/Providers";
-import BuyerFooter from "@/components/user/BuyerFooter";
+import ConditionalBuyerFooter from "@/components/user/ConditionalBuyerFooter";
 import { getUserSiteSettings } from "@/services/userSiteSettings";
 
 export const dynamic = "force-dynamic";
@@ -66,7 +66,7 @@ export default async function UserLayout({ children }) {
         {children}
       </div>
 
-      <BuyerFooter data={siteSettings?.Footer} />
+      <ConditionalBuyerFooter data={siteSettings?.Footer} />
     </div>
   );
 }

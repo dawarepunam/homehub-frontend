@@ -67,86 +67,82 @@ function ResetPasswordForm() {
 
   // Theme constants based on role context
   const theme = {
-    bg: isSeller ? "bg-[#073B4C]" : "bg-[#14231C]",
-    accentBg: isSeller ? "bg-[#D9A441]" : "bg-[#176B4D]",
-    accentText: isSeller ? "text-[#D9A441]" : "text-[#176B4D]",
-    accentBorder: isSeller ? "border-[#D9A441]" : "border-[#176B4D]",
-    cardBg: isSeller ? "bg-[#F7F3EA]" : "bg-[#F1F8F4]",
-    glowPrimary: isSeller ? "bg-[#D9A441]/20" : "bg-[#176B4D]/30",
-    glowSecondary: isSeller ? "bg-[#1F7A8C]/30" : "bg-[#103D2E]/40",
-    primaryButton: isSeller ? "bg-[#0F6678] hover:bg-[#0B5868]" : "bg-[#176B4D] hover:bg-[#103D2E]",
-    iconColor: isSeller ? "text-[#073B4C]" : "text-[#F1F8F4]",
-    titleColor: isSeller ? "text-[#16313A]" : "text-[#14231C]",
-    subtitleColor: isSeller ? "text-[#66767B]" : "text-[#68716B]",
-    inputBg: isSeller ? "bg-white border-[#C8D4D7]" : "bg-white border-[#D8E9DF]",
-    inputFocus: isSeller ? "focus:border-[#1F7A8C] focus:ring-[#1F7A8C]/10" : "focus:border-[#176B4D] focus:ring-[#176B4D]/10",
+    bg: "bg-[#073B4C]",
+    accentBg: "bg-[#D9A441]",
+    glowPrimary: "bg-[#1F7A8C]/20",
+    glowSecondary: "bg-[#D9A441]/10",
+    cardBg: "bg-[#0A485D]/40",
+    primaryButton: "bg-[#0F6678] hover:bg-[#0A485D] focus-visible:outline-[#0F6678]",
+    iconColor: "text-[#073B4C]",
+    titleColor: "text-[#073B4C]",
     loginLink: isSeller ? "/login" : "/user/login",
     portalName: isSeller ? "Owner Portal" : "Buyer Portal",
   };
 
   return (
-    <main className={`relative min-h-screen overflow-hidden ${theme.bg} flex items-center justify-center`}>
-      {/* Background Decoration */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className={`absolute -left-24 -top-24 h-72 w-72 rounded-full ${theme.glowPrimary} blur-3xl animate-pulse`} />
-        <div className={`absolute -bottom-32 -right-20 h-96 w-96 rounded-full ${theme.glowSecondary} blur-3xl animate-pulse`} />
+    <main className={`relative min-h-screen w-full ${theme.bg} font-sans selection:bg-[#D9A441]/30 selection:text-white`}>
+      {/* Background gradients */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className={`absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full ${theme.glowPrimary} blur-[120px]`} />
+        <div className={`absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full ${theme.glowSecondary} blur-[120px]`} />
       </div>
 
-      <div className="relative z-10 w-full max-w-md px-6 py-10">
-        <section className="relative">
-          {/* Card glow */}
-          <div className={`absolute -inset-1 rounded-[2rem] bg-gradient-to-r from-transparent via-${theme.accentBg.replace('bg-', '')}/20 to-transparent blur-xl`} />
-
-          <div className={`relative overflow-hidden rounded-[2rem] border border-white/20 ${theme.cardBg}/95 p-8 shadow-2xl backdrop-blur-xl sm:p-10`}>
-            
-            {/* Brand Logo */}
-            <div className="mb-8 flex justify-center">
-              <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${theme.accentBg} shadow-lg shadow-black/20`}>
-                {isSeller ? <Building2 size={28} className={theme.iconColor} /> : <Home size={28} className={theme.iconColor} />}
+      <div className="relative z-10 flex min-h-screen w-full items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div className={`w-full max-w-md overflow-hidden rounded-[24px] ${theme.cardBg} border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)] backdrop-blur-md`}>
+          
+          <div className="w-full bg-white p-8 sm:p-10">
+            <div className="mb-8 text-center flex flex-col items-center">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#D9A441] to-[#B68A36] shadow-lg">
+                  {isSeller ? (
+                    <Building2 size={20} className={theme.iconColor} />
+                  ) : (
+                    <Home size={20} className={theme.iconColor} />
+                  )}
+                </div>
+                <span className={`text-xl font-bold tracking-tight ${theme.titleColor}`}>HomeHub</span>
               </div>
-            </div>
-
-            {/* Heading */}
-            <div className="mb-8 text-center">
-              <div className={`mb-3 inline-flex items-center rounded-full ${theme.accentBg}/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${theme.accentText}`}>
+              
+              <span className={`text-xs font-bold uppercase tracking-widest ${theme.titleColor}/60`}>
                 {theme.portalName}
-              </div>
-
-              <h2 className={`text-3xl font-bold ${theme.titleColor}`}>
+              </span>
+              <h2 className={`mt-2 text-3xl font-bold ${theme.titleColor}`}>
                 Reset Password
               </h2>
             </div>
 
             {!code ? (
               <div className="text-center">
-                <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-red-500">
+                <div className="mb-6 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-red-500">
                   <LockKeyhole size={32} />
                 </div>
                 <h3 className={`text-xl font-bold mb-3 ${theme.titleColor}`}>Invalid Reset Link</h3>
-                <p className={`mb-8 text-sm leading-6 ${theme.subtitleColor}`}>
+                <p className={`mb-8 text-sm text-[#5C7680]`}>
                   Please request a new password reset link.
                 </p>
                 <Link
                   href="/forgot-password"
-                  className={`group flex w-full items-center justify-center gap-3 rounded-2xl ${theme.primaryButton} px-5 py-4 font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5`}
+                  className={`group relative flex w-full justify-center rounded-xl ${theme.primaryButton} px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2`}
                 >
                   Forgot Password
                 </Link>
               </div>
             ) : !success ? (
               <>
-                <p className={`mb-8 text-center text-sm leading-6 ${theme.subtitleColor}`}>
+                <p className={`mb-8 text-center text-sm text-[#5C7680]`}>
                   Create a new secure password for your HomeHub account.
                 </p>
 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   {/* NEW PASSWORD */}
-                  <div>
-                    <label htmlFor="password" className={`mb-2 block text-sm font-semibold ${theme.titleColor}`}>
+                  <div className="space-y-1.5">
+                    <label htmlFor="password" className={`text-sm font-medium ${theme.titleColor}`}>
                       New Password
                     </label>
                     <div className="relative">
-                      <LockKeyhole size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#737A75]" />
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                        <LockKeyhole size={18} className="text-[#8BA7AF]" />
+                      </div>
                       <input
                         id="password"
                         type={showPassword ? "text" : "password"}
@@ -155,12 +151,12 @@ function ResetPasswordForm() {
                         onChange={handleChange}
                         placeholder="Enter new password"
                         required
-                        className={`w-full rounded-2xl border ${theme.inputBg} px-12 py-3.5 pr-12 ${theme.titleColor} outline-none transition duration-200 placeholder:text-[#929791] focus:ring-4 ${theme.inputFocus}`}
+                        className={`block w-full rounded-xl border border-[#D1D9DC] bg-[#FAFAFA] py-3.5 pl-11 pr-12 text-[15px] ${theme.titleColor} transition-all placeholder:text-[#8BA7AF] hover:border-[#A4B8BF] hover:bg-white focus:bg-white focus:outline-none focus:ring-4 focus:border-opacity-100 focus:border-[#0F6678] focus:ring-[#0F6678]/10`}
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-2 text-[#737A75] transition hover:bg-black/5 hover:${theme.accentText}`}
+                        className={`absolute inset-y-0 right-0 flex items-center pr-4 text-[#8BA7AF] transition-colors hover:${theme.titleColor}`}
                       >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
@@ -168,12 +164,14 @@ function ResetPasswordForm() {
                   </div>
 
                   {/* CONFIRM PASSWORD */}
-                  <div>
-                    <label htmlFor="passwordConfirmation" className={`mb-2 block text-sm font-semibold ${theme.titleColor}`}>
+                  <div className="space-y-1.5">
+                    <label htmlFor="passwordConfirmation" className={`text-sm font-medium ${theme.titleColor}`}>
                       Confirm Password
                     </label>
                     <div className="relative">
-                      <LockKeyhole size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#737A75]" />
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                        <LockKeyhole size={18} className="text-[#8BA7AF]" />
+                      </div>
                       <input
                         id="passwordConfirmation"
                         type={showConfirmPassword ? "text" : "password"}
@@ -182,12 +180,12 @@ function ResetPasswordForm() {
                         onChange={handleChange}
                         placeholder="Confirm new password"
                         required
-                        className={`w-full rounded-2xl border ${theme.inputBg} px-12 py-3.5 pr-12 ${theme.titleColor} outline-none transition duration-200 placeholder:text-[#929791] focus:ring-4 ${theme.inputFocus}`}
+                        className={`block w-full rounded-xl border border-[#D1D9DC] bg-[#FAFAFA] py-3.5 pl-11 pr-12 text-[15px] ${theme.titleColor} transition-all placeholder:text-[#8BA7AF] hover:border-[#A4B8BF] hover:bg-white focus:bg-white focus:outline-none focus:ring-4 focus:border-opacity-100 focus:border-[#0F6678] focus:ring-[#0F6678]/10`}
                       />
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-2 text-[#737A75] transition hover:bg-black/5 hover:${theme.accentText}`}
+                        className={`absolute inset-y-0 right-0 flex items-center pr-4 text-[#8BA7AF] transition-colors hover:${theme.titleColor}`}
                       >
                         {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
@@ -197,35 +195,44 @@ function ResetPasswordForm() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`group flex w-full items-center justify-center gap-3 rounded-2xl ${theme.primaryButton} px-5 py-4 font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60`}
+                    className={`group relative flex w-full justify-center rounded-xl ${theme.primaryButton} px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-70 mt-6`}
                   >
-                    <span>{loading ? "Resetting Password..." : "Reset Password"}</span>
-                    <ArrowRight size={19} className="transition duration-300 group-hover:translate-x-1" />
+                    {loading ? (
+                      <span className="flex items-center gap-2">
+                        <svg className="h-4 w-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        Resetting Password...
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        Reset Password
+                        <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                      </span>
+                    )}
                   </button>
                 </form>
               </>
             ) : (
               <div className="text-center">
-                <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600">
+                <div className="mb-6 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#1F7A8C]/20 text-[#0F6678]">
                   <CheckCircle size={32} />
                 </div>
                 
                 <h3 className={`text-xl font-bold mb-3 ${theme.titleColor}`}>Password Reset Successfully</h3>
                 
-                <p className={`mb-8 text-sm leading-6 ${theme.subtitleColor}`}>
+                <p className={`mb-8 text-sm text-[#5C7680]`}>
                   Your password has been updated. You can now login with your new password.
                 </p>
 
                 <Link
                   href={theme.loginLink}
-                  className={`group flex w-full items-center justify-center gap-3 rounded-2xl ${theme.primaryButton} px-5 py-4 font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5`}
+                  className={`group relative flex w-full justify-center rounded-xl ${theme.primaryButton} px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-md`}
                 >
                   Back to Login
                 </Link>
               </div>
             )}
           </div>
-        </section>
+        </div>
       </div>
     </main>
   );
@@ -234,7 +241,7 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#14231C] flex items-center justify-center">
+      <div className="min-h-screen bg-[#073B4C] flex items-center justify-center">
         <div className="text-white">Loading...</div>
       </div>
     }>
