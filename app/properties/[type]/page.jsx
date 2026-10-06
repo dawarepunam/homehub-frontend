@@ -11,9 +11,9 @@ import { getPropertiesByType } from "@/services/property";
 
 /* ─────────────────────────────────────────────────────────────
    CATEGORY LABEL MAP
-   Maps the URL segment (lowercase) to a friendly display label
 ───────────────────────────────────────────────────────────── */
 const CATEGORY_LABELS = {
+  all: "All",
   residential: "Residential",
   commercial: "Commercial",
   industrial: "Industrial",
@@ -22,19 +22,23 @@ const CATEGORY_LABELS = {
 export default function PropertyTypePage() {
   const params = useParams();
   const router = useRouter();
-  const type = params?.type || "";
+  const type = params?.type || "all";
 
   const [homeData, setHomeData] = useState(null);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Sort State
+  const [sort, setSort] = useState("newest");
 
-  const label = CATEGORY_LABELS[type?.toLowerCase()] || type;
+  const label = CATEGORY_LABELS[type?.toLowerCase()] || "All";
 
   /* ── Fetch home page data for Header / Footer ── */
   useEffect(() => {
     async function fetchAll() {
       try {
+        setLoading(true);
         const [home, props] = await Promise.all([
           getHomePage(),
           getPropertiesByType(type),
@@ -50,6 +54,18 @@ export default function PropertyTypePage() {
     }
     fetchAll();
   }, [type]);
+
+  // Client-side Sort
+  const sortedProperties = [...properties].sort((a, b) => {
+    // Extract price from PropertyCommonDetails if it exists, otherwise root
+    const priceA = a?.PropertyCommonDetails?.PricingDetails?.ExpectedPrice || a?.Price || 0;
+    const priceB = b?.PropertyCommonDetails?.PricingDetails?.ExpectedPrice || b?.Price || 0;
+    
+    if (sort === "price-low") return priceA - priceB;
+    if (sort === "price-high") return priceB - priceA;
+    // newest
+    return new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0);
+  });
 
   return (
     <div
@@ -71,7 +87,7 @@ export default function PropertyTypePage() {
         {/* ── BACK BUTTON ── */}
         <div style={{ marginBottom: "24px" }}>
           <button
-            onClick={() => router.back()}
+            onClick={() => router.push("/home")}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -96,12 +112,12 @@ export default function PropertyTypePage() {
               e.currentTarget.style.borderColor = "rgba(185,152,82,0.35)";
             }}
           >
-            ← Back
+            ← Back to Home
           </button>
         </div>
 
         {/* ── PAGE HEADING ── */}
-        <div style={{ marginBottom: "40px" }}>
+        <div style={{ marginBottom: "30px" }}>
           <h1
             style={{
               fontSize: "clamp(26px, 5vw, 42px)",
@@ -121,8 +137,67 @@ export default function PropertyTypePage() {
               marginTop: "6px",
             }}
           >
-            Browse all available {label.toLowerCase()} properties listed by owners.
+            Browse available properties listed by verified owners.
           </p>
+        </div>
+
+        {/* ── CONTROLS (FILTER & SORT) ── */}
+        <div style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "16px",
+          marginBottom: "40px",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: "#161b18",
+          padding: "16px 24px",
+          borderRadius: "16px",
+          border: "1px solid rgba(255,255,255,0.05)"
+        }}>
+          <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+            <span style={{ color: "#8D9E95", fontSize: "14px", fontWeight: "600" }}>Property Type:</span>
+            <select
+              value={type?.toLowerCase()}
+              onChange={(e) => router.push(`/properties/${e.target.value}`)}
+              style={{
+                background: "#0f1311",
+                color: "#F7F0E3",
+                border: "1px solid rgba(185,152,82,0.3)",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                fontSize: "14px",
+                cursor: "pointer",
+                outline: "none"
+              }}
+            >
+              <option value="all">All</option>
+              <option value="residential">Residential</option>
+              <option value="commercial">Commercial</option>
+              <option value="industrial">Industrial</option>
+            </select>
+          </div>
+          
+          <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+            <span style={{ color: "#8D9E95", fontSize: "14px", fontWeight: "600" }}>Sort By:</span>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              style={{
+                background: "#0f1311",
+                color: "#F7F0E3",
+                border: "1px solid rgba(185,152,82,0.3)",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                fontSize: "14px",
+                cursor: "pointer",
+                outline: "none"
+              }}
+            >
+              <option value="newest">Newest First</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+          </div>
         </div>
 
         {/* ── LOADING STATE ── */}
@@ -172,7 +247,7 @@ export default function PropertyTypePage() {
         )}
 
         {/* ── PROPERTY LIST ── */}
-        {!loading && !error && properties.length > 0 && (
+        {!loading && !error && sortedProperties.length > 0 && (
           <>
             {/* Count badge */}
             <div
@@ -188,15 +263,15 @@ export default function PropertyTypePage() {
               }}
             >
               <span style={{ color: "#B99852", fontWeight: "700", fontSize: "15px" }}>
-                {properties.length}
+                {sortedProperties.length}
               </span>
               <span style={{ color: "#8D9E95", fontSize: "14px" }}>
-                {properties.length === 1 ? "property" : "properties"} found
+                {sortedProperties.length === 1 ? "property" : "properties"} found
               </span>
             </div>
 
             {/* Responsive grid wrapper */}
-            <PropertyList properties={properties} ownerMode={false} />
+            <PropertyList properties={sortedProperties} ownerMode={false} />
           </>
         )}
 

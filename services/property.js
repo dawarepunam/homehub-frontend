@@ -922,13 +922,16 @@ export async function getPropertiesByType(type) {
     if (!type) return [];
 
     const formattedType = formatFilterValue(type);
+    const isAll = formattedType.toLowerCase() === "all";
 
     const params = new URLSearchParams();
 
-    params.append(
-      "filters[Property_Type][$eq]",
-      formattedType
-    );
+    if (!isAll) {
+      params.append(
+        "filters[Property_Type][$eq]",
+        formattedType
+      );
+    }
 
     params.append("populate", "*");
 

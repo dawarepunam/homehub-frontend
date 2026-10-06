@@ -198,7 +198,7 @@ export default function FeaturedProperties({ data, properties }) {
           </div>
 
           <a
-            href="/search"
+            href="/properties/all"
             className={styles.viewAllButton}
           >
             {featuredData?.ViewAllText ||

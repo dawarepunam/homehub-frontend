@@ -1,8 +1,31 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { getPropertiesByType } from "@/services/property";
 
 export default function HomeCTA() {
+  const [propertiesCount, setPropertiesCount] = useState("Loading...");
+  const [citiesCount, setCitiesCount] = useState("Loading...");
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const props = await getPropertiesByType("all");
+        if (Array.isArray(props)) {
+          setPropertiesCount(props.length.toString());
+          const cities = new Set(props.map(p => p.City).filter(Boolean));
+          setCitiesCount(cities.size.toString());
+        }
+      } catch (err) {
+        console.error("Failed to fetch stats for CTA:", err);
+        setPropertiesCount("0");
+        setCitiesCount("0");
+      }
+    }
+    fetchStats();
+  }, []);
+
   return (
     <section
       style={{
@@ -111,7 +134,7 @@ export default function HomeCTA() {
           }}
         >
           <Link
-            href="/search"
+            href="/properties/all"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -166,9 +189,9 @@ export default function HomeCTA() {
           }}
         >
           {[
-            { value: "10,000+", label: "Properties Listed" },
+            { value: propertiesCount, label: "Properties Listed" },
             { value: "5,000+", label: "Happy Families" },
-            { value: "100+", label: "Cities Covered" },
+            { value: citiesCount, label: "Cities Covered" },
           ].map(stat => (
             <div key={stat.label} style={{ textAlign: "center" }}>
               <div style={{ color: "#c8943d", fontSize: "28px", fontWeight: "800", letterSpacing: "-0.5px" }}>
