@@ -2,6 +2,7 @@
    PROPERTY CATEGORIES
    3 cards (Residential / Commercial / Industrial)
    Equal height, equal internal padding, consistent alignment.
+   Heading section always centered.
    ============================================================ */
 
 .section {
@@ -14,7 +15,21 @@
   margin: 0 auto;
 }
 
-/* ── HEADING ── */
+/* ── HEADING — CENTER ALIGNED ── */
+.headingRow {
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.headingText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 680px;
+}
 .sectionLabel {
   display: inline-flex;
   align-items: center;
@@ -24,51 +39,55 @@
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
-.sectionLabel::before {
+.sectionLabel::before,
+.sectionLabel::after {
   content: "";
   display: block;
   width: 24px;
   height: 2px;
   background: #c8943d;
   border-radius: 2px;
-}
-.headingRow {
-  margin-bottom: 36px;
+  flex-shrink: 0;
 }
 .headingText h2 {
-  margin: 0;
+  margin: 0 0 10px;
   color: #f7f1e5;
-  font-size: clamp(26px, 3vw, 40px);
+  font-size: clamp(24px, 3vw, 40px);
   font-weight: 800;
   letter-spacing: -0.8px;
   line-height: 1.12;
+  text-align: center;
 }
 .headingText p {
-  margin: 10px 0 0;
+  margin: 0;
   color: #6e7e78;
-  font-size: 15px;
+  font-size: clamp(13px, 1.5vw, 15px);
   line-height: 1.6;
+  text-align: center;
 }
 
 /* ── GRID ──
-   3 equal columns on desktop.
-   auto-fill so it adapts gracefully if a 4th category appears.
+   3 equal columns on desktop, 2 on tablet, 1 on small mobile.
 */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  /* Equal column widths — cards always the same size */
+  align-items: stretch;
 }
 
 /* ── CARD ── */
 .card {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;          /* horizontal center */
+  justify-content: flex-start;  /* top alignment; flex:1 on desc pushes arrow down */
+  text-align: center;           /* center all text content */
   /* Fixed inner padding — equal on every card */
-  padding: 32px 28px 28px;
+  padding: 36px 28px 28px;
   background: #1a201c;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 20px;
@@ -78,6 +97,7 @@
     box-shadow 0.28s ease,
     border-color 0.28s ease,
     background 0.28s ease;
+  min-height: 260px;            /* consistent minimum height */
 }
 .card:hover {
   transform: translateY(-4px);
@@ -88,16 +108,16 @@
 
 /* ── ICON ── */
 .iconWrapper {
-  /* Fixed 60×60 icon tile — same on every card */
-  width: 60px;
-  height: 60px;
-  border-radius: 15px;
+  /* Fixed 64×64 icon tile — same on every card */
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
   background: rgba(200, 148, 61, 0.09);
   border: 1px solid rgba(200, 148, 61, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 30px;
   color: #c8943d;
   margin-bottom: 20px;
   flex-shrink: 0;
@@ -112,7 +132,7 @@
 .cardTitle {
   margin: 0 0 10px;
   color: #f7f1e5;
-  font-size: 20px;
+  font-size: clamp(17px, 1.6vw, 20px);
   font-weight: 700;
   line-height: 1.25;
 }
@@ -120,11 +140,11 @@
 /* ── DESCRIPTION ── */
 .cardDesc {
   margin: 0;
-  color: #5a6660;
-  font-size: 14px;
-  line-height: 1.55;
-  flex: 1;  /* pushes arrow to bottom */
-  /* Clamp at 3 lines — prevents varying desc length from changing card height */
+  color: #7a8c85;
+  font-size: clamp(12px, 1.2vw, 14px);
+  line-height: 1.6;
+  flex: 1;          /* pushes arrow to bottom */
+  /* Clamp at 3 lines */
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -150,17 +170,35 @@
 }
 
 /* ── RESPONSIVE ── */
-@media (max-width: 900px) {
+
+/* Tablet landscape */
+@media (max-width: 1024px) {
+  .section { padding: 72px 0; }
+  .grid { gap: 16px; }
+}
+
+/* Tablet portrait — 2 columns */
+@media (max-width: 860px) {
   .grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .card { min-height: 240px; }
 }
+
+/* Large mobile */
 @media (max-width: 600px) {
-  .section { padding: 60px 0; }
-  .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .card { padding: 22px 18px 20px; }
-  .iconWrapper { width: 50px; height: 50px; font-size: 22px; margin-bottom: 14px; }
-  .cardTitle { font-size: 16px; }
-  .cardDesc { font-size: 13px; }
+  .section { padding: 56px 0; }
+  .container { width: calc(100% - 32px); }
+  /* 2 compact cards on large mobile */
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .card { padding: 24px 16px 20px; min-height: 210px; }
+  .iconWrapper { width: 52px; height: 52px; font-size: 24px; margin-bottom: 14px; }
+  .cardTitle { font-size: 15px; }
+  .cardDesc { font-size: 12px; }
+  .cardArrow { font-size: 12px; margin-top: 14px; }
 }
+
+/* Small mobile — single column */
 @media (max-width: 380px) {
-  .grid { grid-template-columns: 1fr; }
+  .container { width: calc(100% - 24px); }
+  .grid { grid-template-columns: 1fr; gap: 12px; }
+  .card { min-height: auto; }
 }

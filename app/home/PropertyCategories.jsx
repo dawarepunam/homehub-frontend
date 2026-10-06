@@ -57,19 +57,23 @@ export default function PropertyCategories({ data }) {
         <div className={styles.grid}>
           {allCategories.map((category, index) => {
             const name = category.Text || category.Name || "Property";
-            return (
-              <Link
-                key={category.id || category.documentId || name || index}
-                href={`/search?category=${encodeURIComponent(name)}`}
-                className={styles.card}
-              >
-                <div className={styles.iconWrapper} aria-hidden="true">
-                  <span>{getIcon(category.Icon)}</span>
-                </div>
-                <h3 className={styles.cardTitle}>{name}</h3>
-                {category.Description && (
-                  <p className={styles.cardDesc}>{category.Description}</p>
-                )}
+              const description = category.Description ||
+                (name.toLowerCase() === "residential" ? "Find homes, apartments, and villas for you and your family." :
+                 name.toLowerCase() === "commercial" ? "Explore office spaces, retail shops, and commercial buildings." :
+                 name.toLowerCase() === "industrial" ? "Discover warehouses, factories, and industrial plots." :
+                 `Explore all ${name.toLowerCase()} properties.`);
+
+              return (
+                <Link
+                  key={category.id || category.documentId || name || index}
+                  href={`/properties/${encodeURIComponent(name.toLowerCase())}`}
+                  className={styles.card}
+                >
+                  <div className={styles.iconWrapper} aria-hidden="true">
+                    <span>{getIcon(category.Icon)}</span>
+                  </div>
+                  <h3 className={styles.cardTitle}>{name}</h3>
+                  <p className={styles.cardDesc}>{description}</p>
                 <span className={styles.cardArrow} aria-hidden="true">
                   Explore →
                 </span>
