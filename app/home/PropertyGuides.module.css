@@ -1,8 +1,5 @@
 /* ==============================================
    PROPERTY GUIDES — editorial cards
-   Classes: .section .container .headingRow
-   .heading .eyebrow .grid .card .imageWrapper
-   .image .content .tag .title .date
    ============================================== */
 .section {
   width: 100%;
@@ -15,25 +12,31 @@
 }
 .headingRow {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 40px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 48px;
+  text-align: center;
 }
-.heading { max-width: 580px; }
+.heading { 
+  max-width: 680px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .eyebrow {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   color: #c8943d;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
-.eyebrow::before {
+.eyebrow::before, .eyebrow::after {
   content: "";
   display: block;
   width: 24px;
@@ -44,22 +47,24 @@
 .heading h2 {
   margin: 0;
   color: #f7f1e5;
-  font-size: clamp(28px, 3.2vw, 42px);
+  font-size: clamp(32px, 4vw, 46px);
   font-weight: 800;
   letter-spacing: -1px;
-  line-height: 1.12;
+  line-height: 1.15;
 }
 .heading p {
-  margin: 10px 0 0;
+  margin: 14px 0 0;
   color: #8e9c96;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .card {
@@ -71,6 +76,7 @@
   text-decoration: none;
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  height: 100%; /* Ensure equal heights */
 }
 .card:hover {
   transform: translateY(-5px);
@@ -81,7 +87,7 @@
 .imageWrapper {
   position: relative;
   width: 100%;
-  padding-top: 62%;
+  padding-top: 60%;
   overflow: hidden;
   background: #131a17;
 }
@@ -103,21 +109,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 48px;
+  font-size: 52px;
   color: rgba(200, 148, 61, 0.4);
   background: linear-gradient(135deg, #131a17 0%, #1a201c 100%);
 }
 
 .content {
-  padding: 18px 20px 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   flex: 1;
 }
 .tag {
   color: #c8943d;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -125,15 +131,20 @@
 .title {
   margin: 0;
   color: #f7f1e5;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1.4;
 }
-.date {
-  color: #6e7e78;
-  font-size: 12px;
-  margin-top: auto;
-  padding-top: 10px;
+
+.description {
+  margin: 0;
+  color: #8e9c96;
+  font-size: 14px;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .readMore {
@@ -141,17 +152,46 @@
   align-items: center;
   gap: 6px;
   color: #c8943d;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  margin-top: 8px;
+  margin-top: auto; /* Push to bottom naturally */
+  padding-top: 14px;
+  transition: gap 0.2s ease;
+}
+.card:hover .readMore {
+  gap: 8px;
 }
 
 /* RESPONSIVE */
-@media (max-width: 1100px) {
-  .grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .content { padding: 20px; }
+  .title { font-size: 16px; }
 }
+
+@media (max-width: 850px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .section { padding: 80px 0; }
+}
+
 @media (max-width: 650px) {
   .section { padding: 64px 0; }
-  .grid { grid-template-columns: 1fr; gap: 14px; }
-  .headingRow { flex-direction: column; }
+  .grid { 
+    grid-template-columns: 1fr; 
+    gap: 20px; 
+    max-width: 440px;
+  }
+  .headingRow { margin-bottom: 32px; }
 }
+
+@media (max-width: 390px) {
+  .container {
+    width: min(100%, calc(100% - 32px));
+  }
+}
+
