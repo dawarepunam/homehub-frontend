@@ -370,6 +370,7 @@ export default function ActivePropertiesPage() {
         ================================================= */}
 
         <PropertyList
+          ownerMode={true}
           properties={filteredProperties}
         />
 

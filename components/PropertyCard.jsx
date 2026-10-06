@@ -6401,8 +6401,7 @@ export default function PropertyCard({
           >
 
             <Link
-              href={`/user/property/${documentId}`}
-              onClick={(e) => handleProtectedAction(e, "view", `/user/property/${documentId}`)}
+              href={`/property/${documentId}`}
               className="
                 rounded-lg
                 bg-[#174B3B]

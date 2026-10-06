@@ -1,5 +1,5 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import HomeHeader from "@/app/home/HomeHeader";
+import Footer from "@/app/home/Footer";
 import Link from "next/link";
 import PropertyGallery from "@/components/PropertyGallery";
 import PropertyOverview from "@/components/PropertyOverview";
@@ -7,13 +7,13 @@ import PropertyFeatures from "@/components/PropertyFeatures";
 import PropertyLocation from "@/components/PropertyLocation";
 import PropertyViewTracker from "@/components/PropertyViewTracker";
 
-import { getOwnerDashboard } from "@/services/ownerDashboard";
+import { getHomePage } from "@/services/homePage";
 import { getProperty } from "@/services/property";
 
 export default async function PropertyDetailsPage({ params }) {
 
-  // Dashboard Data
-  const dashboard = await getOwnerDashboard();
+  // Public home page data for Header / Footer
+  const homePage = await getHomePage();
 
   // Next.js 16
   const { documentId } = await params;
@@ -23,8 +23,8 @@ export default async function PropertyDetailsPage({ params }) {
 
   if (!property) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <h1 className="text-3xl font-bold text-red-600">
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0f1311" }}>
+        <h1 style={{ fontSize: "2rem", fontWeight: 800, color: "#F87171" }}>
           Property Not Found
         </h1>
       </div>
@@ -36,13 +36,13 @@ export default async function PropertyDetailsPage({ params }) {
     property?.Description?.[0]?.children?.[0]?.text || "";
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#0f1311" }}>
 
       {/* Track this view (client-only, no-op if not logged in) */}
       <PropertyViewTracker propertyDocumentId={documentId} />
 
-      {/* Header */}
-      <Header headerData={dashboard?.header} />
+      {/* PUBLIC HOMEHUB HEADER */}
+      <HomeHeader header={homePage?.Header} />
 
       {/* Main */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-10">
@@ -124,8 +124,8 @@ export default async function PropertyDetailsPage({ params }) {
 
       </main>
 
-      {/* Footer */}
-      <Footer copyrightData={dashboard?.copyright} />
+      {/* PUBLIC HOMEHUB FOOTER */}
+      <Footer data={homePage?.Footer} />
 
     </div>
   );

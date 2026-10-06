@@ -798,6 +798,7 @@ export default function OwnerPropertiesPage() {
           </div>
         ) : (
           <PropertyList
+            ownerMode={true}
             properties={filteredProperties}
             onUpdate={loadOwnerProperties}
           />

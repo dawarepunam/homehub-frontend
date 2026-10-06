@@ -205,7 +205,7 @@
 
 import PropertyCard from "./PropertyCard";
 
-export default function PropertyList({ properties = [], onUpdate }) {
+export default function PropertyList({ properties = [], onUpdate, ownerMode = false }) {
   // =====================================================
   // EMPTY STATE
   // =====================================================
@@ -301,7 +301,7 @@ export default function PropertyList({ properties = [], onUpdate }) {
               `property-${index}`
             }
             property={property}
-            ownerMode={true}
+            ownerMode={ownerMode}
             onUpdate={onUpdate}
           />
         ))}
