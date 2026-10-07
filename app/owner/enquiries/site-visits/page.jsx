@@ -561,6 +561,9 @@ export default function SiteVisitsPage() {
           {/* PAGE HEADER */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
+              <button onClick={() => router.push("/owner/enquiries")} className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-[#064d3b] transition">
+                <span className="text-xl leading-none">←</span> Back to Enquiries
+              </button>
               <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#c99838] uppercase tracking-wider mb-1">
                 <Link href="/owner/enquiries" className="hover:underline">
                   Enquiries

@@ -235,7 +235,7 @@ function PaymentSummaryContent() {
     return (
       <div className="rounded-xl border border-red-100 bg-red-50 p-6 text-center text-red-600 mt-8">
         {error}
-        <button onClick={() => router.back()} className="mt-4 block text-sm font-semibold underline mx-auto">
+        <button onClick={() => router.push("/owner/promotions/boost/subscription")} className="mt-4 block text-sm font-semibold underline mx-auto">
           Go Back
         </button>
       </div>
@@ -402,7 +402,7 @@ function PaymentSummaryContent() {
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       <div className="mb-8">
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push("/owner/promotions/boost/subscription")}
           className="mb-4 flex items-center gap-1 text-sm font-semibold text-[#103D2E] hover:underline"
         >
           <ChevronLeft size={16} /> Back

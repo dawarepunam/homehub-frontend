@@ -212,6 +212,9 @@ export default function ActivePropertiesPage() {
 
           <div>
 
+            <a href="/owner/properties" className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-[#123F32] transition">
+              <span className="text-xl leading-none">←</span> Back to Properties
+            </a>
             <p className="text-sm font-semibold text-[#B99852]">
               OWNER PORTAL
             </p>

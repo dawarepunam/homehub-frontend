@@ -223,7 +223,7 @@ function PerformanceContent() {
     <>
       <div className="mb-8">
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push("/owner/promotions/boost")}
           className="mb-4 flex items-center gap-1 text-sm font-semibold text-[#103D2E] hover:underline"
         >
           <ChevronLeft size={16} /> Back

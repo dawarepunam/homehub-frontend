@@ -185,12 +185,12 @@ export default function PropertyReportPage({ params }) {
 
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 mb-4">
-            <Link href="/owner/dashboard" className="hover:text-[#064d3b]">Home</Link> ›
+            <Link href="/owner" className="hover:text-[#064d3b]">Home</Link> ›
             <Link href="/owner/insights/reports" className="hover:text-[#064d3b]">Reports</Link> ›
             <span className="text-[#064d3b] truncate max-w-xs">{property?.Title || "Property"}</span>
           </div>
 
-          <button onClick={() => router.back()} className="flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-[#064d3b] mb-6 transition">
+          <button onClick={() => router.push("/owner/insights/reports")} className="flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-[#064d3b] mb-6 transition">
             <ArrowLeft size={15} /> Back to Reports
           </button>
 

@@ -130,13 +130,13 @@ export default function OwnerLoginForm() {
   return (
     <main className="relative min-h-screen w-full bg-[#073B4C] font-sans selection:bg-[#D9A441]/30 selection:text-white">
       {/* Background gradients for premium feel without being childish */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#1F7A8C]/20 blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-[#D9A441]/10 blur-[120px]" />
       </div>
 
-      <div className="relative z-10 flex min-h-screen w-full items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-5xl overflow-hidden rounded-[24px] bg-[#0A485D]/40 border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)] backdrop-blur-md flex flex-col lg:flex-row">
+      <div className="relative z-10 flex min-h-screen w-full p-4 sm:p-6 lg:p-8">
+        <div className="m-auto w-full max-w-5xl overflow-hidden rounded-[24px] bg-[#0A485D]/40 border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)] backdrop-blur-md flex flex-col lg:flex-row">
           
           {/* LEFT SIDE: Branding and Value Prop */}
           <div className="relative flex w-full flex-col justify-between p-8 sm:p-12 lg:w-5/12">
@@ -255,7 +255,7 @@ export default function OwnerLoginForm() {
                 </div>
 
                 {/* Additional Options */}
-                <div className="flex items-center justify-between pt-1">
+                <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
                   <div className="flex items-center">
                     <input
                       id="remember-me"

@@ -157,12 +157,12 @@ export default function PropertyPerformanceDetailPage({ params }) {
 
           {/* Breadcrumbs */}
           <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 mb-5">
-            <Link href="/owner/dashboard" className="hover:text-[#064d3b]">Home</Link> ›
+            <Link href="/owner" className="hover:text-[#064d3b]">Home</Link> ›
             <Link href="/owner/insights/performance" className="hover:text-[#064d3b]">Performance</Link> ›
             <span className="text-[#064d3b]">{property?.Title || "Property"}</span>
           </div>
 
-          <button onClick={() => router.back()} className="flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-[#064d3b] mb-6 transition">
+          <button onClick={() => router.push("/owner/insights/performance")} className="flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-[#064d3b] mb-6 transition">
             <ArrowLeft size={16} /> Back to Performance
           </button>
 

@@ -45,7 +45,7 @@ export default function Footer({
               </h3>
               <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
                 {[
-                  { label: "Dashboard", href: "/owner/dashboard" },
+                  { label: "Dashboard", href: "/owner" },
                   { label: "My Properties", href: "/owner/properties" },
                   { label: "Enquiries", href: "/owner/enquiries" },
                   { label: "Site Visits", href: "/owner/site-visits" },

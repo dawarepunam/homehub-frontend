@@ -129,7 +129,7 @@ export default function CompletedVisitDetailPage({ params }) {
 
           {/* Breadcrumbs */}
           <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-500 mb-6">
-            <Link href="/owner/dashboard" className="hover:text-[#064d3b]">Home</Link>
+            <Link href="/owner" className="hover:text-[#064d3b]">Home</Link>
             <span>›</span>
             <Link href="/owner/site-visits/upcoming" className="hover:text-[#064d3b]">Site Visits</Link>
             <span>›</span>

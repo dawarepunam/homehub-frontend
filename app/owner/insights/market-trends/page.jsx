@@ -243,7 +243,7 @@ export default function MarketTrendsPage() {
           {/* ---- PAGE HEADER ---- */}
           <div className="mb-6">
             <div className="flex items-center gap-2 text-xs font-semibold text-[#c99838] uppercase tracking-wider mb-1">
-              <Link href="/owner/dashboard" className="hover:underline">Insights</Link>
+              <Link href="/owner/insights" className="hover:underline">Insights</Link>
               <span>›</span>
               <span>Market Trends</span>
             </div>

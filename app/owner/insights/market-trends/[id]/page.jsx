@@ -72,7 +72,7 @@ export default function MarketTrendDetailPage({ params }) {
         <Header />
         <main className="flex-1 flex items-center justify-center flex-col gap-4">
           <p className="text-red-600 font-bold">{error}</p>
-          <button onClick={() => router.back()} className="px-6 py-2 bg-[#064d3b] text-white rounded-xl">Go Back</button>
+          <button onClick={() => router.push("/owner/insights/market-trends")} className="px-6 py-2 bg-[#064d3b] text-white rounded-xl">Go Back</button>
         </main>
         <Footer />
       </div>
@@ -85,7 +85,7 @@ export default function MarketTrendDetailPage({ params }) {
       <main className="flex-1 py-8 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
           
-          <button onClick={() => router.back()} className="flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-[#064d3b] mb-6 transition">
+          <button onClick={() => router.push("/owner/insights/market-trends")} className="flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-[#064d3b] mb-6 transition">
             <ArrowLeft size={16} /> Back to Market Trends
           </button>
 

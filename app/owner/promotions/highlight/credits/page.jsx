@@ -83,7 +83,7 @@ function CreditsContent() {
 
   if (error) return (
     <div className="rounded-xl border border-red-100 bg-red-50 p-6 text-center text-red-600 mt-8">
-      {error}<button onClick={() => router.back()} className="mt-4 block text-sm font-semibold underline mx-auto">Go Back</button>
+      {error}<button onClick={() => router.push("/owner/promotions/highlight")} className="mt-4 block text-sm font-semibold underline mx-auto">Go Back</button>
     </div>
   );
 
@@ -94,7 +94,7 @@ function CreditsContent() {
   return (
     <>
       <div className="mb-8">
-        <button onClick={() => router.back()} className="mb-4 flex items-center gap-1 text-sm font-semibold text-[#103D2E] hover:underline">
+        <button onClick={() => router.push("/owner/promotions/highlight")} className="mb-4 flex items-center gap-1 text-sm font-semibold text-[#103D2E] hover:underline">
           <ChevronLeft size={16} /> Back
         </button>
         <div className="inline-flex items-center gap-2 rounded-full bg-purple-50 border border-purple-200 px-3 py-1 mb-3">

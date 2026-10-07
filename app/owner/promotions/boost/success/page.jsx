@@ -276,7 +276,7 @@ function SuccessContent() {
         )}
 
         <Link
-          href="/owner/my-properties"
+          href="/owner/properties"
           className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-[#103D2E] bg-white px-4 py-3.5 text-sm font-bold text-[#103D2E] transition-all hover:bg-[#F0F5F2]"
         >
           <LayoutDashboard className="h-4 w-4" />

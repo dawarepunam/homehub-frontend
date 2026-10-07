@@ -260,7 +260,7 @@ export default function SiteVisitDetailsPage() {
         )}
 
         <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#c99838] uppercase tracking-wider mb-6">
-          <Link href="/owner/dashboard" className="hover:underline">Home</Link>
+          <Link href="/owner" className="hover:underline">Home</Link>
           <span>›</span>
           <Link href="/owner/site-visits/upcoming" className="hover:underline">Site Visits</Link>
           <span>›</span>

@@ -365,7 +365,7 @@ export default function PerformancePage() {
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
             <div>
               <div className="flex items-center gap-2 text-xs font-semibold text-[#c99838] uppercase tracking-wider mb-1">
-                <Link href="/owner/dashboard" className="hover:underline">Home</Link>
+                <Link href="/owner" className="hover:underline">Home</Link>
                 <span>›</span>
                 <span>Insights</span>
                 <span>›</span>
