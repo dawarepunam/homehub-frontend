@@ -30,7 +30,7 @@ export default function Footer({
           <div style={{ display: "flex", flexWrap: "wrap", gap: "40px", justifyContent: "space-between", marginBottom: "32px" }}>
             {/* Brand */}
             <div style={{ minWidth: "200px" }}>
-              <a href="/" style={{ fontSize: "22px", fontWeight: 800, color: "#c99838", textDecoration: "none", letterSpacing: "-0.5px" }}>
+              <a href="/owner" style={{ fontSize: "22px", fontWeight: 800, color: "#c99838", textDecoration: "none", letterSpacing: "-0.5px" }}>
                 HomeHub
               </a>
               <p style={{ marginTop: "10px", fontSize: "13px", color: "#a0b5ae", lineHeight: "1.6", maxWidth: "260px" }}>
@@ -172,7 +172,7 @@ export default function Footer({
         <div className={styles.top}>
           <div className={styles.brandSection}>
             <Link
-              href="/"
+              href="/owner"
               className={styles.brand}
             >
               {footer?.BrandName || "HomeHub"}

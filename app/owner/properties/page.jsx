@@ -406,7 +406,7 @@ export default function OwnerPropertiesPage() {
       ================================================= */}
 
       <div className="mx-auto w-full max-w-[1400px] px-6 pt-6 lg:px-10">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-[#174B3B] transition hover:text-[#123F32]">
+        <Link href="/owner" className="inline-flex items-center gap-2 text-sm font-bold text-[#174B3B] transition hover:text-[#123F32]">
           <ArrowLeft size={16} />
           Back to Dashboard
         </Link>

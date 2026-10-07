@@ -5971,7 +5971,7 @@ export default function Header({ headerData }) {
           ================================================= */}
 
           <Link
-            href="/"
+            href="/owner"
             onClick={closeMenus}
             className="
               group
@@ -6522,7 +6522,27 @@ export default function Header({ headerData }) {
                           />
                           My Profile
                         </Link>
-
+                        
+                        <Link
+                          href="/"
+                          onClick={closeMenus}
+                          className="
+                            flex
+                            items-center
+                            gap-3
+                            rounded-xl
+                            px-3
+                            py-2.5
+                            text-sm
+                            font-semibold
+                            text-[#365247]
+                            transition
+                            hover:bg-[#E7D8BD]
+                          "
+                        >
+                          <span className="flex h-5 w-5 items-center justify-center rounded-md bg-[#D7AE62] text-[#123F32] font-bold text-xs">B</span>
+                          Switch to Buyer
+                        </Link>
                       </>
                     )}
                   </div>
