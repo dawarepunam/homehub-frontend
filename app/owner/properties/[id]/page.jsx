@@ -32,7 +32,8 @@ import Header from "@/components/Header";
 import Footer from "../../Footer";
 import PropertyActivitySection from "@/components/PropertyActivitySection";
 
-import { getOwnerDashboard } from "@/services/ownerDashboard";
+import { getOwnerDashboard, updatePropertyStatus } from "@/services/ownerDashboard";
+import toast from "react-hot-toast";
 
 /* =====================================================
    STRAPI URL
@@ -318,6 +319,14 @@ function getStatusClass(status) {
     return "bg-[#7651A8] text-white";
   }
 
+  if (value === "inactive" || value === "draft") {
+    return "bg-[#64748B] text-white";
+  }
+
+  if (value === "reserved") {
+    return "bg-[#0369A1] text-white";
+  }
+
   return "bg-[#64748B] text-white";
 }
 
@@ -351,6 +360,33 @@ export default function OwnerPropertyDetailsPage({
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] =
     useState("");
+
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const [isDeactivating, setIsDeactivating] = useState(false);
+
+  const handleDeactivate = async () => {
+    const docId = property?.documentId || property?.id;
+    if (!docId) {
+      toast.error("Property ID not found. Please refresh and try again.");
+      return;
+    }
+    try {
+      setIsDeactivating(true);
+      await updatePropertyStatus(docId, "INACTIVE");
+      toast.success("Property has been deactivated successfully.");
+      
+      // Update local state to show as inactive
+      setProperty((prev) => ({
+        ...prev,
+        PropertyStatus: "INACTIVE"
+      }));
+      setShowDeactivateModal(false);
+    } catch (err) {
+      toast.error(err.message || "Failed to deactivate property.");
+    } finally {
+      setIsDeactivating(false);
+    }
+  };
 
   const [activeImage, setActiveImage] =
     useState(0);
@@ -806,6 +842,20 @@ export default function OwnerPropertyDetailsPage({
       .filter(Boolean)
       .join(", ");
 
+  const lat = property?.Latitude;
+  const lng = property?.Longitude;
+
+  const fullAddressToEncode = [address, area, city, state, pinCode].filter(Boolean).join(", ");
+  
+  let googleMapsUrl = property?.GoogleMapLink || null;
+  if (!googleMapsUrl) {
+    if (lat && lng) {
+      googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+    } else if (fullAddressToEncode) {
+      googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddressToEncode)}`;
+    }
+  }
+
   /* ===================================================
      PAGE
   =================================================== */
@@ -838,13 +888,24 @@ export default function OwnerPropertyDetailsPage({
             {backLabel}
           </Link>
 
-          <Link
-            href={`/owner/properties/${propertyId}/edit`}
-            className="inline-flex items-center gap-2 rounded-xl bg-[#D7AE62] px-5 py-2.5 text-sm font-extrabold text-[#123F32] transition hover:bg-[#C99D4C]"
-          >
-            <Pencil size={16} />
-            Edit Property
-          </Link>
+          <div className="flex items-center gap-2">
+            {status?.toLowerCase() !== "inactive" && (
+              <button
+                onClick={() => setShowDeactivateModal(true)}
+                className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-extrabold text-red-600 transition hover:bg-red-100"
+              >
+                Deactivate
+              </button>
+            )}
+
+            <Link
+              href={`/owner/properties/${propertyId}/edit`}
+              className="inline-flex items-center gap-2 rounded-xl bg-[#D7AE62] px-5 py-2.5 text-sm font-extrabold text-[#123F32] transition hover:bg-[#C99D4C]"
+            >
+              <Pencil size={16} />
+              Edit Property
+            </Link>
+          </div>
         </div>
 
         {/* =================================================
@@ -1025,17 +1086,25 @@ export default function OwnerPropertyDetailsPage({
 
               {/* LOCATION */}
 
-              <p className="mt-3 flex items-start gap-2 text-sm text-white/65">
-                <MapPin
-                  size={17}
-                  className="mt-0.5 shrink-0 text-[#D7AE62]"
-                />
+              <div className="mt-3 flex flex-col gap-3">
+                <p className="flex items-start gap-2 text-sm text-white/65">
+                  <MapPin
+                    size={17}
+                    className="mt-0.5 shrink-0 text-[#D7AE62]"
+                  />
 
-                <span>
-                  {locationText ||
-                    "Location not available"}
-                </span>
-              </p>
+                  <span>
+                    {locationText ||
+                      "Location not available"}
+                  </span>
+                </p>
+
+                {googleMapsUrl && (
+                  <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#D7AE62] hover:text-[#F4E7C7] transition-colors ml-6">
+                    <span>📍 View on Google Maps</span>
+                  </a>
+                )}
+              </div>
 
               {/* PRICE */}
 
@@ -1424,9 +1493,9 @@ export default function OwnerPropertyDetailsPage({
                   "Location information not available."}
               </p>
 
-              {property?.GoogleMapLink && (
+              {googleMapsUrl && (
                 <a
-                  href={property.GoogleMapLink}
+                  href={googleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-5 inline-flex items-center gap-2 rounded-xl border border-[#D9D1C2] bg-[#F3F0E8] px-4 py-2.5 text-sm font-bold text-[#174B3B] transition hover:border-[#B99852]"
@@ -1558,6 +1627,38 @@ export default function OwnerPropertyDetailsPage({
           </aside>
         </div>
       </main>
+
+      {/* =================================================
+          DEACTIVATE MODAL
+      ================================================= */}
+      {showDeactivateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <h3 className="text-xl font-bold text-gray-900">Deactivate Property</h3>
+            <p className="mt-2 text-sm text-gray-600">
+              Are you sure you want to deactivate <strong>{title}</strong>? The property will be
+              set to <strong>INACTIVE</strong> and will no longer be visible to buyers. Your property
+              data, images, and ownership will be fully preserved.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                disabled={isDeactivating}
+                onClick={() => setShowDeactivateModal(false)}
+                className="rounded-xl px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-100 transition"
+              >
+                Cancel
+              </button>
+              <button
+                disabled={isDeactivating}
+                onClick={handleDeactivate}
+                className="flex items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-red-700 disabled:opacity-60"
+              >
+                {isDeactivating ? "Deactivating..." : "Deactivate Property"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* =================================================
           FOOTER
