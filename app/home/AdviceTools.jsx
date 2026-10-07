@@ -736,22 +736,24 @@ export default function AdviceTools({ data }) {
             SECTION HEADER
         ================================================= */}
 
-        <div className={styles.header}>
+        <div className={styles.headingRow}>
 
-          <span className={styles.eyebrow}>
-            <span className={styles.eyebrowLine} />
+          <div className={styles.headingText}>
 
-            {section?.SectionLabel || "ADVICE & TOOLS"}
-          </span>
+            <span className={styles.eyebrow}>
+              {section?.SectionLabel || "ADVICE & TOOLS"}
+            </span>
 
-          <h2>
-            {section?.Title ||
-              "Smart Tools for Your Property Journey"}
-          </h2>
+            <h2>
+              {section?.Title ||
+                "Smart Tools for Your Property Journey"}
+            </h2>
 
-          {section?.Subtitle && (
-            <p>{section.Subtitle}</p>
-          )}
+            {section?.Subtitle && (
+              <p>{section.Subtitle}</p>
+            )}
+
+          </div>
 
         </div>
 

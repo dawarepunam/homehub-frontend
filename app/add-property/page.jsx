@@ -3,6 +3,8 @@ import Header from "@/components/Header";
 import Footer from "../owner/Footer";
 import { getOwnerDashboard } from "@/services/ownerDashboard";
 
+export const dynamic = "force-dynamic";
+
 export default async function AddPropertyPage() {
   let dashboard = null;
   try {

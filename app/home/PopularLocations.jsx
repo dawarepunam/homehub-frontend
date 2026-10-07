@@ -19,7 +19,7 @@ export default function PopularLocations({ data }) {
     <section id="popular-locations" className={styles.section}>
       <div className={styles.container}>
 
-        <div className={styles.heading}>
+        <div className={styles.headingRow}>
           <div className={styles.headingText}>
             <span className={styles.sectionLabel}>Explore Locations</span>
             <h2>{sectionData.Title || "Popular Locations"}</h2>

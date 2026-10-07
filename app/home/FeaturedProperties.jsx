@@ -178,7 +178,7 @@ export default function FeaturedProperties({ data, properties }) {
 
         <div className={styles.headingRow}>
 
-          <div className={styles.heading}>
+          <div className={styles.headingText}>
 
             <span className={styles.eyebrow}>
               {featuredData?.SectionLabel ||

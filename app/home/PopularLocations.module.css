@@ -1,8 +1,5 @@
 /* =============================================================
-   POPULAR LOCATIONS
-   KEY FIX: consistent aspect-ratio image container so every
-   card — regardless of source image dimensions — displays at
-   exactly the same height.
+   POPULAR LOCATIONS — Centered Section & Responsive Grid
    ============================================================= */
 
 .section {
@@ -10,62 +7,89 @@
   padding: 88px 0;
   background: #0f1311;
 }
+
 .container {
   width: min(1200px, calc(100% - 48px));
   margin: 0 auto;
+  padding: 0;
 }
 
-/* ── SECTION HEADING ── */
+/* ── CENTERED HEADING BLOCK ── */
+.headingRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto 48px auto;
+  width: 100%;
+}
+
+.headingText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 680px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 .sectionLabel {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 12px;
   color: #c8943d;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin: 0 auto 12px auto;
 }
-.sectionLabel::before {
+
+.sectionLabel::before,
+.sectionLabel::after {
   content: "";
   display: block;
   width: 24px;
   height: 2px;
   background: #c8943d;
   border-radius: 2px;
-}
-.heading {
-  margin-bottom: 36px;
-}
-.headingText h2 {
-  margin: 0;
-  color: #f7f1e5;
-  font-size: clamp(26px, 3vw, 40px);
-  font-weight: 800;
-  letter-spacing: -0.8px;
-  line-height: 1.12;
-}
-.headingText p {
-  margin: 10px 0 0;
-  color: #6e7e78;
-  font-size: 15px;
-  line-height: 1.6;
-  max-width: 480px;
+  flex-shrink: 0;
 }
 
-/* ── GRID ── */
+.headingText h2 {
+  margin: 0 auto 12px auto;
+  color: #f7f1e5;
+  font-size: clamp(26px, 3.2vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  line-height: 1.15;
+  text-align: center;
+  width: 100%;
+}
+
+.headingText p {
+  margin: 0 auto;
+  color: #8e9c96;
+  font-size: clamp(14px, 1.5vw, 16px);
+  line-height: 1.6;
+  text-align: center;
+  max-width: 580px;
+  width: 100%;
+}
+
+/* ── RESPONSIVE GRID ── */
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
+  gap: 20px;
+  width: 100%;
 }
 
-/* ── CARD ──
-   The card is a link. It uses a flex-column layout:
-   1. .imageContainer — fixed 60% aspect-ratio image area
-   2. .content       — text area below the image
-*/
+/* ── CARD ── */
 .card {
   display: flex;
   flex-direction: column;
@@ -76,17 +100,16 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
 }
+
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 20px 44px rgba(0, 0, 0, 0.5);
   border-color: rgba(200, 148, 61, 0.22);
 }
 
-/* ── IMAGE CONTAINER ── fixed aspect ratio, crops any image uniformly */
 .imageContainer {
   position: relative;
   width: 100%;
-  /* 62% = 100/1.61 ≈ 16:10 aspect ratio. All cards identical height. */
   padding-top: 62%;
   overflow: hidden;
   background: #0d1210;
@@ -98,15 +121,16 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  /* object-fit:cover + center = professional crop regardless of source ratio */
   object-fit: cover;
   object-position: center;
   display: block;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.card:hover .image { transform: scale(1.04); }
 
-/* Gradient scrim at bottom of image for text legibility */
+.card:hover .image {
+  transform: scale(1.04);
+}
+
 .imageScrim {
   position: absolute;
   bottom: 0;
@@ -117,7 +141,6 @@
   pointer-events: none;
 }
 
-/* Icon fallback when no image */
 .iconFallback {
   position: absolute;
   inset: 0;
@@ -128,13 +151,11 @@
   color: rgba(200, 148, 61, 0.35);
 }
 
-/* ── CARD CONTENT ── always below image, always same structure */
 .content {
   padding: 16px 18px 18px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  /* flex:1 so cards in the same row can stretch to equal height if needed */
   flex: 1;
 }
 
@@ -158,89 +179,37 @@
   transition: opacity 0.25s ease, transform 0.25s ease;
   flex-shrink: 0;
 }
+
 .card:hover .locationArrow {
   opacity: 1;
   transform: translateX(0);
 }
 
 .locationDesc {
-  color: #5a6660;
+  color: #7a8c85;
   font-size: 13px;
   line-height: 1.5;
-  /* clamp to 2 lines so cards with long descriptions don't become taller */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* ── RESPONSIVE ── */
+/* ── RESPONSIVE BREAKPOINTS ── */
 @media (max-width: 1080px) {
-  .grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
 }
+
 @media (max-width: 600px) {
-  .section { padding: 60px 0; }
-  .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .imageContainer { padding-top: 65%; }
-  .locationName { font-size: 15px; }
-  .content { padding: 12px 14px 14px; gap: 5px; }
-}
-@media (max-width: 420px) {
-  .grid { grid-template-columns: 1fr; }
-  .imageContainer { padding-top: 58%; }
+  .section { padding: 56px 0; }
+  .container { width: calc(100% - 32px); }
+  .headingRow { margin-bottom: 36px; }
+  .grid { grid-template-columns: 1fr; gap: 14px; }
+  .imageContainer { padding-top: 55%; }
+  .locationName { font-size: 16px; }
+  .content { padding: 14px 16px 16px; gap: 5px; }
 }
 
-/* ── CENTERED HEADING OVERRIDES ── */
-
-.headingRow {
-  margin-bottom: 40px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  text-align: center !important;
-}
-.headingText, .heading {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  text-align: center !important;
-  max-width: 680px !important;
-}
-.sectionLabel, .eyebrow {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  color: #c8943d !important;
-  font-size: 11px !important;
-  font-weight: 800 !important;
-  letter-spacing: 2px !important;
-  text-transform: uppercase !important;
-  margin-bottom: 12px !important;
-}
-.sectionLabel::before, .sectionLabel::after,
-.eyebrow::before, .eyebrow::after {
-  content: '' !important;
-  display: block !important;
-  width: 24px !important;
-  height: 2px !important;
-  background: #c8943d !important;
-  border-radius: 2px !important;
-  flex-shrink: 0 !important;
-}
-.headingText h2, .heading h2 {
-  margin: 0 0 10px !important;
-  color: #f7f1e5 !important;
-  font-size: clamp(24px, 3vw, 40px) !important;
-  font-weight: 800 !important;
-  letter-spacing: -0.8px !important;
-  line-height: 1.12 !important;
-  text-align: center !important;
-}
-.headingText p, .heading p {
-  margin: 0 !important;
-  color: #6e7e78 !important;
-  font-size: clamp(13px, 1.5vw, 15px) !important;
-  line-height: 1.6 !important;
-  text-align: center !important;
-  max-width: 100% !important;
+@media (max-width: 380px) {
+  .container { width: calc(100% - 24px); }
 }

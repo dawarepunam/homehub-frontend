@@ -1,56 +1,72 @@
 /* ==============================================
-   WHY CHOOSE HOMEHUB — trust/value section
-   Classes: .section .container .heading .eyebrow
-   .grid .card .icon .title .desc
+   WHY CHOOSE HOMEHUB — Centered Section & Responsive Grid
    ============================================== */
+
 .section {
   width: 100%;
   padding: 96px 0;
   background: #0f1311;
 }
+
 .container {
   width: min(1200px, calc(100% - 48px));
   margin: 0 auto;
+  padding: 0;
 }
+
+/* ── CENTERED HEADING BLOCK ── */
 .heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  max-width: 580px;
-  margin: 0 auto 56px;
+  margin: 0 auto 48px auto;
+  max-width: 680px;
+  width: 100%;
 }
+
 .eyebrow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   color: #c8943d;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 14px;
+  margin: 0 auto 12px auto;
 }
+
 .eyebrow::before,
 .eyebrow::after {
   content: "";
   display: block;
-  width: 20px;
+  width: 24px;
   height: 2px;
   background: #c8943d;
   border-radius: 2px;
-}
-.heading h2 {
-  margin: 0;
-  color: #f7f1e5;
-  font-size: clamp(28px, 3.2vw, 42px);
-  font-weight: 800;
-  letter-spacing: -1px;
-  line-height: 1.12;
+  flex-shrink: 0;
 }
 
+.heading h2 {
+  margin: 0 auto;
+  color: #f7f1e5;
+  font-size: clamp(26px, 3.2vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  line-height: 1.15;
+  text-align: center;
+  width: 100%;
+}
+
+/* ── RESPONSIVE GRID ── */
 .grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 18px;
+  width: 100%;
 }
 
 .card {
@@ -65,6 +81,7 @@
   border-radius: 20px;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
 }
+
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
@@ -84,7 +101,10 @@
   border: 1px solid rgba(200, 148, 61, 0.18);
   transition: background 0.3s ease;
 }
-.card:hover .icon { background: rgba(200, 148, 61, 0.2); }
+
+.card:hover .icon {
+  background: rgba(200, 148, 61, 0.2);
+}
 
 .title {
   margin: 0;
@@ -92,80 +112,31 @@
   font-size: 16px;
   font-weight: 700;
 }
+
 .desc {
   margin: 0;
-  color: #6e7e78;
+  color: #7a8c85;
   font-size: 13px;
   line-height: 1.55;
 }
 
-/* RESPONSIVE */
+/* ── RESPONSIVE BREAKPOINTS ── */
 @media (max-width: 1100px) {
   .grid { grid-template-columns: repeat(3, 1fr); }
 }
+
 @media (max-width: 750px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 650px) {
+
+@media (max-width: 600px) {
   .section { padding: 64px 0; }
-  .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .card { padding: 24px 14px; }
-}
-@media (max-width: 400px) {
-  .grid { grid-template-columns: 1fr; }
+  .container { width: calc(100% - 32px); }
+  .heading { margin-bottom: 36px; }
+  .grid { grid-template-columns: 1fr; gap: 14px; }
+  .card { padding: 24px 18px; }
 }
 
-/* ── CENTERED HEADING OVERRIDES ── */
-
-.headingRow {
-  margin-bottom: 40px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  text-align: center !important;
-}
-.headingText, .heading {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  text-align: center !important;
-  max-width: 680px !important;
-}
-.sectionLabel, .eyebrow {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  color: #c8943d !important;
-  font-size: 11px !important;
-  font-weight: 800 !important;
-  letter-spacing: 2px !important;
-  text-transform: uppercase !important;
-  margin-bottom: 12px !important;
-}
-.sectionLabel::before, .sectionLabel::after,
-.eyebrow::before, .eyebrow::after {
-  content: '' !important;
-  display: block !important;
-  width: 24px !important;
-  height: 2px !important;
-  background: #c8943d !important;
-  border-radius: 2px !important;
-  flex-shrink: 0 !important;
-}
-.headingText h2, .heading h2 {
-  margin: 0 0 10px !important;
-  color: #f7f1e5 !important;
-  font-size: clamp(24px, 3vw, 40px) !important;
-  font-weight: 800 !important;
-  letter-spacing: -0.8px !important;
-  line-height: 1.12 !important;
-  text-align: center !important;
-}
-.headingText p, .heading p {
-  margin: 0 !important;
-  color: #6e7e78 !important;
-  font-size: clamp(13px, 1.5vw, 15px) !important;
-  line-height: 1.6 !important;
-  text-align: center !important;
-  max-width: 100% !important;
+@media (max-width: 380px) {
+  .container { width: calc(100% - 24px); }
 }

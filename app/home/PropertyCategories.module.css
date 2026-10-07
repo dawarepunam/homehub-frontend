@@ -1,8 +1,5 @@
 /* ============================================================
-   PROPERTY CATEGORIES
-   3 cards (Residential / Commercial / Industrial)
-   Equal height, equal internal padding, consistent alignment.
-   Heading section always centered.
+   PROPERTY CATEGORIES — Centered Section & Responsive Grid
    ============================================================ */
 
 .section {
@@ -10,37 +7,48 @@
   padding: 88px 0;
   background: #111513;
 }
+
 .container {
   width: min(1200px, calc(100% - 48px));
   margin: 0 auto;
+  padding: 0;
 }
 
-/* ── HEADING — CENTER ALIGNED ── */
+/* ── CENTERED HEADING BLOCK ── */
 .headingRow {
-  margin-bottom: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
+  margin: 0 auto 48px auto;
+  width: 100%;
 }
+
 .headingText {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   max-width: 680px;
+  width: 100%;
+  margin: 0 auto;
 }
+
 .sectionLabel {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 12px;
   color: #c8943d;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin: 0 auto 12px auto;
 }
+
 .sectionLabel::before,
 .sectionLabel::after {
   content: "";
@@ -51,54 +59,53 @@
   border-radius: 2px;
   flex-shrink: 0;
 }
+
 .headingText h2 {
-  margin: 0 0 10px;
+  margin: 0 auto 12px auto;
   color: #f7f1e5;
-  font-size: clamp(24px, 3vw, 40px);
+  font-size: clamp(26px, 3.2vw, 40px);
   font-weight: 800;
   letter-spacing: -0.8px;
-  line-height: 1.12;
+  line-height: 1.15;
   text-align: center;
-}
-.headingText p {
-  margin: 0;
-  color: #6e7e78;
-  font-size: clamp(13px, 1.5vw, 15px);
-  line-height: 1.6;
-  text-align: center;
+  width: 100%;
 }
 
-/* ── GRID ──
-   3 equal columns on desktop, 2 on tablet, 1 on small mobile.
-*/
+.headingText p {
+  margin: 0 auto;
+  color: #8e9c96;
+  font-size: clamp(14px, 1.5vw, 16px);
+  line-height: 1.6;
+  text-align: center;
+  max-width: 580px;
+  width: 100%;
+}
+
+/* ── RESPONSIVE GRID ── */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  /* Equal column widths — cards always the same size */
+  gap: 24px;
   align-items: stretch;
+  width: 100%;
 }
 
 /* ── CARD ── */
 .card {
   display: flex;
   flex-direction: column;
-  align-items: center;          /* horizontal center */
-  justify-content: flex-start;  /* top alignment; flex:1 on desc pushes arrow down */
-  text-align: center;           /* center all text content */
-  /* Fixed inner padding — equal on every card */
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
   padding: 36px 28px 28px;
   background: #1a201c;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 20px;
   text-decoration: none;
-  transition:
-    transform 0.28s ease,
-    box-shadow 0.28s ease,
-    border-color 0.28s ease,
-    background 0.28s ease;
-  min-height: 260px;            /* consistent minimum height */
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+  min-height: 260px;
 }
+
 .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
@@ -106,9 +113,7 @@
   background: #1f2622;
 }
 
-/* ── ICON ── */
 .iconWrapper {
-  /* Fixed 64×64 icon tile — same on every card */
   width: 64px;
   height: 64px;
   border-radius: 16px;
@@ -123,12 +128,12 @@
   flex-shrink: 0;
   transition: background 0.28s ease, border-color 0.28s ease;
 }
+
 .card:hover .iconWrapper {
   background: rgba(200, 148, 61, 0.16);
   border-color: rgba(200, 148, 61, 0.28);
 }
 
-/* ── TITLE ── */
 .cardTitle {
   margin: 0 0 10px;
   color: #f7f1e5;
@@ -137,21 +142,18 @@
   line-height: 1.25;
 }
 
-/* ── DESCRIPTION ── */
 .cardDesc {
   margin: 0;
   color: #7a8c85;
   font-size: clamp(12px, 1.2vw, 14px);
   line-height: 1.6;
-  flex: 1;          /* pushes arrow to bottom */
-  /* Clamp at 3 lines */
+  flex: 1;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* ── EXPLORE ARROW ── */
 .cardArrow {
   display: inline-flex;
   align-items: center;
@@ -164,41 +166,35 @@
   transform: translateX(-5px);
   transition: opacity 0.22s ease, transform 0.22s ease;
 }
+
 .card:hover .cardArrow {
   opacity: 1;
   transform: translateX(0);
 }
 
-/* ── RESPONSIVE ── */
-
-/* Tablet landscape */
+/* ── RESPONSIVE BREAKPOINTS ── */
 @media (max-width: 1024px) {
   .section { padding: 72px 0; }
-  .grid { gap: 16px; }
+  .grid { gap: 20px; }
 }
 
-/* Tablet portrait — 2 columns */
 @media (max-width: 860px) {
   .grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .card { min-height: 240px; }
+  .card { min-height: 240px; padding: 30px 22px 24px; }
 }
 
-/* Large mobile */
 @media (max-width: 600px) {
   .section { padding: 56px 0; }
   .container { width: calc(100% - 32px); }
-  /* 2 compact cards on large mobile */
-  .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .card { padding: 24px 16px 20px; min-height: 210px; }
-  .iconWrapper { width: 52px; height: 52px; font-size: 24px; margin-bottom: 14px; }
-  .cardTitle { font-size: 15px; }
-  .cardDesc { font-size: 12px; }
-  .cardArrow { font-size: 12px; margin-top: 14px; }
+  .headingRow { margin-bottom: 36px; }
+  .grid { grid-template-columns: 1fr; gap: 14px; }
+  .card { padding: 26px 20px; min-height: auto; }
+  .iconWrapper { width: 56px; height: 56px; font-size: 26px; margin-bottom: 16px; }
+  .cardTitle { font-size: 17px; }
+  .cardDesc { font-size: 13px; }
+  .cardArrow { font-size: 13px; opacity: 1; transform: translateX(0); }
 }
 
-/* Small mobile — single column */
 @media (max-width: 380px) {
   .container { width: calc(100% - 24px); }
-  .grid { grid-template-columns: 1fr; gap: 12px; }
-  .card { min-height: auto; }
 }
