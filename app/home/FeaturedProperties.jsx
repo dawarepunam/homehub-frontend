@@ -357,9 +357,7 @@ export default function FeaturedProperties({ data, properties }) {
 
                   <button
                     type="button"
-                    className={
-                      styles.favoriteButton
-                    }
+                    className={`${styles.favoriteButton} ${savedPropertyIds.includes(String(propertyId)) ? styles.activeFavorite : ""}`}
                     aria-label="Save property"
                     onClick={(e) => handleSaveClick(e, propertyId)}
                     disabled={savingPropertyId === propertyId}

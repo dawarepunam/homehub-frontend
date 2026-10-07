@@ -31,7 +31,7 @@ export default function HomeCTA() {
       style={{
         width: "100%",
         padding: "96px 0",
-        background: "linear-gradient(135deg, #0b100e 0%, #1a2c24 50%, #0b100e 100%)",
+        background: "linear-gradient(135deg, #050505 0%, #101010 50%, #050505 100%)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -46,7 +46,7 @@ export default function HomeCTA() {
           width: "500px",
           height: "500px",
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(200,148,61,0.12) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(255, 255, 255,0.12) 0%, transparent 70%)",
           pointerEvents: "none",
         }}
       />
@@ -59,7 +59,7 @@ export default function HomeCTA() {
           width: "400px",
           height: "400px",
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(26,66,53,0.4) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%)",
           pointerEvents: "none",
         }}
       />
@@ -84,9 +84,9 @@ export default function HomeCTA() {
             alignItems: "center",
             gap: "8px",
             padding: "6px 16px",
-            border: "1px solid rgba(200,148,61,0.3)",
+            border: "1px solid rgba(255, 255, 255,0.3)",
             borderRadius: "999px",
-            color: "#c8943d",
+            color: "#ffffff",
             fontSize: "11px",
             fontWeight: "800",
             letterSpacing: "1.5px",
@@ -94,14 +94,14 @@ export default function HomeCTA() {
             marginBottom: "28px",
           }}
         >
-          <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#c8943d" }} />
+          <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#ffffff" }} />
           Start Your Journey
         </span>
 
         <h2
           style={{
             margin: "0 0 20px",
-            color: "#f7f1e5",
+            color: "#ffffff",
             fontSize: "clamp(36px, 5vw, 66px)",
             fontWeight: "800",
             lineHeight: "1.06",
@@ -109,7 +109,7 @@ export default function HomeCTA() {
           }}
         >
           Find the place that<br />
-          <span style={{ color: "#c8943d" }}>feels like home.</span>
+          <span style={{ color: "#ffffff" }}>feels like home.</span>
         </h2>
 
         <p
@@ -141,15 +141,15 @@ export default function HomeCTA() {
               gap: "8px",
               padding: "15px 32px",
               borderRadius: "14px",
-              background: "#c8943d",
-              color: "#0b100e",
+              background: "#ffffff",
+              color: "#050505",
               fontSize: "15px",
               fontWeight: "800",
               textDecoration: "none",
               transition: "background 0.2s ease, transform 0.15s ease",
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = "#e3a948"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "#c8943d"; e.currentTarget.style.transform = "translateY(0)"; }}
+            onMouseEnter={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#ffffff"; e.currentTarget.style.border = "1px solid #ffffff"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.color = "#050505"; e.currentTarget.style.border = "1px solid transparent"; e.currentTarget.style.transform = "translateY(0)"; }}
           >
             ⌕ Explore Properties
           </Link>
@@ -164,7 +164,7 @@ export default function HomeCTA() {
               borderRadius: "14px",
               background: "transparent",
               border: "1px solid rgba(247,241,229,0.2)",
-              color: "#f7f1e5",
+              color: "#ffffff",
               fontSize: "15px",
               fontWeight: "700",
               textDecoration: "none",
@@ -194,10 +194,10 @@ export default function HomeCTA() {
             { value: citiesCount, label: "Cities Covered" },
           ].map(stat => (
             <div key={stat.label} style={{ textAlign: "center" }}>
-              <div style={{ color: "#c8943d", fontSize: "28px", fontWeight: "800", letterSpacing: "-0.5px" }}>
+              <div style={{ color: "#ffffff", fontSize: "28px", fontWeight: "800", letterSpacing: "-0.5px" }}>
                 {stat.value}
               </div>
-              <div style={{ color: "#6e7e78", fontSize: "13px", fontWeight: "500", marginTop: "4px" }}>
+              <div style={{ color: "#666666", fontSize: "13px", fontWeight: "500", marginTop: "4px" }}>
                 {stat.label}
               </div>
             </div>

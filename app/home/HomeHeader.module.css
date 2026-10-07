@@ -8,9 +8,9 @@
   z-index: 200;                       /* high z-index — above hero, above everything */
   width: 100%;
   overflow-x: clip;
-  background: rgba(11, 16, 14, 0.92);
+  background: rgba(10, 10, 10, 0.92);
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  color: #f7f1e5;
+  color: #ffffff;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
@@ -40,8 +40,8 @@
   height: 44px;
   object-fit: cover;
   border-radius: 11px;
-  border: 1px solid rgba(200, 148, 61, 0.4);
-  background: #1a201c;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: #181818;
   flex-shrink: 0;
 }
 .brandMark {
@@ -51,8 +51,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 11px;
-  background: #c8943d;
-  color: #0b100e;
+  background: #ffffff;
+  color: #050505;
   font-size: 20px;
   font-weight: 900;
   flex-shrink: 0;
@@ -64,14 +64,14 @@
   min-width: 0;
 }
 .brandName {
-  color: #f7f1e5;
+  color: #ffffff;
   font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.3px;
   line-height: 1.1;
 }
 .brandTagline {
-  color: #6e7e78;
+  color: #666666;
   font-size: 10px;
   letter-spacing: 1px;
   line-height: 1.2;
@@ -108,7 +108,7 @@
   border: 1px solid transparent;
   border-radius: 10px;
   background: transparent;
-  color: #c4d0cc;
+  color: #a0a0a0;
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
@@ -119,25 +119,25 @@
 }
 .navItem:hover,
 .navItemActive {
-  background: rgba(200, 148, 61, 0.09);
-  border-color: rgba(200, 148, 61, 0.18);
-  color: #d9a441;
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
 }
 .navIcon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #c8943d;
+  color: #ffffff;
   font-size: 15px;
 }
 .dropdownArrow {
-  color: #6e7e78;
+  color: #666666;
   font-size: 11px;
   transition: transform 0.2s ease;
 }
 .dropdownArrowOpen {
   transform: rotate(180deg);
-  color: #c8943d;
+  color: #ffffff;
 }
 
 /* ── MEGA MENU ──
@@ -162,7 +162,7 @@
 
 /* .megaMenuPanel is the VISIBLE styled box */
 .megaMenuPanel {
-  background: rgba(15, 20, 18, 0.98);
+  background: rgba(15, 15, 15, 0.98);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.09);
@@ -187,13 +187,13 @@
 }
 .megaMenuHeader h3 {
   margin: 0;
-  color: #f7f1e5;
+  color: #ffffff;
   font-size: 17px;
   font-weight: 700;
 }
 .megaMenuHeader p {
   margin: 5px 0 0;
-  color: #6e7e78;
+  color: #666666;
   font-size: 12px;
 }
 .megaMenuArrow {
@@ -203,8 +203,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 9px;
-  background: rgba(200, 148, 61, 0.12);
-  color: #c8943d;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
   font-size: 17px;
   flex-shrink: 0;
 }
@@ -230,8 +230,8 @@
   width: 100%;
 }
 .dropdownCard:hover {
-  background: rgba(200, 148, 61, 0.1);
-  border-color: rgba(200, 148, 61, 0.22);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
   transform: translateY(-2px);
 }
 .dropdownIcon {
@@ -243,28 +243,28 @@
   justify-content: center;
   border-radius: 9px;
   background: rgba(26, 32, 28, 0.8);
-  color: #c8943d;
+  color: #ffffff;
   font-size: 17px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 .dropdownCard:hover .dropdownIcon {
-  background: #c8943d;
-  color: #0b100e;
+  background: #ffffff;
+  color: #050505;
 }
 .dropdownTitle {
-  color: #f7f1e5;
+  color: #ffffff;
   font-size: 13px;
   font-weight: 700;
   margin-bottom: 3px;
 }
 .dropdownDescription {
-  color: #6e7e78;
+  color: #666666;
   font-size: 12px;
   line-height: 1.4;
 }
 .cardArrow {
   margin-left: auto;
-  color: #6e7e78;
+  color: #666666;
   font-size: 15px;
   opacity: 0;
   transform: translateX(-4px);
@@ -275,7 +275,7 @@
 .dropdownCard:hover .cardArrow {
   opacity: 1;
   transform: translateX(0);
-  color: #c8943d;
+  color: #ffffff;
 }
 
 /* ── HEADER ACTIONS ── */
@@ -306,14 +306,16 @@
   border-color: rgba(255, 255, 255, 0.18);
 }
 .highlighted {
-  background: #c8943d !important;
-  color: #0b100e !important;
+  background: #ffffff !important;
+  color: #050505 !important;
   border-color: transparent !important;
   font-weight: 700;
 }
 .highlighted:hover {
-  background: #e3a948 !important;
-  box-shadow: 0 4px 14px rgba(200, 148, 61, 0.3);
+  background: transparent !important;
+  color: #ffffff !important;
+  border: 1px solid #ffffff !important;
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.3);
 }
 .actionIcon { font-size: 15px; }
 
@@ -368,7 +370,7 @@
   width: min(340px, 88vw);
   height: 100dvh;
   height: 100vh;
-  background: #0f1311;
+  background: #050505;
   border-left: 1px solid rgba(255, 255, 255, 0.07);
   z-index: 210;
   display: flex;
@@ -396,24 +398,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #c8943d;
-  color: #0b100e;
+  background: #ffffff;
+  color: #050505;
   font-weight: 900;
   border-radius: 9px;
   font-size: 17px;
 }
-.drawerBrandName { color: #f7f1e5; font-size: 17px; font-weight: 700; }
+.drawerBrandName { color: #ffffff; font-size: 17px; font-weight: 700; }
 .drawerClose {
   background: transparent;
   border: none;
-  color: #6e7e78;
+  color: #666666;
   font-size: 18px;
   padding: 6px;
   cursor: pointer;
   border-radius: 7px;
   transition: background 0.2s ease, color 0.2s ease;
 }
-.drawerClose:hover { background: rgba(255,255,255,0.06); color: #f7f1e5; }
+.drawerClose:hover { background: rgba(255,255,255,0.06); color: #ffffff; }
 
 .drawerNav { padding: 16px 16px; flex: 1; }
 .drawerSection { margin-bottom: 4px; }
@@ -428,7 +430,7 @@
   border: none;
   border-radius: 10px;
   background: transparent;
-  color: #c8943d;
+  color: #ffffff;
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
@@ -437,18 +439,18 @@
   text-align: left;
   transition: background 0.2s ease;
 }
-.drawerSectionLabel:hover { background: rgba(200,148,61,0.06); }
+.drawerSectionLabel:hover { background: rgba(255, 255, 255,0.06); }
 .drawerSectionIcon { font-size: 15px; }
 
 .drawerChevron {
   margin-left: auto;
   font-size: 13px;
-  color: #6e7e78;
+  color: #666666;
   transition: transform 0.2s ease;
 }
 .drawerChevronOpen {
   transform: rotate(180deg);
-  color: #c8943d;
+  color: #ffffff;
 }
 
 .drawerLinks {
@@ -474,7 +476,7 @@
   text-align: left;
   width: 100%;
 }
-.drawerLink:hover { background: rgba(255,255,255,0.04); color: #f7f1e5; }
+.drawerLink:hover { background: rgba(255,255,255,0.04); color: #ffffff; }
 .drawerLinkArrow { color: #3a4440; font-size: 13px; }
 
 .drawerActions {
@@ -503,8 +505,8 @@
 }
 .drawerActionButton:hover { background: rgba(255,255,255,0.07); }
 .drawerHighlighted {
-  background: #c8943d !important;
-  color: #0b100e !important;
+  background: #ffffff !important;
+  color: #050505 !important;
   border-color: transparent !important;
   font-weight: 700;
 }

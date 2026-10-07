@@ -9,6 +9,7 @@ import PropertyGuides from "./PropertyGuides";
 import HomeCTA from "./HomeCTA";
 import Footer from "./Footer";
 import { getHomePage } from "@/services/homePage";
+import ScrollReveal from "@/components/ScrollReveal";
 
 export const metadata = {
   title: "HomeHub – Find a Place You'll Love | Real Estate in India",
@@ -21,8 +22,7 @@ export default async function HomePage() {
 
   return (
     <main
-      className="homePage"
-      style={{ background: "#0f1311", minHeight: "100vh" }}
+      className="homePage w-full min-h-screen bg-[#050505] text-[#E5E5E5] font-sans overflow-x-hidden selection:bg-white/10"
     >
       {/* ── HEADER ── sticky dark glass bar */}
       <HomeHeader header={homePage?.Header} />
@@ -33,32 +33,48 @@ export default async function HomePage() {
         search={homePage?.Search}
       />
 
-      {/* ── POPULAR LOCATIONS ── #0f1311 bg */}
-      <PopularLocations data={homePage?.PopularLocations} />
+      {/* ── POPULAR LOCATIONS ── */}
+      <ScrollReveal>
+        <PopularLocations data={homePage?.PopularLocations} />
+      </ScrollReveal>
 
-      {/* ── PROPERTY CATEGORIES ── #111513 bg */}
-      <PropertyCategories data={homePage?.PropertyCategories} />
+      {/* ── PROPERTY CATEGORIES ── */}
+      <ScrollReveal>
+        <PropertyCategories data={homePage?.PropertyCategories} />
+      </ScrollReveal>
 
-      {/* ── FEATURED PROPERTIES ── #0f1311 bg */}
-      <FeaturedProperties
-        data={homePage?.FeaturedProperties}
-        properties={homePage?.FeaturedProperties?.properties || []}
-      />
+      {/* ── FEATURED PROPERTIES ── */}
+      <ScrollReveal>
+        <FeaturedProperties
+          data={homePage?.FeaturedProperties}
+          properties={homePage?.FeaturedProperties?.properties || []}
+        />
+      </ScrollReveal>
 
-      {/* ── ADVICE & TOOLS ── #111513 bg */}
-      <AdviceTools data={homePage?.AdviceTools} />
+      {/* ── ADVICE & TOOLS ── */}
+      <ScrollReveal>
+        <AdviceTools data={homePage?.AdviceTools} />
+      </ScrollReveal>
 
-      {/* ── WHY CHOOSE HOMEHUB ── #0f1311 bg */}
-      <WhyChooseHomeHub data={homePage?.WhyChooseHomeHub} />
+      {/* ── WHY CHOOSE HOMEHUB ── */}
+      <ScrollReveal>
+        <WhyChooseHomeHub data={homePage?.WhyChooseHomeHub} />
+      </ScrollReveal>
 
-      {/* ── PROPERTY GUIDES ── #111513 bg */}
-      <PropertyGuides data={homePage?.PropertyGuides} />
+      {/* ── PROPERTY GUIDES ── */}
+      <ScrollReveal>
+        <PropertyGuides data={homePage?.PropertyGuides} />
+      </ScrollReveal>
 
-      {/* ── CTA SECTION ── before footer */}
-      <HomeCTA />
+      {/* ── CTA SECTION ── */}
+      <ScrollReveal>
+        <HomeCTA />
+      </ScrollReveal>
 
       {/* ── FOOTER ── */}
-      <Footer data={homePage?.Footer} />
+      <ScrollReveal>
+        <Footer data={homePage?.Footer} />
+      </ScrollReveal>
     </main>
   );
 }

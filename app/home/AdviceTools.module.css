@@ -5,7 +5,7 @@
 .section {
   width: 100%;
   padding: 96px 0;
-  background: #111513;
+  background: #0a0a0a;
 }
 
 .container {
@@ -41,7 +41,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: #c8943d;
+  color: #ffffff;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -55,14 +55,14 @@
   display: block;
   width: 24px;
   height: 2px;
-  background: #c8943d;
+  background: #ffffff;
   border-radius: 2px;
   flex-shrink: 0;
 }
 
 .headingText h2 {
   margin: 0 auto 12px auto;
-  color: #f7f1e5;
+  color: #ffffff;
   font-size: clamp(26px, 3.2vw, 40px);
   font-weight: 800;
   letter-spacing: -0.8px;
@@ -95,7 +95,7 @@
   flex-direction: column;
   gap: 16px;
   padding: 28px 22px 24px;
-  background: #1a201c;
+  background: #181818;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 20px;
   text-decoration: none;
@@ -106,19 +106,19 @@
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  border-color: rgba(200, 148, 61, 0.28);
-  background: #1f2622;
+  border-color: rgba(255, 255, 255, 0.28);
+  background: #1a1a1a;
 }
 
 .icon {
   width: 56px;
   height: 56px;
   border-radius: 14px;
-  background: rgba(200, 148, 61, 0.1);
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #c8943d;
+  color: #ffffff;
   flex-shrink: 0;
   transition: background 0.3s ease, color 0.3s ease;
 }
@@ -126,8 +126,8 @@
 .icon svg { width: 26px; height: 26px; }
 
 .card:hover .icon {
-  background: #c8943d;
-  color: #0b100e;
+  background: #ffffff;
+  color: #050505;
 }
 
 .cardContent {
@@ -139,7 +139,7 @@
 
 .cardContent h3 {
   margin: 0;
-  color: #f7f1e5;
+  color: #ffffff;
   font-size: 17px;
   font-weight: 700;
   line-height: 1.3;
@@ -156,7 +156,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #c8943d;
+  color: #ffffff;
   font-size: 13px;
   font-weight: 700;
   margin-top: auto;
