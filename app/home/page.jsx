@@ -22,7 +22,7 @@ export default async function HomePage() {
 
   return (
     <main
-      className="homePage w-full min-h-screen bg-[#050505] text-[#E5E5E5] font-sans overflow-x-hidden selection:bg-white/10"
+      className="homePage w-full min-h-screen bg-[#050505] text-[#E5E5E5] font-sans selection:bg-white/10"
     >
       {/* ── HEADER ── sticky dark glass bar */}
       <HomeHeader header={homePage?.Header} />
