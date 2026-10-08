@@ -61,6 +61,7 @@ export default async function SearchPage({ searchParams }) {
         <div style={{ marginBottom: "32px" }}>
           <Link
             href="/home"
+            className="search-back-link"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -76,17 +77,17 @@ export default async function SearchPage({ searchParams }) {
               transition: "all 0.2s",
               textDecoration: "none"
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "var(--border-hover)";
-              e.currentTarget.style.color = "var(--text-primary)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "var(--border-subtle)";
-              e.currentTarget.style.color = "var(--text-muted)";
-            }}
           >
             ← Back
           </Link>
+          
+          {/* Add a style block for the hover effect since it's a server component */}
+          <style dangerouslySetInnerHTML={{__html: `
+            .search-back-link:hover {
+              border-color: var(--border-hover) !important;
+              color: var(--text-primary) !important;
+            }
+          `}} />
           
           <p style={{ color: "var(--text-muted)", fontSize: "15px", marginTop: "16px" }}>
             Search :<span style={{ fontWeight: "700", marginLeft: "8px", color: "var(--text-primary)" }}>{searchTerms || "All"}</span>
