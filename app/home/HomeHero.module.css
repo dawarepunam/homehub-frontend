@@ -1,141 +1,226 @@
 /* ============================================================
-   HOME HERO — complete rewrite
-   No absolute positioning for search. Everything is in flow.
+   HOME HERO — GetSiteGo-quality layout composition
+   Content is centered, pyramid hierarchy, compact & premium.
    ============================================================ */
 
 .heroWrapper {
   position: relative;
   width: 100%;
-  /* Let content determine height */
-  min-height: 100vh;
+  /* ~85vh like GetSiteGo — compact, intentional, not full-screen tall */
+  min-height: 88vh;
   display: flex;
   flex-direction: column;
   background: var(--bg-page);
   overflow: hidden;
 }
 
-/* Background and Overlay removed in favor of HeroBackground component */
-
-/* Inner wrapper — stacks content + search vertically */
+/* ============================================================
+   INNER: Center all content vertically + horizontally
+   ============================================================ */
 .heroInner {
   position: relative;
   z-index: 2;
   width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 140px var(--container-padding) var(--section-spacing-y);
+  justify-content: center;
+  /* Controlled padding — not excessive. Top accounts for fixed header. */
+  padding: 120px 24px 72px;
   gap: 0;
 }
 
-/* Hero text block */
+/* ============================================================
+   HERO CONTENT — centered text block
+   Max-width ~960px, everything center-aligned like GetSiteGo
+   ============================================================ */
 .heroContent {
-  width: min(960px, 100%);
+  width: 100%;
+  max-width: 960px;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  align-items: center;
+  text-align: center;
 }
 
-/* Badge */
+/* ============================================================
+   BADGE / EYEBROW LABEL
+   GetSiteGo: 13-14px, tight spacing, 12-16px below to heading
+   ============================================================ */
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 18px;
+  gap: 8px;
+  padding: 6px 16px;
   border: 1px solid var(--border-subtle);
   border-radius: 999px;
   background: var(--bg-section);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--hero-text);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
   text-transform: uppercase;
   width: fit-content;
-  margin-bottom: 28px;
+  /* GetSiteGo: ~14px gap between eyebrow and H1 */
+  margin-bottom: 20px;
 }
 
 .badgeDot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--hero-text);
   flex-shrink: 0;
-  animation: pulse 2s ease-in-out infinite;
+  animation: pulse 2.5s ease-in-out infinite;
 }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.85); }
+  50% { opacity: 0.4; transform: scale(0.8); }
 }
 
-/* Main headline */
+/* ============================================================
+   MAIN HEADLINE
+   GetSiteGo: 48-60px, line-height 1.1, max-width ~850px
+   HomeHub: clamp so it's responsive and premium
+   ============================================================ */
 .title {
-  margin: 0 0 16px;
+  /* margin-bottom to description: GetSiteGo uses ~18-20px */
+  margin: 0 0 18px;
   color: var(--hero-text);
-  font-size: var(--text-hero);
-  line-height: 1.05;
+  /* Clamp: min 38px, scale with vw, max 58px — matches GetSiteGo 48-60px range */
+  font-size: clamp(38px, 5vw, 58px);
+  line-height: 1.08;
   font-weight: 800;
   letter-spacing: -1.5px;
-  
+  /* Controlled width for clean line breaks — GetSiteGo ~850px */
+  max-width: 820px;
+  width: 100%;
 }
 
 .title span {
   color: var(--hero-text);
 }
 
-/* Subtext */
+/* ============================================================
+   DESCRIPTION
+   GetSiteGo: max-width ~600-650px — NARROWER than heading.
+   This creates the visual "pyramid" hierarchy.
+   ============================================================ */
 .description {
+  /* GetSiteGo: 16-18px body, line-height 1.55 */
   margin: 0;
   color: var(--hero-text-muted);
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.6;
   font-weight: 400;
+  /* Narrower than heading — creates pyramid composition */
   max-width: 580px;
+  width: 100%;
 }
 
-/* Search section — below hero text, still inside hero BG */
+/* ============================================================
+   SEARCH CONTAINER
+   GetSiteGo: max-width ~520-560px, centered below description.
+   Gap from description: ~32-40px.
+   HomeHub search card must stay narrower than the full container.
+   ============================================================ */
 .searchContainer {
   width: 100%;
-  max-width: var(--container-max-width);
-  margin-top: 48px;
+  /* GetSiteGo: search bar at ~520-560px max — premium, compact */
+  max-width: 780px;
+  /* GetSiteGo: ~34px gap between description and search */
+  margin-top: 36px;
 }
 
 /* ============================================================
    RESPONSIVE
    ============================================================ */
 
-@media (max-width: 1100px) {
+/* Large laptop */
+@media (max-width: 1200px) {
   .heroInner {
-    padding: 160px 20px 70px;
+    padding: 110px 24px 64px;
   }
 }
 
+/* Standard laptop */
+@media (max-width: 1024px) {
+  .heroInner {
+    padding: 100px 20px 60px;
+  }
+  .title {
+    font-size: clamp(34px, 4.5vw, 50px);
+  }
+}
+
+/* Tablet landscape */
 @media (max-width: 900px) {
+  .heroWrapper {
+    min-height: 80vh;
+  }
+  .heroInner {
+    padding: 100px 20px 56px;
+  }
+  .title {
+    font-size: clamp(32px, 5vw, 46px);
+    letter-spacing: -1px;
+  }
+  .description {
+    font-size: 16px;
+    max-width: 480px;
+  }
+  .searchContainer {
+    max-width: 640px;
+    margin-top: 32px;
+  }
+}
+
+/* Tablet portrait */
+@media (max-width: 768px) {
   .heroWrapper {
     min-height: auto;
   }
   .heroInner {
-    padding: 140px 20px 60px;
+    padding: 100px 20px 52px;
+    /* Keep centered on tablet portrait */
+    align-items: center;
+  }
+  .heroContent {
+    align-items: center;
+    text-align: center;
   }
   .title {
-    font-size: clamp(42px, 8vw, 64px);
-    letter-spacing: -1.5px;
+    font-size: clamp(30px, 6vw, 42px);
+    letter-spacing: -1px;
   }
   .description {
-    font-size: 17px;
+    font-size: 15px;
+    max-width: 440px;
+  }
+  .searchContainer {
+    max-width: 100%;
+    margin-top: 28px;
   }
 }
 
-@media (max-width: 650px) {
+/* Mobile */
+@media (max-width: 640px) {
   .heroInner {
-    padding: 120px 16px 48px;
+    padding: 96px 16px 48px;
     align-items: flex-start;
   }
+  .heroContent {
+    align-items: flex-start;
+    text-align: left;
+  }
   .title {
-    font-size: clamp(38px, 10vw, 52px);
-    letter-spacing: -1px;
+    font-size: clamp(28px, 8vw, 38px);
+    letter-spacing: -0.5px;
+    max-width: 100%;
   }
   .description {
     font-size: 15px;
@@ -143,20 +228,27 @@
   }
   .badge {
     font-size: 10px;
-    padding: 7px 14px;
+    padding: 5px 12px;
+    letter-spacing: 1.4px;
+    margin-bottom: 16px;
   }
   .searchContainer {
-    margin-top: 36px;
+    margin-top: 24px;
     width: 100%;
+    max-width: 100%;
   }
 }
 
+/* Small mobile */
 @media (max-width: 400px) {
   .heroInner {
-    padding: 100px 14px 40px;
+    padding: 88px 14px 40px;
   }
   .title {
-    font-size: 34px;
-    letter-spacing: -0.5px;
+    font-size: 26px;
+  }
+  .description {
+    font-size: 14px;
   }
 }
+

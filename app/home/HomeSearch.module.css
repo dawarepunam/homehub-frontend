@@ -5,11 +5,12 @@
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--search-border);
-  border-radius: 22px;
-  padding: 16px;
+  /* Slightly less rounded than before — crisper, like GetSiteGo */
+  border-radius: 18px;
+  padding: 12px;
   box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    0 12px 32px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
   width: 100%;
 }
 
@@ -61,9 +62,10 @@
 .fields {
   display: grid;
   grid-template-columns: 1.4fr 1fr 1fr auto;
-  gap: 8px;
+  gap: 6px;
   align-items: stretch;
-  min-height: 56px;
+  /* GetSiteGo search field height: ~48-52px */
+  min-height: 52px;
 }
 
 /* Individual field */
@@ -72,17 +74,17 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 8px 10px;
   background: var(--search-field-bg);
   border: 1px solid var(--search-border);
-  border-radius: 12px;
+  border-radius: 10px;
   min-width: 0;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 .field:focus-within,
 .field:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--border-hover);
+  background: var(--search-field-bg);
 }
 
 .fieldIcon {
@@ -195,19 +197,20 @@
 .searchBtnIcon { font-size: 17px; }
 
 /* ── RESPONSIVE ── */
-@media (max-width: 1100px) {
+/* At 780px max-width container, stack to 2-col at ~680px */
+@media (max-width: 780px) {
   .fields { grid-template-columns: 1fr 1fr; }
-  .searchButton { grid-column: 1 / -1; min-height: 54px; }
+  .searchButton { grid-column: 1 / -1; min-height: 50px; }
 }
 
-@media (max-width: 700px) {
-  .searchCard { padding: 16px 14px; border-radius: 18px; }
-  .fields { grid-template-columns: 1fr; gap: 8px; }
-  .searchButton { min-height: 50px; }
-  .tab { padding: 8px 14px; font-size: 13px; }
+@media (max-width: 600px) {
+  .searchCard { padding: 12px 10px; border-radius: 14px; }
+  .fields { grid-template-columns: 1fr; gap: 6px; }
+  .searchButton { min-height: 48px; }
+  .tab { padding: 8px 12px; font-size: 13px; }
 }
 
 @media (max-width: 400px) {
-  .searchCard { padding: 12px; }
-  .fieldIcon { width: 32px; height: 32px; font-size: 15px; }
+  .searchCard { padding: 10px; }
+  .fieldIcon { width: 28px; height: 28px; font-size: 14px; }
 }
