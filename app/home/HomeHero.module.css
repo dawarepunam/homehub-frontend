@@ -14,23 +14,7 @@
   overflow: hidden;
 }
 
-/* Background image layer */
-.heroBg {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center 30%;
-  background-repeat: no-repeat;
-  z-index: 0;
-}
-
-/* Multi-stop overlay: strong left, lighter right */
-.heroOverlay {
-  position: absolute;
-  inset: 0;
-  background: var(--hero-overlay);
-  z-index: 1;
-}
+/* Background and Overlay removed in favor of HeroBackground component */
 
 /* Inner wrapper — stacks content + search vertically */
 .heroInner {

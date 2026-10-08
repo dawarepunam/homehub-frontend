@@ -1,23 +1,15 @@
 import HomeSearch from "./HomeSearch";
 import styles from "./HomeHero.module.css";
 import { getStrapiMedia } from "@/utils/getStrapiMedia";
+import HeroBackground from "./HeroBackground";
 
 export default function HomeHero({ hero, search }) {
   const backgroundUrl = getStrapiMedia(hero?.BackgroundImage) || "";
 
   return (
     <section className={styles.heroWrapper}>
-      {/* Background */}
-      <div
-        className={styles.heroBg}
-        style={
-          backgroundUrl
-            ? { backgroundImage: `url("${backgroundUrl}")` }
-            : undefined
-        }
-      />
-      {/* Dark overlay */}
-      <div className={styles.heroOverlay} />
+      {/* GetSiteGo-inspired Background */}
+      <HeroBackground />
 
       {/* Content */}
       <div className={styles.heroInner}>
