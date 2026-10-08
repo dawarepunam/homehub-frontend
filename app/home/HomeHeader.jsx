@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Sun, Moon, House, Building2, Warehouse, ChevronDown, ArrowRight, Heart, Bell, User, Plus, Key, Map, Users, Sofa, Briefcase, Store, Sparkles, Rocket, Calendar, Hammer, Check, Compass, MapPin, Navigation, BookOpen, BarChart } from "lucide-react";
 import styles from "./HomeHeader.module.css";
 import RoleSelectionModal from "./RoleSelectionModal";
 import { getPropertyNavCategories } from "@/services/property";
@@ -16,6 +17,7 @@ export default function HomeHeader({ header }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   // Track which mobile sections are expanded
   const [mobileSectionsOpen, setMobileSectionsOpen] = useState({});
+  const [theme, setTheme] = useState("light");
   const [navCategories, setNavCategories] = useState({
     Residential: [],
     Commercial: [],
@@ -44,6 +46,24 @@ export default function HomeHeader({ header }) {
       clearTimeout(closeTimer.current);
       closeTimer.current = null;
     }
+  };
+
+    useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      setTheme("dark");
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      setTheme("light");
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
   };
 
   useEffect(() => {
@@ -187,10 +207,10 @@ export default function HomeHeader({ header }) {
                     aria-haspopup="true"
                   >
                     <span className={styles.navIcon}>
-                      {propertyType === "Residential" ? "⌂" : propertyType === "Commercial" ? "▣" : "▥"}
+                      {propertyType === "Residential" ? <House size={14} strokeWidth={2} /> : propertyType === "Commercial" ? <Building2 size={14} strokeWidth={2} /> : <Warehouse size={14} strokeWidth={2} />}
                     </span>
                     <span>{propertyType}</span>
-                    <span className={`${styles.dropdownArrow} ${activeMenu === menuId ? styles.dropdownArrowOpen : ""}`}>⌄</span>
+                    <ChevronDown size={12} strokeWidth={2} className={`${styles.dropdownArrow} ${activeMenu === menuId ? styles.dropdownArrowOpen : ""}`} />
                   </button>
 
                   {/* The mega menu uses onMouseEnter/onMouseLeave to cancel/re-schedule close */}
@@ -201,47 +221,46 @@ export default function HomeHeader({ header }) {
                       onMouseLeave={scheduleClose}
                     >
                       <div className={styles.megaMenuPanel}>
-                      <div className={styles.megaMenuHeader}>
-                        <div>
-                          <h3>{propertyType}</h3>
-                          <p>Explore {propertyType.toLowerCase()} properties</p>
+                        <div className={styles.megaMenuCategory}>
+                          <div className={styles.categoryHeader}>
+                            {propertyType === "Residential" ? <House size={18} /> : propertyType === "Commercial" ? <Building2 size={18} /> : <Warehouse size={18} />}
+                            <span>{propertyType} PROPERTIES</span>
+                          </div>
+                          <div className={styles.categoryGrid}>
+                            {categories.length > 0 ? categories.map((cat) => (
+                              <Link
+                                key={cat}
+                                href={`/search?type=${encodeURIComponent(propertyType)}&category=${encodeURIComponent(cat)}`}
+                                className={styles.dropdownItem}
+                                onClick={() => setActiveMenu(null)}
+                              >
+                                <div className={styles.itemIcon}>
+                                  {propertyType === "Residential" ? <House size={16} /> : propertyType === "Commercial" ? <Building2 size={16} /> : <Warehouse size={16} />}
+                                </div>
+                                <div className={styles.itemContent}>
+                                  <div className={styles.itemTitle}>{cat}</div>
+                                  <div className={styles.itemDescription}>Browse {cat} {propertyType.toLowerCase()} properties</div>
+                                </div>
+                                <ArrowRight size={12} className={styles.itemArrow} />
+                              </Link>
+                            )) : (
+                              <Link
+                                href={`/search?type=${encodeURIComponent(propertyType)}`}
+                                className={styles.dropdownItem}
+                                onClick={() => setActiveMenu(null)}
+                              >
+                                <div className={styles.itemIcon}>
+                                  {propertyType === "Residential" ? <House size={16} /> : propertyType === "Commercial" ? <Building2 size={16} /> : <Warehouse size={16} />}
+                                </div>
+                                <div className={styles.itemContent}>
+                                  <div className={styles.itemTitle}>All {propertyType}</div>
+                                  <div className={styles.itemDescription}>Browse all {propertyType.toLowerCase()} properties</div>
+                                </div>
+                                <ArrowRight size={12} className={styles.itemArrow} />
+                              </Link>
+                            )}
+                          </div>
                         </div>
-                        <span className={styles.megaMenuArrow}>→</span>
-                      </div>
-                      <div className={styles.dropdownGrid}>
-                        {categories.length > 0 ? categories.map((cat) => (
-                          <Link
-                            key={cat}
-                            href={`/search?type=${encodeURIComponent(propertyType)}&category=${encodeURIComponent(cat)}`}
-                            className={styles.dropdownCard}
-                            onClick={() => setActiveMenu(null)}
-                          >
-                            <div className={styles.dropdownIcon}>
-                              {propertyType === "Residential" ? "⌂" : propertyType === "Commercial" ? "▣" : "▥"}
-                            </div>
-                            <div>
-                              <div className={styles.dropdownTitle}>{cat}</div>
-                              <div className={styles.dropdownDescription}>Browse {cat} {propertyType.toLowerCase()} properties</div>
-                            </div>
-                            <span className={styles.cardArrow}>→</span>
-                          </Link>
-                        )) : (
-                          <Link
-                            href={`/search?type=${encodeURIComponent(propertyType)}`}
-                            className={styles.dropdownCard}
-                            onClick={() => setActiveMenu(null)}
-                          >
-                            <div className={styles.dropdownIcon}>
-                              {propertyType === "Residential" ? "⌂" : propertyType === "Commercial" ? "▣" : "▥"}
-                            </div>
-                            <div>
-                              <div className={styles.dropdownTitle}>All {propertyType}</div>
-                              <div className={styles.dropdownDescription}>Browse all {propertyType.toLowerCase()} properties</div>
-                            </div>
-                            <span className={styles.cardArrow}>→</span>
-                          </Link>
-                        )}
-                      </div>
                       </div>
                     </div>
                   )}
@@ -265,7 +284,7 @@ export default function HomeHeader({ header }) {
                   <span className={styles.navIcon}>{getIcon(item.Icon)}</span>
                   <span>{item.Title?.trim()}</span>
                   {item.HasDropdown && (
-                    <span className={`${styles.dropdownArrow} ${activeMenu === item.id ? styles.dropdownArrowOpen : ""}`}>⌄</span>
+                    <ChevronDown size={12} strokeWidth={2} className={`${styles.dropdownArrow} ${activeMenu === item.id ? styles.dropdownArrowOpen : ""}`} />
                   )}
                 </button>
 
@@ -276,52 +295,52 @@ export default function HomeHeader({ header }) {
                     onMouseLeave={scheduleClose}
                   >
                     <div className={styles.megaMenuPanel}>
-                    <div className={styles.megaMenuHeader}>
-                      <div>
-                        <h3>{item.Title?.trim()}</h3>
-                        <p>Explore {item.Title?.trim().toLowerCase()}</p>
+                      <div className={styles.megaMenuCategory}>
+                        <div className={styles.categoryHeader}>
+                          {getIcon(item.Icon)}
+                          <span>{item.Title?.trim()}</span>
+                        </div>
+                        <div className={styles.categoryGrid}>
+                          {item.DropdownItems?.map((dropdown) => {
+                            const slug = dropdown.Slug?.trim() || "";
+                            const isAnchorSlug = slug.includes("#");
+                            const innerContent = (
+                              <>
+                                <div className={styles.itemIcon}>{getIcon(dropdown.Icon)}</div>
+                                <div className={styles.itemContent}>
+                                  <div className={styles.itemTitle}>{dropdown.Title?.trim()}</div>
+                                  {dropdown.Description && <div className={styles.itemDescription}>{dropdown.Description}</div>}
+                                </div>
+                                <ArrowRight size={12} className={styles.itemArrow} />
+                              </>
+                            );
+                            
+                            if (isAnchorSlug) {
+                              return (
+                                <button
+                                  key={dropdown.id}
+                                  type="button"
+                                  onClick={(e) => { handleAnchorNavigation(e, slug); setActiveMenu(null); }}
+                                  className={styles.dropdownItem}
+                                >
+                                  {innerContent}
+                                </button>
+                              );
+                            }
+                            const finalSlug = slug === "/explore/locality-insights" ? "/locality-insights" : slug;
+                            return (
+                              <Link
+                                href={finalSlug || "#"}
+                                key={dropdown.id}
+                                className={styles.dropdownItem}
+                                onClick={() => setActiveMenu(null)}
+                              >
+                                {innerContent}
+                              </Link>
+                            );
+                          })}
+                        </div>
                       </div>
-                      <span className={styles.megaMenuArrow}>→</span>
-                    </div>
-                    <div className={styles.dropdownGrid}>
-                      {item.DropdownItems?.map((dropdown) => {
-                        const slug = dropdown.Slug?.trim() || "";
-                        const isAnchorSlug = slug.includes("#");
-                        if (isAnchorSlug) {
-                          return (
-                            <button
-                              key={dropdown.id}
-                              type="button"
-                              onClick={(e) => { handleAnchorNavigation(e, slug); setActiveMenu(null); }}
-                              className={styles.dropdownCard}
-                            >
-                              <div className={styles.dropdownIcon}>{getIcon(dropdown.Icon)}</div>
-                              <div>
-                                <div className={styles.dropdownTitle}>{dropdown.Title?.trim()}</div>
-                                <div className={styles.dropdownDescription}>{dropdown.Description}</div>
-                              </div>
-                              <span className={styles.cardArrow}>→</span>
-                            </button>
-                          );
-                        }
-                        const finalSlug = slug === "/explore/locality-insights" ? "/locality-insights" : slug;
-                        return (
-                          <a
-                            href={finalSlug || "#"}
-                            key={dropdown.id}
-                            className={styles.dropdownCard}
-                            onClick={() => setActiveMenu(null)}
-                          >
-                            <div className={styles.dropdownIcon}>{getIcon(dropdown.Icon)}</div>
-                            <div>
-                              <div className={styles.dropdownTitle}>{dropdown.Title?.trim()}</div>
-                              <div className={styles.dropdownDescription}>{dropdown.Description}</div>
-                            </div>
-                            <span className={styles.cardArrow}>→</span>
-                          </a>
-                        );
-                      })}
-                    </div>
                     </div>
                   </div>
                 )}
@@ -332,6 +351,11 @@ export default function HomeHeader({ header }) {
           {/* DESKTOP ACTIONS */}
           <div className={styles.headerActions}>
             {actions.map((action) => renderAction(action, false))}
+
+          {/* THEME TOGGLE (DESKTOP) */}
+          <button type="button" onClick={toggleTheme} className={styles.themeToggleBtn} aria-label="Toggle theme">
+            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
           </div>
 
           {/* HAMBURGER (mobile only) */}
@@ -390,7 +414,7 @@ export default function HomeHeader({ header }) {
                     {propertyType === "Residential" ? "⌂" : propertyType === "Commercial" ? "▣" : "▥"}
                   </span>
                   <span>{propertyType}</span>
-                  <span className={`${styles.drawerChevron} ${isOpen ? styles.drawerChevronOpen : ""}`}>⌄</span>
+                  <ChevronDown size={12} strokeWidth={2} className={`${styles.drawerChevron} ${isOpen ? styles.drawerChevronOpen : ""}`} />
                 </button>
                 {isOpen && (
                   <div className={styles.drawerLinks}>
@@ -401,7 +425,7 @@ export default function HomeHeader({ header }) {
                         className={styles.drawerLink}
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        {cat}<span className={styles.drawerLinkArrow}>→</span>
+                        {cat}<span className={styles.drawerLinkArrow}><ArrowRight size={11} /></span>
                       </Link>
                     )) : (
                       <Link
@@ -409,7 +433,7 @@ export default function HomeHeader({ header }) {
                         className={styles.drawerLink}
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        Browse {propertyType}<span className={styles.drawerLinkArrow}>→</span>
+                        Browse {propertyType}<span className={styles.drawerLinkArrow}><ArrowRight size={11} /></span>
                       </Link>
                     )}
                   </div>
@@ -431,7 +455,7 @@ export default function HomeHeader({ header }) {
                   <span className={styles.drawerSectionIcon}>{getIcon(item.Icon)}</span>
                   <span>{item.Title?.trim()}</span>
                   {item.HasDropdown && (
-                    <span className={`${styles.drawerChevron} ${isOpen ? styles.drawerChevronOpen : ""}`}>⌄</span>
+                    <ChevronDown size={12} strokeWidth={2} className={`${styles.drawerChevron} ${isOpen ? styles.drawerChevronOpen : ""}`} />
                   )}
                 </button>
                 {item.HasDropdown && isOpen && (
@@ -442,20 +466,20 @@ export default function HomeHeader({ header }) {
                           if (slug.includes("#")) {
                             return (
                               <button key={dropdown.id} type="button" className={styles.drawerLink} onClick={(e) => handleAnchorNavigation(e, slug)}>
-                                {dropdown.Title?.trim()}<span className={styles.drawerLinkArrow}>→</span>
+                                {dropdown.Title?.trim()}<span className={styles.drawerLinkArrow}><ArrowRight size={11} /></span>
                               </button>
                             );
                           }
                           const finalSlug = slug === "/explore/locality-insights" ? "/locality-insights" : slug;
                           return (
                             <Link key={dropdown.id} href={finalSlug} className={styles.drawerLink} onClick={() => setMobileMenuOpen(false)}>
-                              {dropdown.Title?.trim()}<span className={styles.drawerLinkArrow}>→</span>
+                              {dropdown.Title?.trim()}<span className={styles.drawerLinkArrow}><ArrowRight size={11} /></span>
                             </Link>
                           );
                         })
                       : (
                         <Link href={item.Slug || "#"} className={styles.drawerLink} onClick={() => setMobileMenuOpen(false)}>
-                          {item.Title?.trim()}<span className={styles.drawerLinkArrow}>→</span>
+                          {item.Title?.trim()}<span className={styles.drawerLinkArrow}><ArrowRight size={11} /></span>
                         </Link>
                       )}
                   </div>
@@ -467,6 +491,15 @@ export default function HomeHeader({ header }) {
 
         {/* Drawer actions */}
         <div className={styles.drawerActions}>
+
+        {/* THEME TOGGLE (MOBILE) */}
+        <div className={styles.mobileThemeWrapper}>
+          <button type="button" onClick={toggleTheme} className={styles.drawerActionButton}>
+            {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+            <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+          </button>
+        </div>
+
           {actions.map((action) => renderAction(action, true))}
         </div>
 
@@ -485,14 +518,30 @@ export default function HomeHeader({ header }) {
 
 function getIcon(icon) {
   const icons = {
-    heart: "♡", bell: "♧", user: "◉", plus: "+",
-    house: "⌂", home: "⌂", key: "⚿",
-    building: "▥", map: "⌖", users: "♧", sofa: "▱",
-    briefcase: "▣", store: "▤", warehouse: "▥",
-    sparkles: "✦", rocket: "↗", calendar: "▣",
-    construction: "⚒", check: "✓",
-    compass: "◎", "map-pin": "●", navigation: "➤",
-    "book-open": "▤", chart: "▥",
+    heart: <Heart size={16} />,
+    bell: <Bell size={16} />,
+    user: <User size={16} />,
+    plus: <Plus size={16} />,
+    house: <House size={16} />,
+    home: <House size={16} />,
+    key: <Key size={16} />,
+    building: <Building2 size={16} />,
+    map: <Map size={16} />,
+    users: <Users size={16} />,
+    sofa: <Sofa size={16} />,
+    briefcase: <Briefcase size={16} />,
+    store: <Store size={16} />,
+    warehouse: <Warehouse size={16} />,
+    sparkles: <Sparkles size={16} />,
+    rocket: <Rocket size={16} />,
+    calendar: <Calendar size={16} />,
+    construction: <Hammer size={16} />,
+    check: <Check size={16} />,
+    compass: <Compass size={16} />,
+    "map-pin": <MapPin size={16} />,
+    navigation: <Navigation size={16} />,
+    "book-open": <BookOpen size={16} />,
+    chart: <BarChart size={16} />
   };
-  return icons[icon] || "•";
+  return icons[icon] || <House size={16} />;
 }

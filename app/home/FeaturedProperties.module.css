@@ -5,7 +5,7 @@
 .section {
   width: 100%;
   padding: 96px 0;
-  background: #050505;
+  background: var(--bg-page);
 }
 
 .container {
@@ -42,7 +42,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -63,7 +63,7 @@
 
 .headingText h2 {
   margin: 0 auto 12px auto;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: clamp(26px, 3.2vw, 40px);
   font-weight: 800;
   letter-spacing: -0.8px;
@@ -74,7 +74,7 @@
 
 .headingText p {
   margin: 0 auto;
-  color: #8e9c96;
+  color: var(--text-muted);
   font-size: clamp(14px, 1.5vw, 16px);
   line-height: 1.6;
   text-align: center;
@@ -89,7 +89,7 @@
   padding: 10px 22px;
   border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 12px;
-  color: #ffffff;
+  color: var(--text-primary);
   background: rgba(255, 255, 255, 0.08);
   text-decoration: none;
   font-size: 13px;
@@ -117,8 +117,8 @@
 .propertyCard {
   display: flex;
   flex-direction: column;
-  background: #181818;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   border-radius: 22px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
@@ -135,7 +135,7 @@
   width: 100%;
   padding-top: 66.66%;
   overflow: hidden;
-  background: #050505;
+  background: var(--bg-page);
 }
 
 .propertyImage {
@@ -171,7 +171,7 @@
   border-radius: 6px;
   background: rgba(10, 10, 10, 0.8);
   backdrop-filter: blur(8px);
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.5px;
@@ -187,7 +187,7 @@
   padding: 4px 10px;
   border-radius: 6px;
   background: #ffffff;
-  color: #050505;
+  color: var(--bg-page);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.5px;
@@ -210,17 +210,17 @@
   justify-content: center;
   cursor: pointer;
   font-size: 16px;
-  color: #8e9c96;
+  color: var(--text-muted);
   transition: color 0.2s ease, background 0.2s ease;
 }
 
 .favoriteButton:hover {
-  color: #ffffff;
+  color: var(--text-primary);
   background: rgba(255, 255, 255, 0.2);
 }
 
 .activeFavorite {
-  color: #ffffff;
+  color: var(--text-primary);
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -233,7 +233,7 @@
 }
 
 .category {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 1px;
@@ -241,7 +241,7 @@
 }
 
 .propertyType {
-  color: #666666;
+  color: var(--text-muted);
   font-size: 12px;
   font-weight: 500;
   margin-left: 8px;
@@ -249,7 +249,7 @@
 
 .cardContent h3 {
   margin: 0;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 17px;
   font-weight: 700;
   line-height: 1.35;
@@ -263,7 +263,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  color: #666666;
+  color: var(--text-muted);
   font-size: 13px;
   margin: 0;
 }
@@ -283,12 +283,12 @@
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: #8e9c96;
+  color: var(--text-muted);
 }
 
-.detail span { color: #ffffff; font-size: 14px; }
+.detail span { color: var(--text-primary); font-size: 14px; }
 .detail strong { color: #d1dad6; font-weight: 600; }
-.detail small { color: #666666; font-size: 11px; }
+.detail small { color: var(--text-muted); font-size: 11px; }
 
 .cardBottom {
   display: flex;
@@ -300,7 +300,7 @@
 
 .priceLabel {
   display: block;
-  color: #666666;
+  color: var(--text-muted);
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -310,7 +310,7 @@
 
 .price {
   display: block;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 20px;
   font-weight: 800;
 }
@@ -323,7 +323,7 @@
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
@@ -333,7 +333,7 @@
 
 .viewButton:hover {
   background: #ffffff;
-  color: #050505;
+  color: var(--bg-page);
 }
 
 /* ── RESPONSIVE BREAKPOINTS ── */

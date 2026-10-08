@@ -5,7 +5,7 @@
 .section {
   width: 100%;
   padding: 88px 0;
-  background: #050505;
+  background: var(--bg-page);
 }
 
 .container {
@@ -41,7 +41,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -62,7 +62,7 @@
 
 .headingText h2 {
   margin: 0 auto 12px auto;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: clamp(26px, 3.2vw, 40px);
   font-weight: 800;
   letter-spacing: -0.8px;
@@ -73,7 +73,7 @@
 
 .headingText p {
   margin: 0 auto;
-  color: #8e9c96;
+  color: var(--text-muted);
   font-size: clamp(14px, 1.5vw, 16px);
   line-height: 1.6;
   text-align: center;
@@ -96,15 +96,15 @@
   text-decoration: none;
   border-radius: 18px;
   overflow: hidden;
-  background: #181818;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.5);
-  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--border-hover);
 }
 
 .imageContainer {
@@ -112,7 +112,7 @@
   width: 100%;
   padding-top: 100%;
   overflow: hidden;
-  background: #050505;
+  background: var(--bg-page);
   flex-shrink: 0;
 }
 
@@ -137,7 +137,7 @@
   left: 0;
   right: 0;
   height: 50%;
-  background: linear-gradient(to top, rgba(10, 10, 10, 0.55), transparent);
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
   pointer-events: none;
 }
 
@@ -161,7 +161,7 @@
 
 .locationName {
   margin: 0;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 17px;
   font-weight: 700;
   line-height: 1.25;
@@ -172,7 +172,7 @@
 }
 
 .locationArrow {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 16px;
   opacity: 0;
   transform: translateX(-6px);
@@ -186,7 +186,7 @@
 }
 
 .locationDesc {
-  color: #7a8c85;
+  color: var(--text-muted);
   font-size: 13px;
   line-height: 1.5;
   display: -webkit-box;

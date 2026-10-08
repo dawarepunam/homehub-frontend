@@ -41,7 +41,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -62,7 +62,7 @@
 
 .heading h2 {
   margin: 0 auto 12px auto;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: clamp(26px, 3.2vw, 40px);
   font-weight: 800;
   letter-spacing: -0.8px;
@@ -73,7 +73,7 @@
 
 .heading p {
   margin: 0 auto;
-  color: #8e9c96;
+  color: var(--text-muted);
   font-size: clamp(14px, 1.5vw, 16px);
   line-height: 1.6;
   text-align: center;
@@ -92,11 +92,11 @@
 .card {
   display: flex;
   flex-direction: column;
-  background: #181818;
+  background: var(--bg-card);
   border-radius: 18px;
   overflow: hidden;
   text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   height: 100%;
 }
@@ -104,7 +104,7 @@
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: var(--border-hover);
 }
 
 .imageWrapper {
@@ -150,7 +150,7 @@
 }
 
 .tag {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 1px;
@@ -159,7 +159,7 @@
 
 .title {
   margin: 0;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 18px;
   font-weight: 700;
   line-height: 1.4;
@@ -167,7 +167,7 @@
 
 .description {
   margin: 0;
-  color: #7a8c85;
+  color: var(--text-muted);
   font-size: 14px;
   line-height: 1.6;
   display: -webkit-box;
@@ -180,7 +180,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 700;
   margin-top: auto;

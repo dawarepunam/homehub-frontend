@@ -4,7 +4,7 @@
 .footer {
   width: 100%;
   background: #080c0a;
-  color: #ffffff;
+  color: var(--text-primary);
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 .container {
@@ -43,7 +43,7 @@
   object-fit: cover;
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
-.brandName { color: #ffffff; font-size: 20px; font-weight: 800; }
+.brandName { color: var(--text-primary); font-size: 20px; font-weight: 800; }
 .brandDesc { color: #5a6660; font-size: 14px; line-height: 1.65; max-width: 280px; }
 
 .socials { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -56,7 +56,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #8e9c96;
+  color: var(--text-muted);
   font-size: 12px;
   font-weight: 700;
   text-decoration: none;
@@ -66,7 +66,7 @@
 
 /* COLUMNS */
 .columnTitle {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 700;
   margin: 0 0 20px;
@@ -78,12 +78,12 @@
   font-size: 14px;
   transition: color 0.2s ease;
 }
-.linkItem a:hover { color: #ffffff; }
+.linkItem a:hover { color: var(--text-primary); }
 
 /* BOTTOM */
 .bottomSection {
   padding: 28px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -93,7 +93,7 @@
 .copyright { color: #3a4440; font-size: 13px; margin: 0; }
 .legalLinks { display: flex; gap: 20px; }
 .legalLinks a { color: #3a4440; text-decoration: none; font-size: 13px; transition: color 0.2s ease; }
-.legalLinks a:hover { color: #8e9c96; }
+.legalLinks a:hover { color: var(--text-muted); }
 
 /* RESPONSIVE */
 @media (max-width: 1050px) {

@@ -41,7 +41,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -62,7 +62,7 @@
 
 .headingText h2 {
   margin: 0 auto 12px auto;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: clamp(26px, 3.2vw, 40px);
   font-weight: 800;
   letter-spacing: -0.8px;
@@ -73,7 +73,7 @@
 
 .headingText p {
   margin: 0 auto;
-  color: #8e9c96;
+  color: var(--text-muted);
   font-size: clamp(14px, 1.5vw, 16px);
   line-height: 1.6;
   text-align: center;
@@ -95,7 +95,7 @@
   flex-direction: column;
   gap: 16px;
   padding: 28px 22px 24px;
-  background: #181818;
+  background: var(--bg-card);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 20px;
   text-decoration: none;
@@ -118,7 +118,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--text-primary);
   flex-shrink: 0;
   transition: background 0.3s ease, color 0.3s ease;
 }
@@ -127,7 +127,7 @@
 
 .card:hover .icon {
   background: #ffffff;
-  color: #050505;
+  color: var(--bg-page);
 }
 
 .cardContent {
@@ -139,7 +139,7 @@
 
 .cardContent h3 {
   margin: 0;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 17px;
   font-weight: 700;
   line-height: 1.3;
@@ -147,7 +147,7 @@
 
 .cardContent p {
   margin: 0;
-  color: #7a8c85;
+  color: var(--text-muted);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -156,7 +156,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 700;
   margin-top: auto;

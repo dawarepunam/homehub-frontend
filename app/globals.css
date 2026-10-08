@@ -1,8 +1,7 @@
 @import "tailwindcss";
 
 /* =========================================================
-   GLOBAL RESPONSIVE RESET
-   Prevents horizontal overflow on all screen sizes.
+   GLOBAL RESPONSIVE RESET & THEME VARIABLES
 ========================================================= */
 
 *,
@@ -12,112 +11,173 @@
 }
 
 html {
-  /* Prevent any child from scrolling the page horizontally */
   overflow-x: hidden;
-  /* Ensure viewport fills correctly on mobile browsers */
   -webkit-text-size-adjust: 100%;
 }
 
 body {
-  /* Belt-and-suspenders: also lock horizontal scroll at body level */
   overflow-x: hidden;
-  /* Safe min-width so nothing forces the viewport wider */
   min-width: 0;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ================= LIGHT THEME ================= */
+  --bg-page: #fdfdfd;       /* Crisp white/off-white */
+  --bg-section: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7f7f7;
+
+  /* Header */
+  --header-bg: rgba(255, 255, 255, 0.96);
+  --header-text: #111111;
+  --header-muted: #666666;
+  --header-border: rgba(0, 0, 0, 0.09);
+  --header-icon: #111111;
+  --header-hover-bg: rgba(0, 0, 0, 0.04);
+  --header-active-bg: rgba(0, 0, 0, 0.05);
+  --header-button-bg: #111111;
+  --header-button-text: #ffffff;
+  --header-button-hover-bg: #333333;
+  --header-button-hover-border: #333333;
+
+  /* Dropdown panel */
+  --dropdown-bg: #ffffff;
+  --dropdown-text: #111111;
+  --dropdown-muted: #666666;
+  --dropdown-border: #e5e5e5;
+  --dropdown-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --dropdown-hover-bg: rgba(0, 0, 0, 0.035);
+  --dropdown-icon-bg: #eeeeee;
+
+  /* Mobile drawer */
+  --drawer-bg: #ffffff;
+  --drawer-border: rgba(0, 0, 0, 0.09);
+  --drawer-hover-bg: rgba(0, 0, 0, 0.04);
+  --drawer-action-border: rgba(0, 0, 0, 0.1);
+  --drawer-logo-bg: #111111;
+  --drawer-logo-text: #ffffff;
+
+  /* Header shadow */
+  --header-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+
+  /* General typography */
+  --text-primary: #111111;
+  --text-muted: #666666;
+  --nav-text: #444444;
+  --nav-text-hover: #111111;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.15);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.06);
+  
+  /* Buttons */
+  --btn-primary-bg: #111111;
+  --btn-primary-text: #ffffff;
+
+  /* Search Panel */
+  --search-bg: rgba(255, 255, 255, 0.95);
+  --search-border: rgba(0, 0, 0, 0.1);
+  --search-field-bg: rgba(0, 0, 0, 0.03);
+
+  /* Hero */
+  --hero-overlay: linear-gradient(105deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.4) 60%, rgba(255, 255, 255, 0.1) 100%);
+  --hero-text: #111111;
+  --hero-text-muted: #444444;
+  
+  /* Icons */
+  --icon-color: #111111;
+}
+
+:root[data-theme="dark"] {
+  /* ================= DARK THEME ================= */
+  --bg-page: #0a0a0a;
+  --bg-section: #111111;
+  --bg-card: #161616;
+  --bg-card-hover: #1c1c1c;
+
+  /* Header */
+  --header-bg: rgba(5, 5, 5, 0.96);
+  --header-text: #ffffff;
+  --header-muted: #a0a0a0;
+  --header-border: rgba(255, 255, 255, 0.08);
+  --header-icon: #ffffff;
+  --header-hover-bg: rgba(255, 255, 255, 0.07);
+  --header-active-bg: rgba(255, 255, 255, 0.08);
+  --header-button-bg: #ffffff;
+  --header-button-text: #111111;
+  --header-button-hover-bg: #eeeeee;
+  --header-button-hover-border: transparent;
+
+  /* Dropdown panel */
+  --dropdown-bg: #0b0b0b;
+  --dropdown-text: #ffffff;
+  --dropdown-muted: #a0a0a0;
+  --dropdown-border: rgba(255, 255, 255, 0.10);
+  --dropdown-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --dropdown-hover-bg: rgba(255, 255, 255, 0.06);
+  --dropdown-icon-bg: #2a2a2a;
+
+  /* Mobile drawer */
+  --drawer-bg: #0d0d0d;
+  --drawer-border: rgba(255, 255, 255, 0.07);
+  --drawer-hover-bg: rgba(255, 255, 255, 0.06);
+  --drawer-action-border: rgba(255, 255, 255, 0.08);
+  --drawer-logo-bg: #ffffff;
+  --drawer-logo-text: #111111;
+
+  /* Header shadow */
+  --header-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  /* General typography */
+  --text-primary: #f9f9f9;
+  --text-muted: #999999;
+  --nav-text: #a0a0a0;
+  --nav-text-hover: #ffffff;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.15);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+
+  /* Buttons */
+  --btn-primary-bg: #ffffff;
+  --btn-primary-text: #111111;
+
+  /* Search Panel */
+  --search-bg: rgba(20, 20, 20, 0.95);
+  --search-border: rgba(255, 255, 255, 0.1);
+  --search-field-bg: rgba(255, 255, 255, 0.05);
+
+  /* Hero */
+  --hero-overlay: linear-gradient(105deg, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.8) 45%, rgba(5, 5, 5, 0.4) 100%);
+  --hero-text: #ffffff;
+  --hero-text-muted: #cccccc;
+
+  /* Icons */
+  --icon-color: #ffffff;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg-page);
+  --color-foreground: var(--text-primary);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
-}
-
-/* =========================================================
-   HOME PAGE WRAPPER SAFETY
-   Locks the public HomePage inside the viewport.
-========================================================= */
-
 .homePage {
   width: 100%;
   max-width: 100%;
-  /* Prevent any overflowing child from creating page-level horizontal scroll */
   overflow-x: clip;
+  background: var(--bg-page);
+  color: var(--text-primary);
 }
 
 .homePage img {
   max-width: 100%;
   height: auto;
-}
-
-.home-intro {
-  min-height: calc(100vh - 82px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  background: #f7f1ea;
-}
-
-.home-intro-content {
-  width: 100%;
-  max-width: 760px;
-  text-align: center;
-}
-
-.home-eyebrow {
-  margin: 0 0 12px;
-  color: #b85c3d;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-
-.home-title {
-  margin: 0;
-  color: #332a24;
-  font-size: clamp(36px, 6vw, 68px);
-  line-height: 1.05;
-  letter-spacing: -2.5px;
-  font-weight: 800;
-}
-
-.home-description {
-  max-width: 580px;
-  margin: 20px auto 0;
-  color: #806e60;
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-@media (max-width: 600px) {
-  .home-intro {
-    min-height: calc(100vh - 66px);
-    padding: 40px 18px;
-  }
-  .home-title {
-    font-size: clamp(34px, 11vw, 48px);
-    letter-spacing: -1.5px;
-  }
-  .home-description {
-    font-size: 14px;
-  }
 }

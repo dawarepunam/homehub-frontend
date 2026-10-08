@@ -5,7 +5,7 @@
 .section {
   width: 100%;
   padding: 96px 0;
-  background: #050505;
+  background: var(--bg-page);
 }
 
 .container {
@@ -31,7 +31,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -52,7 +52,7 @@
 
 .heading h2 {
   margin: 0 auto;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: clamp(26px, 3.2vw, 40px);
   font-weight: 800;
   letter-spacing: -0.8px;
@@ -76,7 +76,7 @@
   text-align: center;
   gap: 14px;
   padding: 32px 20px;
-  background: #181818;
+  background: var(--bg-card);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 20px;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
@@ -97,7 +97,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--text-primary);
   border: 1px solid rgba(255, 255, 255, 0.18);
   transition: background 0.3s ease;
 }
@@ -108,14 +108,14 @@
 
 .title {
   margin: 0;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 16px;
   font-weight: 700;
 }
 
 .desc {
   margin: 0;
-  color: #7a8c85;
+  color: var(--text-muted);
   font-size: 13px;
   line-height: 1.55;
 }
