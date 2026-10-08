@@ -40,7 +40,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 180px 24px 80px;
+  padding: 140px var(--container-padding) var(--section-spacing-y);
   gap: 0;
 }
 
@@ -88,12 +88,12 @@
 
 /* Main headline */
 .title {
-  margin: 0 0 20px;
+  margin: 0 0 16px;
   color: var(--hero-text);
-  font-size: clamp(48px, 6vw, 88px);
-  line-height: 1.03;
+  font-size: var(--text-hero);
+  line-height: 1.05;
   font-weight: 800;
-  letter-spacing: -2.5px;
+  letter-spacing: -1.5px;
   
 }
 
@@ -105,16 +105,17 @@
 .description {
   margin: 0;
   color: var(--hero-text-muted);
-  font-size: clamp(17px, 2vw, 22px);
-  line-height: 1.55;
+  font-size: 18px;
+  line-height: 1.6;
   font-weight: 400;
-  max-width: 600px;
+  max-width: 580px;
 }
 
 /* Search section — below hero text, still inside hero BG */
 .searchContainer {
-  width: min(1180px, 100%);
-  margin-top: 52px;
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin-top: 48px;
 }
 
 /* ============================================================

@@ -57,20 +57,16 @@ export default function PropertyTypePage() {
 
   // Client-side Sort
   const sortedProperties = [...properties].sort((a, b) => {
-    // Extract price from PropertyCommonDetails if it exists, otherwise root
     const priceA = a?.PropertyCommonDetails?.PricingDetails?.ExpectedPrice || a?.Price || 0;
     const priceB = b?.PropertyCommonDetails?.PricingDetails?.ExpectedPrice || b?.Price || 0;
     
     if (sort === "price-low") return priceA - priceB;
     if (sort === "price-high") return priceB - priceA;
-    // newest
     return new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0);
   });
 
   return (
-    <div
-      style={{ background: "#0f1311", minHeight: "100vh", display: "flex", flexDirection: "column" }}
-    >
+    <div style={{ background: "var(--bg-page)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       {/* ── PUBLIC HOMEHUB HEADER ── */}
       <HomeHeader header={homeData?.Header} />
 
@@ -78,10 +74,10 @@ export default function PropertyTypePage() {
       <main
         style={{
           flex: 1,
-          width: "min(1480px, 94%)",
+          width: "100%",
+          maxWidth: "var(--container-max-width)",
           margin: "0 auto",
-          paddingTop: "40px",
-          paddingBottom: "80px",
+          padding: "40px var(--container-padding) 80px",
         }}
       >
         {/* ── BACK BUTTON ── */}
@@ -93,23 +89,22 @@ export default function PropertyTypePage() {
               alignItems: "center",
               gap: "8px",
               background: "transparent",
-              border: "1px solid rgba(185,152,82,0.35)",
-              borderRadius: "10px",
-              color: "#B99852",
-              fontSize: "14px",
+              border: "1px solid var(--border-subtle)",
+              borderRadius: "var(--radius-btn)",
+              color: "var(--text-muted)",
+              fontSize: "13px",
               fontWeight: "600",
-              padding: "9px 20px",
+              padding: "8px 18px",
               cursor: "pointer",
               transition: "all 0.2s",
-              letterSpacing: "0.02em",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(185,152,82,0.12)";
-              e.currentTarget.style.borderColor = "#B99852";
+              e.currentTarget.style.borderColor = "var(--border-hover)";
+              e.currentTarget.style.color = "var(--text-primary)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.borderColor = "rgba(185,152,82,0.35)";
+              e.currentTarget.style.borderColor = "var(--border-subtle)";
+              e.currentTarget.style.color = "var(--text-muted)";
             }}
           >
             ← Back to Home
@@ -117,24 +112,24 @@ export default function PropertyTypePage() {
         </div>
 
         {/* ── PAGE HEADING ── */}
-        <div style={{ marginBottom: "30px" }}>
+        <div style={{ marginBottom: "28px" }}>
           <h1
             style={{
-              fontSize: "clamp(26px, 5vw, 42px)",
+              fontSize: "clamp(22px, 4vw, 32px)",
               fontWeight: "800",
-              color: "#F7F0E3",
+              color: "var(--text-primary)",
               letterSpacing: "-0.02em",
-              lineHeight: 1.15,
-              marginBottom: "10px",
+              lineHeight: 1.2,
+              marginBottom: "8px",
             }}
           >
             {label} Properties
           </h1>
           <p
             style={{
-              color: "#8D9E95",
-              fontSize: "clamp(14px, 2vw, 16px)",
-              marginTop: "6px",
+              color: "var(--text-muted)",
+              fontSize: "14px",
+              marginTop: "4px",
             }}
           >
             Browse available properties listed by verified owners.
@@ -145,27 +140,27 @@ export default function PropertyTypePage() {
         <div style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "16px",
-          marginBottom: "40px",
+          gap: "12px",
+          marginBottom: "32px",
           alignItems: "center",
           justifyContent: "space-between",
-          background: "#161b18",
-          padding: "16px 24px",
-          borderRadius: "16px",
-          border: "1px solid rgba(255,255,255,0.05)"
+          background: "var(--bg-card)",
+          padding: "12px 20px",
+          borderRadius: "12px",
+          border: "1px solid var(--border-subtle)"
         }}>
-          <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
-            <span style={{ color: "#8D9E95", fontSize: "14px", fontWeight: "600" }}>Property Type:</span>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+            <span style={{ color: "var(--text-muted)", fontSize: "13px", fontWeight: "600" }}>Property Type:</span>
             <select
               value={type?.toLowerCase()}
               onChange={(e) => router.push(`/properties/${e.target.value}`)}
               style={{
-                background: "#0f1311",
-                color: "#F7F0E3",
-                border: "1px solid rgba(185,152,82,0.3)",
-                padding: "8px 16px",
-                borderRadius: "8px",
-                fontSize: "14px",
+                background: "var(--bg-page)",
+                color: "var(--text-primary)",
+                border: "1px solid var(--border-subtle)",
+                padding: "7px 14px",
+                borderRadius: "var(--radius-btn)",
+                fontSize: "13px",
                 cursor: "pointer",
                 outline: "none"
               }}
@@ -177,18 +172,18 @@ export default function PropertyTypePage() {
             </select>
           </div>
           
-          <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
-            <span style={{ color: "#8D9E95", fontSize: "14px", fontWeight: "600" }}>Sort By:</span>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+            <span style={{ color: "var(--text-muted)", fontSize: "13px", fontWeight: "600" }}>Sort By:</span>
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
               style={{
-                background: "#0f1311",
-                color: "#F7F0E3",
-                border: "1px solid rgba(185,152,82,0.3)",
-                padding: "8px 16px",
-                borderRadius: "8px",
-                fontSize: "14px",
+                background: "var(--bg-page)",
+                color: "var(--text-primary)",
+                border: "1px solid var(--border-subtle)",
+                padding: "7px 14px",
+                borderRadius: "var(--radius-btn)",
+                fontSize: "13px",
                 cursor: "pointer",
                 outline: "none"
               }}
@@ -208,21 +203,21 @@ export default function PropertyTypePage() {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              minHeight: "320px",
-              gap: "16px",
+              minHeight: "280px",
+              gap: "14px",
             }}
           >
             <div
               style={{
-                width: "44px",
-                height: "44px",
-                border: "3px solid rgba(185,152,82,0.15)",
-                borderTop: "3px solid #B99852",
+                width: "36px",
+                height: "36px",
+                border: "2px solid var(--border-subtle)",
+                borderTop: "2px solid var(--text-primary)",
                 borderRadius: "50%",
                 animation: "spin 0.9s linear infinite",
               }}
             />
-            <p style={{ color: "#8D9E95", fontSize: "15px" }}>
+            <p style={{ color: "var(--text-muted)", fontSize: "14px" }}>
               Loading {label.toLowerCase()} properties…
             </p>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
@@ -233,13 +228,13 @@ export default function PropertyTypePage() {
         {!loading && error && (
           <div
             style={{
-              background: "rgba(239,68,68,0.08)",
-              border: "1px solid rgba(239,68,68,0.2)",
-              borderRadius: "16px",
-              padding: "40px 32px",
+              background: "var(--bg-card)",
+              border: "1px solid var(--border-subtle)",
+              borderRadius: "var(--radius-card)",
+              padding: "32px",
               textAlign: "center",
-              color: "#F87171",
-              fontSize: "15px",
+              color: "var(--text-muted)",
+              fontSize: "14px",
             }}
           >
             {error}
@@ -254,18 +249,18 @@ export default function PropertyTypePage() {
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: "8px",
-                background: "rgba(185,152,82,0.10)",
-                border: "1px solid rgba(185,152,82,0.25)",
+                gap: "6px",
+                background: "var(--bg-card)",
+                border: "1px solid var(--border-subtle)",
                 borderRadius: "20px",
-                padding: "6px 18px",
-                marginBottom: "28px",
+                padding: "5px 14px",
+                marginBottom: "24px",
               }}
             >
-              <span style={{ color: "#B99852", fontWeight: "700", fontSize: "15px" }}>
+              <span style={{ color: "var(--text-primary)", fontWeight: "700", fontSize: "14px" }}>
                 {sortedProperties.length}
               </span>
-              <span style={{ color: "#8D9E95", fontSize: "14px" }}>
+              <span style={{ color: "var(--text-muted)", fontSize: "13px" }}>
                 {sortedProperties.length === 1 ? "property" : "properties"} found
               </span>
             </div>
@@ -279,44 +274,44 @@ export default function PropertyTypePage() {
         {!loading && !error && properties.length === 0 && (
           <div
             style={{
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(217,209,194,0.12)",
-              borderRadius: "20px",
-              padding: "clamp(40px, 8vw, 80px) 32px",
+              background: "var(--bg-card)",
+              border: "1px solid var(--border-subtle)",
+              borderRadius: "var(--radius-card)",
+              padding: "clamp(40px, 6vw, 64px) 32px",
               textAlign: "center",
             }}
           >
             <div
               style={{
-                width: "64px",
-                height: "64px",
-                background: "rgba(185,152,82,0.08)",
-                borderRadius: "18px",
+                width: "56px",
+                height: "56px",
+                background: "var(--bg-section)",
+                borderRadius: "14px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                margin: "0 auto 20px",
-                fontSize: "28px",
+                margin: "0 auto 16px",
+                border: "1px solid var(--border-subtle)",
               }}
             >
               🏘️
             </div>
             <h2
               style={{
-                fontSize: "20px",
+                fontSize: "18px",
                 fontWeight: "800",
-                color: "#F7F0E3",
-                marginBottom: "10px",
+                color: "var(--text-primary)",
+                marginBottom: "8px",
               }}
             >
               No {label} Properties Found
             </h2>
             <p
               style={{
-                color: "#8D9E95",
-                fontSize: "15px",
-                maxWidth: "420px",
-                margin: "0 auto 28px",
+                color: "var(--text-muted)",
+                fontSize: "14px",
+                maxWidth: "380px",
+                margin: "0 auto 24px",
                 lineHeight: 1.6,
               }}
             >
@@ -327,14 +322,13 @@ export default function PropertyTypePage() {
               href="/home"
               style={{
                 display: "inline-block",
-                background: "linear-gradient(135deg, #B99852, #D7AE62)",
-                color: "#0f1311",
+                background: "var(--btn-primary-bg)",
+                color: "var(--btn-primary-text)",
                 fontWeight: "700",
-                fontSize: "14px",
-                padding: "12px 28px",
-                borderRadius: "10px",
+                fontSize: "13px",
+                padding: "10px 24px",
+                borderRadius: "var(--radius-btn)",
                 textDecoration: "none",
-                letterSpacing: "0.03em",
               }}
             >
               ← Back to Home

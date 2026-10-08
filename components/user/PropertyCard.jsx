@@ -1205,11 +1205,11 @@ export default function PropertyCard({ property }) {
             FRONT SIDE
         ================================================= */}
         <div 
-          className="absolute inset-0 w-full h-full overflow-hidden rounded-[20px] border border-[#D9D1C2] bg-[#171411] flex flex-col shadow-[0_10px_30px_rgba(30,61,48,0.10)]"
+          className="absolute inset-0 w-full h-full overflow-hidden rounded-[20px] border border-[var(--border-subtle)] bg-[var(--bg-card)] flex flex-col shadow-[var(--shadow-card)]"
           style={{ backfaceVisibility: "hidden" }}
         >
           {/* IMAGE */}
-          <div className="relative h-[220px] w-full overflow-hidden bg-[#27231E]">
+          <div className="relative h-[220px] w-full overflow-hidden bg-[var(--bg-section)]">
             <Image
               src={imageUrl}
               alt={title}
@@ -1220,11 +1220,11 @@ export default function PropertyCard({ property }) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/10" />
 
-            <span className="absolute left-3 top-3 rounded-md bg-[#0E7658] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-white shadow">
+            <span className="absolute left-3 top-3 rounded-md bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide shadow">
               {propertyStatus}
             </span>
 
-            <span className="absolute bottom-3 left-3 rounded-md bg-[#D7AE62] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-[#123F32]">
+            <span className="absolute bottom-3 left-3 rounded-md bg-[var(--bg-page)] text-[var(--text-primary)] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide shadow-sm">
               {purpose}
             </span>
           </div>
@@ -1232,39 +1232,39 @@ export default function PropertyCard({ property }) {
           {/* FRONT CONTENT */}
           <div className="p-4 flex flex-col flex-1 justify-between">
             <div>
-              <p className="text-[9px] font-extrabold uppercase tracking-[0.16em] text-[#D7AE62]">
+              <p className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-muted)]">
                 {category || propertyType}
               </p>
 
-              <h3 className="mt-1.5 line-clamp-1 text-[17px] font-extrabold leading-tight text-white" title={title}>
+              <h3 className="mt-1.5 line-clamp-1 text-[16px] font-extrabold leading-tight text-[var(--text-primary)]" title={title}>
                 {title}
               </h3>
 
-              <p className="mt-2 flex items-center gap-1.5 text-[11px] text-[#B8B2A8]">
-                <MapPin size={13} className="shrink-0 text-[#D7AE62]" />
+              <p className="mt-2 flex items-center gap-1.5 text-[12px] text-[var(--text-muted)]">
+                <MapPin size={13} className="shrink-0 text-[var(--text-muted)]" />
                 <span className="truncate">{location || "Location not specified"}</span>
               </p>
 
-              <p className="mt-3 text-[21px] font-extrabold tracking-tight text-[#54C79B]">
+              <p className="mt-3 text-[20px] font-extrabold tracking-tight text-[var(--text-primary)]">
                 {price}
               </p>
             </div>
 
             {/* QUICK DETAILS */}
-            <div className="mt-3 flex items-center gap-3 border-t border-[#3A342D] pt-3 text-[10px] text-[#C4BDB2]">
+            <div className="mt-3 flex items-center gap-3 border-t border-[var(--border-subtle)] pt-3 text-[11px] text-[var(--text-muted)]">
               {bedrooms !== null && bedrooms !== undefined && (
                 <span className="flex items-center gap-1">
-                  <BedDouble size={12} className="text-[#D7AE62]" /> {getSafeValue(bedrooms)} Beds
+                  <BedDouble size={12} className="text-[var(--text-primary)]" /> {getSafeValue(bedrooms)} Beds
                 </span>
               )}
               {bathrooms !== null && bathrooms !== undefined && (
                 <span className="flex items-center gap-1">
-                  <Bath size={12} className="text-[#D7AE62]" /> {getSafeValue(bathrooms)} Baths
+                  <Bath size={12} className="text-[var(--text-primary)]" /> {getSafeValue(bathrooms)} Baths
                 </span>
               )}
               {builtUpArea !== null && builtUpArea !== undefined && (
                 <span className="flex items-center gap-1">
-                  <Maximize size={12} className="text-[#D7AE62]" /> {getSafeValue(builtUpArea)} sq.ft
+                  <Maximize size={12} className="text-[var(--text-primary)]" /> {getSafeValue(builtUpArea)} sq.ft
                 </span>
               )}
             </div>
@@ -1275,37 +1275,37 @@ export default function PropertyCard({ property }) {
             BACK SIDE
         ================================================= */}
         <div 
-          className="absolute inset-0 w-full h-full overflow-hidden rounded-[20px] border border-[#D7AE62] bg-[#0B251B] flex flex-col shadow-[0_18px_40px_rgba(215,174,98,0.15)] p-5"
+          className="absolute inset-0 w-full h-full overflow-hidden rounded-[20px] border border-[var(--border-subtle)] bg-[var(--bg-card)] flex flex-col shadow-[var(--shadow-card)] p-5"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           <div className="flex-1">
-            <h4 className="text-[#D7AE62] font-bold text-xs uppercase tracking-widest border-b border-[#D7AE62]/20 pb-2 mb-4">
+            <h4 className="text-[var(--text-primary)] font-bold text-xs uppercase tracking-widest border-b border-[var(--border-subtle)] pb-2 mb-4">
               Property Overview
             </h4>
             
-            <ul className="flex flex-col gap-3 text-[11px] text-[#EBE7DF]">
+            <ul className="flex flex-col gap-3 text-[12px] text-[var(--text-primary)]">
               <li className="flex justify-between">
-                <span className="text-[#8E887F]">Type</span>
+                <span className="text-[var(--text-muted)]">Type</span>
                 <span className="font-semibold">{propertyType}</span>
               </li>
               <li className="flex justify-between">
-                <span className="text-[#8E887F]">Category</span>
+                <span className="text-[var(--text-muted)]">Category</span>
                 <span className="font-semibold">{category || "-"}</span>
               </li>
               <li className="flex justify-between">
-                <span className="text-[#8E887F]">Purpose</span>
+                <span className="text-[var(--text-muted)]">Purpose</span>
                 <span className="font-semibold">{purpose}</span>
               </li>
               <li className="flex justify-between">
-                <span className="text-[#8E887F]">Listed On</span>
+                <span className="text-[var(--text-muted)]">Listed On</span>
                 <span className="font-semibold">{listedDate || "-"}</span>
               </li>
               <li className="flex justify-between">
-                <span className="text-[#8E887F]">Possession</span>
+                <span className="text-[var(--text-muted)]">Possession</span>
                 <span className="font-semibold">{getSafeValue(commonDetails?.PossessionStatus, "-")}</span>
               </li>
               <li className="flex justify-between">
-                <span className="text-[#8E887F]">Furnishing</span>
+                <span className="text-[var(--text-muted)]">Furnishing</span>
                 <span className="font-semibold">{getSafeValue(residentialDetails?.FurnishingStatus, "-")}</span>
               </li>
             </ul>
@@ -1316,7 +1316,7 @@ export default function PropertyCard({ property }) {
             <Link
               href={viewRoute}
               onClick={(e) => { if (!documentId) { e.preventDefault(); toast.error("Property ID not found."); } }}
-              className="flex items-center justify-center gap-1 rounded-lg bg-[#D7AE62] py-2.5 text-[10px] font-extrabold text-[#123F32] transition hover:bg-[#C99D4C]"
+              className="flex items-center justify-center gap-1 rounded-lg bg-[var(--btn-primary-bg)] py-2.5 text-[11px] font-extrabold text-[var(--btn-primary-text)] transition opacity-90 hover:opacity-100"
             >
               <Eye size={13} /> View
             </Link>
@@ -1328,7 +1328,7 @@ export default function PropertyCard({ property }) {
                 if (!documentId) { toast.error("Property ID not found."); } 
                 else { setIsContactModalOpen(true); } 
               }}
-              className="flex items-center justify-center rounded-lg border border-[#D7AE62] bg-transparent py-2.5 text-[10px] font-extrabold text-[#D7AE62] transition hover:bg-[#D7AE62] hover:text-[#123F32]"
+              className="flex items-center justify-center rounded-lg border border-[var(--btn-primary-bg)] bg-transparent py-2.5 text-[11px] font-extrabold text-[var(--text-primary)] transition hover:bg-[var(--dropdown-hover-bg)]"
             >
               Contact
             </button>
@@ -1337,10 +1337,10 @@ export default function PropertyCard({ property }) {
               type="button"
               onClick={handleWishlist}
               disabled={loading}
-              className="flex items-center justify-center rounded-lg border border-[#D7AE62]/50 bg-black/20 transition hover:border-[#D7AE62] hover:bg-[#D7AE62]/20"
+              className="flex items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-page)] transition hover:bg-[var(--dropdown-hover-bg)]"
               aria-label={liked ? "Remove from wishlist" : "Add to wishlist"}
             >
-              <Heart size={15} className={liked ? "fill-red-500 text-red-500" : "text-[#D7AE62]"} />
+              <Heart size={15} className={liked ? "fill-red-500 text-red-500" : "text-[var(--text-muted)]"} />
             </button>
           </div>
         </div>

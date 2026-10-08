@@ -4,14 +4,15 @@
 
 .section {
   width: 100%;
-  padding: 96px 0;
-  background: #0a0a0a;
+  padding: var(--section-spacing-y) 0;
+  background: var(--bg-section);
 }
 
 .container {
-  width: min(1200px, calc(100% - 48px));
+  width: 100%;
+  max-width: var(--container-max-width);
+  padding: 0 var(--container-padding);
   margin: 0 auto;
-  padding: 0;
 }
 
 /* ── CENTERED HEADING BLOCK ── */
@@ -55,15 +56,15 @@
   display: block;
   width: 24px;
   height: 2px;
-  background: #ffffff;
-  border-radius: 2px;
+  background: var(--text-primary);
+
   flex-shrink: 0;
 }
 
 .heading h2 {
   margin: 0 auto 12px auto;
   color: var(--text-primary);
-  font-size: clamp(26px, 3.2vw, 40px);
+  font-size: var(--text-section);
   font-weight: 800;
   letter-spacing: -0.8px;
   line-height: 1.15;
@@ -198,12 +199,10 @@
 }
 
 @media (max-width: 650px) {
-  .section { padding: 64px 0; }
-  .container { width: calc(100% - 32px); }
-  .headingRow { margin-bottom: 36px; }
+  .section { padding: var(--section-spacing-y-mobile) 0; }
+    .headingRow { margin-bottom: 36px; }
   .grid { grid-template-columns: 1fr; gap: 18px; }
 }
 
 @media (max-width: 380px) {
-  .container { width: calc(100% - 24px); }
-}
+  }
