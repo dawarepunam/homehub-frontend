@@ -228,14 +228,12 @@ export default function ContactOwnerPage() {
     async function loadData() {
       try {
         const loggedInUser = await getLoggedInUser();
-
         const propertyData = await getPropertyForEnquiry(documentId);
 
         setUser(loggedInUser);
         setProperty(propertyData);
       } catch (error) {
         console.error("Contact Owner Error:", error);
-
         toast.error(error?.message || "Unable to load property.");
       } finally {
         setLoading(false);
@@ -252,32 +250,24 @@ export default function ContactOwnerPage() {
       toast.error("Please login first.");
       return;
     }
-
     setShowConfirmation(true);
   }
 
   async function handleSendRequest() {
-    if (!property || !user) {
-      return;
-    }
+    if (!property || !user) return;
 
     try {
       setSending(true);
 
       await sendEnquiry({
         propertyDocumentId: property.documentId,
-
         name: user.username || "",
-
         phone: "",
-
         email: user.email || "",
-
         message: "I am interested in this property.",
       });
 
       setShowConfirmation(false);
-
       toast.success("Enquiry sent successfully!");
 
       setTimeout(() => {
@@ -285,7 +275,6 @@ export default function ContactOwnerPage() {
       }, 1200);
     } catch (error) {
       console.error("Send Enquiry Error:", error);
-
       toast.error(error?.message || "Failed to send enquiry.");
     } finally {
       setSending(false);
@@ -294,56 +283,56 @@ export default function ContactOwnerPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p>Loading...</p>
+      <div className="flex min-h-screen items-center justify-center bg-[var(--bg-page)] text-[var(--text-primary)]">
+        <p className="font-bold tracking-widest uppercase">Loading...</p>
       </div>
     );
   }
 
   if (!property) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p>Property not found.</p>
+      <div className="flex min-h-screen items-center justify-center bg-[var(--bg-page)] text-[var(--text-primary)]">
+        <p className="text-xl font-extrabold">Property not found.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="mx-auto max-w-2xl">
+    <div className="min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] p-6">
+      <div className="mx-auto max-w-2xl mt-12">
         <button
           onClick={() => router.back()}
-          className="mb-6 text-sm font-medium text-blue-600"
+          className="mb-8 text-sm font-bold tracking-wide uppercase text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-2"
         >
           ← Back
         </button>
 
-        <div className="rounded-2xl bg-white p-6 shadow">
-          <h1 className="text-2xl font-bold text-gray-900">Contact Owner</h1>
+        <div className="rounded-[var(--radius-card)] bg-[var(--bg-card)] border border-[var(--border-subtle)] p-8 shadow-[var(--shadow-card)]">
+          <h1 className="text-3xl font-extrabold tracking-tight">Contact Owner</h1>
 
-          <p className="mt-2 text-gray-500">
+          <p className="mt-2 text-[var(--text-muted)] font-medium">
             Send an enquiry to the property owner.
           </p>
 
-          <div className="mt-6 rounded-xl border p-5">
-            <h2 className="text-xl font-bold">{property.Title}</h2>
+          <div className="mt-8 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-page)] p-6">
+            <h2 className="text-xl font-extrabold">{property.Title}</h2>
 
-            <p className="mt-2 text-sm text-gray-500">
-              {property.Area}
+            <p className="mt-2 text-sm text-[var(--text-muted)] font-medium">
+              📍 {property.Area}
               {property.Area && property.City ? ", " : ""}
               {property.City}
             </p>
 
-            <p className="mt-4 text-sm">Logged in as:</p>
-
-            <p className="font-semibold">{user?.username}</p>
-
-            <p className="text-sm text-gray-500">{user?.email}</p>
+            <div className="mt-6 pt-6 border-t border-[var(--border-subtle)]">
+              <p className="text-xs uppercase tracking-widest font-bold text-[var(--text-muted)] mb-2">Logged in as</p>
+              <p className="font-extrabold text-lg">{user?.username}</p>
+              <p className="text-sm text-[var(--text-muted)]">{user?.email}</p>
+            </div>
           </div>
 
           <button
             onClick={handleContactOwner}
-            className="mt-6 w-full rounded-xl bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700"
+            className="mt-8 w-full rounded-full bg-[var(--text-primary)] text-[var(--bg-page)] py-4 font-extrabold uppercase tracking-widest text-sm hover:opacity-80 transition-opacity"
           >
             Contact Owner
           </button>
@@ -351,24 +340,23 @@ export default function ContactOwnerPage() {
       </div>
 
       {/* CONFIRMATION POPUP */}
-
       {showConfirmation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h2 className="text-xl font-bold">
-              Are you interested in this property?
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-[var(--radius-card)] bg-[var(--bg-card)] p-8 shadow-2xl border border-[var(--border-subtle)] text-[var(--text-primary)]">
+            <h2 className="text-2xl font-extrabold tracking-tight mb-3">
+              Confirm Enquiry
             </h2>
 
-            <p className="mt-3 text-sm text-gray-600">
-              Your enquiry will be sent to the property owner.
+            <p className="text-[var(--text-muted)] font-medium mb-8">
+              Your contact details will be shared with the property owner. Proceed?
             </p>
 
-            <div className="mt-6 flex gap-3">
+            <div className="flex gap-4">
               <button
                 type="button"
                 onClick={() => setShowConfirmation(false)}
                 disabled={sending}
-                className="flex-1 rounded-lg border border-gray-300 py-3 font-medium"
+                className="flex-1 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-page)] py-3 font-bold text-sm uppercase tracking-widest hover:border-[var(--text-primary)] transition-colors"
               >
                 Cancel
               </button>
@@ -377,7 +365,7 @@ export default function ContactOwnerPage() {
                 type="button"
                 onClick={handleSendRequest}
                 disabled={sending}
-                className="flex-1 rounded-lg bg-blue-600 py-3 font-semibold text-white"
+                className="flex-1 rounded-full bg-[var(--text-primary)] py-3 font-bold text-[var(--bg-page)] text-sm uppercase tracking-widest hover:opacity-80 transition-opacity"
               >
                 {sending ? "Sending..." : "Send Request"}
               </button>

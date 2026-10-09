@@ -54,17 +54,20 @@ export default function PopularLocations({ properties = [] }) {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    show: { 
-      opacity: 1, 
+    show: {
+      opacity: 1,
       y: 0,
-      transition: { type: "spring", stiffness: 300, damping: 24 }
+      transition: { type: "spring", stiffness: 300, damping: 24 },
     },
   };
 
   return (
-    <section id="popular-locations" className="mx-auto max-w-[1200px] px-6 py-20 lg:px-8">
+    <section
+      id="popular-locations"
+      className="mx-auto max-w-[1200px] px-6 py-20 lg:px-8"
+    >
       <div className="mx-auto mb-16 flex max-w-3xl flex-col items-center justify-center text-center">
-        <motion.h2 
+        <motion.h2
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -73,7 +76,7 @@ export default function PopularLocations({ properties = [] }) {
         >
           Popular Locations
         </motion.h2>
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -84,7 +87,7 @@ export default function PopularLocations({ properties = [] }) {
         </motion.p>
       </div>
 
-      <motion.div 
+      <motion.div
         variants={containerVariants}
         initial="hidden"
         whileInView="show"
@@ -100,7 +103,8 @@ export default function PopularLocations({ properties = [] }) {
               <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 ease-out group-hover:scale-110"
                 style={{
-                  backgroundImage: 'url("https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=2744&auto=format&fit=crop")',
+                  backgroundImage:
+                    'url("https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=2744&auto=format&fit=crop")',
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 transition-opacity duration-500 group-hover:opacity-90" />
@@ -110,7 +114,7 @@ export default function PopularLocations({ properties = [] }) {
                   {city.name}
                 </span>
                 <div className="mt-2 flex items-center gap-2 overflow-hidden">
-                  <motion.div 
+                  <motion.div
                     initial={{ x: -10, opacity: 0 }}
                     whileHover={{ x: 0, opacity: 1 }}
                     className="flex items-center gap-1.5 text-sm font-semibold text-white/90 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/20 transition-colors group-hover:bg-white group-hover:text-black group-hover:border-white"
