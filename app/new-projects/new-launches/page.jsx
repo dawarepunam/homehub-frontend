@@ -1,69 +1,75 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import Link from "next/link";
-import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { Search, MapPin, Building2, Activity, X, RefreshCw } from "lucide-react";
 
 import { getHomePage } from "@/services/homePage";
 import { getProperties } from "@/services/property";
 
 import HomeHeader from "@/app/home/HomeHeader";
 import Footer from "@/app/home/Footer";
-import PropertyCard from "@/components/PropertyCard";
+import NewProjectsPropertyCard from "@/components/NewProjectsPropertyCard";
 
-import {
-  Search,
-  MapPin,
-  Building2,
-  Activity,
-  X,
-  RefreshCw,
-} from "lucide-react";
-
-const STRAPI_BASE_URL =
-  (process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337").replace(
-    /\/api\/?$/,
-    ""
-  );
-
-// ==============================================================
-// SKELETON CARD
-// ==============================================================
+// ─────────────────────────────────────────
+// SKELETON
+// ─────────────────────────────────────────
 function SkeletonCard() {
   return (
-    <div className="nl-skeleton-card animate-pulse">
-      <div className="nl-skeleton-img" />
-      <div className="nl-skeleton-body">
-        <div className="nl-skeleton-line nl-skeleton-line--wide" />
-        <div className="nl-skeleton-line nl-skeleton-line--mid" />
-        <div className="nl-skeleton-line nl-skeleton-line--narrow" />
-        <div className="nl-skeleton-btn" />
+    <div className="np-skeleton-card">
+      <div className="np-skeleton-img" />
+      <div className="np-skeleton-body">
+        <div className="np-skeleton-line np-skeleton-line--wide" />
+        <div className="np-skeleton-line np-skeleton-line--mid" />
+        <div className="np-skeleton-line np-skeleton-line--narrow" />
+        <div className="np-skeleton-btn" />
       </div>
     </div>
   );
 }
 
-// ==============================================================
-// NEW LAUNCHES PAGE
-// ==============================================================
+// ─────────────────────────────────────────
+// ANIMATION VARIANTS
+// ─────────────────────────────────────────
+const heroVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1, y: 0,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.07, delayChildren: 0.05 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 28 },
+  show: {
+    opacity: 1, y: 0,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+// ─────────────────────────────────────────
+// PAGE
+// ─────────────────────────────────────────
 export default function NewLaunchesPage() {
   const [homeData, setHomeData] = useState(null);
   const [allProjects, setAllProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Filters
   const [searchQuery, setSearchQuery] = useState("");
   const [location, setLocation] = useState("");
   const [propertyType, setPropertyType] = useState("");
   const [projectStatus, setProjectStatus] = useState("");
 
-  // ────────────────────────────────────────────
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  async function fetchData() {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -75,57 +81,46 @@ export default function NewLaunchesPage() {
 
       setHomeData(homePage);
 
-      // ── Filter: New Launches = "New" PropertyCondition or "New" PropertyAge,
-      // or Under Construction. Handles both ACTIVE and Available status values.
       const NEW_STATUSES = new Set(["ACTIVE", "Available", "PUBLISHED"]);
       const NEW_CONDITIONS = new Set(["New", "Under Construction"]);
       const NEW_AGES = new Set(["New ", "New", "Years 0-1"]);
 
       const newLaunches = (properties || []).filter((p) => {
-        // Only active/available listings
         if (!NEW_STATUSES.has(p.PropertyStatus)) return false;
-
         const cond =
           p.ResidentialDetails?.PropertyCondition ||
           p.CommercialDetails?.PropertyCondition ||
           p.IndustrialDetails?.PropertyCondition;
-
         const age = p.PropertyCommonDetails?.PropertyAge;
-
-        // Match if condition says New/Under Construction, OR age says New/0-1
         if (cond && NEW_CONDITIONS.has(cond)) return true;
         if (age && NEW_AGES.has(age)) return true;
-
-        // If neither condition nor age is set at all, include if recently created
-        // (within last 90 days) — do NOT include if condition is set but not New
         if (!cond && !age) {
           const created = new Date(p.createdAt);
-          const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
-          return created >= ninetyDaysAgo;
+          return created >= new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
         }
-
         return false;
       });
-
 
       setAllProjects(newLaunches);
     } catch (err) {
       console.error("NEW LAUNCHES ERROR:", err);
-      setError("Unable to load projects.");
+      setError("Unable to load projects. Please try again.");
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
-  // ── Derived filter options ─────────────────────────────────
-  const availableLocations = useMemo(() => {
-    return [...new Set(allProjects.map((p) => p.City).filter(Boolean))];
-  }, [allProjects]);
+  useEffect(() => { fetchData(); }, [fetchData]);
 
-  const availableTypes = useMemo(() => {
-    return [...new Set(allProjects.map((p) => p.Property_Type).filter(Boolean))];
-  }, [allProjects]);
-
+  // Filter options
+  const availableLocations = useMemo(
+    () => [...new Set(allProjects.map((p) => p.City).filter(Boolean))].sort(),
+    [allProjects]
+  );
+  const availableTypes = useMemo(
+    () => [...new Set(allProjects.map((p) => p.Property_Type).filter(Boolean))],
+    [allProjects]
+  );
   const availableStatuses = useMemo(() => {
     const s = new Set();
     allProjects.forEach((p) => {
@@ -138,7 +133,7 @@ export default function NewLaunchesPage() {
     return [...s];
   }, [allProjects]);
 
-  // ── Filtered projects ──────────────────────────────────────
+  // Filtered results
   const filteredProjects = useMemo(() => {
     return allProjects.filter((p) => {
       if (searchQuery) {
@@ -147,9 +142,7 @@ export default function NewLaunchesPage() {
           !p.Title?.toLowerCase().includes(q) &&
           !p.City?.toLowerCase().includes(q) &&
           !p.Area?.toLowerCase().includes(q)
-        ) {
-          return false;
-        }
+        ) return false;
       }
       if (location && p.City !== location) return false;
       if (propertyType && p.Property_Type !== propertyType) return false;
@@ -173,372 +166,231 @@ export default function NewLaunchesPage() {
     setProjectStatus("");
   }
 
-  // ── Stats ──────────────────────────────────────────────────
-  const stats = useMemo(
-    () => ({
-      total: allProjects.length,
-      residential: allProjects.filter((p) => p.Property_Type === "Residential").length,
-      commercial: allProjects.filter((p) => p.Property_Type === "Commercial").length,
-      locations: new Set(allProjects.map((p) => p.City).filter(Boolean)).size,
-    }),
-    [allProjects]
-  );
+  const stats = useMemo(() => ({
+    total: allProjects.length,
+    residential: allProjects.filter((p) => p.Property_Type === "Residential").length,
+    commercial: allProjects.filter((p) => p.Property_Type === "Commercial").length,
+    locations: new Set(allProjects.map((p) => p.City).filter(Boolean)).size,
+  }), [allProjects]);
 
-  const heroBg = homeData?.Hero?.BackgroundImage?.url
-    ? `${STRAPI_BASE_URL}${homeData.Hero.BackgroundImage.url}`
-    : null;
-
-  // ==============================================================
-  // RENDER
-  // ==============================================================
   return (
-    <>
-      <style>{`
-        /* ====================================================
-           NEW LAUNCHES – Scoped Styles
-        ==================================================== */
-        .nl-page { min-height: 100vh; background: #F6F0E5; display: flex; flex-direction: column; }
+    <div className="flex flex-col min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)]">
+      {homeData && <HomeHeader header={homeData.Header} />}
 
-        /* HERO */
-        .nl-hero {
-          position: relative;
-          min-height: 340px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #0D3326;
-          overflow: hidden;
-        }
-        .nl-hero-bg {
-          position: absolute; inset: 0;
-          object-fit: cover; opacity: 0.18;
-        }
-        .nl-hero-overlay {
-          position: absolute; inset: 0;
-          background: linear-gradient(160deg, rgba(13,51,38,0.92) 0%, rgba(13,51,38,0.75) 100%);
-        }
-        .nl-hero-content { position: relative; z-index: 1; text-align: center; padding: 80px 24px 60px; max-width: 800px; }
-        .nl-hero-badge {
-          display: inline-flex; align-items: center; gap: 8px;
-          background: rgba(215,174,98,0.15); border: 1px solid rgba(215,174,98,0.4);
-          color: #D7AE62; padding: 6px 16px; border-radius: 999px;
-          font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
-          margin-bottom: 18px;
-        }
-        .nl-hero-title {
-          font-size: clamp(2rem, 5vw, 3.2rem);
-          font-weight: 800; color: #fff; line-height: 1.15; margin-bottom: 14px;
-        }
-        .nl-hero-title span { color: #D7AE62; }
-        .nl-hero-subtitle {
-          font-size: clamp(0.95rem, 2vw, 1.1rem);
-          color: rgba(246,240,229,0.85); max-width: 560px; margin: 0 auto;
-        }
-
-        /* STATS BAR */
-        .nl-stats {
-          background: #0D3326;
-          border-top: 1px solid rgba(215,174,98,0.2);
-          padding: 14px 24px;
-          display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
-        }
-        .nl-stat { text-align: center; }
-        .nl-stat-num { font-size: 1.4rem; font-weight: 800; color: #D7AE62; }
-        .nl-stat-lbl { font-size: 11px; font-weight: 600; color: rgba(246,240,229,0.65); text-transform: uppercase; letter-spacing: 0.08em; }
-
-        /* MAIN */
-        .nl-main { flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; padding: 40px 20px 60px; }
-
-        /* FILTER CARD */
-        .nl-filter-card {
-          background: #fff; border-radius: 20px;
-          box-shadow: 0 8px 40px rgba(13,51,38,0.10);
-          border: 1px solid rgba(215,174,98,0.18);
-          padding: 28px;
-          margin-bottom: 40px;
-        }
-        .nl-filter-grid {
-          display: grid;
-          grid-template-columns: 2fr 1fr 1fr 1fr;
-          gap: 16px;
-        }
-        @media (max-width: 900px) { .nl-filter-grid { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 540px) { .nl-filter-grid { grid-template-columns: 1fr; } }
-
-        .nl-filter-group label {
-          display: block; font-size: 10px; font-weight: 700;
-          color: #0D3326; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px;
-        }
-        .nl-input-wrap { position: relative; }
-        .nl-input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; }
-        .nl-input, .nl-select {
-          width: 100%; padding: 11px 14px 11px 38px;
-          background: #f9fafb; border: 1.5px solid #e5e7eb;
-          border-radius: 12px; font-size: 13px; color: #1a1a1a;
-          outline: none; transition: all 0.2s; appearance: none;
-        }
-        .nl-input:focus, .nl-select:focus { border-color: #D7AE62; box-shadow: 0 0 0 3px rgba(215,174,98,0.15); }
-        .nl-filter-footer { display: flex; justify-content: flex-end; margin-top: 14px; }
-        .nl-clear-btn {
-          display: flex; align-items: center; gap: 6px;
-          font-size: 13px; font-weight: 600; color: #6b7280;
-          background: none; border: none; cursor: pointer;
-          padding: 6px 12px; border-radius: 8px; transition: all 0.2s;
-        }
-        .nl-clear-btn:hover { color: #dc2626; background: #fef2f2; }
-
-        /* RESULTS HEADER */
-        .nl-results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-        .nl-results-title { font-size: 1.4rem; font-weight: 800; color: #0D3326; }
-        .nl-results-count { color: #D7AE62; }
-
-        /* GRID */
-        .nl-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 24px;
-        }
-        @media (max-width: 1024px) { .nl-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 640px) { .nl-grid { grid-template-columns: 1fr; } }
-
-        /* SKELETON */
-        .nl-skeleton-card { background: #fff; border-radius: 18px; overflow: hidden; border: 1px solid #f0f0f0; }
-        .nl-skeleton-img { height: 220px; background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
-        .nl-skeleton-body { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .nl-skeleton-line { height: 14px; border-radius: 6px; background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
-        .nl-skeleton-line--wide { width: 75%; }
-        .nl-skeleton-line--mid { width: 55%; }
-        .nl-skeleton-line--narrow { width: 40%; }
-        .nl-skeleton-btn { height: 40px; border-radius: 10px; background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; margin-top: 6px; }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-        /* STATES */
-        .nl-state-box {
-          text-align: center; padding: 72px 24px;
-          background: #fff; border-radius: 20px;
-          border: 1px solid #e5e7eb;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
-        .nl-state-icon { font-size: 3rem; margin-bottom: 16px; }
-        .nl-state-title { font-size: 1.2rem; font-weight: 800; color: #0D3326; margin-bottom: 8px; }
-        .nl-state-sub { font-size: 14px; color: #6b7280; margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto; }
-        .nl-state-btn {
-          display: inline-flex; align-items: center; gap: 8px;
-          padding: 10px 24px; border-radius: 10px; font-size: 14px; font-weight: 700;
-          cursor: pointer; transition: all 0.2s; border: none;
-        }
-        .nl-state-btn--primary { background: #0D3326; color: #F6F0E5; }
-        .nl-state-btn--primary:hover { background: #0a2920; }
-        .nl-state-btn--outline { background: transparent; border: 1.5px solid #D7AE62; color: #0D3326; }
-        .nl-state-btn--outline:hover { background: #D7AE62; color: #fff; }
-      `}</style>
-
-      <div className="nl-page">
-        {/* ── HOME HEADER ────────────────────────────────────── */}
-        {homeData && <HomeHeader header={homeData.Header} />}
-
-        {/* ── HERO ───────────────────────────────────────────── */}
-        <section className="nl-hero">
-          {heroBg && (
-            <Image
-              src={heroBg}
-              alt="New Launch Projects Background"
-              fill
-              className="nl-hero-bg"
-              unoptimized
-              priority
-            />
-          )}
-          <div className="nl-hero-overlay" />
-          <div className="nl-hero-content">
-            <div className="nl-hero-badge">
-              <span>✦</span> New Launches
+      {/* ── LUXURY HERO ── */}
+      <section className="np-hero">
+        <div className="np-hero__bg" />
+        <div className="np-hero__content">
+          <motion.div variants={heroVariants} initial="hidden" animate="visible">
+            <div className="np-hero__eyebrow">
+              <span className="np-hero__eyebrow-dot" />
+              New Launches
             </div>
-            <h1 className="nl-hero-title">
-              Discover New Launch{" "}
-              <span>Projects</span>
+            <h1 className="np-hero__heading">
+              Discover New<br />
+              <span className="np-hero__heading-muted">Launch Projects</span>
             </h1>
-            <p className="nl-hero-subtitle">
-              Explore newly launched residential and commercial projects and find
-              a property that fits your lifestyle.
+            <p className="np-hero__desc">
+              Explore newly launched residential and commercial projects crafted for modern lifestyles.
             </p>
-          </div>
-        </section>
+          </motion.div>
+        </div>
+      </section>
 
-        {/* ── STATS BAR ──────────────────────────────────────── */}
-        {!loading && !error && allProjects.length > 0 && (
-          <div className="nl-stats">
-            <div className="nl-stat">
-              <div className="nl-stat-num">{stats.total}</div>
-              <div className="nl-stat-lbl">New Launch Projects</div>
+      {/* ── STATS ── */}
+      {!loading && !error && allProjects.length > 0 && (
+        <motion.div
+          className="np-stats"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <div className="np-stats__inner">
+            {[
+              { num: stats.total, label: "Projects" },
+              { num: stats.locations, label: "Cities" },
+              { num: stats.residential, label: "Residential" },
+              { num: stats.commercial, label: "Commercial" },
+            ].map((s, i) => (
+              <motion.div
+                key={i}
+                className="np-stat"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + i * 0.06 }}
+              >
+                <span className="np-stat__num">{s.num}</span>
+                <span className="np-stat__label">{s.label}</span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* ── MAIN ── */}
+      <main className="flex-1 max-w-[1400px] w-full mx-auto px-6 py-12">
+
+        {/* Filter Bar */}
+        <motion.div
+          className="np-filter-bar"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <div className="np-filter-grid">
+            {/* Search */}
+            <div className="np-filter-field">
+              <label className="np-filter-label">Search</label>
+              <div className="np-filter-input-wrap">
+                <Search className="np-filter-icon" />
+                <input
+                  type="text"
+                  placeholder="Project name, area or city..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="np-filter-input"
+                />
+              </div>
             </div>
-            <div className="nl-stat">
-              <div className="nl-stat-num">{stats.locations}</div>
-              <div className="nl-stat-lbl">Locations</div>
+
+            {/* Location */}
+            <div className="np-filter-field">
+              <label className="np-filter-label">City</label>
+              <div className="np-filter-input-wrap">
+                <MapPin className="np-filter-icon" />
+                <select
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="np-filter-select"
+                >
+                  <option value="">All Cities</option>
+                  {availableLocations.map((loc) => (
+                    <option key={loc} value={loc}>{loc}</option>
+                  ))}
+                </select>
+              </div>
             </div>
-            <div className="nl-stat">
-              <div className="nl-stat-num">{stats.residential}</div>
-              <div className="nl-stat-lbl">Residential</div>
+
+            {/* Property Type */}
+            <div className="np-filter-field">
+              <label className="np-filter-label">Type</label>
+              <div className="np-filter-input-wrap">
+                <Building2 className="np-filter-icon" />
+                <select
+                  value={propertyType}
+                  onChange={(e) => setPropertyType(e.target.value)}
+                  className="np-filter-select"
+                >
+                  <option value="">All Types</option>
+                  {availableTypes.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
             </div>
-            <div className="nl-stat">
-              <div className="nl-stat-num">{stats.commercial}</div>
-              <div className="nl-stat-lbl">Commercial</div>
+
+            {/* Status */}
+            <div className="np-filter-field">
+              <label className="np-filter-label">Status</label>
+              <div className="np-filter-input-wrap">
+                <Activity className="np-filter-icon" />
+                <select
+                  value={projectStatus}
+                  onChange={(e) => setProjectStatus(e.target.value)}
+                  className="np-filter-select"
+                >
+                  <option value="">All Statuses</option>
+                  {availableStatuses.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
             </div>
+          </div>
+
+          <AnimatePresence>
+            {hasActiveFilters && (
+              <motion.div
+                className="np-filter-actions"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+              >
+                <button onClick={clearFilters} className="np-filter-clear">
+                  <X size={13} />
+                  Clear Filters
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* ── LOADING ── */}
+        {loading && (
+          <div className="np-grid">
+            {[1, 2, 3, 4, 5, 6].map((i) => <SkeletonCard key={i} />)}
           </div>
         )}
 
-        {/* ── MAIN CONTENT ───────────────────────────────────── */}
-        <main className="nl-main">
+        {/* ── ERROR ── */}
+        {!loading && error && (
+          <div className="np-state-box">
+            <div className="np-state-icon">⚠️</div>
+            <h3 className="np-state-title">Unable to Load Projects</h3>
+            <p className="np-state-desc">{error}</p>
+            <button onClick={fetchData} className="np-state-btn">
+              <RefreshCw size={14} />
+              Try Again
+            </button>
+          </div>
+        )}
 
-          {/* SEARCH & FILTER */}
-          <div className="nl-filter-card">
-            <div className="nl-filter-grid">
-              {/* Search */}
-              <div className="nl-filter-group">
-                <label htmlFor="nl-search">Search</label>
-                <div className="nl-input-wrap">
-                  <Search className="nl-input-icon" size={16} />
-                  <input
-                    id="nl-search"
-                    type="text"
-                    className="nl-input"
-                    placeholder="Search by project name or location..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* Location */}
-              <div className="nl-filter-group">
-                <label htmlFor="nl-location">Location</label>
-                <div className="nl-input-wrap">
-                  <MapPin className="nl-input-icon" size={16} />
-                  <select
-                    id="nl-location"
-                    className="nl-select"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                  >
-                    <option value="">All Locations</option>
-                    {availableLocations.map((loc) => (
-                      <option key={loc} value={loc}>{loc}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Property Type */}
-              <div className="nl-filter-group">
-                <label htmlFor="nl-type">Property Type</label>
-                <div className="nl-input-wrap">
-                  <Building2 className="nl-input-icon" size={16} />
-                  <select
-                    id="nl-type"
-                    className="nl-select"
-                    value={propertyType}
-                    onChange={(e) => setPropertyType(e.target.value)}
-                  >
-                    <option value="">All Types</option>
-                    {availableTypes.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Status */}
-              <div className="nl-filter-group">
-                <label htmlFor="nl-status">Project Status</label>
-                <div className="nl-input-wrap">
-                  <Activity className="nl-input-icon" size={16} />
-                  <select
-                    id="nl-status"
-                    className="nl-select"
-                    value={projectStatus}
-                    onChange={(e) => setProjectStatus(e.target.value)}
-                  >
-                    <option value="">All Statuses</option>
-                    {availableStatuses.map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-
+        {/* ── EMPTY ── */}
+        {!loading && !error && filteredProjects.length === 0 && (
+          <div className="np-state-box">
+            <div className="np-state-icon">🏗️</div>
+            <h3 className="np-state-title">No Projects Found</h3>
+            <p className="np-state-desc">
+              {hasActiveFilters
+                ? "No projects match your current filters. Try adjusting your search."
+                : "No new launch projects are available right now. Check back soon."}
+            </p>
             {hasActiveFilters && (
-              <div className="nl-filter-footer">
-                <button className="nl-clear-btn" onClick={clearFilters}>
-                  <X size={15} /> Clear Filters
-                </button>
-              </div>
+              <button onClick={clearFilters} className="np-state-btn np-state-btn--outline">
+                Clear Filters
+              </button>
             )}
           </div>
+        )}
 
-          {/* ── LOADING ──────────────────────────────────────── */}
-          {loading && (
-            <div className="nl-grid">
-              {[1, 2, 3, 4, 5, 6].map((i) => <SkeletonCard key={i} />)}
+        {/* ── RESULTS ── */}
+        {!loading && !error && filteredProjects.length > 0 && (
+          <>
+            <div className="np-results-header">
+              <h2 className="np-results-title">New Launch Projects</h2>
+              <span className="np-results-count">{filteredProjects.length} found</span>
             </div>
-          )}
 
-          {/* ── ERROR ────────────────────────────────────────── */}
-          {!loading && error && (
-            <div className="nl-state-box">
-              <div className="nl-state-icon">⚠️</div>
-              <h3 className="nl-state-title">Unable to load projects.</h3>
-              <p className="nl-state-sub">Please try again.</p>
-              <button className="nl-state-btn nl-state-btn--primary" onClick={fetchData}>
-                <RefreshCw size={15} /> Retry
-              </button>
-            </div>
-          )}
-
-          {/* ── EMPTY ────────────────────────────────────────── */}
-          {!loading && !error && filteredProjects.length === 0 && (
-            <div className="nl-state-box">
-              <div className="nl-state-icon">🏗️</div>
-              <h3 className="nl-state-title">No New Launch Projects Found</h3>
-              <p className="nl-state-sub">
-                There are currently no new launch projects matching your
-                selection.
-              </p>
-              {hasActiveFilters && (
-                <button className="nl-state-btn nl-state-btn--outline" onClick={clearFilters}>
-                  <X size={15} /> Clear Filters
-                </button>
-              )}
-            </div>
-          )}
-
-          {/* ── RESULTS GRID ─────────────────────────────────── */}
-          {!loading && !error && filteredProjects.length > 0 && (
-            <>
-              <div className="nl-results-header">
-                <h2 className="nl-results-title">
-                  New Launches{" "}
-                  <span className="nl-results-count">
-                    ({filteredProjects.length})
-                  </span>
-                </h2>
-              </div>
-
-              <div className="nl-grid">
-                {filteredProjects.map((property) => (
-                  <PropertyCard
-                    key={property.documentId}
+            <motion.div
+              className="np-grid"
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+            >
+              {filteredProjects.map((property, idx) => (
+                <motion.div key={property.documentId} variants={cardVariants}>
+                  <NewProjectsPropertyCard
                     property={property}
+                    priority={idx < 3}
                   />
-                ))}
-              </div>
-            </>
-          )}
-        </main>
+                </motion.div>
+              ))}
+            </motion.div>
+          </>
+        )}
+      </main>
 
-        {/* ── FOOTER ─────────────────────────────────────────── */}
-        {homeData && <Footer data={homeData.Footer} />}
-      </div>
-    </>
+      {homeData && <Footer data={homeData.Footer} />}
+    </div>
   );
 }
