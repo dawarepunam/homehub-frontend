@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, MapPin, Building2, TrendingUp, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { formatPrice } from "@/services/localityInsights";
+import { motion, AnimatePresence } from "framer-motion";
 
 const STRAPI_BASE = (process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337").replace(/\/api\/?$/, "");
 
@@ -16,10 +17,7 @@ function resolveImageUrl(url) {
 export default function LocalityClient({ initialCities, popularLocalities }) {
   const [city, setCity] = useState("");
   const [query, setQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
 
-  // Fallback to client side filtering on the initial popular list if needed, 
-  // though a real autocomplete should call the API.
   const filteredLocalities = useMemo(() => {
     return popularLocalities.filter(l => {
       const matchCity = !city || l.city.toLowerCase() === city.toLowerCase();
@@ -28,39 +26,55 @@ export default function LocalityClient({ initialCities, popularLocalities }) {
     });
   }, [popularLocalities, city, query]);
 
+  const handleExplore = (e) => {
+    e.preventDefault();
+    document.getElementById("localities-grid")?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const gridVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
   return (
-    <div className="flex-1 bg-[#F6F0E5]">
+    <div className="flex-1 bg-[var(--bg-page)]">
       {/* HERO SECTION */}
-      <div 
-        style={{ background: "linear-gradient(135deg, #0D3326 0%, #1a5040 100%)" }}
-        className="relative py-24 px-4 text-center overflow-hidden"
-      >
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: "radial-gradient(circle at 2px 2px, #D7AE62 1px, transparent 0)",
-          backgroundSize: "40px 40px"
-        }} />
-        
+      <div className="relative pt-32 pb-24 px-6 text-center overflow-hidden bg-[var(--bg-section)] border-b border-[var(--border-subtle)]">
         <div className="relative max-w-4xl mx-auto z-10">
-          <span className="inline-block text-[#D7AE62] text-xs md:text-sm font-extrabold tracking-[0.25em] uppercase mb-4">
-            Locality Insights
-          </span>
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-            Explore Your Neighborhood
-          </h1>
-          <p className="text-white/80 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
-            Discover property prices, connectivity, nearby amenities, and insights about the neighborhoods you love.
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <span className="inline-block text-[var(--text-primary)] text-xs md:text-sm font-extrabold tracking-[0.3em] uppercase mb-6">
+              Neighborhood Intelligence
+            </span>
+            <h1 className="text-4xl md:text-7xl font-extrabold text-[var(--text-primary)] mb-8 leading-[1.05] tracking-tighter">
+              Discover Your<br/>Next Locality
+            </h1>
+            <p className="text-[var(--text-muted)] text-lg md:text-2xl mb-14 max-w-2xl mx-auto leading-relaxed font-medium">
+              Data-driven insights, property availability, and market trends for India's premium neighborhoods.
+            </p>
+          </motion.div>
 
           {/* SEARCH BOX */}
-          <div className="bg-white p-2 md:p-3 rounded-2xl md:rounded-full shadow-2xl max-w-3xl mx-auto flex flex-col md:flex-row gap-3">
-            
+          <motion.form 
+            onSubmit={handleExplore}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+            className="bg-[var(--bg-card)] p-2 rounded-2xl md:rounded-full shadow-[var(--shadow-card)] border border-[var(--border-subtle)] max-w-3xl mx-auto flex flex-col md:flex-row gap-2 relative z-20"
+          >
             {/* CITY SELECTOR */}
-            <div className="relative flex-1 md:border-r border-gray-100 flex items-center">
-              <MapPin className="absolute left-4 w-5 h-5 text-gray-400" />
+            <div className="relative flex-1 md:border-r border-[var(--border-subtle)] flex items-center">
+              <MapPin className="absolute left-5 w-5 h-5 text-[var(--text-muted)]" />
               <select 
                 value={city} 
                 onChange={e => setCity(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 md:py-3 appearance-none bg-transparent font-medium text-gray-700 outline-none focus:ring-0 cursor-pointer"
+                className="w-full pl-14 pr-10 py-4 appearance-none bg-transparent font-bold text-[var(--text-primary)] outline-none cursor-pointer uppercase tracking-widest text-xs"
               >
                 <option value="">All Cities</option>
                 {initialCities.map(c => (
@@ -71,49 +85,56 @@ export default function LocalityClient({ initialCities, popularLocalities }) {
 
             {/* QUERY INPUT */}
             <div className="relative flex-[2] flex items-center">
-              <Search className="absolute left-4 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-5 w-5 h-5 text-[var(--text-muted)]" />
               <input 
                 type="text" 
-                placeholder="Search locality (e.g. Baner, Andheri)..."
+                placeholder="Search neighborhood..."
                 value={query}
                 onChange={e => setQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 md:py-3 bg-transparent font-medium text-gray-700 outline-none placeholder-gray-400"
+                className="w-full pl-14 pr-6 py-4 bg-transparent font-medium text-[var(--text-primary)] text-base outline-none placeholder-[var(--text-muted)]"
               />
             </div>
 
             {/* SUBMIT BUTTON */}
-            <button className="bg-[#D7AE62] text-[#0D3326] px-8 py-4 md:py-3 rounded-xl md:rounded-full font-bold hover:bg-[#c49a51] transition-colors whitespace-nowrap">
+            <button type="submit" className="bg-[var(--text-primary)] text-[var(--bg-page)] px-10 py-4 rounded-xl md:rounded-full font-bold uppercase tracking-widest hover:opacity-80 transition-opacity text-sm">
               Explore
             </button>
-          </div>
+          </motion.form>
         </div>
       </div>
 
       {/* POPULAR LOCALITIES */}
-      <div className="max-w-7xl mx-auto px-4 py-20">
-        <div className="flex flex-col md:flex-row items-end justify-between mb-12">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[#0D3326] mb-4">
-              Explore Popular Localities
-            </h2>
-            <p className="text-gray-600 text-lg">
-              Top neighborhoods based on actual property availability.
-            </p>
-          </div>
+      <div id="localities-grid" className="max-w-[1200px] mx-auto px-6 py-24 scroll-mt-20">
+        <div className="flex flex-col mb-16 border-b border-[var(--border-subtle)] pb-6">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-[var(--text-primary)] mb-4 tracking-tight">
+            Popular Markets
+          </h2>
+          <p className="text-[var(--text-muted)] text-lg font-medium">
+            Active neighborhoods based on current property availability.
+          </p>
         </div>
 
         {filteredLocalities.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-[rgba(13,51,38,0.05)]">
-            <MapPin className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-[#0D3326] mb-2">No localities found</h3>
-            <p className="text-gray-500">Try adjusting your search query or city selection.</p>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            className="text-center py-32 bg-[var(--bg-card)] rounded-[var(--radius-card)] border border-[var(--border-subtle)]"
+          >
+            <MapPin className="w-12 h-12 text-[var(--border-subtle)] mx-auto mb-6" />
+            <h3 className="text-2xl font-extrabold text-[var(--text-primary)] mb-3 tracking-tight">No localities found</h3>
+            <p className="text-[var(--text-muted)] font-medium text-lg">Try adjusting your search query or city selection.</p>
+          </motion.div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div 
+            variants={gridVariants}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-50px" }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
             {filteredLocalities.map((loc, i) => (
               <LocalityCard key={i} locality={loc} />
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </div>
@@ -122,68 +143,74 @@ export default function LocalityClient({ initialCities, popularLocalities }) {
 
 function LocalityCard({ locality }) {
   const imgUrl = resolveImageUrl(locality.image);
-  // Use pre-computed slugs from the service to guarantee URL ↔ map-key consistency.
   const citySlug = locality.citySlug || locality.city.toLowerCase().replace(/\s+/g, "-");
   const localitySlug = locality.localitySlug || locality.locality.toLowerCase().replace(/\s+/g, "-");
 
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  };
+
   return (
-    <Link
-      href={`/locality-insights/${encodeURIComponent(citySlug)}/${encodeURIComponent(localitySlug)}`}
-      className="group bg-white rounded-3xl overflow-hidden shadow-sm border border-[rgba(13,51,38,0.06)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full"
-    >
-      <div className="relative h-56 bg-gray-100 overflow-hidden shrink-0">
-        {imgUrl ? (
-          <Image src={imgUrl} alt={""} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized={true} />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-[#0D3326]/5">
-            <Building2 className="w-16 h-16 text-[#0D3326]/20" />
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-        
-        <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between text-white">
-          <div>
-            <h3 className="text-2xl font-extrabold mb-1 drop-shadow-md">
-              {locality.locality}
-            </h3>
-            <div className="flex items-center text-sm font-medium opacity-90 drop-shadow-md">
-              <MapPin className="w-3.5 h-3.5 mr-1" />
-              {locality.city}
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div className="p-6 flex flex-col flex-1">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#0D3326]/5 flex items-center justify-center text-[#0D3326]">
-              <Building2 className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Available</div>
-              <div className="text-lg font-bold text-[#0D3326]">{locality.propertyCount} Properties</div>
-            </div>
-          </div>
-          
-          {locality.startingPrice && (
-            <div className="text-right">
-              <div className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Starting</div>
-              <div className="text-lg font-bold text-[#D7AE62]">
-                {formatPrice(locality.startingPrice.price)}
-                <span className="text-sm font-medium text-gray-400 ml-1">/{locality.startingPrice.purpose === 'Rent' ? 'mo' : 'buy'}</span>
-              </div>
+    <motion.div variants={itemVariants}>
+      <Link
+        href={`/locality-insights/${encodeURIComponent(citySlug)}/${encodeURIComponent(localitySlug)}`}
+        className="group relative flex flex-col h-full bg-[var(--bg-card)] rounded-[var(--radius-card)] overflow-hidden shadow-[var(--shadow-card)] border border-[var(--border-subtle)] hover:border-[var(--border-hover)] transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl"
+      >
+        <div className="relative h-64 bg-[var(--bg-page)] overflow-hidden shrink-0">
+          {imgUrl ? (
+            <Image src={imgUrl} alt={""} fill className="object-cover group-hover:scale-110 transition-transform duration-1000 ease-out" unoptimized={true} />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/5">
+              <Building2 className="w-12 h-12 text-[var(--text-muted)] opacity-30" />
             </div>
           )}
-        </div>
-
-        <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between text-[#0D3326] font-bold text-sm">
-          <span>Explore Locality</span>
-          <div className="w-8 h-8 rounded-full bg-[#D7AE62]/10 flex items-center justify-center group-hover:bg-[#D7AE62] group-hover:text-white transition-colors">
-            <ChevronRight className="w-4 h-4" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+          
+          <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between text-white z-10">
+            <div>
+              <h3 className="text-3xl font-extrabold mb-2 tracking-tight drop-shadow-lg">
+                {locality.locality}
+              </h3>
+              <div className="flex items-center text-sm font-bold uppercase tracking-widest opacity-90 drop-shadow-md">
+                <MapPin className="w-4 h-4 mr-2" />
+                {locality.city}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </Link>
+        
+        <div className="p-8 flex flex-col flex-1 bg-[var(--bg-card)]">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-[var(--bg-page)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)]">
+                <Building2 className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-1">Available</div>
+                <div className="text-xl font-extrabold text-[var(--text-primary)]">{locality.propertyCount}</div>
+              </div>
+            </div>
+            
+            {locality.startingPrice && (
+              <div className="text-right">
+                <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-1">Starting From</div>
+                <div className="text-xl font-extrabold text-[var(--text-primary)]">
+                  {formatPrice(locality.startingPrice.price)}
+                  <span className="text-xs font-bold text-[var(--text-muted)] uppercase ml-1 block mt-1">{locality.startingPrice.purpose === 'Rent' ? '/ Month' : 'Purchase'}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-auto pt-6 border-t border-[var(--border-subtle)] flex items-center justify-between text-[var(--text-primary)] font-bold uppercase tracking-widest text-xs">
+            <span>Market Insights</span>
+            <div className="w-10 h-10 rounded-full border border-[var(--border-subtle)] flex items-center justify-center group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-page)] group-hover:border-[var(--text-primary)] transition-all duration-300 transform group-hover:translate-x-1">
+              <ChevronRight className="w-4 h-4" />
+            </div>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
   );
 }

@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import { getProperties } from "@/services/property";
 import PropertyCard from "@/components/PropertyCard";
-import { MapPin, Search } from "lucide-react";
+import { MapPin, Search, Navigation, Filter, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import dynamic from 'next/dynamic';
+import { motion, AnimatePresence } from "framer-motion";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
@@ -15,9 +16,9 @@ const LeafletMap = dynamic(
   { 
     ssr: false,
     loading: () => (
-      <div className="absolute inset-0 flex items-center justify-center bg-gray-50 flex-col gap-4 p-8 text-center rounded-xl">
-        <div className="w-12 h-12 border-4 border-gray-200 border-t-[#D7AE62] rounded-full animate-spin"></div>
-        <p className="text-gray-500 font-medium">Loading Map...</p>
+      <div className="absolute inset-0 flex items-center justify-center bg-[var(--bg-card)] flex-col gap-4 p-8 text-center rounded-[var(--radius-card)] border border-[var(--border-subtle)]">
+        <Loader2 className="w-10 h-10 animate-spin text-[var(--text-primary)]" />
+        <p className="text-[var(--text-muted)] font-bold uppercase tracking-widest text-xs">Initializing Map</p>
       </div>
     )
   }
@@ -62,7 +63,7 @@ export default function PropertiesNearMe() {
   const requestLocation = () => {
     setLocationState("loading");
     if (!navigator.geolocation) {
-      setLocationError("Geolocation is not supported by your browser");
+      setLocationError("Geolocation is not supported by your browser.");
       setLocationState("error");
       return;
     }
@@ -76,7 +77,7 @@ export default function PropertiesNearMe() {
         setLocationState("success");
       },
       (error) => {
-        setLocationError("Location access is turned off. Allow location access or search manually.");
+        setLocationError("Location access denied. Please enable it or search manually.");
         setLocationState("error");
       }
     );
@@ -141,134 +142,193 @@ export default function PropertiesNearMe() {
     setFilteredProperties(result);
   }, [allProperties, userLocation, filterPurpose, filterType, filterRadius, searchCity]);
 
+  const listVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#0D3326] mb-2">Properties Near Me</h1>
-        <p className="text-gray-600">Discover properties in your area using real-time location.</p>
-      </div>
-      
-      {/* Search and Filters */}
-      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-8 flex flex-wrap gap-4 items-center">
-        <div className="flex-1 min-w-[250px] relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input 
-            type="text" 
-            placeholder="Search city, locality, or area..." 
-            value={searchCity}
-            onChange={(e) => setSearchCity(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D7AE62] focus:border-transparent"
-          />
-        </div>
-        
-        <button 
-          onClick={requestLocation}
-          className="flex items-center gap-2 bg-[#0D3326] text-white px-4 py-2 rounded-md hover:bg-[#0a271d] transition-colors whitespace-nowrap"
+    <div className="bg-[var(--bg-page)] min-h-screen pt-12 pb-24">
+      <div className="max-w-[1440px] mx-auto px-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-10"
         >
-          <MapPin className="w-4 h-4" /> Use My Location
-        </button>
+          <span className="inline-block text-[var(--text-primary)] text-[11px] font-extrabold tracking-[0.3em] uppercase mb-4">
+            Proximity Search
+          </span>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--text-primary)] mb-4 tracking-tight">Properties Near Me</h1>
+          <p className="text-[var(--text-muted)] text-lg font-medium max-w-2xl">Discover real estate within your immediate vicinity using real-time geolocation.</p>
+        </motion.div>
         
-        <select 
-          value={filterPurpose} 
-          onChange={(e) => setFilterPurpose(e.target.value)}
-          className="border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#D7AE62]"
+        {/* Search and Filters */}
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="bg-[var(--bg-card)] p-5 rounded-[var(--radius-card)] shadow-[var(--shadow-card)] border border-[var(--border-subtle)] mb-8 flex flex-col md:flex-row flex-wrap gap-4 items-center z-20 relative"
         >
-          <option value="">Buy / Rent</option>
-          <option value="Sale">Buy</option>
-          <option value="Rent">Rent</option>
-        </select>
-        
-        <select 
-          value={filterType} 
-          onChange={(e) => setFilterType(e.target.value)}
-          className="border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#D7AE62]"
-        >
-          <option value="">Property Type</option>
-          <option value="Residential">Residential</option>
-          <option value="Commercial">Commercial</option>
-        </select>
-        
-        <select 
-          value={filterRadius} 
-          onChange={(e) => setFilterRadius(Number(e.target.value))}
-          className="border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#D7AE62]"
-        >
-          <option value={5}>5 km Radius</option>
-          <option value={10}>10 km Radius</option>
-          <option value={20}>20 km Radius</option>
-          <option value={50}>50 km Radius</option>
-          <option value={100}>100 km Radius</option>
-        </select>
-      </div>
-
-      {locationState === "loading" && (
-        <div className="bg-blue-50 text-blue-800 p-4 rounded-md mb-6 border border-blue-200">
-          Finding your location...
-        </div>
-      )}
-      
-      {locationState === "error" && (
-        <div className="bg-red-50 text-red-800 p-4 rounded-md mb-6 flex justify-between items-center border border-red-200">
-          <span>{locationError}</span>
-          <button onClick={requestLocation} className="underline font-medium hover:text-red-900">Enable Location</button>
-        </div>
-      )}
-
-      {propsError && (
-        <div className="bg-red-50 text-red-800 p-4 rounded-md mb-6 border border-red-200">
-          {propsError}
-        </div>
-      )}
-
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Property List */}
-        <div className="lg:w-1/2 flex flex-col gap-6 overflow-y-auto max-h-[800px] pr-2 custom-scrollbar">
-          {isLoadingProps ? (
-            <div className="p-12 text-center text-gray-500 bg-white rounded-lg border border-gray-100">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#D7AE62] border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] mb-4"></div>
-              <p>Finding properties near you...</p>
-            </div>
-          ) : filteredProperties.length > 0 ? (
-            filteredProperties.map(property => (
-              <div 
-                key={property.id} 
-                className="cursor-pointer transition-all duration-300 hover:-translate-y-1 relative"
-                onClick={() => {
-                  const pLat = parseFloat(property.Latitude);
-                  const pLng = parseFloat(property.Longitude);
-                  if (!isNaN(pLat) && !isNaN(pLng)) {
-                    setSelectedProperty(property);
-                    window.scrollTo({ top: document.querySelector('.leaflet-container')?.offsetTop || 0, behavior: 'smooth' });
-                  }
-                }}
+          <div className="flex-1 min-w-[280px] w-full relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
+            <input 
+              type="text" 
+              placeholder="Search city, locality, or area..." 
+              value={searchCity}
+              onChange={(e) => setSearchCity(e.target.value)}
+              className="w-full pl-12 pr-4 py-3.5 bg-[var(--bg-page)] text-[var(--text-primary)] border border-[var(--border-subtle)] rounded-[8px] focus:outline-none focus:border-[var(--text-primary)] transition-colors placeholder:text-[var(--text-muted)] font-medium"
+            />
+          </div>
+          
+          <div className="flex flex-wrap md:flex-nowrap gap-4 w-full md:w-auto">
+            <button 
+              onClick={requestLocation}
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-[var(--text-primary)] text-[var(--bg-page)] px-6 py-3.5 rounded-[8px] hover:opacity-80 transition-opacity whitespace-nowrap font-bold text-sm uppercase tracking-widest"
+            >
+              {locationState === "loading" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Navigation className="w-4 h-4" />}
+              Locate Me
+            </button>
+            
+            <div className="relative flex-1 md:flex-none">
+              <select 
+                value={filterPurpose} 
+                onChange={(e) => setFilterPurpose(e.target.value)}
+                className="w-full appearance-none border border-[var(--border-subtle)] rounded-[8px] pl-4 pr-10 py-3.5 bg-[var(--bg-page)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--text-primary)] font-semibold text-sm cursor-pointer"
               >
-                {typeof property.distance === 'number' && (
-                  <div className="absolute -top-3 left-4 z-10 bg-[#D7AE62] text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
-                    {property.distance.toFixed(1)} km away
-                  </div>
-                )}
-                <div className={typeof property.distance === 'number' ? "pt-2" : ""}>
-                  <PropertyCard property={property} />
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="p-12 text-center bg-white rounded-lg shadow-sm border border-gray-100 flex flex-col items-center">
-              <MapPin className="w-12 h-12 text-gray-300 mb-4" />
-              <h3 className="text-xl font-medium text-gray-900 mb-2">No properties found nearby.</h3>
-              <p className="text-gray-500">Try increasing the distance or searching another location.</p>
+                <option value="">Any Purpose</option>
+                <option value="Sale">Buy</option>
+                <option value="Rent">Rent</option>
+              </select>
+              <Filter className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />
             </div>
+            
+            <div className="relative flex-1 md:flex-none">
+              <select 
+                value={filterType} 
+                onChange={(e) => setFilterType(e.target.value)}
+                className="w-full appearance-none border border-[var(--border-subtle)] rounded-[8px] pl-4 pr-10 py-3.5 bg-[var(--bg-page)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--text-primary)] font-semibold text-sm cursor-pointer"
+              >
+                <option value="">Any Type</option>
+                <option value="Residential">Residential</option>
+                <option value="Commercial">Commercial</option>
+              </select>
+              <Filter className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />
+            </div>
+            
+            <div className="relative flex-1 md:flex-none">
+              <select 
+                value={filterRadius} 
+                onChange={(e) => setFilterRadius(Number(e.target.value))}
+                className="w-full appearance-none border border-[var(--border-subtle)] rounded-[8px] pl-4 pr-10 py-3.5 bg-[var(--bg-page)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--text-primary)] font-semibold text-sm cursor-pointer"
+              >
+                <option value={5}>Within 5 km</option>
+                <option value={10}>Within 10 km</option>
+                <option value={20}>Within 20 km</option>
+                <option value={50}>Within 50 km</option>
+                <option value={100}>Within 100 km</option>
+              </select>
+              <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />
+            </div>
+          </div>
+        </motion.div>
+
+        <AnimatePresence>
+          {locationState === "error" && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="bg-black text-white p-4 rounded-[var(--radius-card)] mb-8 flex flex-col sm:flex-row justify-between items-center gap-4"
+            >
+              <span className="font-medium text-sm">{locationError}</span>
+              <button onClick={requestLocation} className="border border-white/30 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-colors whitespace-nowrap">Retry</button>
+            </motion.div>
           )}
-        </div>
-        
-        {/* Map */}
-        <div className="lg:w-1/2 bg-gray-100 rounded-xl overflow-hidden border border-gray-200 min-h-[600px] relative shadow-inner">
-          <LeafletMap 
-            userLocation={userLocation} 
-            filteredProperties={filteredProperties} 
-            selectedProperty={selectedProperty}
-            setSelectedProperty={setSelectedProperty}
-          />
+
+          {propsError && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="bg-black text-white p-4 rounded-[var(--radius-card)] mb-8 font-medium text-sm"
+            >
+              {propsError}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Property List */}
+          <div className="lg:w-[45%] flex flex-col gap-6 overflow-y-auto max-h-[850px] pr-2 custom-scrollbar">
+            {isLoadingProps || locationState === "loading" ? (
+              <div className="p-16 text-center bg-[var(--bg-card)] rounded-[var(--radius-card)] border border-[var(--border-subtle)] flex flex-col items-center justify-center min-h-[400px]">
+                <Loader2 className="w-12 h-12 animate-spin text-[var(--text-primary)] mb-6" />
+                <p className="text-[var(--text-primary)] font-bold uppercase tracking-widest text-sm">Locating Properties...</p>
+              </div>
+            ) : filteredProperties.length > 0 ? (
+              <motion.div 
+                variants={listVariants}
+                initial="hidden"
+                animate="show"
+                className="flex flex-col gap-6"
+              >
+                {filteredProperties.map(property => (
+                  <motion.div 
+                    variants={itemVariants}
+                    key={property.id} 
+                    className={`cursor-pointer transition-all duration-300 relative rounded-[var(--radius-card)] border ${selectedProperty?.id === property.id ? 'border-[var(--text-primary)] ring-2 ring-[var(--text-primary)] ring-offset-2 ring-offset-[var(--bg-page)]' : 'border-transparent'} hover:border-[var(--text-primary)]`}
+                    onClick={() => {
+                      const pLat = parseFloat(property.Latitude);
+                      const pLng = parseFloat(property.Longitude);
+                      if (!isNaN(pLat) && !isNaN(pLng)) {
+                        setSelectedProperty(property);
+                        window.scrollTo({ top: document.querySelector('.leaflet-container')?.offsetTop || 0, behavior: 'smooth' });
+                      }
+                    }}
+                  >
+                    {typeof property.distance === 'number' && (
+                      <div className="absolute top-4 left-4 z-20 bg-[var(--text-primary)] text-[var(--bg-page)] text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
+                        {property.distance.toFixed(1)} km away
+                      </div>
+                    )}
+                    <div className="pointer-events-none group rounded-[var(--radius-card)] overflow-hidden shadow-[var(--shadow-card)] bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:shadow-xl transition-all duration-500">
+                      <PropertyCard property={property} />
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div 
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                className="p-16 text-center bg-[var(--bg-card)] rounded-[var(--radius-card)] border border-[var(--border-subtle)] flex flex-col items-center justify-center min-h-[400px]"
+              >
+                <MapPin className="w-12 h-12 text-[var(--border-subtle)] mb-6" />
+                <h3 className="text-2xl font-extrabold text-[var(--text-primary)] mb-3 tracking-tight">No properties nearby</h3>
+                <p className="text-[var(--text-muted)] font-medium">Try increasing the radius or searching another location.</p>
+              </motion.div>
+            )}
+          </div>
+          
+          {/* Map */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            className="lg:w-[55%] bg-[var(--bg-card)] rounded-[var(--radius-card)] overflow-hidden border border-[var(--border-subtle)] min-h-[600px] lg:h-[850px] relative shadow-[var(--shadow-card)] z-10"
+          >
+            <LeafletMap 
+              userLocation={userLocation} 
+              filteredProperties={filteredProperties} 
+              selectedProperty={selectedProperty}
+              setSelectedProperty={setSelectedProperty}
+            />
+          </motion.div>
         </div>
       </div>
     </div>
