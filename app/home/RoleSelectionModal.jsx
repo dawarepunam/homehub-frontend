@@ -41,15 +41,16 @@ export default function RoleSelectionModal({ onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-      <div className="relative w-full max-w-[520px] rounded-[24px] bg-[#101010] p-8 shadow-[0_25px_70px_rgba(0,0,0,0.18)] border border-[#333333]">
-        
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity duration-300">
+      <div 
+        className="relative w-full max-w-[520px] rounded-[24px] bg-[var(--bg-card)] p-8 shadow-[var(--shadow-card)] border border-[var(--border-subtle)] transform transition-all duration-300 animate-in fade-in zoom-in-95"
+      >
         {/* CLOSE BUTTON */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-full bg-[#1a1a1a] text-white border border-[#333333] hover:bg-[#2a2a2a] transition-colors"
+          className="absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-full bg-[var(--bg-page)] text-[var(--text-primary)] border border-[var(--border-subtle)] hover:bg-[var(--bg-card-hover)] hover:border-[var(--border-hover)] transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--text-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
         >
           <X size={18} />
         </button>
@@ -60,7 +61,7 @@ export default function RoleSelectionModal({ onClose }) {
             type="button"
             onClick={handleBack}
             aria-label="Back"
-            className="absolute top-5 left-5 flex h-9 w-9 items-center justify-center rounded-full bg-[#1a1a1a] text-white border border-[#333333] hover:bg-[#2a2a2a] transition-colors"
+            className="absolute top-5 left-5 flex h-9 w-9 items-center justify-center rounded-full bg-[var(--bg-page)] text-[var(--text-primary)] border border-[var(--border-subtle)] hover:bg-[var(--bg-card-hover)] hover:border-[var(--border-hover)] transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[var(--text-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
           >
             <ArrowLeft size={18} />
           </button>
@@ -68,10 +69,10 @@ export default function RoleSelectionModal({ onClose }) {
 
         {/* HEADING */}
         <div className={`text-center mb-8 ${step === "owner" ? "mt-2" : ""}`}>
-          <h2 className="text-[28px] font-bold text-white">
+          <h2 className="text-[28px] font-extrabold text-[var(--text-primary)] tracking-tight">
             {step === "initial" ? "Welcome to HomeHub" : "How do you want to continue?"}
           </h2>
-          <p className="mt-2 text-[15px] text-[#a0a0a0]">
+          <p className="mt-2 text-[15px] text-[var(--text-muted)] font-medium">
             {step === "initial" ? "Choose how you want to continue" : "Select your role"}
           </p>
         </div>
@@ -83,19 +84,21 @@ export default function RoleSelectionModal({ onClose }) {
             <button
               type="button"
               onClick={() => setSelectedOption("admin")}
-              className={`text-left p-5 min-h-[170px] rounded-[18px] border-2 transition-all duration-200 ${
+              className={`group relative text-left p-6 min-h-[180px] rounded-[18px] border-2 transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[var(--text-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)] ${
                 selectedOption === "admin" 
-                  ? "border-white bg-[#1a1a1a] shadow-sm" 
-                  : "border-[#333333] bg-[#101010] hover:border-[#555555]"
+                  ? "border-[var(--text-primary)] bg-[var(--bg-card-hover)] shadow-sm -translate-y-1" 
+                  : "border-[var(--border-subtle)] bg-[var(--bg-page)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-card-hover)] hover:-translate-y-0.5"
               }`}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#ffffff]/10 text-white mb-4">
-                <Settings size={22} />
+              <div className={`flex h-12 w-12 items-center justify-center rounded-full mb-5 transition-colors duration-300 ${
+                selectedOption === "admin" ? "bg-[var(--text-primary)] text-[var(--bg-page)]" : "bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-primary)] group-hover:border-[var(--border-hover)]"
+              }`}>
+                <Settings size={22} strokeWidth={2.5} />
               </div>
-              <div className="text-lg font-bold text-white">
+              <div className="text-lg font-bold text-[var(--text-primary)]">
                 Administration
               </div>
-              <p className="mt-2 text-[13px] leading-relaxed text-[#a0a0a0]">
+              <p className="mt-2 text-[13px] leading-relaxed text-[var(--text-muted)] font-medium">
                 Manage HomeHub platform and operations.
               </p>
             </button>
@@ -104,19 +107,21 @@ export default function RoleSelectionModal({ onClose }) {
             <button
               type="button"
               onClick={() => setSelectedOption("owner")}
-              className={`text-left p-5 min-h-[170px] rounded-[18px] border-2 transition-all duration-200 ${
+              className={`group relative text-left p-6 min-h-[180px] rounded-[18px] border-2 transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[var(--text-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)] ${
                 selectedOption === "owner" 
-                  ? "border-[#ffffff] bg-[#FFFAF0] shadow-sm" 
-                  : "border-[#333333] bg-[#101010] hover:border-[#555555]"
+                  ? "border-[var(--text-primary)] bg-[var(--bg-card-hover)] shadow-sm -translate-y-1" 
+                  : "border-[var(--border-subtle)] bg-[var(--bg-page)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-card-hover)] hover:-translate-y-0.5"
               }`}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#ffffff]/10 text-[#ffffff] mb-4">
-                <Building2 size={22} />
+              <div className={`flex h-12 w-12 items-center justify-center rounded-full mb-5 transition-colors duration-300 ${
+                selectedOption === "owner" ? "bg-[var(--text-primary)] text-[var(--bg-page)]" : "bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-primary)] group-hover:border-[var(--border-hover)]"
+              }`}>
+                <Building2 size={22} strokeWidth={2.5} />
               </div>
-              <div className="text-lg font-bold text-white">
+              <div className="text-lg font-bold text-[var(--text-primary)]">
                 Portal
               </div>
-              <p className="mt-2 text-[13px] leading-relaxed text-[#a0a0a0]">
+              <p className="mt-2 text-[13px] leading-relaxed text-[var(--text-muted)] font-medium">
                 Access the Buyer or Seller portals.
               </p>
             </button>
@@ -130,19 +135,21 @@ export default function RoleSelectionModal({ onClose }) {
             <button
               type="button"
               onClick={() => setSelectedOption("seller")}
-              className={`text-left p-5 min-h-[170px] rounded-[18px] border-2 transition-all duration-200 ${
+              className={`group relative text-left p-6 min-h-[180px] rounded-[18px] border-2 transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[var(--text-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)] ${
                 selectedOption === "seller" 
-                  ? "border-[#ffffff] bg-[#FFFAF0] shadow-sm" 
-                  : "border-[#333333] bg-[#101010] hover:border-[#555555]"
+                  ? "border-[var(--text-primary)] bg-[var(--bg-card-hover)] shadow-sm -translate-y-1" 
+                  : "border-[var(--border-subtle)] bg-[var(--bg-page)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-card-hover)] hover:-translate-y-0.5"
               }`}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#ffffff]/10 text-[#ffffff] mb-4">
-                <Building2 size={22} />
+              <div className={`flex h-12 w-12 items-center justify-center rounded-full mb-5 transition-colors duration-300 ${
+                selectedOption === "seller" ? "bg-[var(--text-primary)] text-[var(--bg-page)]" : "bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-primary)] group-hover:border-[var(--border-hover)]"
+              }`}>
+                <Building2 size={22} strokeWidth={2.5} />
               </div>
-              <div className="text-lg font-bold text-white">
+              <div className="text-lg font-bold text-[var(--text-primary)]">
                 Seller
               </div>
-              <p className="mt-2 text-[13px] leading-relaxed text-[#a0a0a0]">
+              <p className="mt-2 text-[13px] leading-relaxed text-[var(--text-muted)] font-medium">
                 I want to list and manage my properties.
               </p>
             </button>
@@ -151,19 +158,21 @@ export default function RoleSelectionModal({ onClose }) {
             <button
               type="button"
               onClick={() => setSelectedOption("buyer")}
-              className={`text-left p-5 min-h-[170px] rounded-[18px] border-2 transition-all duration-200 ${
+              className={`group relative text-left p-6 min-h-[180px] rounded-[18px] border-2 transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[var(--text-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)] ${
                 selectedOption === "buyer" 
-                  ? "border-[#176B4D] bg-[#F1F8F4] shadow-sm" 
-                  : "border-[#333333] bg-[#101010] hover:border-[#555555]"
+                  ? "border-[var(--text-primary)] bg-[var(--bg-card-hover)] shadow-sm -translate-y-1" 
+                  : "border-[var(--border-subtle)] bg-[var(--bg-page)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-card-hover)] hover:-translate-y-0.5"
               }`}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#176B4D]/10 text-[#176B4D] mb-4">
-                <UserRound size={22} />
+              <div className={`flex h-12 w-12 items-center justify-center rounded-full mb-5 transition-colors duration-300 ${
+                selectedOption === "buyer" ? "bg-[var(--text-primary)] text-[var(--bg-page)]" : "bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-primary)] group-hover:border-[var(--border-hover)]"
+              }`}>
+                <UserRound size={22} strokeWidth={2.5} />
               </div>
-              <div className="text-lg font-bold text-white">
+              <div className="text-lg font-bold text-[var(--text-primary)]">
                 Buyer
               </div>
-              <p className="mt-2 text-[13px] leading-relaxed text-[#a0a0a0]">
+              <p className="mt-2 text-[13px] leading-relaxed text-[var(--text-muted)] font-medium">
                 I want to buy or rent a property.
               </p>
             </button>
@@ -174,20 +183,14 @@ export default function RoleSelectionModal({ onClose }) {
         <button
           type="button"
           onClick={handleContinue}
-          className={`w-full mt-6 flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-white text-[15px] font-bold transition-all duration-200 hover:shadow-md ${
-            ["admin"].includes(selectedOption) 
-              ? "bg-white text-black hover:bg-[#050505]" 
-              : ["buyer"].includes(selectedOption)
-              ? "bg-[#176B4D] hover:bg-[#104D36]"
-              : "bg-[#073B4C] hover:bg-[#0A485D]"
-          }`}
+          className="group relative w-full mt-8 flex items-center justify-center gap-2 px-5 py-4 rounded-xl bg-[var(--text-primary)] text-[var(--bg-page)] text-[15px] font-bold transition-all duration-300 hover:opacity-90 active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-[var(--text-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)] shadow-sm"
         >
           Continue
-          <ArrowRight size={18} />
+          <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
         </button>
 
         {/* FOOTER TEXT */}
-        <p className="mt-4 text-center text-[12px] text-[#8BA7AF]">
+        <p className="mt-5 text-center text-[13px] text-[var(--text-muted)] font-medium">
           You can change your selection before continuing.
         </p>
       </div>

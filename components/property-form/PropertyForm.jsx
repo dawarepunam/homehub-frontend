@@ -4995,84 +4995,92 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
           box-sizing: border-box;
         }
 
+        /* ── PAGE ───────────────────────────────────── */
+
         .property-page {
           min-height: 100vh;
-          padding: 45px 20px 80px;
-          background:
-            radial-gradient(
-              circle at top right,
-              rgba(208, 155, 55, 0.13),
-              transparent 35%
-            ),
-            #f5f3ed;
+          padding: 48px 20px 96px;
+          background: var(--bg-page);
+          transition: background 0.3s ease;
         }
 
         .property-container {
           width: 100%;
-          max-width: 1050px;
+          max-width: 1040px;
           margin: auto;
         }
+
+        /* ── HEADER ─────────────────────────────────── */
 
         .property-header {
           display: flex;
           align-items: flex-end;
           justify-content: space-between;
-          margin-bottom: 32px;
+          margin-bottom: 36px;
+          gap: 16px;
         }
 
         .brand-small {
-          color: #0c4a3e;
-          font-size: 13px;
-          font-weight: 800;
-          letter-spacing: 1.8px;
+          color: var(--text-muted);
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 2.5px;
+          text-transform: uppercase;
           margin-bottom: 10px;
         }
 
         .property-header h1 {
           margin: 0;
-          color: #073f35;
-          font-size: 38px;
+          color: var(--text-primary);
+          font-size: clamp(26px, 5vw, 40px);
           font-weight: 800;
-          letter-spacing: -1px;
+          letter-spacing: -1.2px;
+          line-height: 1.1;
         }
 
         .property-header p {
           margin: 8px 0 0;
-          color: #68756f;
+          color: var(--text-muted);
           font-size: 15px;
+          line-height: 1.5;
         }
 
         .step-count {
-          color: #0c4a3e;
-          background: #e9eee9;
-          border: 1px solid #d5ddd6;
-          padding: 10px 15px;
-          border-radius: 30px;
-          font-size: 13px;
+          flex-shrink: 0;
+          color: var(--text-muted);
+          background: var(--bg-card);
+          border: 1px solid var(--border-subtle);
+          padding: 9px 16px;
+          border-radius: 40px;
+          font-size: 12px;
           font-weight: 700;
+          letter-spacing: 0.5px;
+          white-space: nowrap;
         }
 
+        /* ── PROGRESS ───────────────────────────────── */
+
         .progress-wrapper {
-          margin-bottom: 20px;
+          margin-bottom: 24px;
         }
 
         .progress-line {
-          height: 4px;
-          background: #dce1dc;
+          height: 3px;
+          background: var(--border-subtle);
           border-radius: 10px;
           overflow: hidden;
         }
 
         .progress-active {
           height: 100%;
-          background: #c99438;
-          transition: width 0.3s ease;
+          background: var(--text-primary);
+          transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .progress-steps {
           display: grid;
           grid-template-columns: repeat(7, 1fr);
-          margin-top: -15px;
+          margin-top: -14px;
         }
 
         .progress-item {
@@ -5080,90 +5088,106 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
           flex-direction: column;
           align-items: center;
           gap: 7px;
-          color: #9aa49f;
-          font-size: 11px;
+          color: var(--text-muted);
+          font-size: 10px;
+          font-weight: 600;
+          letter-spacing: 0.3px;
+          transition: color 0.2s;
         }
 
         .progress-item span {
-          width: 30px;
-          height: 30px;
+          width: 28px;
+          height: 28px;
           display: flex;
           align-items: center;
           justify-content: center;
           border-radius: 50%;
-          background: #e2e5e1;
-          border: 3px solid #f5f3ed;
+          background: var(--bg-card);
+          border: 2px solid var(--border-subtle);
+          font-size: 11px;
           font-weight: 800;
+          transition: all 0.2s;
         }
 
         .progress-item.active {
-          color: #0c4a3e;
+          color: var(--text-primary);
         }
 
         .progress-item.active span {
-          background: #0c4a3e;
-          color: white;
+          background: var(--text-primary);
+          border-color: var(--text-primary);
+          color: var(--bg-page);
         }
 
+        /* ── FORM CARD ──────────────────────────────── */
+
         .form-card {
-          background: #ffffff;
-          border: 1px solid #e2e6e2;
+          background: var(--bg-card);
+          border: 1px solid var(--border-subtle);
           border-radius: 24px;
-          box-shadow: 0 20px 55px rgba(17, 54, 44, 0.09);
+          box-shadow: var(--shadow-card);
           overflow: hidden;
         }
 
         .step-content {
-          padding: 42px;
+          padding: 44px;
           min-height: 520px;
         }
 
+        /* ── SECTION HEADING ────────────────────────── */
+
         .section-heading {
           display: flex;
-          gap: 18px;
-          margin-bottom: 35px;
+          gap: 16px;
+          margin-bottom: 36px;
+          align-items: flex-start;
         }
 
         .section-heading > span {
           display: flex;
           align-items: center;
           justify-content: center;
-          min-width: 38px;
-          height: 38px;
-          border-radius: 12px;
-          background: #0c4a3e;
-          color: #e5ad4d;
-          font-size: 13px;
+          min-width: 36px;
+          height: 36px;
+          border-radius: 10px;
+          background: var(--text-primary);
+          color: var(--bg-page);
+          font-size: 12px;
           font-weight: 800;
+          flex-shrink: 0;
         }
 
         .section-heading h2 {
           margin: 0;
-          color: #073f35;
-          font-size: 25px;
+          color: var(--text-primary);
+          font-size: 24px;
           font-weight: 800;
+          letter-spacing: -0.5px;
         }
 
         .section-heading p {
           margin: 6px 0 0;
-          color: #77827c;
+          color: var(--text-muted);
           font-size: 14px;
+          line-height: 1.5;
         }
+
+        /* ── PURPOSE & TYPE CARDS ───────────────────── */
 
         .purpose-grid,
         .type-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 18px;
+          gap: 16px;
         }
 
         .purpose-card,
         .type-card {
           position: relative;
           text-align: left;
-          padding: 26px;
-          border: 1px solid #dfe5e0;
-          background: #fbfcfa;
+          padding: 24px;
+          border: 1.5px solid var(--border-subtle);
+          background: var(--bg-card);
           border-radius: 18px;
           cursor: pointer;
           transition: all 0.2s ease;
@@ -5171,110 +5195,135 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
 
         .purpose-card:hover,
         .type-card:hover {
-          border-color: #c99438;
+          border-color: var(--border-hover);
           transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
 
         .purpose-card.selected,
         .type-card.selected {
-          background: #0c4a3e;
-          border-color: #c99438;
-          box-shadow: 0 12px 30px rgba(12, 74, 62, 0.18);
+          background: var(--text-primary);
+          border-color: var(--text-primary);
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+          transform: translateY(-2px);
         }
 
         .purpose-icon,
         .type-icon {
-          width: 48px;
-          height: 48px;
+          width: 46px;
+          height: 46px;
           display: flex;
           align-items: center;
           justify-content: center;
-          border-radius: 14px;
-          background: #f3eadb;
-          color: #0c4a3e;
-          font-size: 22px;
-          margin-bottom: 20px;
+          border-radius: 12px;
+          background: var(--bg-card-hover);
+          color: var(--text-primary);
+          font-size: 20px;
+          margin-bottom: 18px;
+          border: 1px solid var(--border-subtle);
+          transition: all 0.2s;
         }
 
         .purpose-card strong,
         .type-card strong {
           display: block;
-          color: #0b4137;
-          font-size: 17px;
-          margin-bottom: 7px;
+          color: var(--text-primary);
+          font-size: 16px;
+          font-weight: 800;
+          margin-bottom: 6px;
         }
 
         .purpose-card span,
         .type-card span {
-          color: #7b8580;
+          color: var(--text-muted);
           font-size: 13px;
         }
 
         .purpose-card.selected strong,
         .type-card.selected strong {
-          color: white;
+          color: var(--bg-page);
         }
 
         .purpose-card.selected > span,
         .type-card.selected > span {
-          color: #c8d5d0;
+          color: rgba(255, 255, 255, 0.55);
+        }
+
+        .purpose-card.selected .purpose-icon,
+        .type-card.selected .type-icon {
+          background: rgba(255, 255, 255, 0.12);
+          border-color: rgba(255, 255, 255, 0.15);
+          color: var(--bg-page);
         }
 
         .selected-check {
           position: absolute;
-          top: 16px;
-          right: 16px;
-          width: 25px;
-          height: 25px;
+          top: 14px;
+          right: 14px;
+          width: 24px;
+          height: 24px;
           display: flex;
           align-items: center;
           justify-content: center;
           border-radius: 50%;
-          background: #d5a044;
-          color: white;
-          font-size: 13px;
+          background: rgba(255, 255, 255, 0.2);
+          color: var(--bg-page);
+          font-size: 12px;
           font-weight: 800;
         }
+
+        /* ── FIELD LABEL ────────────────────────────── */
 
         .field-label {
           display: block;
           margin-bottom: 12px;
-          color: #173f36;
-          font-size: 14px;
-          font-weight: 800;
+          color: var(--text-primary);
+          font-size: 13px;
+          font-weight: 700;
+          letter-spacing: 0.2px;
         }
 
+        /* ── CATEGORY ───────────────────────────────── */
+
         .category-section {
-          margin-top: 35px;
+          margin-top: 32px;
         }
 
         .category-grid {
           display: flex;
           flex-wrap: wrap;
-          gap: 12px;
+          gap: 10px;
         }
 
         .category-card {
-          border: 1px solid #dce3de;
-          background: white;
-          color: #24483f;
-          padding: 13px 18px;
+          border: 1.5px solid var(--border-subtle);
+          background: var(--bg-card);
+          color: var(--text-primary);
+          padding: 11px 18px;
           border-radius: 12px;
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 700;
           cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .category-card:hover {
+          border-color: var(--border-hover);
+          background: var(--bg-card-hover);
         }
 
         .category-card.selected {
-          background: #0c4a3e;
-          color: white;
-          border-color: #0c4a3e;
+          background: var(--text-primary);
+          color: var(--bg-page);
+          border-color: var(--text-primary);
         }
 
         .category-card span {
-          margin-left: 8px;
-          color: #e2ad4b;
+          margin-left: 7px;
+          opacity: 0.7;
         }
+
+        /* ── FORM GRID ──────────────────────────────── */
 
         .form-grid {
           display: grid;
@@ -5294,23 +5343,26 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
         }
 
         .field label {
-          color: #29483f;
-          font-size: 13px;
-          font-weight: 750;
+          color: var(--text-primary);
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.3px;
         }
 
         .field input,
         .field select,
         .field textarea {
           width: 100%;
-          border: 1px solid #dce3de;
-          background: #fbfcfa;
-          color: #183e36;
+          border: 1.5px solid var(--border-subtle);
+          background: var(--bg-card);
+          color: var(--text-primary);
           border-radius: 11px;
-          padding: 13px 14px;
+          padding: 12px 14px;
           font-size: 14px;
           outline: none;
-          transition: 0.2s;
+          transition: border-color 0.2s, box-shadow 0.2s;
+          -webkit-appearance: none;
+          appearance: none;
         }
 
         .field textarea {
@@ -5320,24 +5372,32 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
         .field input:focus,
         .field select:focus,
         .field textarea:focus {
-          border-color: #0c4a3e;
-          box-shadow: 0 0 0 3px rgba(12, 74, 62, 0.08);
-          background: white;
+          border-color: var(--text-primary);
+          box-shadow: 0 0 0 3px var(--border-subtle);
+        }
+
+        .field input::placeholder,
+        .field textarea::placeholder {
+          color: var(--text-muted);
+          opacity: 0.6;
         }
 
         .sub-heading {
-          margin-top: 14px;
-          padding-top: 25px;
-          border-top: 1px solid #e5e9e5;
-          color: #0c4a3e;
-          font-size: 17px;
+          margin-top: 16px;
+          padding-top: 22px;
+          border-top: 1px solid var(--border-subtle);
+          color: var(--text-primary);
+          font-size: 16px;
           font-weight: 800;
+          letter-spacing: -0.2px;
         }
+
+        /* ── AMENITIES ──────────────────────────────── */
 
         .amenities-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 13px;
+          gap: 12px;
         }
 
         .amenity-card {
@@ -5345,183 +5405,211 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
           display: flex;
           align-items: center;
           gap: 14px;
-          padding: 17px;
-          border: 1px solid #dfe5e0;
+          padding: 16px;
+          border: 1.5px solid var(--border-subtle);
           border-radius: 14px;
-          background: #fbfcfa;
+          background: var(--bg-card);
           cursor: pointer;
-          transition: 0.2s;
+          transition: all 0.2s ease;
         }
 
         .amenity-card:hover {
-          border-color: #c99438;
+          border-color: var(--border-hover);
+          background: var(--bg-card-hover);
         }
 
         .amenity-card.selected {
-          border-color: #c99438;
-          background: #f8f3e9;
+          border-color: var(--text-primary);
+          background: var(--bg-card-hover);
         }
 
         .amenity-card input {
           position: absolute;
           opacity: 0;
+          width: 0;
+          height: 0;
         }
 
         .amenity-check {
-          width: 24px;
-          height: 24px;
+          width: 22px;
+          height: 22px;
           flex-shrink: 0;
-          border: 2px solid #bbc7c0;
-          border-radius: 7px;
+          border: 1.5px solid var(--border-subtle);
+          border-radius: 6px;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: white;
-          font-size: 13px;
+          color: var(--bg-page);
+          font-size: 12px;
           font-weight: 800;
+          transition: all 0.2s;
         }
 
         .amenity-card.selected .amenity-check {
-          background: #0c4a3e;
-          border-color: #0c4a3e;
+          background: var(--text-primary);
+          border-color: var(--text-primary);
         }
 
         .amenity-card strong {
           display: block;
-          color: #153f36;
+          color: var(--text-primary);
           font-size: 14px;
+          font-weight: 700;
         }
 
         .amenity-card span {
           display: block;
-          margin-top: 3px;
-          color: #84908a;
+          margin-top: 2px;
+          color: var(--text-muted);
           font-size: 12px;
         }
 
         .selected-summary {
-          margin-top: 22px;
-          padding: 15px 18px;
+          margin-top: 20px;
+          padding: 14px 18px;
           border-radius: 12px;
-          background: #edf4f0;
-          color: #0c4a3e;
+          background: var(--bg-card-hover);
+          border: 1px solid var(--border-subtle);
+          color: var(--text-primary);
         }
 
         .selected-summary strong {
           display: block;
           font-size: 13px;
+          font-weight: 700;
         }
 
         .selected-summary span {
           display: block;
-          margin-top: 5px;
-          color: #61736b;
+          margin-top: 4px;
+          color: var(--text-muted);
           font-size: 12px;
         }
+
+        /* ── UPLOAD ─────────────────────────────────── */
 
         .upload-box {
           position: relative;
           text-align: center;
-          padding: 60px 30px;
-          border: 2px dashed #ccd7d0;
+          padding: 56px 30px;
+          border: 2px dashed var(--border-subtle);
           border-radius: 18px;
-          background: #fafcf9;
+          background: var(--bg-card);
+          transition: border-color 0.2s;
+        }
+
+        .upload-box:hover {
+          border-color: var(--border-hover);
         }
 
         .upload-icon {
-          width: 58px;
-          height: 58px;
-          margin: 0 auto 15px;
+          width: 54px;
+          height: 54px;
+          margin: 0 auto 14px;
           display: flex;
           align-items: center;
           justify-content: center;
-          border-radius: 17px;
-          background: #0c4a3e;
-          color: #e3ad4d;
-          font-size: 30px;
+          border-radius: 16px;
+          background: var(--text-primary);
+          color: var(--bg-page);
+          font-size: 26px;
         }
 
         .upload-box h3 {
           margin: 0;
-          color: #123e35;
+          color: var(--text-primary);
+          font-size: 17px;
+          font-weight: 700;
         }
 
         .upload-box p {
-          color: #7b8781;
+          color: var(--text-muted);
           font-size: 13px;
+          margin: 6px 0 0;
         }
 
         .upload-box input {
-          margin-top: 15px;
+          margin-top: 16px;
+          color: var(--text-muted);
+          font-size: 13px;
         }
 
         .file-count {
-          margin-top: 12px;
-          color: #0c4a3e;
+          margin-top: 14px;
+          color: var(--text-primary);
           font-weight: 700;
           font-size: 13px;
         }
 
         .photo-note {
-          margin-top: 15px;
-          padding: 15px;
-          background: #f8f3e9;
+          margin-top: 14px;
+          padding: 14px 16px;
+          background: var(--bg-card-hover);
+          border: 1px solid var(--border-subtle);
           border-radius: 12px;
-          color: #705a32;
+          color: var(--text-muted);
           font-size: 13px;
+          line-height: 1.5;
         }
+
+        /* ── REVIEW ─────────────────────────────────── */
 
         .review-hero {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 28px;
+          padding: 28px 32px;
           border-radius: 18px;
-          background: #0c4a3e;
-          color: white;
+          background: var(--text-primary);
+          color: var(--bg-page);
         }
 
         .review-badge {
           display: inline-block;
-          padding: 6px 10px;
+          padding: 5px 11px;
           border-radius: 20px;
-          background: rgba(255, 255, 255, 0.12);
-          color: #e5b04e;
+          background: rgba(255, 255, 255, 0.13);
+          color: rgba(255, 255, 255, 0.85);
           font-size: 11px;
-          font-weight: 800;
+          font-weight: 700;
           text-transform: uppercase;
-          letter-spacing: 1px;
+          letter-spacing: 1.2px;
+          margin-bottom: 10px;
         }
 
         .review-hero h2 {
-          margin: 12px 0 5px;
-          font-size: 24px;
+          margin: 0 0 4px;
+          font-size: 22px;
+          font-weight: 800;
+          color: var(--bg-page);
         }
 
         .review-hero p {
           margin: 0;
-          color: #c4d3ce;
+          color: rgba(255, 255, 255, 0.55);
           font-size: 13px;
         }
 
         .review-price {
-          color: #e6b04f;
-          font-size: 25px;
+          color: rgba(255, 255, 255, 0.9);
+          font-size: 26px;
           font-weight: 800;
+          flex-shrink: 0;
+          text-align: right;
         }
 
         .review-stats {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
-          margin-top: 18px;
-          border: 1px solid #e0e5e1;
-          border-radius: 15px;
+          margin-top: 16px;
+          border: 1px solid var(--border-subtle);
+          border-radius: 14px;
           overflow: hidden;
         }
 
         .review-stats div {
-          padding: 18px;
-          border-right: 1px solid #e0e5e1;
+          padding: 16px;
+          border-right: 1px solid var(--border-subtle);
         }
 
         .review-stats div:last-child {
@@ -5532,32 +5620,38 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
         .review-details span,
         .more-details-content span {
           display: block;
-          color: #89938e;
+          color: var(--text-muted);
           font-size: 11px;
-          margin-bottom: 6px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 5px;
         }
 
         .review-stats strong {
-          color: #173f36;
+          color: var(--text-primary);
           font-size: 13px;
+          font-weight: 700;
         }
 
         .review-section {
-          margin-top: 20px;
-          padding: 23px;
-          border: 1px solid #e0e5e1;
-          border-radius: 15px;
+          margin-top: 16px;
+          padding: 22px;
+          border: 1px solid var(--border-subtle);
+          border-radius: 14px;
+          background: var(--bg-card);
         }
 
         .review-section h3 {
-          margin: 0 0 15px;
-          color: #123f36;
-          font-size: 16px;
+          margin: 0 0 12px;
+          color: var(--text-primary);
+          font-size: 15px;
+          font-weight: 700;
         }
 
         .review-section p {
           margin: 0;
-          color: #66736c;
+          color: var(--text-muted);
           line-height: 1.7;
           font-size: 13px;
         }
@@ -5565,45 +5659,50 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
         .review-details {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 20px;
+          gap: 16px;
         }
 
         .review-details strong {
-          color: #1c443b;
+          color: var(--text-primary);
           font-size: 13px;
+          font-weight: 700;
         }
 
         .review-title-row {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          margin-bottom: 14px;
         }
 
         .review-title-row span {
-          color: #0c4a3e;
+          color: var(--text-muted);
           font-size: 12px;
           font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.6px;
         }
 
         .review-amenities {
           display: flex;
           flex-wrap: wrap;
-          gap: 9px;
+          gap: 8px;
         }
 
         .review-amenities div {
-          padding: 9px 12px;
-          border-radius: 9px;
-          background: #edf4f0;
-          color: #0c4a3e;
+          padding: 8px 12px;
+          border-radius: 8px;
+          background: var(--bg-card-hover);
+          border: 1px solid var(--border-subtle);
+          color: var(--text-primary);
           font-size: 12px;
           font-weight: 700;
         }
 
         .more-details {
-          margin-top: 20px;
-          border: 1px solid #dfe5e0;
-          border-radius: 15px;
+          margin-top: 16px;
+          border: 1px solid var(--border-subtle);
+          border-radius: 14px;
           overflow: hidden;
         }
 
@@ -5611,48 +5710,70 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 18px 20px;
+          padding: 16px 20px;
           cursor: pointer;
-          color: #0c4a3e;
-          font-weight: 800;
+          color: var(--text-primary);
+          font-weight: 700;
           font-size: 14px;
+          background: var(--bg-card);
+          transition: background 0.15s;
+          list-style: none;
+        }
+
+        .more-details summary::-webkit-details-marker {
+          display: none;
+        }
+
+        .more-details summary:hover {
+          background: var(--bg-card-hover);
         }
 
         .more-details summary span {
-          font-size: 20px;
-          color: #c99438;
+          font-size: 18px;
+          color: var(--text-muted);
         }
 
         .more-details-content {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-          padding: 20px;
-          border-top: 1px solid #e4e8e4;
-          background: #fafbf9;
+          gap: 16px;
+          padding: 18px 20px;
+          border-top: 1px solid var(--border-subtle);
+          background: var(--bg-card);
         }
 
         .more-details-content strong {
-          color: #21483f;
+          color: var(--text-primary);
           font-size: 13px;
+          font-weight: 700;
         }
+
+        /* ── NAVIGATION BAR ─────────────────────────── */
 
         .form-actions {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 20px 42px;
-          border-top: 1px solid #e5e9e5;
-          background: #fbfcfa;
+          padding: 20px 44px;
+          border-top: 1px solid var(--border-subtle);
+          background: var(--bg-card);
         }
 
         .back-button {
           border: 0;
           background: transparent;
-          color: #66746d;
+          color: var(--text-muted);
+          font-size: 14px;
           font-weight: 700;
           cursor: pointer;
-          padding: 12px;
+          padding: 10px 14px;
+          border-radius: 10px;
+          transition: background 0.15s, color 0.15s;
+        }
+
+        .back-button:hover:not(:disabled) {
+          background: var(--bg-card-hover);
+          color: var(--text-primary);
         }
 
         .back-button:disabled {
@@ -5663,38 +5784,44 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
         .continue-button {
           display: flex;
           align-items: center;
-          gap: 18px;
+          gap: 12px;
           border: 0;
-          border-radius: 11px;
-          padding: 14px 22px;
-          background: #c99438;
-          color: white;
-          font-weight: 800;
+          border-radius: 12px;
+          padding: 13px 24px;
+          background: var(--text-primary);
+          color: var(--bg-page);
+          font-size: 14px;
+          font-weight: 700;
           cursor: pointer;
-          box-shadow: 0 8px 20px rgba(201, 148, 56, 0.22);
+          transition: opacity 0.15s, transform 0.15s;
+          letter-spacing: 0.2px;
         }
 
-        .continue-button:hover {
-          background: #b9822d;
+        .continue-button:hover:not(:disabled) {
+          opacity: 0.88;
+          transform: translateY(-1px);
         }
 
         .continue-button:disabled {
-          opacity: 0.6;
+          opacity: 0.5;
           cursor: not-allowed;
+          transform: none;
         }
+
+        /* ── RESPONSIVE ─────────────────────────────── */
 
         @media (max-width: 800px) {
           .property-header {
-            display: block;
+            flex-direction: column;
+            align-items: flex-start;
           }
 
           .step-count {
-            display: inline-block;
-            margin-top: 15px;
+            align-self: flex-start;
           }
 
           .step-content {
-            padding: 25px 20px;
+            padding: 28px 22px;
           }
 
           .purpose-grid,
@@ -5713,7 +5840,7 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
 
           .review-stats div {
             border-right: 0;
-            border-bottom: 1px solid #e0e5e1;
+            border-bottom: 1px solid var(--border-subtle);
           }
 
           .review-hero {
@@ -5721,21 +5848,26 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
           }
 
           .review-price {
-            margin-top: 15px;
+            margin-top: 14px;
+            text-align: left;
           }
 
           .more-details-content {
             grid-template-columns: 1fr 1fr;
           }
+
+          .form-actions {
+            padding: 16px 22px;
+          }
         }
 
         @media (max-width: 520px) {
           .property-page {
-            padding: 20px 10px 50px;
+            padding: 24px 12px 56px;
           }
 
           .property-header h1 {
-            font-size: 29px;
+            font-size: 26px;
           }
 
           .progress-item small {
@@ -5743,7 +5875,11 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
           }
 
           .form-card {
-            border-radius: 17px;
+            border-radius: 18px;
+          }
+
+          .step-content {
+            padding: 22px 16px;
           }
 
           .review-stats,
@@ -5752,8 +5888,17 @@ export default function PropertyForm({ mode = "create", initialData = null, prop
             grid-template-columns: 1fr;
           }
 
+          .review-stats div {
+            border-bottom: 1px solid var(--border-subtle);
+          }
+
+          .purpose-grid,
+          .type-grid {
+            grid-template-columns: 1fr;
+          }
+
           .form-actions {
-            padding: 15px 20px;
+            padding: 14px 16px;
           }
         }
       `}</style>
