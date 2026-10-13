@@ -57,12 +57,12 @@ const EXPLORE_CATEGORIES = [
 
 export default function ExploreByCategory() {
   return (
-    <section id="explore-categories" className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+    <section id="explore-categories" className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
       <div className="mx-auto mb-10 flex max-w-3xl flex-col items-center justify-center text-center">
-        <h2 className="text-2xl font-extrabold sm:text-3xl" style={{ color: "#0D3326" }}>
+        <h2 className="hh-section-title">
           Explore by Category
         </h2>
-        <p className="mt-3 text-sm text-[#0D3326]/70 sm:text-base">
+        <p className="hh-section-subtitle mt-3">
           Browse properties by type — all results come directly from Strapi.
         </p>
       </div>
@@ -79,14 +79,14 @@ export default function ExploreByCategory() {
             <Link
               key={cat.id}
               href={href}
-              className="group flex flex-col items-center justify-center gap-3 rounded-2xl border border-gray-200 bg-white p-6 text-center transition-all hover:-translate-y-1 hover:border-[#D7AE62] hover:shadow-lg"
+              className="group flex flex-col items-center justify-center gap-3.5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 text-center shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-[var(--border-focus)] hover:shadow-md"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#F5F3EE] transition-colors group-hover:bg-[#0D3326]">
-                <cat.icon size={28} className="text-[#D7AE62]" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)] transition-colors group-hover:bg-[var(--accent)] group-hover:text-[var(--accent-text)]">
+                <cat.icon size={24} />
               </div>
               <div>
-                <span className="block text-sm font-bold text-[#0D3326]">{cat.name}</span>
-                <span className="block text-[11px] text-[#0D3326]/50 mt-0.5">{cat.subtitle}</span>
+                <span className="block text-sm font-bold text-[var(--text-primary)]">{cat.name}</span>
+                <span className="block text-xs text-[var(--text-muted)] mt-0.5">{cat.subtitle}</span>
               </div>
             </Link>
           );

@@ -50,8 +50,8 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#0D3326]">My Profile</h1>
-        <p className="mt-1 text-sm text-[#0D3326]/70">
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">My Profile</h1>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">
           Manage your HomeHub buyer account
         </p>
       </div>

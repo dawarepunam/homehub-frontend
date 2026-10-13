@@ -429,25 +429,22 @@ export default function ProfileDropdown({ items = [] }) {
 
   return (
     <div
-      className="w-72 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl"
+      className="w-72 overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-2xl text-[var(--text-primary)]"
       style={{
         position: "relative",
         zIndex: 999999,
       }}
     >
       {/* Header */}
-
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-        <h3 className="text-lg font-bold text-white">My Account</h3>
-
-        <p className="mt-1 text-sm text-blue-100">
+      <div className="bg-[var(--bg-surface)] px-5 py-4 border-b border-[var(--border-subtle)]">
+        <h3 className="text-sm font-bold text-[var(--text-primary)]">My Account</h3>
+        <p className="mt-0.5 text-xs text-[var(--text-muted)]">
           Manage your profile & activities
         </p>
       </div>
 
       {/* Menu */}
-
-      <div className="py-2">
+      <div className="p-1.5 space-y-0.5">
         {menu.map((item) => {
           const isLogout =
             item.Title.toLowerCase() === "logout" ||
@@ -459,17 +456,15 @@ export default function ProfileDropdown({ items = [] }) {
                 key={item.id}
                 type="button"
                 onClick={handleLogout}
-                className="flex w-full items-center justify-between px-5 py-4 text-left transition hover:bg-red-50"
+                className="flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-left transition hover:bg-red-500/10 text-red-500"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-600">
-                    <LogOut size={18} />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/10 text-red-500">
+                    <LogOut size={16} />
                   </div>
-
-                  <span className="font-medium text-red-600">Logout</span>
+                  <span className="text-sm font-semibold text-red-500">Logout</span>
                 </div>
-
-                <ChevronRight size={18} className="text-red-400" />
+                <ChevronRight size={15} className="text-red-400" />
               </button>
             );
           }
@@ -478,17 +473,15 @@ export default function ProfileDropdown({ items = [] }) {
             <Link
               key={item.id}
               href={item.URL}
-              className="flex items-center justify-between px-5 py-4 transition hover:bg-blue-50"
+              className="flex items-center justify-between rounded-xl px-3.5 py-2.5 transition hover:bg-[var(--bg-surface)] text-[var(--text-primary)]"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--border-subtle)]/40 text-[var(--text-primary)]">
                   {getIcon(item.Icon)}
                 </div>
-
-                <span className="font-medium text-gray-800">{item.Title}</span>
+                <span className="text-sm font-semibold">{item.Title}</span>
               </div>
-
-              <ChevronRight size={18} className="text-gray-400" />
+              <ChevronRight size={15} className="text-[var(--text-muted)]" />
             </Link>
           );
         })}

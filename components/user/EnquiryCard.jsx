@@ -118,16 +118,16 @@ export default function EnquiryCard({ enquiry, onRemove }) {
 
   const getStatusStyles = () => {
     if (["pending", "new"].includes(statusLower))
-      return "bg-amber-100 text-amber-800";
+      return "bg-amber-500/10 text-amber-600 border border-amber-500/20";
     if (["contacted", "interested", "follow-up required"].includes(statusLower))
-      return "bg-emerald-100 text-emerald-800";
+      return "bg-blue-500/10 text-blue-600 border border-blue-500/20";
     if (["site visit", "site visit pending", "scheduled", "confirmed", "rescheduled"].includes(statusLower))
-      return "bg-teal-50 border border-teal-200 text-teal-700";
+      return "bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)]";
     if (["closed", "completed", "converted"].includes(statusLower))
-      return "bg-stone-100 text-stone-600";
+      return "bg-[var(--bg-surface)] text-[var(--text-secondary)] border border-[var(--border-subtle)]";
     if (["cancelled", "notinterested"].includes(statusLower))
-      return "bg-red-50 text-red-600";
-    return "bg-stone-100 text-stone-700";
+      return "bg-red-500/10 text-red-500 border border-red-500/20";
+    return "bg-[var(--bg-surface)] text-[var(--text-secondary)] border border-[var(--border-subtle)]";
   };
 
   const StatusIcon = () => {
@@ -143,9 +143,9 @@ export default function EnquiryCard({ enquiry, onRemove }) {
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition hover:shadow-md">
+    <div className="overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm transition hover:shadow-md hover:border-[var(--text-primary)]/30">
       {/* Property Image */}
-      <div className="relative h-48 w-full overflow-hidden bg-stone-100">
+      <div className="relative h-48 w-full overflow-hidden bg-[var(--bg-surface)]">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -155,15 +155,15 @@ export default function EnquiryCard({ enquiry, onRemove }) {
           />
         ) : null}
         <div
-          className="hidden h-full w-full items-center justify-center bg-stone-100"
+          className="hidden h-full w-full items-center justify-center bg-[var(--bg-surface)]"
           style={{ display: imageUrl ? 'none' : 'flex' }}
         >
           <span className="text-4xl">🏠</span>
         </div>
         {/* Badges */}
         <div className="absolute left-3 top-3 flex gap-2">
-          {propertyType && <span className="rounded-full bg-stone-900/70 px-2 py-1 text-[10px] font-semibold text-white backdrop-blur-sm">{propertyType}</span>}
-          {purpose && <span className="rounded-full bg-amber-500/90 px-2 py-1 text-[10px] font-semibold text-emerald-900 backdrop-blur-sm">{purpose}</span>}
+          {propertyType && <span className="rounded-full bg-[var(--bg-card)]/90 border border-[var(--border-subtle)] px-2 py-1 text-[10px] font-semibold text-[var(--text-primary)] backdrop-blur-sm">{propertyType}</span>}
+          {purpose && <span className="rounded-full bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] px-2 py-1 text-[10px] font-semibold backdrop-blur-sm">{purpose}</span>}
         </div>
         {/* Status badge top-right */}
         <div className={`absolute right-3 top-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${getStatusStyles()}`}>
@@ -174,17 +174,17 @@ export default function EnquiryCard({ enquiry, onRemove }) {
 
       {/* Content */}
       <div className="flex flex-col p-5">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-amber-600">{category}</p>
-        <h3 className="mt-1 text-lg font-bold text-emerald-900 line-clamp-1">{title}</h3>
-        <p className="mt-1 flex items-center text-sm text-stone-500">
-          <MapPin size={14} className="mr-1 shrink-0 text-emerald-700" />
+        <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">{category}</p>
+        <h3 className="mt-1 text-lg font-bold text-[var(--text-primary)] line-clamp-1">{title}</h3>
+        <p className="mt-1 flex items-center text-sm text-[var(--text-secondary)]">
+          <MapPin size={14} className="mr-1 shrink-0 text-[var(--text-primary)]" />
           <span className="truncate">{area}{area && city ? ", " : ""}{city || "Location not specified"}</span>
         </p>
 
-        <div className="mt-3 flex items-center gap-4 border-t border-stone-100 pt-3">
+        <div className="mt-3 flex items-center gap-4 border-t border-[var(--border-subtle)] pt-3">
           <div>
-            <p className="text-[10px] font-semibold uppercase text-stone-400">Enquiry Sent</p>
-            <p className="mt-0.5 text-sm font-medium text-stone-700">{date || "-"}</p>
+            <p className="text-[10px] font-semibold uppercase text-[var(--text-secondary)]">Enquiry Sent</p>
+            <p className="mt-0.5 text-sm font-medium text-[var(--text-primary)]">{date || "-"}</p>
           </div>
         </div>
 
@@ -192,7 +192,7 @@ export default function EnquiryCard({ enquiry, onRemove }) {
         <div className="mt-4 flex gap-3">
           <Link
             href={`/user/enquiries/${documentId}`}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-500 py-2.5 text-sm font-semibold text-emerald-900 transition hover:bg-amber-400"
+            className="hh-btn hh-btn-primary flex-1 py-2.5 text-sm font-semibold flex items-center justify-center gap-2"
           >
             View Enquiry <ArrowRight size={16} />
           </Link>
@@ -200,16 +200,16 @@ export default function EnquiryCard({ enquiry, onRemove }) {
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="flex items-center justify-center rounded-xl border border-stone-200 bg-stone-50 px-3 py-2.5 text-stone-600 transition hover:bg-stone-100 hover:text-emerald-900"
+              className="flex items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-2.5 text-[var(--text-secondary)] transition hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)]"
             >
               <MoreVertical size={18} />
             </button>
             
             {isMenuOpen && (
-              <div className="absolute bottom-full right-0 mb-2 w-48 rounded-xl border border-stone-200 bg-white p-1 shadow-lg z-10">
+              <div className="absolute bottom-full right-0 mb-2 w-48 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-1 shadow-lg z-10">
                 <Link
                   href={`/user/enquiries/${documentId}`}
-                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 hover:text-emerald-900"
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <Eye size={16} /> View Enquiry
@@ -217,19 +217,19 @@ export default function EnquiryCard({ enquiry, onRemove }) {
                 {propertyDocumentId && (
                   <Link
                     href={`/user/property/${propertyDocumentId}`}
-                    className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 hover:text-emerald-900"
+                    className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <MapPin size={16} /> View Property
                   </Link>
                 )}
-                <div className="my-1 h-px w-full bg-stone-100" />
+                <div className="my-1 h-px w-full bg-[var(--border-subtle)]" />
                 <button
                   onClick={() => {
                     setIsMenuOpen(false);
                     setIsDeleteModalOpen(true);
                   }}
-                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-500/10"
                 >
                   <Trash2 size={16} /> Remove Enquiry
                 </button>
@@ -241,28 +241,28 @@ export default function EnquiryCard({ enquiry, onRemove }) {
 
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/50 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-xl">
-            <div className="flex items-center justify-between border-b border-stone-100 bg-stone-50 p-4">
-              <h3 className="font-bold text-emerald-900">Remove Enquiry</h3>
-              <button onClick={() => setIsDeleteModalOpen(false)} className="rounded-lg p-1 text-stone-400 hover:bg-stone-200 hover:text-stone-600">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md overflow-hidden rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xl">
+            <div className="flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4">
+              <h3 className="font-bold text-[var(--text-primary)]">Remove Enquiry</h3>
+              <button onClick={() => setIsDeleteModalOpen(false)} className="rounded-lg p-1 text-[var(--text-secondary)] hover:bg-[var(--border-subtle)] hover:text-[var(--text-primary)]">
                 <X size={20} />
               </button>
             </div>
             <div className="p-6">
-              <p className="text-stone-600">Are you sure you want to remove this enquiry from your enquiries?</p>
+              <p className="text-[var(--text-secondary)]">Are you sure you want to remove this enquiry from your enquiries?</p>
               <div className="mt-6 flex justify-end gap-3">
                 <button
                   onClick={() => setIsDeleteModalOpen(false)}
                   disabled={isDeleting}
-                  className="rounded-xl border border-stone-200 px-5 py-2.5 text-sm font-semibold text-stone-600 transition hover:bg-stone-50 disabled:opacity-50"
+                  className="hh-btn hh-btn-secondary px-5 py-2.5 text-sm font-semibold disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  className="flex items-center justify-center gap-2 rounded-xl bg-emerald-900 px-5 py-2.5 text-sm font-semibold text-amber-500 transition hover:bg-emerald-800 disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-50"
                 >
                   {isDeleting ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                   Remove Enquiry

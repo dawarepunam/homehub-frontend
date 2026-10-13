@@ -83,31 +83,25 @@ function NotifIcon({ type, size = 18 }) {
   const t = (type || "").toLowerCase();
   if (t.includes("sitevisit") || t.includes("visit") || t.includes("schedule"))
     return (
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-amber-50">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-amber-500/10">
         <Calendar size={size} className="text-amber-600" />
       </div>
     );
   if (t.includes("enquiry") || t.includes("seller") || t.includes("response"))
     return (
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-50">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
         <MessageCircle size={size} className="text-emerald-600" />
       </div>
     );
   if (t.includes("property") || t.includes("saved"))
     return (
-      <div
-        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
-        style={{ background: "#F7F4EF" }}
-      >
-        <Home size={size} style={{ color: "#0D3326" }} />
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--bg-surface)] text-[var(--text-primary)]">
+        <Home size={size} />
       </div>
     );
   return (
-    <div
-      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
-      style={{ background: "#F7F4EF" }}
-    >
-      <Bell size={size} style={{ color: "#0D3326" }} />
+    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--bg-surface)] text-[var(--text-primary)]">
+      <Bell size={size} />
     </div>
   );
 }
@@ -148,63 +142,44 @@ function NotificationCard({ notification: n, onRead }) {
   return (
     <div
       onClick={handleClick}
-      className="group relative flex cursor-pointer items-start gap-4 overflow-hidden rounded-2xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg"
-      style={{
-        borderColor: isRead ? "#E5DDD0" : "rgba(13,51,38,0.18)",
-        background: isRead ? "rgba(247,244,239,0.50)" : "#fff",
-        boxShadow: isRead ? "none" : "0 2px 12px rgba(13,51,38,0.06)",
-      }}
+      className={`group relative flex cursor-pointer items-start gap-4 overflow-hidden rounded-2xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-md ${
+        isRead
+          ? "border-[var(--border-subtle)] bg-[var(--bg-surface)]/60"
+          : "border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm"
+      }`}
     >
       {/* Unread left accent */}
       {!isRead && (
-        <div
-          className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
-          style={{ background: "linear-gradient(180deg, #D7AE62, #0D3326)" }}
-        />
+        <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl bg-[var(--btn-primary-bg)]" />
       )}
 
       <NotifIcon type={type} />
 
       <div className="flex-1 min-w-0 pt-0.5">
         <div className="flex items-start justify-between gap-3">
-          <h3
-            className={`text-sm leading-snug ${isRead ? "font-semibold" : "font-extrabold"}`}
-            style={{ color: "#0D3326" }}
-          >
+          <h3 className={`text-sm leading-snug text-[var(--text-primary)] ${isRead ? "font-medium" : "font-bold"}`}>
             {title}
             {!isRead && (
-              <span
-                className="ml-2 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold"
-                style={{ background: "#FEE2E2", color: "#DC2626" }}
-              >
+              <span className="ml-2 inline-flex items-center rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] font-semibold text-red-600">
                 New
               </span>
             )}
           </h3>
-          <span
-            className="shrink-0 text-[11px] font-semibold whitespace-nowrap"
-            style={{ color: "#9CA3AF" }}
-          >
+          <span className="shrink-0 text-[11px] font-medium text-[var(--text-secondary)] whitespace-nowrap">
             {relativeTime(n.createdAt)}
           </span>
         </div>
 
         {message && (
-          <p
-            className="mt-1.5 text-[13px] leading-relaxed"
-            style={{ color: isRead ? "#9CA3AF" : "#4B5563" }}
-          >
+          <p className="mt-1.5 text-[13px] leading-relaxed text-[var(--text-secondary)]">
             {message}
           </p>
         )}
 
         {propertyTitle && (
-          <div className="mt-2 flex items-center gap-1.5">
-            <Building2 size={12} style={{ color: "#D7AE62" }} />
-            <span
-              className="text-[12px] font-semibold truncate"
-              style={{ color: "#0D3326", opacity: 0.6 }}
-            >
+          <div className="mt-2 flex items-center gap-1.5 text-[var(--text-secondary)]">
+            <Building2 size={12} />
+            <span className="text-[12px] font-medium truncate">
               {propertyTitle}
             </span>
           </div>
@@ -222,7 +197,7 @@ function NotificationCard({ notification: n, onRead }) {
         ) : (
           <ChevronRight
             size={16}
-            className="text-gray-300 group-hover:text-gray-400 transition"
+            className="text-[var(--text-secondary)] group-hover:translate-x-0.5 transition"
           />
         )}
       </div>
@@ -291,7 +266,7 @@ export default function NotificationsClient() {
       const unreadNotifs = notifications.filter(n => !(n.IsRead ?? n.isRead));
       await Promise.all(unreadNotifs.map(n => apiMarkAsRead(n.documentId || n.id, token)));
       toast.success("All notifications marked as read", {
-        style: { background: "#0D3326", color: "#D7AE62", fontWeight: "bold" },
+        style: { background: "var(--btn-primary-bg)", color: "var(--btn-primary-text)", fontWeight: "600" },
       });
       fetchNotifications();
     } catch (err) {
@@ -325,23 +300,20 @@ export default function NotificationsClient() {
           <div className="flex items-center gap-3">
             <Link
               href="/user/profile"
-              className="flex h-8 w-8 items-center justify-center rounded-lg transition hover:bg-gray-100"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] transition hover:bg-[var(--bg-page)]"
             >
-              <ChevronLeft size={18} style={{ color: "#0D3326" }} />
+              <ChevronLeft size={18} />
             </Link>
-            <h1 className="text-2xl font-extrabold" style={{ color: "#0D3326" }}>
+            <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
               Notifications
             </h1>
             {unreadCount > 0 && (
-              <span
-                className="flex items-center justify-center rounded-full px-2.5 py-0.5 text-xs font-extrabold"
-                style={{ background: "#FEE2E2", color: "#DC2626", border: "1px solid #FECACA" }}
-              >
+              <span className="flex items-center justify-center rounded-full bg-red-500/10 border border-red-500/20 px-2.5 py-0.5 text-xs font-semibold text-red-600">
                 {unreadCount} unread
               </span>
             )}
           </div>
-          <p className="mt-1 pl-11 text-sm" style={{ color: "rgba(13,51,38,0.60)" }}>
+          <p className="mt-1 pl-11 text-sm text-[var(--text-secondary)]">
             Stay updated on your enquiries, site visits and property activity.
           </p>
         </div>
@@ -350,8 +322,7 @@ export default function NotificationsClient() {
           {unreadCount > 0 && (
             <button
               onClick={handleMarkAllAsRead}
-              className="flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-bold transition hover:opacity-80"
-              style={{ background: "#0D3326", color: "#D7AE62" }}
+              className="hh-btn hh-btn-primary"
             >
               <CheckCheck size={15} />
               Mark all as read
@@ -359,20 +330,16 @@ export default function NotificationsClient() {
           )}
           <button
             onClick={fetchNotifications}
-            className="flex h-9 w-9 items-center justify-center rounded-xl border transition hover:bg-gray-50"
-            style={{ borderColor: "#E5DDD0" }}
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] transition hover:bg-[var(--bg-page)]"
             title="Refresh"
           >
-            <RefreshCw size={14} style={{ color: "#0D3326" }} />
+            <RefreshCw size={14} />
           </button>
         </div>
       </div>
 
       {/* ─── Filter Tabs ──────────────────────────────────────── */}
-      <div
-        className="flex flex-wrap items-center gap-2 pb-4"
-        style={{ borderBottom: "1px solid #E5DDD0" }}
-      >
+      <div className="flex flex-wrap items-center gap-2 pb-4 border-b border-[var(--border-subtle)]">
         {FILTERS.map((f) => {
           const active = filter === f;
           const count = counts[f] ?? 0;
@@ -380,21 +347,19 @@ export default function NotificationsClient() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className="flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-bold transition-all"
-              style={
+              className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold transition-all ${
                 active
-                  ? { background: "#0D3326", color: "#fff", border: "1.5px solid #0D3326" }
-                  : { background: "#fff", color: "rgba(13,51,38,0.55)", border: "1.5px solid #E5DDD0" }
-              }
+                  ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] border border-[var(--btn-primary-bg)]"
+                  : "bg-[var(--bg-surface)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:text-[var(--text-primary)]"
+              }`}
             >
               {f}
               <span
-                className="rounded-full px-1.5 py-0.5 text-[10px]"
-                style={
+                className={`rounded-full px-1.5 py-0.5 text-[10px] ${
                   active
-                    ? { background: "rgba(255,255,255,0.20)", color: "#fff" }
-                    : { background: "#F7F4EF", color: "#0D3326" }
-                }
+                    ? "bg-white/20 text-white"
+                    : "bg-[var(--bg-page)] text-[var(--text-primary)]"
+                }`}
               >
                 {count}
               </span>
@@ -410,36 +375,31 @@ export default function NotificationsClient() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="flex items-start gap-4 rounded-2xl border p-5 animate-pulse"
-              style={{ borderColor: "#E5DDD0", background: "#fff" }}
+              className="flex items-start gap-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 animate-pulse"
             >
-              <div className="h-12 w-12 rounded-full bg-gray-100 shrink-0" />
+              <div className="h-12 w-12 rounded-full bg-[var(--border-subtle)] shrink-0" />
               <div className="flex-1 space-y-2 pt-1">
-                <div className="h-4 w-1/3 rounded bg-gray-100" />
-                <div className="h-3 w-2/3 rounded bg-gray-100" />
-                <div className="h-3 w-1/2 rounded bg-gray-100" />
+                <div className="h-4 w-1/3 rounded bg-[var(--border-subtle)]" />
+                <div className="h-3 w-2/3 rounded bg-[var(--border-subtle)]" />
+                <div className="h-3 w-1/2 rounded bg-[var(--border-subtle)]" />
               </div>
-              <div className="h-16 w-16 rounded-xl bg-gray-100 shrink-0" />
+              <div className="h-16 w-16 rounded-xl bg-[var(--border-subtle)] shrink-0" />
             </div>
           ))}
         </div>
       ) : error ? (
         /* Error */
-        <div
-          className="flex flex-col items-center justify-center rounded-2xl border p-14 text-center"
-          style={{ borderColor: "#E5DDD0", background: "#fff", minHeight: "360px" }}
-        >
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-50 mb-4">
-            <AlertCircle size={26} className="text-red-400" />
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-14 text-center min-h-[360px]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 mb-4">
+            <AlertCircle size={26} className="text-red-500" />
           </div>
-          <h2 className="text-lg font-extrabold" style={{ color: "#0D3326" }}>
+          <h2 className="text-lg font-bold text-[var(--text-primary)]">
             Unable to Load Notifications
           </h2>
-          <p className="mt-1 max-w-xs text-sm text-gray-400">{error}</p>
+          <p className="mt-1 max-w-xs text-sm text-[var(--text-secondary)]">{error}</p>
           <button
             onClick={fetchNotifications}
-            className="mt-6 flex items-center gap-2 rounded-xl px-6 py-3 font-bold transition hover:opacity-80"
-            style={{ background: "#0D3326", color: "#D7AE62" }}
+            className="hh-btn hh-btn-primary mt-6"
           >
             <RefreshCw size={15} />
             Try Again
@@ -447,20 +407,14 @@ export default function NotificationsClient() {
         </div>
       ) : filtered.length === 0 ? (
         /* Empty */
-        <div
-          className="flex flex-col items-center justify-center rounded-2xl border p-16 text-center"
-          style={{ borderColor: "#E5DDD0", background: "#fff", minHeight: "400px" }}
-        >
-          <div
-            className="mb-5 flex h-20 w-20 items-center justify-center rounded-full"
-            style={{ background: "#F7F4EF" }}
-          >
-            <Bell size={34} style={{ color: "#0D3326", opacity: 0.25 }} />
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-16 text-center min-h-[400px]">
+          <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-[var(--bg-surface)] text-[var(--text-secondary)]">
+            <Bell size={34} className="opacity-40" />
           </div>
-          <h2 className="text-xl font-extrabold" style={{ color: "#0D3326" }}>
+          <h2 className="text-xl font-bold text-[var(--text-primary)]">
             {filter === "All" ? "No Notifications Yet" : `No ${filter} notifications`}
           </h2>
-          <p className="mt-2 max-w-sm text-sm text-gray-400">
+          <p className="mt-2 max-w-sm text-sm text-[var(--text-secondary)]">
             {filter === "All"
               ? "You're all caught up. Your property enquiries, site visits and updates will appear here."
               : `You don't have any ${filter.toLowerCase()} notifications at the moment.`}
@@ -468,16 +422,14 @@ export default function NotificationsClient() {
           {filter !== "All" && (
             <button
               onClick={() => setFilter("All")}
-              className="mt-6 font-bold transition hover:opacity-70"
-              style={{ color: "#D7AE62" }}
+              className="mt-6 text-sm font-semibold text-[var(--text-primary)] underline hover:opacity-80"
             >
               View all notifications
             </button>
           )}
           <Link
             href="/user"
-            className="mt-4 flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold transition hover:opacity-80"
-            style={{ background: "#0D3326", color: "#D7AE62" }}
+            className="hh-btn hh-btn-primary mt-4"
           >
             Back to Dashboard
           </Link>
@@ -491,10 +443,10 @@ export default function NotificationsClient() {
             return (
               <div key={group} className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-sm font-extrabold" style={{ color: "#0D3326" }}>
+                  <h2 className="text-sm font-bold text-[var(--text-primary)]">
                     {group}
                   </h2>
-                  <div className="h-px flex-1" style={{ background: "#E5DDD0" }} />
+                  <div className="h-px flex-1 bg-[var(--border-subtle)]" />
                 </div>
                 <div className="space-y-3">
                   {items.map((n) => (

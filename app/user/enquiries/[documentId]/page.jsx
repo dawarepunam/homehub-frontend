@@ -9,7 +9,7 @@ export default async function EnquiryDetailsPage({ params }) {
   const siteSettings = await getUserSiteSettings();
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7]">
+    <div className="min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)]">
       {/* Buyer Header */}
       <UserHeader headerData={siteSettings?.UserHeader} />
 

@@ -19,21 +19,21 @@ import {
    COLOUR TOKENS  (HomeHub Buyer design system)
 ───────────────────────────────────────────────*/
 const C = {
-  forest: "#0D3326",
-  forestMid: "#123F32",
-  forestLight: "#226E58",
-  gold: "#D7AE62",
-  goldDark: "#C99A40",
-  cream: "#F5F3EE",
-  creamDark: "#EDE8DF",
-  parchment: "#F3E7D2",
-  text: "#1A2C26",
-  muted: "#6B7280",
-  white: "#ffffff",
+  forest: "var(--text-primary)",
+  forestMid: "var(--bg-surface)",
+  forestLight: "var(--text-secondary)",
+  gold: "var(--text-primary)",
+  goldDark: "var(--text-secondary)",
+  cream: "var(--bg-page)",
+  creamDark: "var(--border-subtle)",
+  parchment: "var(--text-primary)",
+  text: "var(--text-primary)",
+  muted: "var(--text-secondary)",
+  white: "var(--bg-card)",
   error: "#DC2626",
-  errorBg: "#FEF2F2",
-  principalColor: "#0D3326",
-  interestColor: "#D7AE62",
+  errorBg: "rgba(220,38,38,0.1)",
+  principalColor: "#111111",
+  interestColor: "#71717A",
 };
 
 /* ─────────────────────────────────────────────
@@ -180,82 +180,82 @@ function ResultRow({ label, value, highlight }) {
    CSS (scoped via class prefix "emi-")
 ───────────────────────────────────────────────*/
 const STYLES = `
-  .emi-page { min-height: 100vh; background: #F5F3EE; font-family: "Inter", system-ui, sans-serif; }
+  .emi-page { min-height: 100vh; background: var(--bg-page); font-family: "Inter", system-ui, sans-serif; color: var(--text-primary); }
 
   /* Breadcrumb */
-  .emi-breadcrumb { background: #0D3326; border-bottom: 1px solid rgba(215,174,98,0.2); }
-  .emi-breadcrumb-inner { max-width: 1280px; margin: 0 auto; padding: 10px 24px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: rgba(243,231,210,0.7); }
-  .emi-breadcrumb a { color: rgba(243,231,210,0.7); text-decoration: none; transition: color 0.2s; }
-  .emi-breadcrumb a:hover { color: #D7AE62; }
-  .emi-breadcrumb-sep { color: rgba(215,174,98,0.4); }
-  .emi-breadcrumb-current { color: #D7AE62; font-weight: 600; }
+  .emi-breadcrumb { background: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); }
+  .emi-breadcrumb-inner { max-width: 1280px; margin: 0 auto; padding: 10px 24px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
+  .emi-breadcrumb a { color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+  .emi-breadcrumb a:hover { color: var(--text-primary); }
+  .emi-breadcrumb-sep { color: var(--border-subtle); }
+  .emi-breadcrumb-current { color: var(--text-primary); font-weight: 600; }
 
   /* Hero */
-  .emi-hero { background: linear-gradient(135deg, #0D3326 0%, #123F32 100%); padding: 36px 24px 32px; border-bottom: 1px solid rgba(215,174,98,0.15); }
+  .emi-hero { background: var(--bg-surface); padding: 36px 24px 32px; border-bottom: 1px solid var(--border-subtle); }
   .emi-hero-inner { max-width: 1280px; margin: 0 auto; }
-  .emi-hero h1 { font-size: clamp(24px, 4vw, 34px); font-weight: 800; color: #F3E7D2; margin: 0 0 6px; letter-spacing: -0.5px; }
-  .emi-hero p { font-size: 14px; color: rgba(243,231,210,0.65); margin: 0; }
+  .emi-hero h1 { font-size: clamp(24px, 4vw, 34px); font-weight: 800; color: var(--text-primary); margin: 0 0 6px; letter-spacing: -0.5px; }
+  .emi-hero p { font-size: 14px; color: var(--text-secondary); margin: 0; }
   .emi-hero-flex { display: flex; align-items: center; gap: 14px; }
-  .emi-hero-icon-box { width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, #D7AE62, #C99A40); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .emi-hero-icon-box { width: 52px; height: 52px; border-radius: 14px; background: var(--btn-primary-bg); color: var(--btn-primary-text); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
   /* Grid */
   .emi-grid { max-width: 1280px; margin: 0 auto; padding: 32px 24px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
   @media (max-width: 860px) { .emi-grid { grid-template-columns: 1fr; } }
 
   /* Card */
-  .emi-card { background: #ffffff; border-radius: 20px; border: 1px solid #EDE8DF; box-shadow: 0 4px 24px rgba(13,51,38,0.06); overflow: hidden; }
-  .emi-card-header { background: linear-gradient(135deg, #F5F3EE 0%, #EDE8DF 100%); padding: 18px 24px; border-bottom: 1px solid #EDE8DF; display: flex; align-items: center; gap: 10px; }
-  .emi-card-header-icon { width: 36px; height: 36px; border-radius: 10px; background: #0D3326; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .emi-card-title { font-size: 16px; font-weight: 700; color: #0D3326; margin: 0; }
+  .emi-card { background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-subtle); box-shadow: 0 4px 24px rgba(0,0,0,0.04); overflow: hidden; }
+  .emi-card-header { background: var(--bg-surface); padding: 18px 24px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 10px; }
+  .emi-card-header-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--btn-primary-bg); color: var(--btn-primary-text); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .emi-card-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 0; }
   .emi-card-body { padding: 24px; }
 
   /* Fields */
   .emi-field { margin-bottom: 18px; }
-  .emi-label { display: block; font-size: 12.5px; font-weight: 600; color: #1A2C26; margin-bottom: 6px; letter-spacing: 0.3px; }
+  .emi-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; letter-spacing: 0.3px; }
   .emi-label::after { content: " *"; color: #DC2626; }
-  .emi-hint { font-weight: 400; color: #6B7280; font-size: 11.5px; }
-  .emi-input-wrap { display: flex; align-items: center; border: 1.5px solid #EDE8DF; border-radius: 12px; background: #F5F3EE; transition: border-color 0.2s, box-shadow 0.2s; overflow: hidden; }
-  .emi-input-wrap:focus-within { border-color: #D7AE62; box-shadow: 0 0 0 3px rgba(215,174,98,0.12); background: #ffffff; }
-  .emi-prefix, .emi-suffix { padding: 0 12px; font-size: 14px; font-weight: 600; color: #226E58; background: transparent; user-select: none; white-space: nowrap; }
-  .emi-input { flex: 1; border: none; outline: none; padding: 11px 12px 11px 4px; font-size: 15px; font-weight: 600; color: #1A2C26; background: transparent; min-width: 0; }
+  .emi-hint { font-weight: 400; color: var(--text-secondary); font-size: 11.5px; }
+  .emi-input-wrap { display: flex; align-items: center; border: 1.5px solid var(--border-subtle); border-radius: 12px; background: var(--bg-surface); transition: border-color 0.2s, box-shadow 0.2s; overflow: hidden; }
+  .emi-input-wrap:focus-within { border-color: var(--text-primary); box-shadow: 0 0 0 3px rgba(0,0,0,0.06); background: var(--bg-card); }
+  .emi-prefix, .emi-suffix { padding: 0 12px; font-size: 14px; font-weight: 600; color: var(--text-secondary); background: transparent; user-select: none; white-space: nowrap; }
+  .emi-input { flex: 1; border: none; outline: none; padding: 11px 12px 11px 4px; font-size: 15px; font-weight: 600; color: var(--text-primary); background: transparent; min-width: 0; }
   .emi-input::-webkit-inner-spin-button, .emi-input::-webkit-outer-spin-button { -webkit-appearance: none; }
   .emi-input[type=number] { -moz-appearance: textfield; }
 
   /* Loan amount display */
-  .emi-loan-field-label { display: block; font-size: 12.5px; font-weight: 600; color: #1A2C26; margin-bottom: 6px; letter-spacing: 0.3px; }
-  .emi-loan-display { display: flex; align-items: center; justify-content: space-between; border: 1.5px solid #EDE8DF; border-radius: 12px; background: linear-gradient(135deg, #F0EDE7 0%, #EDE8DF 100%); padding: 11px 16px; }
-  .emi-loan-display-label { font-size: 13px; color: #6B7280; font-weight: 500; }
-  .emi-loan-display-value { font-size: 16px; font-weight: 800; color: #0D3326; display: flex; align-items: center; gap: 8px; }
-  .emi-loan-badge { font-size: 10px; font-weight: 600; background: rgba(13,51,38,0.1); color: #226E58; border-radius: 6px; padding: 2px 7px; }
+  .emi-loan-field-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; letter-spacing: 0.3px; }
+  .emi-loan-display { display: flex; align-items: center; justify-content: space-between; border: 1.5px solid var(--border-subtle); border-radius: 12px; background: var(--bg-surface); padding: 11px 16px; }
+  .emi-loan-display-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+  .emi-loan-display-value { font-size: 16px; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+  .emi-loan-badge { font-size: 10px; font-weight: 600; background: var(--border-subtle); color: var(--text-secondary); border-radius: 6px; padding: 2px 7px; }
 
   /* Select */
-  .emi-select-wrap { border: 1.5px solid #EDE8DF; border-radius: 12px; background: #F5F3EE; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
-  .emi-select-wrap:focus-within { border-color: #D7AE62; box-shadow: 0 0 0 3px rgba(215,174,98,0.12); background: #ffffff; }
-  .emi-select { width: 100%; border: none; outline: none; padding: 11px 16px; font-size: 15px; font-weight: 600; color: #1A2C26; background: transparent; appearance: none; cursor: pointer; }
+  .emi-select-wrap { border: 1.5px solid var(--border-subtle); border-radius: 12px; background: var(--bg-surface); overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+  .emi-select-wrap:focus-within { border-color: var(--text-primary); box-shadow: 0 0 0 3px rgba(0,0,0,0.06); background: var(--bg-card); }
+  .emi-select { width: 100%; border: none; outline: none; padding: 11px 16px; font-size: 15px; font-weight: 600; color: var(--text-primary); background: transparent; appearance: none; cursor: pointer; }
 
   /* Buttons */
   .emi-btn-row { display: flex; gap: 12px; margin-top: 24px; }
-  .emi-btn-calc { flex: 1; padding: 13px 20px; border-radius: 12px; border: none; background: linear-gradient(135deg, #0D3326, #123F32); color: #F3E7D2; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.25s; box-shadow: 0 4px 14px rgba(13,51,38,0.25); }
-  .emi-btn-calc:hover { background: linear-gradient(135deg, #0A2A1E, #0D3326); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(13,51,38,0.35); }
-  .emi-btn-reset { padding: 13px 18px; border-radius: 12px; border: 1.5px solid #EDE8DF; background: #ffffff; color: #6B7280; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
-  .emi-btn-reset:hover { border-color: #DC2626; color: #DC2626; background: #FEF2F2; }
+  .emi-btn-calc { flex: 1; padding: 13px 20px; border-radius: 12px; border: none; background: var(--btn-primary-bg); color: var(--btn-primary-text); font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.25s; box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+  .emi-btn-calc:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
+  .emi-btn-reset { padding: 13px 18px; border-radius: 12px; border: 1.5px solid var(--border-subtle); background: var(--bg-card); color: var(--text-secondary); font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+  .emi-btn-reset:hover { border-color: #DC2626; color: #DC2626; background: rgba(220,38,38,0.08); }
 
   /* Result card */
-  .emi-result-card { background: linear-gradient(135deg, #0D3326 0%, #123F32 100%); border-radius: 20px; overflow: hidden; box-shadow: 0 8px 32px rgba(13,51,38,0.20); }
-  .emi-emi-box { padding: 28px 24px 20px; border-bottom: 1px solid rgba(215,174,98,0.15); text-align: center; }
-  .emi-emi-label { font-size: 12px; font-weight: 600; color: rgba(215,174,98,0.75); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 8px; }
-  .emi-emi-amount { font-size: clamp(28px, 5vw, 38px); font-weight: 900; color: #F3E7D2; letter-spacing: -1px; line-height: 1.1; }
-  .emi-emi-amount .emi-per-month { font-size: 0.55em; font-weight: 600; color: rgba(215,174,98,0.75); vertical-align: middle; }
-  .emi-emi-icon { width: 64px; height: 64px; border-radius: 18px; background: rgba(215,174,98,0.12); border: 1px solid rgba(215,174,98,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+  .emi-result-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 20px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+  .emi-emi-box { padding: 28px 24px 20px; border-bottom: 1px solid var(--border-subtle); text-align: center; background: var(--bg-surface); }
+  .emi-emi-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 8px; }
+  .emi-emi-amount { font-size: clamp(28px, 5vw, 38px); font-weight: 900; color: var(--text-primary); letter-spacing: -1px; line-height: 1.1; }
+  .emi-emi-amount .emi-per-month { font-size: 0.55em; font-weight: 600; color: var(--text-secondary); vertical-align: middle; }
+  .emi-emi-icon { width: 64px; height: 64px; border-radius: 18px; background: var(--bg-card); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; color: var(--text-primary); }
 
   /* Result rows */
   .emi-summary-block { padding: 20px 24px; }
-  .emi-result-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(215,174,98,0.08); }
+  .emi-result-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-subtle); }
   .emi-result-row:last-child { border-bottom: none; }
-  .emi-result-label { font-size: 13px; color: rgba(243,231,210,0.65); font-weight: 500; }
-  .emi-result-value { font-size: 14px; font-weight: 700; color: #F3E7D2; }
-  .emi-result-row--highlight .emi-result-label { color: rgba(215,174,98,0.85); font-weight: 600; }
-  .emi-result-row--highlight .emi-result-value { color: #D7AE62; font-size: 15px; }
+  .emi-result-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+  .emi-result-value { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .emi-result-row--highlight .emi-result-label { color: var(--text-primary); font-weight: 600; }
+  .emi-result-row--highlight .emi-result-value { color: var(--text-primary); font-size: 15px; }
 
   /* Breakdown card */
   .emi-breakdown-inner { padding: 20px 24px; }
@@ -264,43 +264,43 @@ const STYLES = `
   .emi-legend-item { display: flex; align-items: center; gap: 10px; }
   .emi-legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
   .emi-legend-pct { font-size: 20px; font-weight: 800; line-height: 1.1; }
-  .emi-legend-lbl { font-size: 11px; color: #6B7280; font-weight: 500; margin-top: 2px; }
-  .emi-bar-wrap { height: 10px; border-radius: 99px; background: #EDE8DF; overflow: hidden; margin-top: 16px; }
-  .emi-bar-principal { height: 100%; background: #0D3326; border-radius: 99px; transition: width 0.6s ease; }
+  .emi-legend-lbl { font-size: 11px; color: var(--text-secondary); font-weight: 500; margin-top: 2px; }
+  .emi-bar-wrap { height: 10px; border-radius: 99px; background: var(--bg-surface); overflow: hidden; margin-top: 16px; }
+  .emi-bar-principal { height: 100%; background: var(--btn-primary-bg); border-radius: 99px; transition: width 0.6s ease; }
 
   /* Tip */
-  .emi-tip { margin: 0 24px 24px; padding: 12px 16px; border-radius: 12px; background: rgba(215,174,98,0.08); border: 1px solid rgba(215,174,98,0.2); display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; color: rgba(243,231,210,0.7); }
+  .emi-tip { margin: 0 24px 24px; padding: 12px 16px; border-radius: 12px; background: var(--bg-surface); border: 1px solid var(--border-subtle); display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; color: var(--text-secondary); }
 
   /* Empty state */
   .emi-empty { min-height: 340px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; text-align: center; }
-  .emi-empty-icon { width: 72px; height: 72px; border-radius: 20px; background: rgba(215,174,98,0.08); border: 1px solid rgba(215,174,98,0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
-  .emi-empty-title { font-size: 17px; font-weight: 700; color: #F3E7D2; margin-bottom: 6px; }
-  .emi-empty-sub { font-size: 13px; color: rgba(243,231,210,0.5); max-width: 220px; }
+  .emi-empty-icon { width: 72px; height: 72px; border-radius: 20px; background: var(--bg-surface); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; color: var(--text-primary); }
+  .emi-empty-title { font-size: 17px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+  .emi-empty-sub { font-size: 13px; color: var(--text-secondary); max-width: 220px; }
 
   /* Amortization */
   .emi-amort { padding: 0 24px 24px; }
-  .emi-amort-trigger { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; background: #F5F3EE; border: 1px solid #EDE8DF; border-radius: 14px; cursor: pointer; font-size: 14px; font-weight: 700; color: #0D3326; transition: background 0.2s; }
-  .emi-amort-trigger:hover { background: #EDE8DF; }
-  .emi-amort-table-wrap { margin-top: 12px; border: 1px solid #EDE8DF; border-radius: 14px; overflow: auto; max-height: 340px; background: #ffffff; }
+  .emi-amort-trigger { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 14px; cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-primary); transition: background 0.2s; }
+  .emi-amort-trigger:hover { background: var(--border-subtle); }
+  .emi-amort-table-wrap { margin-top: 12px; border: 1px solid var(--border-subtle); border-radius: 14px; overflow: auto; max-height: 340px; background: var(--bg-card); }
   .emi-amort-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .emi-amort-table th { background: #0D3326; color: #F3E7D2; padding: 10px 14px; text-align: right; font-weight: 600; font-size: 11.5px; white-space: nowrap; position: sticky; top: 0; z-index: 1; }
+  .emi-amort-table th { background: var(--bg-surface); color: var(--text-primary); padding: 10px 14px; text-align: right; font-weight: 600; font-size: 11.5px; white-space: nowrap; position: sticky; top: 0; z-index: 1; border-bottom: 1px solid var(--border-subtle); }
   .emi-amort-table th:first-child { text-align: left; }
-  .emi-amort-table td { padding: 10px 14px; text-align: right; border-bottom: 1px solid #F5F3EE; color: #1A2C26; font-weight: 500; }
-  .emi-amort-table td:first-child { text-align: left; font-weight: 600; color: #0D3326; }
+  .emi-amort-table td { padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--border-subtle); color: var(--text-primary); font-weight: 500; }
+  .emi-amort-table td:first-child { text-align: left; font-weight: 600; color: var(--text-primary); }
   .emi-amort-table tr:last-child td { border-bottom: none; }
-  .emi-amort-table tr:hover td { background: #F5F3EE; }
+  .emi-amort-table tr:hover td { background: var(--bg-surface); }
 
   /* Modal */
   .emi-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 24px; animation: emi-fade-in 0.18s ease; }
-  .emi-modal { background: #ffffff; border-radius: 20px; padding: 32px 28px 28px; max-width: 420px; width: 100%; position: relative; box-shadow: 0 24px 60px rgba(0,0,0,0.25); animation: emi-slide-up 0.22s ease; }
-  .emi-modal-icon-wrap { width: 56px; height: 56px; border-radius: 16px; background: rgba(215,174,98,0.12); border: 1px solid rgba(215,174,98,0.25); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
-  .emi-modal-title { font-size: 18px; font-weight: 800; color: #0D3326; text-align: center; margin-bottom: 14px; }
-  .emi-modal-list { list-style: disc; padding-left: 18px; font-size: 13.5px; color: #6B7280; line-height: 1.7; margin-bottom: 22px; }
+  .emi-modal { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 20px; padding: 32px 28px 28px; max-width: 420px; width: 100%; position: relative; box-shadow: 0 24px 60px rgba(0,0,0,0.25); animation: emi-slide-up 0.22s ease; }
+  .emi-modal-icon-wrap { width: 56px; height: 56px; border-radius: 16px; background: var(--bg-surface); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--text-primary); }
+  .emi-modal-title { font-size: 18px; font-weight: 800; color: var(--text-primary); text-align: center; margin-bottom: 14px; }
+  .emi-modal-list { list-style: disc; padding-left: 18px; font-size: 13.5px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 22px; }
   .emi-modal-list li { margin-bottom: 4px; }
-  .emi-modal-btn { width: 100%; padding: 13px; border-radius: 12px; border: none; background: linear-gradient(135deg, #D7AE62, #C99A40); color: #0D3326; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-  .emi-modal-btn:hover { filter: brightness(1.05); }
-  .emi-modal-x { position: absolute; top: 14px; right: 14px; width: 30px; height: 30px; border-radius: 8px; border: none; background: #F5F3EE; color: #6B7280; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; }
-  .emi-modal-x:hover { background: #EDE8DF; }
+  .emi-modal-btn { width: 100%; padding: 13px; border-radius: 12px; border: none; background: var(--btn-primary-bg); color: var(--btn-primary-text); font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .emi-modal-btn:hover { opacity: 0.9; }
+  .emi-modal-x { position: absolute; top: 14px; right: 14px; width: 30px; height: 30px; border-radius: 8px; border: none; background: var(--bg-surface); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; }
+  .emi-modal-x:hover { background: var(--border-subtle); color: var(--text-primary); }
 
   @keyframes emi-fade-in { from { opacity: 0; } to { opacity: 1; } }
   @keyframes emi-slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -403,7 +403,7 @@ export default function EmiCalculatorClient() {
           <div className="emi-hero-inner">
             <div className="emi-hero-flex">
               <div className="emi-hero-icon-box">
-                <Home size={26} color="#0D3326" />
+                <Home size={26} />
               </div>
               <div>
                 <h1>EMI Calculator</h1>
@@ -421,7 +421,7 @@ export default function EmiCalculatorClient() {
             <div className="emi-card">
               <div className="emi-card-header">
                 <div className="emi-card-header-icon">
-                  <Calculator size={18} color="#D7AE62" />
+                  <Calculator size={18} />
                 </div>
                 <h2 className="emi-card-title">Loan Details</h2>
               </div>
@@ -495,7 +495,7 @@ export default function EmiCalculatorClient() {
                 <>
                   <div className="emi-emi-box">
                     <div className="emi-emi-icon">
-                      <TrendingUp size={28} color="#D7AE62" />
+                      <TrendingUp size={28} style={{ color: "var(--btn-primary-bg)" }} />
                     </div>
                     <div className="emi-emi-label">Your Monthly EMI</div>
                     <div className="emi-emi-amount">
@@ -509,16 +509,16 @@ export default function EmiCalculatorClient() {
                     <ResultRow label="Total Payment" value={formatINR(Math.round(result.totalPayment))} highlight />
                   </div>
                   <div className="emi-tip">
-                    <Info size={14} color="#D7AE62" style={{ flexShrink: 0, marginTop: 2 }} />
+                    <Info size={14} style={{ color: "var(--btn-primary-bg)", flexShrink: 0, marginTop: 2 }} />
                     <span>
-                      <strong style={{ color: "#D7AE62" }}>Tip:</strong> A higher down payment can help you reduce your EMI and total interest.
+                      <strong style={{ color: "var(--btn-primary-bg)" }}>Tip:</strong> A higher down payment can help you reduce your EMI and total interest.
                     </span>
                   </div>
                 </>
               ) : (
                 <div className="emi-empty">
                   <div className="emi-empty-icon">
-                    <Calculator size={32} color="#D7AE62" />
+                    <Calculator size={32} />
                   </div>
                   <div className="emi-empty-title">Your Monthly EMI</div>
                   <div className="emi-empty-sub">
@@ -533,7 +533,7 @@ export default function EmiCalculatorClient() {
               <div className="emi-card" style={{ marginTop: 24 }}>
                 <div className="emi-card-header">
                   <div className="emi-card-header-icon">
-                    <Percent size={16} color="#D7AE62" />
+                    <Percent size={16} />
                   </div>
                   <h3 className="emi-card-title">Principal vs Interest</h3>
                 </div>
@@ -542,16 +542,16 @@ export default function EmiCalculatorClient() {
                     <DonutChart principalPct={result.principalPct} interestPct={result.interestPct} />
                     <div className="emi-legend">
                       <div className="emi-legend-item">
-                        <span className="emi-legend-dot" style={{ background: "#0D3326" }} />
+                        <span className="emi-legend-dot" style={{ background: "var(--btn-primary-bg)" }} />
                         <div>
-                          <div className="emi-legend-pct" style={{ color: "#0D3326" }}>{result.principalPct}%</div>
+                          <div className="emi-legend-pct" style={{ color: "var(--text-primary)" }}>{result.principalPct}%</div>
                           <div className="emi-legend-lbl">Principal</div>
                         </div>
                       </div>
                       <div className="emi-legend-item">
-                        <span className="emi-legend-dot" style={{ background: "#D7AE62" }} />
+                        <span className="emi-legend-dot" style={{ background: "var(--text-secondary)" }} />
                         <div>
-                          <div className="emi-legend-pct" style={{ color: "#C99A40" }}>{result.interestPct}%</div>
+                          <div className="emi-legend-pct" style={{ color: "var(--text-secondary)" }}>{result.interestPct}%</div>
                           <div className="emi-legend-lbl">Interest</div>
                         </div>
                       </div>

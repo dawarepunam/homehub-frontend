@@ -836,75 +836,55 @@ export default function UserHeader({ headerData }) {
     }));
 
   return (
-    <header
-      className="sticky top-0 z-[1000]"
-      style={{
-        background: "linear-gradient(135deg, #0D3326 0%, #123F32 100%)",
-        borderBottom: "1px solid rgba(215,174,98,0.20)",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
-      }}
-    >
-      {/* Gold accent top line */}
-      <div
-        className="absolute top-0 left-0 right-0 h-[2px]"
-        style={{ background: "linear-gradient(90deg, transparent 0%, #D7AE62 40%, #D7AE62 60%, transparent 100%)" }}
-      />
+    <header className="sticky top-0 z-[1000] bg-[var(--bg-card)]/95 backdrop-blur-md border-b border-[var(--border-subtle)] shadow-sm transition-colors duration-200">
 
       {/* TOP HEADER */}
       <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-4 px-4 sm:px-6 py-4 lg:px-8">
 
         {/* Logo + Brand */}
-        <Link href="/user" className="flex items-center gap-3">
+        <Link href="/user" className="flex items-center gap-3 group">
           {logo ? (
             <Image
               src={logo}
               alt={brandName}
-              width={44}
-              height={44}
-              className="rounded-xl object-contain"
+              width={40}
+              height={40}
+              className="rounded-xl object-contain border border-[var(--border-subtle)]"
               unoptimized
             />
           ) : (
-            <div
-              className="flex h-11 w-11 items-center justify-center rounded-xl text-lg font-extrabold"
-              style={{ background: "linear-gradient(135deg, #D7AE62, #C99A40)", color: "#0D3326" }}
-            >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-base font-extrabold bg-[var(--accent)] text-[var(--accent-text)] shadow-sm">
               H
             </div>
           )}
           <div>
-            <span
-              className="block text-xl font-extrabold tracking-tight"
-              style={{ color: "#F3E7D2" }}
-            >
+            <span className="block text-xl font-extrabold tracking-tight text-[var(--text-primary)] transition-opacity group-hover:opacity-80">
               {brandName}
             </span>
-            <span className="block text-[10px] font-semibold uppercase tracking-widest" style={{ color: "rgba(215,174,98,0.7)" }}>
+            <span className="block text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
               Buyer Portal
             </span>
           </div>
         </Link>
 
         {/* Right actions */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
 
           {/* ── SAVED ──────────────────────────────── */}
           <Link
             href="/user/wishlist"
-            className="flex h-9 items-center gap-1.5 rounded-xl border px-3 text-[13px] font-semibold transition-all duration-200 hover:bg-white/10"
-            style={{ borderColor: "rgba(215,174,98,0.25)", color: "#F3E7D2" }}
+            className="flex h-9 items-center gap-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 text-[13px] font-semibold text-[var(--text-primary)] transition-all duration-200 hover:bg-[var(--border-subtle)]/50"
           >
-            <Heart size={13} style={{ color: "#D7AE62" }} />
+            <Heart size={14} className="text-[var(--text-primary)]" />
             <span className="hidden sm:inline">Saved</span>
           </Link>
 
           {/* ── ENQUIRIES ──────────────────────────── */}
           <Link
             href="/user/enquiries"
-            className="flex h-9 items-center gap-1.5 rounded-xl border px-3 text-[13px] font-semibold transition-all duration-200 hover:bg-white/10"
-            style={{ borderColor: "rgba(215,174,98,0.25)", color: "#F3E7D2" }}
+            className="flex h-9 items-center gap-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 text-[13px] font-semibold text-[var(--text-primary)] transition-all duration-200 hover:bg-[var(--border-subtle)]/50"
           >
-            <MessageSquare size={13} style={{ color: "#D7AE62" }} />
+            <MessageSquare size={14} className="text-[var(--text-primary)]" />
             <span className="hidden sm:inline">Enquiries</span>
           </Link>
 
@@ -917,12 +897,11 @@ export default function UserHeader({ headerData }) {
               type="button"
               onClick={() => setModeSwitcherOpen((p) => !p)}
               aria-label="Switch mode"
-              className="flex h-9 items-center gap-2 rounded-xl border px-3 text-[13px] font-bold transition-all duration-200"
-              style={
+              className={`flex h-9 items-center gap-2 rounded-xl border px-3 text-[13px] font-bold transition-all duration-200 ${
                 modeSwitcherOpen
-                  ? { borderColor: "#D7AE62", background: "rgba(215,174,98,0.18)", color: "#D7AE62" }
-                  : { borderColor: "rgba(215,174,98,0.25)", background: "rgba(215,174,98,0.07)", color: "#D7AE62" }
-              }
+                  ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-text)]"
+                  : "border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:border-[var(--border-focus)]"
+              }`}
             >
               {activeMode === "buyer" ? (
                 <>
@@ -939,48 +918,43 @@ export default function UserHeader({ headerData }) {
             </button>
 
             {modeSwitcherOpen && (
-              <div
-                className="absolute right-0 top-full mt-2 w-[180px] overflow-hidden rounded-2xl shadow-2xl z-[200]"
-                style={{ background: "#fff", border: "1px solid #EDE8DF" }}
-              >
-                <div className="p-1.5">
+              <div className="absolute right-0 top-full mt-2 w-[190px] overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-xl z-[200]">
+                <div className="p-1.5 space-y-1">
                   <button
                     type="button"
                     onClick={() => handleModeSwitch("buyer")}
-                    className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] font-bold transition"
-                    style={
+                    className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition ${
                       activeMode === "buyer"
-                        ? { background: "rgba(13,51,38,0.08)", color: "#0D3326" }
-                        : { color: "#374151" }
-                    }
+                        ? "bg-[var(--accent)] text-[var(--accent-text)]"
+                        : "text-[var(--text-primary)] hover:bg-[var(--bg-surface)]"
+                    }`}
                   >
-                    <ArrowLeftRight size={13} style={{ color: "#226E58" }} />
+                    <ArrowLeftRight size={13} />
                     <span className="flex-1 text-left">Buyer Mode</span>
-                    {activeMode === "buyer" && <Check size={13} style={{ color: "#226E58" }} />}
+                    {activeMode === "buyer" && <Check size={13} />}
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleModeSwitch("seller")}
-                    className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] font-bold transition hover:bg-gray-50"
-                    style={
+                    className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition ${
                       activeMode === "seller"
-                        ? { background: "rgba(13,51,38,0.08)", color: "#0D3326" }
-                        : { color: "#374151" }
-                    }
+                        ? "bg-[var(--accent)] text-[var(--accent-text)]"
+                        : "text-[var(--text-primary)] hover:bg-[var(--bg-surface)]"
+                    }`}
                   >
-                    <Home size={13} style={{ color: "#0D3326" }} />
+                    <Home size={13} />
                     <span className="flex-1 text-left">Seller Mode</span>
-                    {activeMode === "seller" && <Check size={13} style={{ color: "#0D3326" }} />}
+                    {activeMode === "seller" && <Check size={13} />}
                   </button>
                 </div>
 
                 {user && (
-                  <div style={{ borderTop: "1px solid #EDE8DF" }} className="p-1.5">
+                  <div className="border-t border-[var(--border-subtle)] p-1.5">
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] font-bold text-red-600 transition hover:bg-red-50"
+                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-semibold text-red-500 transition hover:bg-red-500/10"
                     >
                       <LogOut size={13} />
                       <span>Logout</span>
@@ -1007,10 +981,7 @@ export default function UserHeader({ headerData }) {
                   const displayName = fullName || user.username || "";
                   return (
                     <>
-                      <div
-                        className="flex h-10 w-10 items-center justify-center rounded-full overflow-hidden text-base font-extrabold shrink-0"
-                        style={{ background: "linear-gradient(135deg, #D7AE62, #C99A40)", color: "#0D3326" }}
-                      >
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full overflow-hidden text-sm font-bold shrink-0 bg-[var(--accent)] text-[var(--accent-text)]">
                         {user.profileImage ? (
                           <img
                             src={user.profileImage}
@@ -1029,13 +1000,13 @@ export default function UserHeader({ headerData }) {
                           {displayInitial}
                         </span>
                       </div>
-                      <span className="hidden font-semibold lg:block" style={{ color: "#F3E7D2" }}>
+                      <span className="hidden font-semibold text-sm text-[var(--text-primary)] lg:block">
                         {displayName}
                       </span>
                     </>
                   );
                 })()}
-                <span className="text-xs" style={{ color: "rgba(215,174,98,0.7)" }}>▼</span>
+                <span className="text-xs text-[var(--text-muted)]">▼</span>
               </button>
 
               {showProfileMenu && (
@@ -1047,8 +1018,7 @@ export default function UserHeader({ headerData }) {
           ) : (
             <Link
               href="/user/login"
-              className="rounded-xl px-4 py-2 text-sm font-bold transition-all hover:-translate-y-0.5"
-              style={{ background: "linear-gradient(135deg, #D7AE62, #C99A40)", color: "#0D3326" }}
+              className="hh-btn hh-btn-primary hh-btn-sm"
             >
               Login
             </Link>
@@ -1057,28 +1027,28 @@ export default function UserHeader({ headerData }) {
       </div>
 
       {/* MENU BAR */}
-      <div style={{ borderTop: "1px solid rgba(215,174,98,0.15)", background: "rgba(0,0,0,0.15)" }}>
-        <div className="no-scrollbar mx-auto flex max-w-[1400px] items-center gap-4 overflow-visible whitespace-nowrap px-4 sm:px-6 py-2.5 lg:px-8 sm:gap-6">
-          <button
-            className="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition"
-            style={{ background: "rgba(215,174,98,0.10)", color: "#D7AE62" }}
-          >
-            <MapPin size={13} />
+      <div className="border-t border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+        <div className="no-scrollbar mx-auto flex max-w-[1400px] items-center gap-3 overflow-visible whitespace-nowrap px-4 sm:px-6 py-2 lg:px-8">
+          <button className="flex shrink-0 items-center gap-1.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-semibold text-[var(--text-primary)] transition hover:bg-[var(--border-subtle)]/40">
+            <MapPin size={13} className="text-[var(--text-muted)]" />
             {defaultLocation}
           </button>
 
           {menu.map((item) => (
             <div
               key={item.id || item.Slug}
-              className="relative shrink-0 pb-2"
+              className="relative shrink-0"
               onMouseEnter={() => setActiveMenu(item.id)}
               onMouseLeave={() => setActiveMenu(null)}
             >
               <button
                 type="button"
                 onClick={() => setActiveMenu(activeMenu === item.id ? null : item.id)}
-                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition hover:bg-white/10"
-                style={{ color: "#F3E7D2" }}
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition ${
+                  activeMenu === item.id
+                    ? "bg-[var(--accent)] text-[var(--accent-text)]"
+                    : "text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40"
+                }`}
               >
                 {item.Title}
               </button>
@@ -1086,7 +1056,7 @@ export default function UserHeader({ headerData }) {
               {activeMenu === item.id &&
                 item.HasDropdown &&
                 item.DropdownItem.length > 0 && (
-                  <div className="absolute left-1/2 top-[100%] z-[9999] -translate-x-1/2">
+                  <div className="absolute left-1/2 top-[100%] z-[9999] -translate-x-1/2 pt-2">
                     <UserDropdown menuItem={item} />
                   </div>
                 )}
@@ -1095,21 +1065,24 @@ export default function UserHeader({ headerData }) {
 
           {/* STATIC EXPLORE DROPDOWN */}
           <div
-            className="relative shrink-0 pb-2"
+            className="relative shrink-0"
             onMouseEnter={() => setActiveMenu("explore")}
             onMouseLeave={() => setActiveMenu(null)}
           >
             <button
               type="button"
               onClick={() => setActiveMenu(activeMenu === "explore" ? null : "explore")}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition hover:bg-white/10"
-              style={{ color: "#F3E7D2" }}
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition ${
+                activeMenu === "explore"
+                  ? "bg-[var(--accent)] text-[var(--accent-text)]"
+                  : "text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40"
+              }`}
             >
               Explore
             </button>
 
             {activeMenu === "explore" && (
-              <div className="absolute left-1/2 top-[100%] z-[9999] -translate-x-1/2">
+              <div className="absolute left-1/2 top-[100%] z-[9999] -translate-x-1/2 pt-2">
                 <ExploreDropdown />
               </div>
             )}

@@ -4,11 +4,11 @@ import { MessageSquare, Clock, Users, CalendarDays, CheckCircle2 } from "lucide-
 
 export default function EnquirySummary({ counts, activeFilter, onFilterChange }) {
   const summaryCards = [
-    { label: "All",        filterKey: "All",        count: counts.all || 0,        icon: MessageSquare, colorClass: "text-emerald-900", bgClass: "bg-emerald-100" },
-    { label: "Pending",    filterKey: "Pending",    count: counts.pending || 0,    icon: Clock,         colorClass: "text-amber-700",  bgClass: "bg-amber-100"  },
-    { label: "Contacted",  filterKey: "Contacted",  count: counts.contacted || 0,  icon: Users,         colorClass: "text-emerald-700", bgClass: "bg-emerald-100" },
-    { label: "Site Visits",filterKey: "Site Visit", count: counts.siteVisits || 0, icon: CalendarDays,  colorClass: "text-emerald-600", bgClass: "bg-emerald-50"  },
-    { label: "Closed",     filterKey: "Closed",     count: counts.closed || 0,     icon: CheckCircle2,  colorClass: "text-stone-500",  bgClass: "bg-stone-100"  },
+    { label: "All",        filterKey: "All",        count: counts.all || 0,        icon: MessageSquare },
+    { label: "Pending",    filterKey: "Pending",    count: counts.pending || 0,    icon: Clock },
+    { label: "Contacted",  filterKey: "Contacted",  count: counts.contacted || 0,  icon: Users },
+    { label: "Site Visits",filterKey: "Site Visit", count: counts.siteVisits || 0, icon: CalendarDays },
+    { label: "Closed",     filterKey: "Closed",     count: counts.closed || 0,     icon: CheckCircle2 },
   ];
 
   return (
@@ -20,18 +20,20 @@ export default function EnquirySummary({ counts, activeFilter, onFilterChange })
             key={index}
             onClick={() => onFilterChange && onFilterChange(card.filterKey)}
             className={`flex flex-col items-start rounded-2xl border p-4 text-left shadow-sm transition hover:shadow-md ${
-              isActive ? "border-amber-500 bg-amber-50/30" : "border-stone-200 bg-white hover:border-stone-300"
+              isActive
+                ? "border-[var(--text-primary)] bg-[var(--bg-card)] ring-2 ring-[var(--text-primary)]"
+                : "border-[var(--border-subtle)] bg-[var(--bg-card)] hover:border-[var(--text-primary)]/40"
             }`}
           >
             <div className="flex w-full items-center justify-between">
-              <p className={`text-sm font-semibold ${isActive ? "text-emerald-900" : "text-stone-600"}`}>
+              <p className={`text-sm font-semibold ${isActive ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"}`}>
                 {card.label}
               </p>
-              <div className={`rounded-full p-2 ${card.bgClass}`}>
-                <card.icon size={16} className={card.colorClass} />
+              <div className="rounded-full p-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
+                <card.icon size={16} />
               </div>
             </div>
-            <p className="mt-4 text-3xl font-bold text-emerald-900">{card.count}</p>
+            <p className="mt-4 text-3xl font-bold text-[var(--text-primary)]">{card.count}</p>
           </button>
         );
       })}

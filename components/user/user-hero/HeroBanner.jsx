@@ -421,7 +421,7 @@ export default function HeroBanner({ data }) {
         !hasImage
           ? {
               background:
-                "linear-gradient(135deg, #0D3326 0%, #154D3A 40%, #0D3326 100%)",
+                "linear-gradient(135deg, #111111 0%, #1e1e1e 50%, #2a2a2a 100%)",
             }
           : undefined
       }
@@ -437,27 +437,27 @@ export default function HeroBanner({ data }) {
         />
       )}
 
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-black/50" />
 
       <div className="relative z-10 mx-auto flex h-full max-w-7xl items-start px-6 pt-20 lg:px-8">
         <div className="max-w-2xl">
           {data.badgeText && (
-            <span className="mb-4 inline-block rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">
+            <span className="mb-4 inline-block rounded-full bg-white/15 backdrop-blur-md px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white border border-white/20">
               {data.badgeText}
             </span>
           )}
           {!data.badgeText && (
-            <span className="mb-4 inline-block rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">
+            <span className="mb-4 inline-block rounded-full bg-white/15 backdrop-blur-md px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white border border-white/20">
               India&#39;s Trusted Property Platform
             </span>
           )}
 
-          <h1 className="text-5xl font-extrabold text-white lg:text-7xl leading-tight">
+          <h1 className="text-4xl font-extrabold text-white sm:text-5xl lg:text-6xl tracking-tight leading-tight">
             Find a place <br/>
-            <span style={{ color: "#D7AE62" }}>you'll love.</span>
+            <span className="text-white/80">you&#39;ll love.</span>
           </h1>
 
-          <p className="mt-6 text-xl font-medium text-white/90">
+          <p className="mt-4 text-base font-medium text-white/80 sm:text-lg">
             {data?.subHeading || "Buy, rent or discover verified properties that match your needs."}
           </p>
         </div>

@@ -31,7 +31,7 @@ export default async function UserHomePage() {
   };
 
   return (
-    <main className="min-h-screen" style={{ background: "#F5F3EE" }}>
+    <main className="min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-200">
       {/* 1. Buyer Header */}
       <UserHeader headerData={siteSettings?.UserHeader} />
 

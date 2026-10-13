@@ -218,8 +218,8 @@ export default function SearchBox({ searchData }) {
   if (!searchData) return null;
 
   return (
-    <section className="relative z-30 mx-auto -mt-28 w-full max-w-7xl px-6 lg:px-8">
-      <div className="overflow-hidden rounded-[32px] bg-white shadow-[0_25px_60px_rgba(0,0,0,0.18)] border border-[#D7AE62]/30">
+    <section className="relative z-30 mx-auto -mt-28 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="overflow-hidden rounded-2xl bg-[var(--bg-card)] shadow-xl border border-[var(--border-subtle)] text-[var(--text-primary)]">
 
         <SearchTabs
           searchData={searchData}
@@ -227,7 +227,7 @@ export default function SearchBox({ searchData }) {
           onPurposeChange={setActivePurpose}
         />
 
-        <div className="border-t border-gray-100 px-8 py-7">
+        <div className="border-t border-[var(--border-subtle)] px-6 py-6 sm:px-8">
           <SearchFilters
             searchData={searchData}
             activePurpose={activePurpose}

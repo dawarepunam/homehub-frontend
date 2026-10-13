@@ -70,7 +70,7 @@ export default function HeroBackground() {
 
           <ellipse cx="400" cy="400" rx="140" ry="380" className={styles.pulse} style={{ animationDelay: '2s' }} />
           <ellipse cx="400" cy="400" rx="240" ry="380" className={styles.pulse} style={{ animationDelay: '6s' }} />
-          
+
           <line x1="20" y1="400" x2="780" y2="400" className={styles.gridLine} />
           <line x1="400" y1="20" x2="400" y2="780" className={styles.gridLine} />
         </svg>

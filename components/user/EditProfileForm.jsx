@@ -136,7 +136,7 @@ function getInitials(name) {
 
 function FormInput({ field, value, disabled, onChange }) {
   const baseClass =
-    "w-full rounded-xl border border-[#E5DDD0] bg-[#FDFAF6] px-4 py-3 text-sm font-semibold text-[#0D3326] outline-none transition placeholder:text-[#0D3326]/30 focus:border-[#0D3326] focus:ring-2 focus:ring-[#0D3326]/10 disabled:cursor-not-allowed disabled:opacity-60";
+    "w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] outline-none transition placeholder:text-[var(--text-secondary)]/50 focus:border-[var(--text-primary)] focus:ring-1 focus:ring-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-60";
 
   if (field.type === "select") {
     return (
@@ -188,14 +188,14 @@ function FormInput({ field, value, disabled, onChange }) {
 
 function FormSection({ icon: Icon, title, subtitle, children }) {
   return (
-    <section className="rounded-2xl border border-[#E5DDD0] bg-white shadow-sm">
-      <div className="flex items-center gap-3 border-b border-[#E5DDD0] px-6 py-4">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#0D3326]">
-          <Icon size={16} className="text-[#D7AE62]" />
+    <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm">
+      <div className="flex items-center gap-3 border-b border-[var(--border-subtle)] px-6 py-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-surface)]">
+          <Icon size={16} className="text-[var(--text-primary)]" />
         </div>
         <div>
-          <h2 className="text-sm font-extrabold text-[#0D3326]">{title}</h2>
-          {subtitle && <p className="mt-0.5 text-[11px] font-medium text-[#0D3326]/50">{subtitle}</p>}
+          <h2 className="text-sm font-bold text-[var(--text-primary)]">{title}</h2>
+          {subtitle && <p className="mt-0.5 text-[11px] font-medium text-[var(--text-secondary)]">{subtitle}</p>}
         </div>
       </div>
       <div className="p-6">{children}</div>
@@ -208,7 +208,7 @@ function FieldGrid({ fields, values, disabled, onChange }) {
     <div className="grid gap-5 md:grid-cols-2">
       {fields.map((field) => (
         <div key={field.name} className={field.className || ""}>
-          <label htmlFor={field.name} className="mb-2 block text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">
+          <label htmlFor={field.name} className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
             {field.label}
           </label>
           <FormInput field={field} value={values[field.name]} disabled={disabled} onChange={onChange} />
@@ -221,14 +221,14 @@ function FieldGrid({ fields, values, disabled, onChange }) {
 function NotificationToggleRow({ field, value, onChange, disabled }) {
   const Icon = field.icon;
   return (
-    <div className="flex items-center justify-between py-4 border-b border-[#E5DDD0] last:border-0">
+    <div className="flex items-center justify-between py-4 border-b border-[var(--border-subtle)] last:border-0">
       <div className="flex items-start gap-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F7F4EF]">
-          <Icon size={18} className="text-[#0D3326]" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)]">
+          <Icon size={18} className="text-[var(--text-primary)]" />
         </div>
         <div>
-          <span className="block text-sm font-bold text-[#0D3326]">{field.label}</span>
-          {field.description && <span className="mt-0.5 block text-[11px] text-[#0D3326]/50">{field.description}</span>}
+          <span className="block text-sm font-semibold text-[var(--text-primary)]">{field.label}</span>
+          {field.description && <span className="mt-0.5 block text-[11px] text-[var(--text-secondary)]">{field.description}</span>}
         </div>
       </div>
       <button
@@ -237,9 +237,9 @@ function NotificationToggleRow({ field, value, onChange, disabled }) {
         onClick={() => onChange(field.name, !value)}
         aria-checked={!!value}
         role="switch"
-        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none disabled:opacity-50 ${value ? "bg-[#0D3326]" : "bg-[#E5DDD0]"}`}
+        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none disabled:opacity-50 ${value ? "bg-[var(--btn-primary-bg)]" : "bg-[var(--border-subtle)]"}`}
       >
-        <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ${value ? "translate-x-6" : "translate-x-1"}`} />
+        <span className={`inline-block h-4 w-4 transform rounded-full bg-[var(--bg-card)] shadow-sm transition-transform duration-200 ${value ? "translate-x-6" : "translate-x-1"}`} />
       </button>
     </div>
   );
@@ -423,7 +423,7 @@ export default function EditProfileForm() {
       }
 
       toast.success("Profile updated successfully!", {
-        style: { background: "#0D3326", color: "#D7AE62", fontWeight: "bold" },
+        style: { background: "var(--btn-primary-bg)", color: "var(--btn-primary-text)", fontWeight: "600" },
       });
       router.refresh();
       router.push("/user/profile");
@@ -455,20 +455,20 @@ export default function EditProfileForm() {
   if (profileLoading) {
     return (
       <div className="flex flex-col gap-5 pb-20">
-        <div className="overflow-hidden rounded-2xl border border-[#E5DDD0] bg-white shadow-sm animate-pulse">
-          <div className="h-48 sm:h-56 bg-[#E5DDD0]" />
+        <div className="overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm animate-pulse">
+          <div className="h-48 sm:h-56 bg-[var(--bg-surface)]" />
           <div className="px-8 pb-8 pt-0">
             <div className="-mt-14 flex items-end gap-5">
-              <div className="h-28 w-28 rounded-full bg-[#E5DDD0] border-4 border-white" />
+              <div className="h-28 w-28 rounded-full bg-[var(--border-subtle)] border-4 border-[var(--bg-card)]" />
               <div className="mb-3 space-y-2">
-                <div className="h-7 w-44 rounded-full bg-[#E5DDD0]" />
-                <div className="h-4 w-24 rounded-full bg-[#E5DDD0]" />
+                <div className="h-7 w-44 rounded-full bg-[var(--border-subtle)]" />
+                <div className="h-4 w-24 rounded-full bg-[var(--border-subtle)]" />
               </div>
             </div>
           </div>
         </div>
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-40 rounded-2xl bg-[#E5DDD0]" />
+          <div key={i} className="h-40 rounded-2xl bg-[var(--border-subtle)]" />
         ))}
       </div>
     );
@@ -476,16 +476,16 @@ export default function EditProfileForm() {
 
   if (profileError) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-[#E5DDD0] bg-white p-16 text-center shadow-sm">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-50 mb-4">
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-16 text-center shadow-sm">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10 mb-4">
           <span className="text-2xl">⚠️</span>
         </div>
-        <h2 className="text-lg font-extrabold text-[#0D3326]">Unable to Load Profile</h2>
-        <p className="mt-2 text-sm text-[#0D3326]/60">{profileError}</p>
+        <h2 className="text-lg font-bold text-[var(--text-primary)]">Unable to Load Profile</h2>
+        <p className="mt-2 text-sm text-[var(--text-secondary)]">{profileError}</p>
         <button
           type="button"
           onClick={() => { setSeeded(false); setProfileLoading(true); getUserProfile().then(setRawProfile).catch((e) => setProfileError(e?.message)).finally(() => setProfileLoading(false)); }}
-          className="mt-6 rounded-xl bg-[#0D3326] px-6 py-3 text-sm font-bold text-[#D7AE62] transition hover:bg-[#0a2b1f]"
+          className="hh-btn hh-btn-primary mt-6"
         >
           Try Again
         </button>
@@ -495,14 +495,14 @@ export default function EditProfileForm() {
 
   if (!profile) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-[#E5DDD0] bg-white p-16 text-center shadow-sm">
-        <h2 className="text-lg font-extrabold text-[#0D3326]">Profile Not Found</h2>
-        <p className="mt-2 text-sm text-[#0D3326]/60">
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-16 text-center shadow-sm">
+        <h2 className="text-lg font-bold text-[var(--text-primary)]">Profile Not Found</h2>
+        <p className="mt-2 text-sm text-[var(--text-secondary)]">
           Your buyer profile could not be found. Please ensure you are logged in.
         </p>
-        <a href="/user/login" className="mt-6 rounded-xl bg-[#0D3326] px-6 py-3 text-sm font-bold text-[#D7AE62] transition hover:bg-[#0a2b1f]">
+        <Link href="/user/login" className="hh-btn hh-btn-primary mt-6">
           Go to Login
-        </a>
+        </Link>
       </div>
     );
   }
@@ -513,29 +513,29 @@ export default function EditProfileForm() {
 
       <form onSubmit={handleSubmit} className="mx-auto max-w-7xl space-y-6 pb-20">
         {/* Breadcrumb */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[13px] font-semibold text-[#0D3326]/60">
-          <Link href="/user" className="flex items-center gap-1 transition hover:text-[#0D3326]">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--text-secondary)]">
+          <Link href="/user" className="flex items-center gap-1 transition hover:text-[var(--text-primary)]">
             <Home size={14} /><span>Home</span>
           </Link>
           <ChevronRight size={12} />
-          <Link href="/user/profile" className="transition hover:text-[#0D3326]">My Profile</Link>
+          <Link href="/user/profile" className="transition hover:text-[var(--text-primary)]">My Profile</Link>
           <ChevronRight size={12} />
-          <span className="text-[#0D3326]">Edit Profile</span>
+          <span className="text-[var(--text-primary)] font-semibold">Edit Profile</span>
         </nav>
 
         {/* Hero Section */}
-        <div className="overflow-hidden rounded-2xl border border-[#E5DDD0] bg-white shadow-sm">
+        <div className="overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm">
           {/* Cover */}
           <div
             className="relative h-48 w-full sm:h-56"
             style={coverPreview
               ? { backgroundImage: `url(${coverPreview})`, backgroundSize: "cover", backgroundPosition: "center" }
-              : { background: "linear-gradient(135deg, #0D3326 0%, #1a4d3a 60%, #0D3326 100%)" }}
+              : { background: "var(--bg-surface)" }}
           >
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30" />
             <label
               htmlFor="cover-upload"
-              className="absolute right-6 top-6 flex cursor-pointer items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold text-[#0D3326] shadow-sm transition hover:bg-[#F7F4EF]"
+              className="absolute right-6 top-6 flex cursor-pointer items-center gap-2 rounded-xl bg-[var(--bg-card)]/90 px-4 py-2 text-sm font-semibold text-[var(--text-primary)] shadow-sm transition hover:bg-[var(--bg-card)] border border-[var(--border-subtle)]"
             >
               <Camera size={14} />Change Cover
             </label>
@@ -548,40 +548,40 @@ export default function EditProfileForm() {
               <div className="flex flex-col sm:flex-row sm:items-end gap-6 -mt-14 sm:-mt-16">
                 {/* Avatar */}
                 <div className="relative shrink-0 z-10">
-                  <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-white bg-white shadow-md sm:h-36 sm:w-36">
+                  <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-[var(--bg-card)] bg-[var(--bg-card)] shadow-md sm:h-36 sm:w-36">
                     {profilePreview ? (
                       <img src={profilePreview} alt={fullName} className="h-full w-full object-cover" />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-[#F7F4EF] text-4xl font-extrabold text-[#0D3326]">
+                      <div className="flex h-full w-full items-center justify-center bg-[var(--bg-surface)] text-4xl font-bold text-[var(--text-primary)]">
                         {initials}
                       </div>
                     )}
                   </div>
                   <label
                     htmlFor="profile-upload"
-                    className="absolute bottom-1.5 right-1.5 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-[#D7AE62] shadow-md transition hover:bg-[#C99A40]"
+                    className="absolute bottom-1.5 right-1.5 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] shadow-md transition hover:opacity-90"
                     title="Change profile photo"
                   >
-                    <Camera size={15} className="text-[#0D3326]" />
+                    <Camera size={15} />
                   </label>
                   <input id="profile-upload" type="file" accept="image/*" disabled={isSaving} onChange={(e) => handleImageChange("profile", e)} className="sr-only" />
                 </div>
 
                 {/* Name and info */}
                 <div className="mb-2">
-                  <h1 className="text-2xl font-extrabold text-[#0D3326]">{fullName}</h1>
-                  <p className="mt-0.5 text-sm font-semibold text-[#0D3326]/60">Buyer</p>
+                  <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">{fullName}</h1>
+                  <p className="mt-0.5 text-sm font-medium text-[var(--text-secondary)]">Buyer</p>
                   {locationStr && (
-                    <p className="mt-1.5 flex items-center gap-1.5 text-sm text-[#0D3326]/60">
-                      <MapPin size={13} className="text-[#D7AE62]" />{locationStr}
+                    <p className="mt-1.5 flex items-center gap-1.5 text-sm text-[var(--text-secondary)]">
+                      <MapPin size={13} className="text-[var(--text-secondary)]" />{locationStr}
                     </p>
                   )}
                   {profileDetails?.IsVerified ? (
-                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#E8F4F0] px-2.5 py-1 text-[11px] font-bold text-emerald-700">
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-600">
                       <BadgeCheck size={12} />Verified
                     </span>
                   ) : (
-                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#F7F4EF] px-2.5 py-1 text-[11px] font-bold text-[#0D3326]/60">
+                    <span className="mt-2 inline-flex items-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2.5 py-1 text-[11px] font-semibold text-[var(--text-secondary)]">
                       <ShieldCheck size={12} />Verification Pending
                     </span>
                   )}
@@ -594,14 +594,14 @@ export default function EditProfileForm() {
                   type="button"
                   onClick={handleCancel}
                   disabled={isSaving}
-                  className="flex items-center gap-2 rounded-xl border border-[#E5DDD0] bg-white px-5 py-2.5 text-sm font-bold text-[#0D3326] transition hover:bg-[#F7F4EF] disabled:opacity-60"
+                  className="hh-btn hh-btn-secondary"
                 >
                   <X size={15} />Discard
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="flex items-center gap-2 rounded-xl bg-[#0D3326] px-6 py-2.5 text-sm font-bold text-[#D7AE62] shadow-sm transition hover:bg-[#0a2b1f] disabled:opacity-60"
+                  className="hh-btn hh-btn-primary"
                 >
                   {isSaving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
                   {isSaving ? "Saving..." : "Save Changes"}
@@ -647,14 +647,14 @@ export default function EditProfileForm() {
             </FormSection>
 
             {/* Save/Cancel sticky card */}
-            <div className="rounded-2xl border border-[#E5DDD0] bg-white p-6 shadow-sm">
-              <h3 className="text-sm font-extrabold text-[#0D3326]">Save Your Changes</h3>
-              <p className="mt-1 text-[11px] text-[#0D3326]/50">Changes will be saved to your HomeHub profile permanently.</p>
+            <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm">
+              <h3 className="text-sm font-bold text-[var(--text-primary)]">Save Your Changes</h3>
+              <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Changes will be saved to your HomeHub profile permanently.</p>
               <div className="mt-5 space-y-3">
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0D3326] px-6 py-3 text-sm font-bold text-[#D7AE62] shadow-sm transition hover:bg-[#0a2b1f] disabled:opacity-60"
+                  className="hh-btn hh-btn-primary w-full justify-center"
                 >
                   {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                   {isSaving ? "Saving..." : "Save Changes"}
@@ -663,7 +663,7 @@ export default function EditProfileForm() {
                   type="button"
                   onClick={handleCancel}
                   disabled={isSaving}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#E5DDD0] bg-white px-6 py-3 text-sm font-bold text-[#0D3326] transition hover:bg-[#F7F4EF] disabled:opacity-60"
+                  className="hh-btn hh-btn-secondary w-full justify-center"
                 >
                   <ArrowLeft size={16} />Back to Profile
                 </button>
@@ -671,19 +671,19 @@ export default function EditProfileForm() {
             </div>
 
             {/* Info card */}
-            <div className="rounded-2xl border border-[#E5DDD0] bg-[#F7F4EF] p-5">
-              <h3 className="text-sm font-extrabold text-[#0D3326]">Profile Tips</h3>
-              <ul className="mt-3 space-y-2 text-[12px] text-[#0D3326]/70">
+            <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5">
+              <h3 className="text-sm font-bold text-[var(--text-primary)]">Profile Tips</h3>
+              <ul className="mt-3 space-y-2 text-[12px] text-[var(--text-secondary)]">
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#D7AE62]" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--text-primary)]" />
                   Add a clear profile photo to build trust with property owners.
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#D7AE62]" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--text-primary)]" />
                   Complete your bio to show owners you are a serious buyer.
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#D7AE62]" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--text-primary)]" />
                   Keep your phone number updated to receive enquiry alerts.
                 </li>
               </ul>

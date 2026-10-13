@@ -166,22 +166,21 @@ export default function UserDropdown({ menuItem }) {
 
   return (
     <div
-      className="w-max overflow-hidden rounded-2xl bg-[#F5F3EE] shadow-2xl transition-all"
-      style={{ border: "1px solid #D7AE62" }}
+      className="w-max overflow-hidden rounded-2xl bg-[var(--bg-card)] shadow-2xl transition-all border border-[var(--border-subtle)] text-[var(--text-primary)]"
     >
-      <div className="grid grid-cols-4 gap-8 p-8" style={{ minWidth: "800px" }}>
+      <div className="grid grid-cols-4 gap-8 p-7" style={{ minWidth: "780px" }}>
         
         {/* Column 1: Popular Categories */}
         <div className="flex flex-col gap-3">
-          <h4 className="text-sm font-bold text-[#0D3326] uppercase tracking-wide border-b border-[#0D3326]/10 pb-2">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-[var(--border-subtle)] pb-2">
             Popular {menuItem.Title}
           </h4>
-          <ul className="flex flex-col gap-2.5">
+          <ul className="flex flex-col gap-2">
             {popularCategories.map((cat, idx) => (
               <li key={idx}>
                 <Link
                   href={`/user/properties?type=${encodeURIComponent(menuItem.Slug)}&category=${encodeURIComponent(cat.toLowerCase())}`}
-                  className="text-sm font-semibold text-[#0D3326]/80 hover:text-[#D7AE62] transition-colors"
+                  className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
                 >
                   {cat}
                 </Link>
@@ -194,14 +193,14 @@ export default function UserDropdown({ menuItem }) {
         <div className="flex flex-col gap-6">
           {dropdownItems.map((item, index) => (
             <div key={item.id || index} className="flex flex-col gap-3">
-              <h4 className="text-sm font-bold text-[#0D3326] uppercase tracking-wide border-b border-[#0D3326]/10 pb-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-[var(--border-subtle)] pb-2">
                 {item.Text}
               </h4>
-              <ul className="flex flex-col gap-2.5">
+              <ul className="flex flex-col gap-2">
                 <li>
                   <Link
                     href={`/user/properties?type=${encodeURIComponent(menuItem.Slug)}&purpose=${encodeURIComponent(item.Slug)}`}
-                    className="text-sm font-semibold text-[#0D3326]/80 hover:text-[#D7AE62] transition-colors"
+                    className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
                   >
                     View All {item.Text}
                   </Link>
@@ -211,17 +210,17 @@ export default function UserDropdown({ menuItem }) {
           ))}
         </div>
 
-        {/* Column 3: Featured Types (Placeholder) */}
+        {/* Column 3: Featured Types */}
         <div className="flex flex-col gap-3">
-          <h4 className="text-sm font-bold text-[#0D3326] uppercase tracking-wide border-b border-[#0D3326]/10 pb-2">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-[var(--border-subtle)] pb-2">
             Property Types
           </h4>
-          <ul className="flex flex-col gap-2.5">
+          <ul className="flex flex-col gap-2">
             {popularCategories.slice(0, 5).map((cat, idx) => (
               <li key={`type-${idx}`}>
                 <Link
                   href={`/user/properties?type=${encodeURIComponent(menuItem.Slug)}&category=${encodeURIComponent(cat.toLowerCase())}`}
-                  className="text-sm font-semibold text-[#0D3326]/80 hover:text-[#D7AE62] transition-colors"
+                  className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
                 >
                   {cat}
                 </Link>
@@ -232,18 +231,18 @@ export default function UserDropdown({ menuItem }) {
 
         {/* Column 4: Quick Links */}
         <div className="flex flex-col gap-3">
-          <h4 className="text-sm font-bold text-[#D7AE62] uppercase tracking-wide border-b border-[#D7AE62]/20 pb-2">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] border-b border-[var(--border-subtle)] pb-2">
             Quick Links
           </h4>
-          <ul className="flex flex-col gap-3">
+          <ul className="flex flex-col gap-2.5">
             {quickLinks.map((link, idx) => (
               <li key={idx}>
                 <Link
                   href={`/user/properties?type=${encodeURIComponent(menuItem.Slug)}`}
-                  className="flex items-center gap-2 text-sm font-bold text-[#0D3326] hover:text-[#D7AE62] transition-colors group"
+                  className="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)] hover:opacity-80 transition-opacity group"
                 >
                   {link}
-                  <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                  <ArrowRight size={13} className="transition-transform group-hover:translate-x-1 text-[var(--text-muted)]" />
                 </Link>
               </li>
             ))}

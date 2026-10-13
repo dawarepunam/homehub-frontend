@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import styles from "../../app/owner/Footer.module.css";
+import styles from "./BuyerFooter.module.css";
 
 export default function BuyerFooter({ data }) {
   if (!data) return null;

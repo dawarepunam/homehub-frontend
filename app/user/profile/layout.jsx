@@ -11,7 +11,7 @@ export default async function ProfileAreaLayout({ children }) {
   const settings = await getUserSiteSettings();
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F7F4EF]">
+    <div className="flex min-h-screen flex-col bg-[var(--bg-page)] text-[var(--text-primary)]">
       {/* Header */}
       <Header headerData={settings?.UserHeader} />
 

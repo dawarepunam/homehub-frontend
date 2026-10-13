@@ -92,13 +92,13 @@ function NotifIcon({ type }) {
     );
   if (t.includes("property") || t.includes("saved"))
     return (
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full" style={{ background: "#F7F4EF" }}>
-        <Home size={16} style={{ color: "#0D3326" }} />
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--bg-surface)] text-[var(--text-primary)]">
+        <Home size={16} />
       </div>
     );
   return (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full" style={{ background: "#F7F4EF" }}>
-      <Bell size={16} style={{ color: "#0D3326" }} />
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--bg-surface)] text-[var(--text-primary)]">
+      <Bell size={16} />
     </div>
   );
 }
@@ -212,18 +212,16 @@ export default function UserNotificationBell() {
         type="button"
         onClick={handleOpen}
         aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}
-        className="relative flex h-9 w-9 items-center justify-center rounded-xl border transition-all duration-200 hover:bg-white/10"
-        style={
+        className={`relative flex h-9 w-9 items-center justify-center rounded-xl border transition-all duration-200 ${
           open
-            ? { borderColor: "#D7AE62", background: "rgba(215,174,98,0.18)", color: "#D7AE62" }
-            : { borderColor: "rgba(215,174,98,0.30)", color: "#F3E7D2" }
-        }
+            ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-text)]"
+            : "border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:border-[var(--border-focus)]"
+        }`}
       >
         <Bell size={16} />
         {unreadCount > 0 && (
           <span
-            className="absolute -right-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-extrabold"
-            style={{ background: "#E53E3E", color: "#fff" }}
+            className="absolute -right-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-extrabold bg-red-500 text-white"
           >
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
@@ -233,11 +231,9 @@ export default function UserNotificationBell() {
       {/* ── Dropdown ─────────────────────────────────── */}
       {open && (
         <div
-          className="absolute right-0 top-full mt-3 z-[99999] overflow-hidden rounded-2xl shadow-2xl"
+          className="absolute right-0 top-full mt-3 z-[99999] overflow-hidden rounded-2xl shadow-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-primary)]"
           style={{
             width: "360px",
-            background: "#fff",
-            border: "1px solid #EDE8DF",
             maxHeight: "80vh",
             display: "flex",
             flexDirection: "column",
@@ -245,17 +241,15 @@ export default function UserNotificationBell() {
         >
           {/* Header */}
           <div
-            className="flex items-center justify-between px-5 py-4"
-            style={{ borderBottom: "1px solid #EDE8DF" }}
+            className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-subtle)]"
           >
             <div className="flex items-center gap-2">
-              <span className="text-base font-extrabold" style={{ color: "#0D3326" }}>
+              <span className="text-sm font-bold text-[var(--text-primary)]">
                 Notifications
               </span>
               {unreadCount > 0 && (
                 <span
-                  className="flex items-center justify-center rounded-full px-2 py-0.5 text-[10px] font-extrabold"
-                  style={{ background: "#FEE2E2", color: "#DC2626" }}
+                  className="flex items-center justify-center rounded-full px-2 py-0.5 text-[10px] font-extrabold bg-red-500/10 text-red-500"
                 >
                   {unreadCount} new
                 </span>
@@ -265,8 +259,7 @@ export default function UserNotificationBell() {
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  className="flex items-center gap-1 text-xs font-bold transition hover:opacity-70"
-                  style={{ color: "#D7AE62" }}
+                  className="flex items-center gap-1 text-xs font-bold transition hover:opacity-70 text-[var(--btn-primary-bg)]"
                 >
                   <CheckCheck size={13} />
                   Mark all as read
@@ -285,21 +278,20 @@ export default function UserNotificationBell() {
           <div className="overflow-y-auto flex-1">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-12 gap-3">
-                <div className="h-6 w-6 animate-spin rounded-full border-[3px] border-gray-200 border-t-[#0D3326]" />
-                <p className="text-xs font-semibold text-gray-400">Loading...</p>
+                <div className="h-6 w-6 animate-spin rounded-full border-[3px] border-[var(--border-subtle)] border-t-[var(--text-primary)]" />
+                <p className="text-xs font-semibold text-[var(--text-secondary)]">Loading...</p>
               </div>
             ) : notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-14 px-6 text-center">
                 <div
-                  className="mb-4 flex h-16 w-16 items-center justify-center rounded-full"
-                  style={{ background: "#F7F4EF" }}
+                  className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--bg-surface)] text-[var(--text-secondary)]"
                 >
-                  <Bell size={28} style={{ color: "#0D3326", opacity: 0.3 }} />
+                  <Bell size={28} />
                 </div>
-                <p className="text-sm font-extrabold" style={{ color: "#0D3326" }}>
+                <p className="text-sm font-extrabold text-[var(--text-primary)]">
                   No Notifications Yet
                 </p>
-                <p className="mt-1 text-xs text-gray-400">
+                <p className="mt-1 text-xs text-[var(--text-secondary)]">
                   You&apos;re all caught up. Your property enquiries, site visits and updates will appear here.
                 </p>
               </div>
@@ -311,8 +303,7 @@ export default function UserNotificationBell() {
                   return (
                     <div key={group}>
                       <div
-                        className="px-5 py-2 text-[10px] font-extrabold uppercase tracking-widest"
-                        style={{ color: "#9CA3AF", background: "#FAFAF9" }}
+                        className="px-5 py-2 text-[10px] font-extrabold uppercase tracking-widest text-[var(--text-secondary)] bg-[var(--bg-surface)]"
                       >
                         {group}
                       </div>
@@ -331,18 +322,16 @@ export default function UserNotificationBell() {
                           <button
                             key={n.documentId || n.id}
                             onClick={() => markAsRead(n.documentId || n.id, link)}
-                            className="flex w-full items-start gap-3 px-5 py-3.5 text-left transition-colors hover:bg-gray-50"
+                            className="flex w-full items-start gap-3 px-5 py-3.5 text-left transition-colors hover:bg-[var(--bg-surface)] border-b border-[var(--border-subtle)]"
                             style={{
-                              background: isRead ? "transparent" : "rgba(13,51,38,0.03)",
-                              borderBottom: "1px solid #F3F4F6",
+                              background: isRead ? "transparent" : "var(--bg-surface)",
                             }}
                           >
                             <NotifIcon type={type} />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-start justify-between gap-2">
                                 <p
-                                  className={`text-[13px] leading-snug ${isRead ? "font-semibold" : "font-extrabold"}`}
-                                  style={{ color: "#0D3326" }}
+                                  className={`text-[13px] leading-snug text-[var(--text-primary)] ${isRead ? "font-semibold" : "font-extrabold"}`}
                                 >
                                   {title}
                                 </p>
@@ -365,7 +354,7 @@ export default function UserNotificationBell() {
                               )}
                               {propertyTitle && (
                                 <div className="mt-1.5 flex items-center gap-1">
-                                  <Building2 size={11} style={{ color: "#D7AE62" }} />
+                                  <Building2 size={11} className="text-[var(--btn-primary-bg)]" />
                                   <span className="text-[11px] font-semibold text-gray-400 truncate">
                                     {propertyTitle}
                                   </span>
@@ -393,15 +382,14 @@ export default function UserNotificationBell() {
           </div>
 
           {/* Footer */}
-          <div style={{ borderTop: "1px solid #EDE8DF" }}>
+          <div className="border-t border-[var(--border-subtle)] bg-[var(--bg-surface)]">
             <Link
               href="/user/profile/notifications"
               onClick={() => setOpen(false)}
-              className="flex w-full items-center justify-center gap-2 py-3.5 text-[13px] font-bold transition hover:bg-gray-50"
-              style={{ color: "#0D3326" }}
+              className="flex w-full items-center justify-center gap-2 py-3 text-[13px] font-semibold transition text-[var(--text-primary)] hover:opacity-80"
             >
               View All Notifications
-              <ChevronRight size={14} />
+              <ChevronRight size={14} className="text-[var(--text-muted)]" />
             </Link>
           </div>
         </div>

@@ -420,15 +420,15 @@ function DetailGrid({ title, items }) {
   if (visibleItems.length === 0) return null;
 
   return (
-    <section className="rounded-2xl border border-[#E5DDD0] bg-white p-6 shadow-sm sm:p-8">
-      <h2 className="text-xl font-extrabold text-[#0D3326]">{title}</h2>
+    <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm sm:p-8">
+      <h2 className="text-xl font-extrabold text-[var(--text-primary)]">{title}</h2>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {visibleItems.map((item, index) => (
-          <div key={`${item.label}-${index}`} className="flex flex-col border-b border-[#E5DDD0]/50 pb-3">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-[#0D3326]/50">
+          <div key={`${item.label}-${index}`} className="flex flex-col border-b border-[var(--border-subtle)] pb-3">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
               {item.label}
             </span>
-            <span className="mt-1 font-bold text-[#0D3326]">
+            <span className="mt-1 font-bold text-[var(--text-primary)] text-sm">
               {renderValue(item.value)}
             </span>
           </div>
@@ -466,16 +466,16 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
 
   if (!property) {
     return (
-      <section className="flex min-h-[60vh] items-center justify-center px-4 py-20 bg-[#F7F4EF]">
-        <div className="w-full max-w-lg rounded-2xl border border-[#E5DDD0] bg-white p-10 text-center shadow-sm">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#F0EBE2]">
-            <SearchX size={28} className="text-[#0D3326]/40" />
+      <section className="flex min-h-[60vh] items-center justify-center px-4 py-20 bg-[var(--bg-base)]">
+        <div className="w-full max-w-lg rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-10 text-center shadow-sm">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--bg-surface)]">
+            <SearchX size={28} className="text-[var(--text-muted)]" />
           </div>
-          <h2 className="mt-5 text-2xl font-extrabold text-[#0D3326]">Property Not Found</h2>
-          <p className="mt-2 text-sm text-[#0D3326]/60">The property may have been removed or is no longer available.</p>
+          <h2 className="mt-5 text-2xl font-extrabold text-[var(--text-primary)]">Property Not Found</h2>
+          <p className="mt-2 text-sm text-[var(--text-secondary)]">The property may have been removed or is no longer available.</p>
           <Link
             href="/user"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#0D3326] px-6 py-3 font-bold text-[#D7AE62] transition hover:opacity-90"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[var(--btn-primary-bg)] px-6 py-3 font-bold text-[var(--btn-primary-text)] transition hover:opacity-90"
           >
             <ArrowLeft size={18} /> Back to Home
           </Link>
@@ -594,11 +594,11 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
   // ===================================================
 
   return (
-    <div className="bg-[#F7F4EF] min-h-screen pb-24 lg:pb-12 relative">
+    <div className="bg-[var(--bg-page)] text-[var(--text-primary)] min-h-screen pb-24 lg:pb-12 relative">
       
       {/* ── Lightbox Modal ── */}
       {showLightbox && (
-        <div className="fixed inset-0 z-[99999] flex flex-col bg-black">
+        <div className="fixed inset-0 z-[99999] flex flex-col bg-black/95 backdrop-blur-md">
           <div className="flex items-center justify-between p-4 sm:p-6">
             <div className="text-white font-semibold text-sm">
               {lightboxIndex + 1} / {allImages.length}
@@ -630,7 +630,7 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
                   key={idx}
                   onClick={() => setLightboxIndex(idx)}
                   className={`h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2 transition snap-center ${
-                    lightboxIndex === idx ? "border-[#D7AE62]" : "border-transparent opacity-50 hover:opacity-100"
+                    lightboxIndex === idx ? "border-white" : "border-transparent opacity-50 hover:opacity-100"
                   }`}
                 >
                   <img src={img} alt="" className="h-full w-full object-cover" />
@@ -655,31 +655,30 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
           <button
             type="button"
             onClick={() => window.history.back()}
-            className="flex items-center gap-1.5 rounded-lg border border-[#E5DDD0] bg-white px-3 py-1.5 text-sm font-bold text-[#0D3326] transition hover:border-[#D7AE62] hover:text-[#D7AE62] shadow-sm"
+            className="hh-btn hh-btn-secondary hh-btn-sm"
           >
-            <ArrowLeft size={16} /> Back
+            <ArrowLeft size={14} /> Back
           </button>
           <div className="flex gap-2">
             <button
               type="button"
               onClick={handleShare}
-              className="flex items-center gap-1.5 rounded-lg border border-[#E5DDD0] bg-white px-3 py-1.5 text-sm font-bold text-[#0D3326] transition hover:border-[#D7AE62] hover:text-[#D7AE62] shadow-sm"
+              className="hh-btn hh-btn-secondary hh-btn-sm"
             >
-              <Share2 size={15} /> Share
+              <Share2 size={14} /> Share
             </button>
             <button
               type="button"
               onClick={() => setLiked(!liked)}
-              className="flex items-center gap-1.5 rounded-lg border border-[#E5DDD0] bg-white px-3 py-1.5 text-sm font-bold transition shadow-sm hover:border-red-300"
-              style={{ color: liked ? "#EF4444" : "#0D3326" }}
+              className="hh-btn hh-btn-secondary hh-btn-sm"
             >
-              <Heart size={15} className={liked ? "fill-red-500 text-red-500" : ""} /> Save
+              <Heart size={14} className={liked ? "fill-red-500 text-red-500" : ""} /> {liked ? "Saved" : "Save"}
             </button>
           </div>
         </div>
 
         {/* ── Premium Image Gallery ── */}
-        <div className="relative mb-8 grid grid-cols-1 gap-2 lg:grid-cols-[2fr_1fr] h-[300px] sm:h-[450px] lg:h-[500px] rounded-2xl overflow-hidden shadow-sm bg-[#EAE5DC]">
+        <div className="relative mb-8 grid grid-cols-1 gap-2 lg:grid-cols-[2fr_1fr] h-[300px] sm:h-[450px] lg:h-[500px] rounded-2xl overflow-hidden shadow-sm bg-[var(--bg-section)] border border-[var(--border-subtle)]">
           <div
             className="relative h-full w-full cursor-pointer overflow-hidden group"
             onClick={() => { setLightboxIndex(0); setShowLightbox(true); }}
@@ -690,12 +689,12 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
             <div className="absolute top-4 left-4 flex flex-col gap-2">
               <div className="flex gap-2">
                 {property?.Purpose && (
-                  <span className="rounded bg-[#0D3326] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#D7AE62] shadow">
+                  <span className="rounded-lg bg-[var(--accent)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--accent-text)] shadow-sm">
                     For {property.Purpose}
                   </span>
                 )}
                 {property?.PropertyStatus && (
-                  <span className="rounded bg-white px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#0D3326] shadow">
+                  <span className="rounded-lg bg-[var(--bg-card)]/90 backdrop-blur-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--text-primary)] border border-[var(--border-subtle)] shadow-sm">
                     {property.PropertyStatus}
                   </span>
                 )}
@@ -703,8 +702,8 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
             </div>
             {/* Hover overlay indicator */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition flex items-center justify-center">
-              <span className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all rounded-full bg-black/50 px-4 py-2 text-sm text-white flex items-center gap-2 backdrop-blur">
-                <Maximize size={16}/> Enlarge
+              <span className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all rounded-full bg-black/60 px-4 py-2 text-xs font-bold text-white flex items-center gap-2 backdrop-blur">
+                <Maximize size={15}/> Enlarge
               </span>
             </div>
           </div>
@@ -720,15 +719,15 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition" />
               </div>
             ))}
-            {allImages.length === 2 && <div className="bg-[#E5DDD0] h-full w-full" />}
-            {allImages.length === 1 && <div className="bg-[#E5DDD0] h-full w-full row-span-2" />}
+            {allImages.length === 2 && <div className="bg-[var(--bg-surface)] h-full w-full" />}
+            {allImages.length === 1 && <div className="bg-[var(--bg-surface)] h-full w-full row-span-2" />}
           </div>
 
           <button
             onClick={() => { setLightboxIndex(0); setShowLightbox(true); }}
-            className="absolute bottom-4 right-4 flex items-center gap-2 rounded-lg bg-white/90 px-4 py-2 text-sm font-bold text-[#0D3326] backdrop-blur transition hover:bg-white shadow"
+            className="absolute bottom-4 right-4 flex items-center gap-2 rounded-xl bg-[var(--bg-card)]/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-[var(--text-primary)] border border-[var(--border-subtle)] shadow transition hover:bg-[var(--bg-card)]"
           >
-            <ImageIcon size={16} /> 1 / {allImages.length} Photos
+            <ImageIcon size={15} /> 1 / {allImages.length} Photos
           </button>
         </div>
 
@@ -741,101 +740,101 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
             {/* Title & Price Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p className="text-[10px] font-extrabold uppercase tracking-widest text-[#D7AE62]">
+                <p className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--text-secondary)]">
                   {property?.Property_Type || ""} {property?.Category ? `• ${property.Category}` : ""}
                 </p>
-                <h1 className="mt-2 text-2xl font-extrabold text-[#0D3326] sm:text-3xl leading-tight">
+                <h1 className="mt-2 text-2xl font-extrabold text-[var(--text-primary)] sm:text-3xl leading-tight">
                   {property.Title}
                 </h1>
-                <p className="mt-3 flex items-center gap-2 text-sm font-medium text-[#0D3326]/70">
-                  <MapPin size={16} className="text-[#D7AE62]" />
+                <p className="mt-3 flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)]">
+                  <MapPin size={16} className="text-[var(--text-primary)]" />
                   {[property.Area, property.City, property.State].filter(Boolean).join(", ") || "Location not specified"}
                 </p>
               </div>
               <div className="sm:text-right shrink-0">
-                <p className="text-3xl font-extrabold text-[#0D3326]">{displayPrice}</p>
-                {property?.Purpose === "Rent" && <p className="text-xs font-bold text-[#0D3326]/50 uppercase tracking-wide mt-1">Per Month</p>}
+                <p className="text-3xl font-extrabold text-[var(--text-primary)]">{displayPrice}</p>
+                {property?.Purpose === "Rent" && <p className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wide mt-1">Per Month</p>}
               </div>
             </div>
 
             {/* Quick Stats Bar */}
-            <div className="flex flex-wrap gap-4 border-y border-[#E5DDD0]/60 py-5">
+            <div className="flex flex-wrap gap-4 border-y border-[var(--border-subtle)] py-5">
               {beds && (
-                <div className="flex items-center gap-3 pr-4 border-r border-[#E5DDD0]/60 last:border-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#EAE5DC] text-[#0D3326]">
+                <div className="flex items-center gap-3 pr-4 border-r border-[var(--border-subtle)] last:border-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)]">
                     <BedDouble size={18} />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#0D3326]/50">Bedrooms</p>
-                    <p className="text-sm font-bold text-[#0D3326]">{beds}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Bedrooms</p>
+                    <p className="text-sm font-bold text-[var(--text-primary)]">{beds}</p>
                   </div>
                 </div>
               )}
               {baths && (
-                <div className="flex items-center gap-3 pr-4 border-r border-[#E5DDD0]/60 last:border-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#EAE5DC] text-[#0D3326]">
+                <div className="flex items-center gap-3 pr-4 border-r border-[var(--border-subtle)] last:border-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)]">
                     <Bath size={18} />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#0D3326]/50">Bathrooms</p>
-                    <p className="text-sm font-bold text-[#0D3326]">{baths}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Bathrooms</p>
+                    <p className="text-sm font-bold text-[var(--text-primary)]">{baths}</p>
                   </div>
                 </div>
               )}
               {propArea && (
-                <div className="flex items-center gap-3 pr-4 border-r border-[#E5DDD0]/60 last:border-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#EAE5DC] text-[#0D3326]">
+                <div className="flex items-center gap-3 pr-4 border-r border-[var(--border-subtle)] last:border-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)]">
                     <Maximize size={18} />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#0D3326]/50">Area</p>
-                    <p className="text-sm font-bold text-[#0D3326]">{propArea}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Area</p>
+                    <p className="text-sm font-bold text-[var(--text-primary)]">{propArea}</p>
                   </div>
                 </div>
               )}
               {furnish && (
-                <div className="flex items-center gap-3 pr-4 border-r border-[#E5DDD0]/60 last:border-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#EAE5DC] text-[#0D3326]">
+                <div className="flex items-center gap-3 pr-4 border-r border-[var(--border-subtle)] last:border-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)]">
                     <Sofa size={18} />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#0D3326]/50">Furnishing</p>
-                    <p className="text-sm font-bold text-[#0D3326]">{furnish}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Furnishing</p>
+                    <p className="text-sm font-bold text-[var(--text-primary)]">{furnish}</p>
                   </div>
                 </div>
               )}
               {park && (
-                <div className="flex items-center gap-3 pr-4 border-r border-[#E5DDD0]/60 last:border-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#EAE5DC] text-[#0D3326]">
+                <div className="flex items-center gap-3 pr-4 border-r border-[var(--border-subtle)] last:border-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)]">
                     <CarFront size={18} />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#0D3326]/50">Parking</p>
-                    <p className="text-sm font-bold text-[#0D3326]">{park}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Parking</p>
+                    <p className="text-sm font-bold text-[var(--text-primary)]">{park}</p>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Description Section */}
-            <section className="rounded-2xl border border-[#E5DDD0] bg-white p-6 shadow-sm sm:p-8">
-              <h2 className="text-xl font-extrabold text-[#0D3326]">About This Property</h2>
+            <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm sm:p-8">
+              <h2 className="text-xl font-extrabold text-[var(--text-primary)]">About This Property</h2>
               <div className="mt-4 relative">
                 <div
-                  className={`text-sm leading-relaxed text-[#0D3326]/80 whitespace-pre-line overflow-hidden transition-all duration-300 ${
+                  className={`text-sm leading-relaxed text-[var(--text-secondary)] whitespace-pre-line overflow-hidden transition-all duration-300 ${
                     !isDescExpanded && isLongDescription ? "max-h-[140px]" : "max-h-none"
                   }`}
                 >
                   {descriptionText}
                 </div>
                 {!isDescExpanded && isLongDescription && (
-                  <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[var(--bg-card)] to-transparent pointer-events-none" />
                 )}
               </div>
               {isLongDescription && (
                 <button
                   onClick={() => setIsDescExpanded(!isDescExpanded)}
-                  className="mt-4 flex items-center gap-1.5 text-sm font-bold text-[#D7AE62] hover:text-[#C99A40] transition"
+                  className="mt-4 flex items-center gap-1.5 text-sm font-bold text-[var(--text-primary)] hover:underline transition"
                 >
                   {isDescExpanded ? (
                     <>Read Less <ChevronUp size={16} /></>
@@ -851,18 +850,18 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
 
             {/* Amenities Section */}
             {featureList.length > 0 && (
-              <section className="rounded-2xl border border-[#E5DDD0] bg-white p-6 shadow-sm sm:p-8">
-                <h2 className="text-xl font-extrabold text-[#0D3326]">Amenities & Features</h2>
+              <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm sm:p-8">
+                <h2 className="text-xl font-extrabold text-[var(--text-primary)]">Amenities & Features</h2>
                 <div className="mt-6 grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
                   {featureList.map((feature, index) => {
                     const IconComp = feature?.icon || CheckCircle2;
                     const label = feature?.label || feature?.Name || feature?.Title || feature?.Text || renderValue(feature);
                     return (
-                      <div key={index} className="flex flex-col items-start gap-2 rounded-xl border border-[#E5DDD0]/50 bg-[#F7F4EF]/50 p-4 transition-all hover:border-[#D7AE62]/50 hover:shadow-md group">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0D3326] text-[#D7AE62] transition-transform group-hover:scale-110">
+                      <div key={index} className="flex flex-col items-start gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 transition-all hover:border-[var(--text-primary)]/40 hover:shadow-md group">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] transition-transform group-hover:scale-105">
                           <IconComp size={18} />
                         </div>
-                        <span className="text-sm font-semibold text-[#0D3326] mt-1">{label}</span>
+                        <span className="text-sm font-semibold text-[var(--text-primary)] mt-1">{label}</span>
                       </div>
                     );
                   })}
@@ -871,15 +870,15 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
             )}
 
             {/* Location Section */}
-            <section className="rounded-2xl border border-[#E5DDD0] bg-white p-6 shadow-sm sm:p-8">
-              <h2 className="text-xl font-extrabold text-[#0D3326]">Location</h2>
-              <div className="mt-6 flex items-start gap-4 rounded-xl bg-[#F7F4EF] p-5 border border-[#E5DDD0]/50">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white shadow-sm">
-                  <MapPin size={22} className="text-[#0D3326]" />
+            <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm sm:p-8">
+              <h2 className="text-xl font-extrabold text-[var(--text-primary)]">Location</h2>
+              <div className="mt-6 flex items-start gap-4 rounded-xl bg-[var(--bg-surface)] p-5 border border-[var(--border-subtle)]">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-sm text-[var(--text-primary)]">
+                  <MapPin size={22} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-[#0D3326]">Property Address</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[#0D3326]/70">
+                  <h3 className="font-bold text-[var(--text-primary)]">Property Address</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">
                     {[
                       property.Address,
                       property.Locality,
@@ -898,34 +897,34 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
 
           {/* Right Column: Sticky Action Card (Desktop Only) */}
           <aside className="hidden lg:block w-[360px] shrink-0 sticky top-6">
-            <div className="rounded-2xl border border-[#E5DDD0] bg-white p-6 shadow-lg shadow-[#0D3326]/5">
-              <h3 className="text-lg font-extrabold text-[#0D3326]">Interested in this property?</h3>
-              <p className="mt-2 text-sm text-[#0D3326]/60 leading-relaxed">
+            <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-lg shadow-black/5">
+              <h3 className="text-lg font-extrabold text-[var(--text-primary)]">Interested in this property?</h3>
+              <p className="mt-2 text-sm text-[var(--text-secondary)] leading-relaxed">
                 Connect with the owner directly to arrange a viewing or negotiate terms.
               </p>
               
               <div className="mt-6 flex flex-col gap-3">
                 <Link
                   href={`/user/contact-owner/${property.documentId || property.id}`}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0D3326] px-5 py-3.5 text-sm font-bold text-[#D7AE62] transition hover:bg-[#154635] shadow-sm"
+                  className="hh-btn hh-btn-primary w-full py-3.5 text-center font-bold flex items-center justify-center gap-2"
                 >
                   <Phone size={18} /> Contact Owner
                 </Link>
                 <button
                   type="button"
                   onClick={() => setLiked(!liked)}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#0D3326] bg-white px-5 py-3 text-sm font-bold text-[#0D3326] transition hover:bg-[#0D3326]/5"
+                  className="hh-btn hh-btn-secondary w-full py-3 text-center font-bold flex items-center justify-center gap-2"
                 >
-                  <Heart size={18} className={liked ? "fill-[#0D3326]" : ""} /> 
+                  <Heart size={18} className={liked ? "fill-current" : ""} /> 
                   {liked ? "Saved to Wishlist" : "Save Property"}
                 </button>
               </div>
 
-              <div className="mt-6 rounded-xl bg-[#F7F4EF] p-4 border border-[#E5DDD0]/50 text-center">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#0D3326]/40">Listed By</p>
-                <p className="mt-1 text-sm font-extrabold text-[#0D3326]">Owner</p>
+              <div className="mt-6 rounded-xl bg-[var(--bg-surface)] p-4 border border-[var(--border-subtle)] text-center">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Listed By</p>
+                <p className="mt-1 text-sm font-extrabold text-[var(--text-primary)]">Owner</p>
                 {property.publishedAt && (
-                  <p className="mt-1 text-xs text-[#0D3326]/60">
+                  <p className="mt-1 text-xs text-[var(--text-secondary)]">
                     Posted on {new Date(property.publishedAt).toLocaleDateString()}
                   </p>
                 )}
@@ -936,9 +935,9 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
 
         {/* ── Similar Properties ── */}
         {relatedProperties.length > 0 && (
-          <section className="mt-16 border-t border-[#E5DDD0] pt-12">
-            <h2 className="text-2xl font-extrabold text-[#0D3326]">You May Also Like</h2>
-            <p className="mt-2 text-sm text-[#0D3326]/60">Explore similar properties in this category.</p>
+          <section className="mt-16 border-t border-[var(--border-subtle)] pt-12">
+            <h2 className="text-2xl font-extrabold text-[var(--text-primary)]">You May Also Like</h2>
+            <p className="mt-2 text-sm text-[var(--text-secondary)]">Explore similar properties in this category.</p>
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {relatedProperties.map((item) => (
                 <PropertyCard key={item.documentId || item.id} property={item} />
@@ -949,16 +948,16 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
       </div>
 
       {/* ── Mobile Sticky Bottom Action Bar ── */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between gap-3 border-t border-[#E5DDD0] bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] lg:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between gap-3 border-t border-[var(--border-subtle)] bg-[var(--bg-card)] p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] lg:hidden">
         <button
           onClick={() => setLiked(!liked)}
-          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border-2 border-[#0D3326] bg-white text-sm font-bold text-[#0D3326] transition hover:bg-[#0D3326]/5"
+          className="hh-btn hh-btn-secondary flex-1 h-12 flex items-center justify-center gap-2 text-sm font-bold"
         >
-          <Heart size={18} className={liked ? "fill-[#0D3326]" : ""} /> Save
+          <Heart size={18} className={liked ? "fill-current" : ""} /> Save
         </button>
         <Link
           href={`/user/contact-owner/${property.documentId || property.id}`}
-          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#0D3326] text-sm font-bold text-[#D7AE62] shadow-sm transition hover:opacity-90"
+          className="hh-btn hh-btn-primary flex-1 h-12 flex items-center justify-center gap-2 text-sm font-bold"
         >
           <Phone size={18} /> Contact
         </Link>

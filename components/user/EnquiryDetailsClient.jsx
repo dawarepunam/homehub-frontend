@@ -69,15 +69,15 @@ export default function EnquiryDetailsClient({ documentId }) {
   };
 
   if (loading) {
-    return <div className="flex h-screen items-center justify-center"><p className="text-emerald-900 font-semibold">Loading enquiry...</p></div>;
+    return <div className="flex h-screen items-center justify-center"><p className="text-[var(--text-primary)] font-semibold">Loading enquiry...</p></div>;
   }
 
   if (!enquiry) {
     return (
       <div className="flex h-screen flex-col items-center justify-center text-center">
-        <h2 className="text-2xl font-bold text-emerald-900">Enquiry Not Found</h2>
-        <p className="mt-2 text-stone-600">The enquiry you are looking for does not exist or you don't have access.</p>
-        <Link href="/user/enquiries" className="mt-6 rounded-lg bg-amber-500 px-6 py-3 font-bold text-emerald-900 hover:bg-amber-400">Back to My Enquiries</Link>
+        <h2 className="text-2xl font-bold text-[var(--text-primary)]">Enquiry Not Found</h2>
+        <p className="mt-2 text-[var(--text-secondary)]">The enquiry you are looking for does not exist or you don't have access.</p>
+        <Link href="/user/enquiries" className="hh-btn hh-btn-primary mt-6 px-6 py-3">Back to My Enquiries</Link>
       </div>
     );
   }
@@ -128,43 +128,43 @@ export default function EnquiryDetailsClient({ documentId }) {
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 md:px-8">
       {/* Back button */}
-      <Link href="/user/enquiries" className="mb-6 inline-flex items-center text-sm font-semibold text-stone-500 transition hover:text-emerald-900">
+      <Link href="/user/enquiries" className="mb-6 inline-flex items-center text-sm font-semibold text-[var(--text-secondary)] transition hover:text-[var(--text-primary)]">
         <ArrowLeft size={16} className="mr-2" /> Back to My Enquiries
       </Link>
 
-      <h1 className="text-3xl font-bold text-emerald-900">Enquiry Details</h1>
+      <h1 className="text-3xl font-bold text-[var(--text-primary)]">Enquiry Details</h1>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_350px]">
         {/* Main Content */}
         <div className="space-y-8">
           
           {/* Property Summary */}
-          <section className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-stone-400">Property Summary</h2>
+          <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm">
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Property Summary</h2>
             <div className="flex flex-col gap-6 sm:flex-row">
               <div className="relative h-40 w-full sm:w-48 shrink-0 overflow-hidden rounded-xl">
                 <Image src={imageUrl} alt={title} fill className="object-cover" unoptimized />
               </div>
               <div className="flex flex-col justify-center">
-                <p className="text-xs font-bold uppercase tracking-widest text-amber-600">{category}</p>
-                <h3 className="mt-1 text-2xl font-bold text-emerald-900">{title}</h3>
-                <p className="mt-1 flex items-center text-stone-500">
-                  <MapPin size={16} className="mr-1 text-emerald-700" />
+                <p className="text-xs font-bold uppercase tracking-widest text-[var(--text-secondary)]">{category}</p>
+                <h3 className="mt-1 text-2xl font-bold text-[var(--text-primary)]">{title}</h3>
+                <p className="mt-1 flex items-center text-[var(--text-secondary)]">
+                  <MapPin size={16} className="mr-1 text-[var(--text-primary)]" />
                   {area}{area && city ? ", " : ""}{city}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {propertyType && <span className="rounded-md bg-stone-100 px-2.5 py-1 text-xs font-semibold text-stone-700">{propertyType}</span>}
-                  {purpose && <span className="rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">{purpose}</span>}
+                  {propertyType && <span className="rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] px-2.5 py-1 text-xs font-semibold text-[var(--text-primary)]">{propertyType}</span>}
+                  {purpose && <span className="rounded-xl bg-[var(--btn-primary-bg)] px-2.5 py-1 text-xs font-semibold text-[var(--btn-primary-text)]">{purpose}</span>}
                 </div>
-                <p className="mt-3 text-lg font-bold text-emerald-800">{price}</p>
+                <p className="mt-3 text-lg font-bold text-[var(--text-primary)]">{price}</p>
               </div>
             </div>
             
-            <div className="mt-6 flex gap-3 border-t border-stone-100 pt-6">
+            <div className="mt-6 flex gap-3 border-t border-[var(--border-subtle)] pt-6">
               {propDocId && (
                 <Link
                   href={`/user/property/${propDocId}`}
-                  className="flex flex-1 items-center justify-center rounded-xl bg-amber-500 py-3 text-sm font-bold text-emerald-900 transition hover:bg-amber-400"
+                  className="hh-btn hh-btn-primary flex-1 py-3 text-sm font-bold flex items-center justify-center"
                 >
                   <Eye size={16} className="mr-2" /> View Property
                 </Link>
@@ -173,25 +173,27 @@ export default function EnquiryDetailsClient({ documentId }) {
                 onClick={handleWishlist}
                 disabled={wishlistLoading}
                 className={`flex items-center justify-center rounded-xl border px-6 py-3 transition ${
-                  liked ? "border-amber-500 bg-amber-50 text-amber-600" : "border-stone-200 bg-white text-stone-600 hover:border-amber-300"
+                  liked
+                    ? "border-red-400 bg-red-500/10 text-red-500"
+                    : "border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--text-primary)]"
                 }`}
               >
-                <Heart size={20} className={liked ? "fill-amber-500 text-amber-500" : ""} />
+                <Heart size={20} className={liked ? "fill-red-500 text-red-500" : ""} />
               </button>
             </div>
           </section>
 
           {/* Your Enquiry */}
-          <section className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-stone-400">Your Enquiry</h2>
-            <div className="rounded-xl bg-stone-50 p-5">
+          <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm">
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Your Enquiry</h2>
+            <div className="rounded-xl bg-[var(--bg-surface)] p-5 border border-[var(--border-subtle)]">
               <div className="flex items-start gap-4">
-                <div className="mt-1 rounded-full bg-emerald-100 p-2 text-emerald-700">
+                <div className="mt-1 rounded-full bg-[var(--border-subtle)] p-2 text-[var(--text-primary)]">
                   <MessageSquare size={16} />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-emerald-900">Message sent on {enquiryDate}</p>
-                  <p className="mt-2 text-sm text-stone-700 leading-relaxed whitespace-pre-wrap">{enquiry?.Message || "No message provided."}</p>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">Message sent on {enquiryDate}</p>
+                  <p className="mt-2 text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">{enquiry?.Message || "No message provided."}</p>
                 </div>
               </div>
             </div>
@@ -199,16 +201,16 @@ export default function EnquiryDetailsClient({ documentId }) {
 
           {/* Owner Response - If exists */}
           {enquiry?.OwnerResponse && (
-            <section className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-stone-400">Owner Response</h2>
-              <div className="rounded-xl border border-amber-200 bg-amber-50 p-5">
+            <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm">
+              <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Owner Response</h2>
+              <div className="rounded-xl border border-[var(--text-primary)]/20 bg-[var(--bg-surface)] p-5">
                 <div className="flex items-start gap-4">
-                  <div className="mt-1 rounded-full bg-amber-200 p-2 text-amber-800">
+                  <div className="mt-1 rounded-full bg-[var(--border-subtle)] p-2 text-[var(--text-primary)]">
                     <MessageSquare size={16} />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-emerald-900">Owner replied</p>
-                    <p className="mt-2 text-sm text-stone-700 leading-relaxed whitespace-pre-wrap">{enquiry.OwnerResponse}</p>
+                    <p className="text-sm font-semibold text-[var(--text-primary)]">Owner replied</p>
+                    <p className="mt-2 text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">{enquiry.OwnerResponse}</p>
                   </div>
                 </div>
               </div>
@@ -220,17 +222,17 @@ export default function EnquiryDetailsClient({ documentId }) {
         <div className="space-y-8">
           
           {/* Current Status */}
-          <section className="rounded-2xl border border-stone-200 bg-emerald-900 p-6 text-white shadow-sm">
-            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-emerald-400">Current Status</h2>
+          <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--btn-primary-bg)] p-6 text-[var(--btn-primary-text)] shadow-sm">
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider opacity-60">Current Status</h2>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-800">
-                <CheckCircle2 size={20} className="text-amber-400" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+                <CheckCircle2 size={20} className="text-[var(--btn-primary-text)]" />
               </div>
               <div>
-                <p className="text-xl font-bold uppercase text-white">{status}</p>
+                <p className="text-xl font-bold uppercase">{status}</p>
               </div>
             </div>
-            <p className="mt-4 text-sm text-emerald-200">
+            <p className="mt-4 text-sm opacity-70">
               {statusLower === "pending" && "Your enquiry has been sent and is waiting for the owner's response."}
               {statusLower === "contacted" && "The owner has acknowledged your enquiry."}
               {statusLower.includes("site visit") && "A site visit is associated with this enquiry."}
@@ -239,28 +241,32 @@ export default function EnquiryDetailsClient({ documentId }) {
           </section>
 
           {/* Timeline */}
-          <section className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-6 text-xs font-bold uppercase tracking-wider text-stone-400">Enquiry Timeline</h2>
-            <div className="relative border-l-2 border-stone-100 ml-4 space-y-8">
+          <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm">
+            <h2 className="mb-6 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Enquiry Timeline</h2>
+            <div className="relative border-l-2 border-[var(--border-subtle)] ml-4 space-y-8">
               {timeline.map((item, idx) => (
                 <div key={idx} className="relative pl-6">
-                  <div className={`absolute -left-[17px] top-0 flex h-8 w-8 items-center justify-center rounded-full border-4 border-white ${item.active ? 'bg-amber-500 text-emerald-900' : 'bg-stone-200 text-stone-400'}`}>
+                  <div className={`absolute -left-[17px] top-0 flex h-8 w-8 items-center justify-center rounded-full border-4 border-[var(--bg-card)] ${
+                    item.active
+                      ? 'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)]'
+                      : 'bg-[var(--bg-surface)] text-[var(--text-secondary)]'
+                  }`}>
                     <item.icon size={12} strokeWidth={3} />
                   </div>
                   <div>
-                    <p className={`font-bold ${item.active ? 'text-emerald-900' : 'text-stone-400'}`}>{item.label}</p>
-                    {item.date && <p className="text-xs text-stone-500 mt-1">{item.date}</p>}
+                    <p className={`font-bold ${item.active ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>{item.label}</p>
+                    {item.date && <p className="text-xs text-[var(--text-secondary)] mt-1">{item.date}</p>}
                   </div>
                 </div>
               ))}
               {/* Add greyed out future steps if not closed */}
               {statusLower !== "closed" && statusLower !== "completed" && !statusLower.includes("site visit") && (
-                <div className="relative pl-6 opacity-50">
-                  <div className="absolute -left-[17px] top-0 flex h-8 w-8 items-center justify-center rounded-full border-4 border-white bg-stone-200 text-stone-400">
+                <div className="relative pl-6 opacity-40">
+                  <div className="absolute -left-[17px] top-0 flex h-8 w-8 items-center justify-center rounded-full border-4 border-[var(--bg-card)] bg-[var(--bg-surface)] text-[var(--text-secondary)]">
                     <CheckCircle2 size={12} strokeWidth={3} />
                   </div>
                   <div>
-                    <p className="font-bold text-stone-400">Closed / Completed</p>
+                    <p className="font-bold text-[var(--text-secondary)]">Closed / Completed</p>
                   </div>
                 </div>
               )}

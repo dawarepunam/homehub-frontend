@@ -813,110 +813,95 @@ export default function SearchFilters({ activePurpose }) {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-5">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
       {/* City */}
-
-      <div className="flex h-20 items-center gap-3 rounded-2xl border border-gray-300 bg-white px-4 transition hover:border-[#D7AE62]">
-        <MapPin className="text-[#0D3326]" size={22} />
-
-        <div className="flex w-full flex-col">
-          <span className="mb-1 text-xs font-medium text-gray-500">
+      <div className="flex h-16 items-center gap-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3.5 transition hover:border-[var(--border-focus)]">
+        <MapPin className="text-[var(--text-muted)] shrink-0" size={18} />
+        <div className="flex w-full flex-col min-w-0">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
             Location
           </span>
-
           <select
             value={selectedCity}
             onChange={handleFilterChange(setSelectedCity, [setSelectedArea, setSelectedType, setSelectedCategory])}
-            className="w-full bg-transparent text-base font-semibold outline-none"
+            className="w-full bg-transparent text-sm font-semibold text-[var(--text-primary)] outline-none cursor-pointer"
           >
-            <option value="">Select City</option>
-
+            <option value="" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Select City</option>
             {cities.map((city) => (
-              <option key={city} value={city}>{city}</option>
+              <option key={city} value={city} className="bg-[var(--bg-card)] text-[var(--text-primary)]">{city}</option>
             ))}
           </select>
         </div>
       </div>
 
       {/* Area */}
-
-      <div className="flex h-20 items-center gap-3 rounded-2xl border border-gray-300 bg-white px-4 transition hover:border-[#D7AE62]">
-        <Map className="text-[#0D3326]" size={22} />
-
-        <div className="flex w-full flex-col">
-          <span className="mb-1 text-xs font-medium text-gray-500">Area</span>
-
+      <div className="flex h-16 items-center gap-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3.5 transition hover:border-[var(--border-focus)]">
+        <Map className="text-[var(--text-muted)] shrink-0" size={18} />
+        <div className="flex w-full flex-col min-w-0">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+            Area
+          </span>
           <select
             value={selectedArea}
             onChange={handleFilterChange(setSelectedArea, [setSelectedType, setSelectedCategory])}
-            className="w-full bg-transparent text-base font-semibold outline-none"
+            className="w-full bg-transparent text-sm font-semibold text-[var(--text-primary)] outline-none cursor-pointer"
           >
-            <option value="">Select Area</option>
-
+            <option value="" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Select Area</option>
             {areas.map((area) => (
-              <option key={area} value={area}>{area}</option>
+              <option key={area} value={area} className="bg-[var(--bg-card)] text-[var(--text-primary)]">{area}</option>
             ))}
           </select>
         </div>
       </div>
 
       {/* Property Type */}
-
-      <div className="flex h-20 items-center gap-3 rounded-2xl border border-gray-300 bg-white px-4 transition hover:border-[#D7AE62]">
-        <Building2 className="text-[#0D3326]" size={22} />
-
-        <div className="flex w-full flex-col">
-          <span className="mb-1 text-xs font-medium text-gray-500">
+      <div className="flex h-16 items-center gap-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3.5 transition hover:border-[var(--border-focus)]">
+        <Building2 className="text-[var(--text-muted)] shrink-0" size={18} />
+        <div className="flex w-full flex-col min-w-0">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
             Property Type
           </span>
-
           <select
             value={selectedType}
             onChange={handleFilterChange(setSelectedType, [setSelectedCategory])}
-            className="w-full bg-transparent text-base font-semibold outline-none"
+            className="w-full bg-transparent text-sm font-semibold text-[var(--text-primary)] outline-none cursor-pointer"
           >
-            <option value="">Property Type</option>
-
+            <option value="" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Property Type</option>
             {propertyTypes.map((type) => (
-              <option key={type} value={type}>{type}</option>
+              <option key={type} value={type} className="bg-[var(--bg-card)] text-[var(--text-primary)]">{type}</option>
             ))}
           </select>
         </div>
       </div>
 
       {/* Category */}
-
-      <div className="flex h-20 items-center gap-3 rounded-2xl border border-gray-300 bg-white px-4 transition hover:border-[#D7AE62]">
-        <Home className="text-[#0D3326]" size={22} />
-
-        <div className="flex w-full flex-col">
-          <span className="mb-1 text-xs font-medium text-gray-500">
+      <div className="flex h-16 items-center gap-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3.5 transition hover:border-[var(--border-focus)]">
+        <Home className="text-[var(--text-muted)] shrink-0" size={18} />
+        <div className="flex w-full flex-col min-w-0">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
             Category
           </span>
-
           <select
             value={selectedCategory}
             onChange={handleFilterChange(setSelectedCategory, [])}
-            className="w-full bg-transparent text-base font-semibold outline-none"
+            className="w-full bg-transparent text-sm font-semibold text-[var(--text-primary)] outline-none cursor-pointer"
           >
-            <option value="">Category</option>
-
+            <option value="" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Category</option>
             {categories.map((category) => (
-              <option key={category} value={category}>{category}</option>
+              <option key={category} value={category} className="bg-[var(--bg-card)] text-[var(--text-primary)]">{category}</option>
             ))}
           </select>
         </div>
       </div>
 
       {/* Search Button */}
-
       <button
         type="button"
         onClick={handleSearch}
-        className="flex h-20 items-center justify-center gap-3 rounded-2xl bg-[#D7AE62] text-lg font-bold text-[#0D3326] transition hover:bg-[#C99A40]"
+        className="flex h-16 items-center justify-center gap-2.5 rounded-xl bg-[var(--accent)] text-sm font-bold text-[var(--accent-text)] transition hover:opacity-90 shadow-sm col-span-1 sm:col-span-2 lg:col-span-1"
       >
-        <Search size={22} />
-        Search
+        <Search size={18} />
+        <span>Search</span>
       </button>
     </div>
   );

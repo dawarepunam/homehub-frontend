@@ -127,7 +127,7 @@ export default async function PropertyPage({ params }) {
   // =====================================================
 
   return (
-    <main className="min-h-screen bg-[#F7F4EF] flex flex-col">
+    <main className="min-h-screen bg-[var(--bg-page)] flex flex-col">
 
       {/* Track buyer view (client-only, no-op if not logged in) */}
       <PropertyViewTracker propertyDocumentId={documentId} />

@@ -2318,7 +2318,7 @@ export default function PropertyCard({
   const [confirmAction, setConfirmAction] = useState(null); // { label, newStatus }
   const [statusUpdating, setStatusUpdating] = useState(false);
   const [localStatus, setLocalStatus] = useState(null); // optimistic local override after update
-  
+
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [pendingAction, setPendingAction] = useState("");
@@ -2473,7 +2473,7 @@ export default function PropertyCard({
   const price = formatPrice(
     property?.Price ?? commonDetails?.Price,
     property?.PriceUnits ??
-      commonDetails?.PriceUnits
+    commonDetails?.PriceUnits
   );
 
   /* ===================================================
@@ -2506,7 +2506,7 @@ export default function PropertyCard({
 
   const listedDate = formatListedDate(
     property?.createdAt ||
-      property?.publishedAt
+    property?.publishedAt
   );
 
   /* ===================================================
@@ -2574,7 +2574,7 @@ export default function PropertyCard({
 
       toast.error(
         error?.message ||
-          "Wishlist update failed."
+        "Wishlist update failed."
       );
     } finally {
       setLoading(false);
@@ -2588,8 +2588,8 @@ export default function PropertyCard({
   if (ownerMode) {
     return (
       <>
-      <article
-        className="
+        <article
+          className="
           group
           overflow-hidden
           rounded-2xl
@@ -2603,30 +2603,30 @@ export default function PropertyCard({
           hover:border-[var(--border-subtle)]
           hover:shadow-[0_20px_45px_rgba(0,0,0,0.25)]
         "
-      >
-        {/* =================================================
+        >
+          {/* =================================================
             IMAGE
         ================================================= */}
 
-        <div
-          className="
+          <div
+            className="
             relative
             h-[215px]
             w-full
             overflow-hidden
             bg-[var(--bg-section)]
           "
-        >
-          <Image
-            src={imageUrl}
-            alt={title}
-            fill
-            sizes="
+          >
+            <Image
+              src={imageUrl}
+              alt={title}
+              fill
+              sizes="
               (max-width: 640px) 100vw,
               (max-width: 1024px) 50vw,
               25vw
             "
-            className={`
+              className={`
               object-cover
               transition-all
               duration-500
@@ -2635,13 +2635,13 @@ export default function PropertyCard({
                 ownerStatus
               )}
             `}
-            unoptimized
-          />
+              unoptimized
+            />
 
-          {/* DARK GRADIENT */}
+            {/* DARK GRADIENT */}
 
-          <div
-            className="
+            <div
+              className="
               absolute
               inset-0
               bg-gradient-to-t
@@ -2649,12 +2649,12 @@ export default function PropertyCard({
               via-black/10
               to-black/5
             "
-          />
+            />
 
-          {/* STATUS */}
+            {/* STATUS */}
 
-          <span
-            className={`
+            <span
+              className={`
               absolute
               left-3
               top-3
@@ -2669,15 +2669,15 @@ export default function PropertyCard({
                 ownerStatus
               )}
             `}
-          >
-            {ownerStatus}
-          </span>
+            >
+              {ownerStatus}
+            </span>
 
-          {/* BOOKMARK */}
+            {/* BOOKMARK */}
 
-          <button
-            type="button"
-            className="
+            <button
+              type="button"
+              className="
               absolute
               right-3
               top-3
@@ -2693,25 +2693,25 @@ export default function PropertyCard({
               transition
               hover:bg-black/70
             "
-            aria-label="Bookmark property"
-          >
-            <Bookmark size={16} />
-          </button>
+              aria-label="Bookmark property"
+            >
+              <Bookmark size={16} />
+            </button>
 
-          {/* SOLD */}
+            {/* SOLD */}
 
-          {ownerStatus === "SOLD" && (
-            <div
-              className="
+            {ownerStatus === "SOLD" && (
+              <div
+                className="
                 absolute
                 inset-0
                 flex
                 items-center
                 justify-center
               "
-            >
-              <div
-                className="
+              >
+                <div
+                  className="
                   flex
                   h-14
                   w-14
@@ -2726,26 +2726,26 @@ export default function PropertyCard({
                   text-white
                   backdrop-blur-sm
                 "
-              >
-                ✓
+                >
+                  ✓
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* RENTED */}
+            {/* RENTED */}
 
-          {ownerStatus === "RENTED" && (
-            <div
-              className="
+            {ownerStatus === "RENTED" && (
+              <div
+                className="
                 absolute
                 inset-0
                 flex
                 items-center
                 justify-center
               "
-            >
-              <div
-                className="
+              >
+                <div
+                  className="
                   rounded-xl
                   bg-black/50
                   px-6
@@ -2755,26 +2755,26 @@ export default function PropertyCard({
                   text-white
                   backdrop-blur-sm
                 "
-              >
-                RENTED
+                >
+                  RENTED
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* RESERVED */}
+            {/* RESERVED */}
 
-          {ownerStatus === "RESERVED" && (
-            <div
-              className="
+            {ownerStatus === "RESERVED" && (
+              <div
+                className="
                 absolute
                 inset-0
                 flex
                 items-center
                 justify-center
               "
-            >
-              <div
-                className="
+              >
+                <div
+                  className="
                   rounded-xl
                   bg-black/50
                   px-6
@@ -2784,26 +2784,26 @@ export default function PropertyCard({
                   text-white
                   backdrop-blur-sm
                 "
-              >
-                RESERVED
+                >
+                  RESERVED
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* DRAFT */}
+            {/* DRAFT */}
 
-          {ownerStatus === "DRAFT" && (
-            <div
-              className="
+            {ownerStatus === "DRAFT" && (
+              <div
+                className="
                 absolute
                 inset-0
                 flex
                 items-center
                 justify-center
               "
-            >
-              <div
-                className="
+              >
+                <div
+                  className="
                   rounded-xl
                   bg-black/45
                   px-5
@@ -2813,36 +2813,36 @@ export default function PropertyCard({
                   text-white
                   backdrop-blur-sm
                 "
-              >
-                Continue Editing
+                >
+                  Continue Editing
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        {/* =================================================
+          {/* =================================================
             CONTENT
         ================================================= */}
 
-        <div className="p-4">
+          <div className="p-4">
 
-          {/* TITLE */}
+            {/* TITLE */}
 
-          <h2
-            className="
+            <h2
+              className="
               line-clamp-1
               text-[16px]
               font-extrabold
               text-white
             "
-          >
-            {title}
-          </h2>
+            >
+              {title}
+            </h2>
 
-          {/* LOCATION */}
+            {/* LOCATION */}
 
-          <p
-            className="
+            <p
+              className="
               mt-2
               flex
               items-center
@@ -2850,51 +2850,51 @@ export default function PropertyCard({
               text-xs
               text-[var(--text-primary)]
             "
-          >
-            <MapPin
-              size={13}
-              className="shrink-0 text-[var(--text-primary)]"
-            />
+            >
+              <MapPin
+                size={13}
+                className="shrink-0 text-[var(--text-primary)]"
+              />
 
-            <span className="line-clamp-1">
-              {area}
-              {area && city ? ", " : ""}
-              {city}
-            </span>
-          </p>
+              <span className="line-clamp-1">
+                {area}
+                {area && city ? ", " : ""}
+                {city}
+              </span>
+            </p>
 
-          {/* PRICE */}
+            {/* PRICE */}
 
-          <div className="mt-3">
-            <span
-              className="
+            <div className="mt-3">
+              <span
+                className="
                 text-lg
                 font-extrabold
                 text-[var(--text-primary)]
               "
-            >
-              {price}
-            </span>
+              >
+                {price}
+              </span>
 
-            {purpose.toLowerCase() ===
-              "rent" && (
-              <span
-                className="
+              {purpose.toLowerCase() ===
+                "rent" && (
+                  <span
+                    className="
                   ml-1
                   text-[11px]
                   font-medium
                   text-[var(--text-primary)]
                 "
-              >
-                / month
-              </span>
-            )}
-          </div>
+                  >
+                    / month
+                  </span>
+                )}
+            </div>
 
-          {/* FEATURES */}
+            {/* FEATURES */}
 
-          <div
-            className="
+            <div
+              className="
               mt-3
               flex
               flex-wrap
@@ -2903,42 +2903,42 @@ export default function PropertyCard({
               text-[10px]
               text-[var(--text-primary)]
             "
-          >
-            {bedrooms !== null && (
-              <span className="flex items-center gap-1">
-                <BedDouble size={13} />
-                {safeValue(bedrooms)} Beds
-              </span>
-            )}
+            >
+              {bedrooms !== null && (
+                <span className="flex items-center gap-1">
+                  <BedDouble size={13} />
+                  {safeValue(bedrooms)} Beds
+                </span>
+              )}
 
-            {bathrooms !== null && (
-              <span className="flex items-center gap-1">
-                <Bath size={13} />
-                {safeValue(bathrooms)} Baths
-              </span>
-            )}
+              {bathrooms !== null && (
+                <span className="flex items-center gap-1">
+                  <Bath size={13} />
+                  {safeValue(bathrooms)} Baths
+                </span>
+              )}
 
-            {parking !== null && (
-              <span className="flex items-center gap-1">
-                <Car size={13} />
-                {safeValue(parking)} Parking
-              </span>
-            )}
+              {parking !== null && (
+                <span className="flex items-center gap-1">
+                  <Car size={13} />
+                  {safeValue(parking)} Parking
+                </span>
+              )}
 
-            {builtUpArea !== null && (
-              <span className="flex items-center gap-1">
-                <Maximize size={12} />
-                {safeValue(builtUpArea)} sq.ft
-              </span>
-            )}
-          </div>
+              {builtUpArea !== null && (
+                <span className="flex items-center gap-1">
+                  <Maximize size={12} />
+                  {safeValue(builtUpArea)} sq.ft
+                </span>
+              )}
+            </div>
 
-          {/* CATEGORY */}
+            {/* CATEGORY */}
 
-          {category && (
-            <div className="mt-3">
-              <span
-                className="
+            {category && (
+              <div className="mt-3">
+                <span
+                  className="
                   rounded
                   bg-[var(--bg-section)]
                   px-2
@@ -2947,16 +2947,16 @@ export default function PropertyCard({
                   font-semibold
                   text-[var(--text-primary)]
                 "
-              >
-                {category}
-              </span>
-            </div>
-          )}
+                >
+                  {category}
+                </span>
+              </div>
+            )}
 
-          {/* STATS */}
+            {/* STATS */}
 
-          <div
-            className="
+            <div
+              className="
               mt-4
               grid
               grid-cols-3
@@ -2964,10 +2964,10 @@ export default function PropertyCard({
               border-[var(--border-subtle)]
               pt-3
             "
-          >
-            <div>
-              <div
-                className="
+            >
+              <div>
+                <div
+                  className="
                   flex
                   items-center
                   gap-1
@@ -2975,29 +2975,29 @@ export default function PropertyCard({
                   font-semibold
                   text-[var(--text-primary)]
                 "
-              >
-                <Eye size={13} />
-                {statsLoading ? (
-                  <Loader2 size={13} className="animate-spin text-[var(--text-muted)]" />
-                ) : (
-                  safeValue(views, "0")
-                )}
-              </div>
+                >
+                  <Eye size={13} />
+                  {statsLoading ? (
+                    <Loader2 size={13} className="animate-spin text-[var(--text-muted)]" />
+                  ) : (
+                    safeValue(views, "0")
+                  )}
+                </div>
 
-              <p
-                className="
+                <p
+                  className="
                   mt-1
                   text-[9px]
                   text-[var(--text-primary)]
                 "
-              >
-                Views
-              </p>
-            </div>
+                >
+                  Views
+                </p>
+              </div>
 
-            <div>
-              <div
-                className="
+              <div>
+                <div
+                  className="
                   flex
                   items-center
                   gap-1
@@ -3005,29 +3005,29 @@ export default function PropertyCard({
                   font-semibold
                   text-[var(--text-primary)]
                 "
-              >
-                <Heart size={13} />
-                {statsLoading ? (
-                  <Loader2 size={13} className="animate-spin text-[var(--text-muted)]" />
-                ) : (
-                  safeValue(saves, "0")
-                )}
-              </div>
+                >
+                  <Heart size={13} />
+                  {statsLoading ? (
+                    <Loader2 size={13} className="animate-spin text-[var(--text-muted)]" />
+                  ) : (
+                    safeValue(saves, "0")
+                  )}
+                </div>
 
-              <p
-                className="
+                <p
+                  className="
                   mt-1
                   text-[9px]
                   text-[var(--text-primary)]
                 "
-              >
-                Saves
-              </p>
-            </div>
+                >
+                  Saves
+                </p>
+              </div>
 
-            <div>
-              <div
-                className="
+              <div>
+                <div
+                  className="
                   flex
                   items-center
                   gap-1
@@ -3035,52 +3035,52 @@ export default function PropertyCard({
                   font-semibold
                   text-[var(--text-primary)]
                 "
-              >
-                <MessageSquare size={13} />
-                {statsLoading ? (
-                  <Loader2 size={13} className="animate-spin text-[var(--text-muted)]" />
-                ) : (
-                  safeValue(enquiries, "0")
-                )}
-              </div>
+                >
+                  <MessageSquare size={13} />
+                  {statsLoading ? (
+                    <Loader2 size={13} className="animate-spin text-[var(--text-muted)]" />
+                  ) : (
+                    safeValue(enquiries, "0")
+                  )}
+                </div>
 
-              <p
-                className="
+                <p
+                  className="
                   mt-1
                   text-[9px]
                   text-[var(--text-primary)]
                 "
-              >
-                Enquiries
-              </p>
+                >
+                  Enquiries
+                </p>
+              </div>
             </div>
-          </div>
 
-          {/* DATE */}
+            {/* DATE */}
 
-          {listedDate && (
-            <p
-              className="
+            {listedDate && (
+              <p
+                className="
                 mt-3
                 text-[9px]
                 text-[var(--text-primary)]
               "
-            >
-              Listed on {listedDate}
-            </p>
-          )}
+              >
+                Listed on {listedDate}
+              </p>
+            )}
 
-          {/* =================================================
+            {/* =================================================
               ACTIONS
           ================================================= */}
 
-          <div className="mt-4 flex gap-2">
+            <div className="mt-4 flex gap-2">
 
-            {/* VIEW */}
+              {/* VIEW */}
 
-            <Link
-              href={`/owner/properties/${documentId}`}
-              className="
+              <Link
+                href={`/owner/properties/${documentId}`}
+                className="
                 flex
                 flex-1
                 items-center
@@ -3099,16 +3099,16 @@ export default function PropertyCard({
                 hover:border-[var(--border-subtle)]
                 hover:bg-[var(--bg-section)]
               "
-            >
-              <Eye size={14} />
-              View
-            </Link>
+              >
+                <Eye size={14} />
+                View
+              </Link>
 
-            {/* EDIT */}
+              {/* EDIT */}
 
-            <Link
-              href={`/owner/properties/${documentId}/edit`}
-              className="
+              <Link
+                href={`/owner/properties/${documentId}/edit`}
+                className="
                 flex
                 flex-1
                 items-center
@@ -3124,23 +3124,23 @@ export default function PropertyCard({
                 transition
                 hover:bg-[var(--bg-section)]
               "
-            >
-              <Pencil size={14} />
-              Edit
-            </Link>
+              >
+                <Pencil size={14} />
+                Edit
+              </Link>
 
-            {/* MORE */}
+              {/* MORE */}
 
-            <div className="relative">
+              <div className="relative">
 
-              <button
-                type="button"
-                onClick={() =>
-                  setShowMore(
-                    (value) => !value
-                  )
-                }
-                className="
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowMore(
+                      (value) => !value
+                    )
+                  }
+                  className="
                   flex
                   h-full
                   min-w-[40px]
@@ -3154,14 +3154,14 @@ export default function PropertyCard({
                   transition
                   hover:border-[var(--border-subtle)]
                 "
-                aria-label="More actions"
-              >
-                <MoreVertical size={16} />
-              </button>
+                  aria-label="More actions"
+                >
+                  <MoreVertical size={16} />
+                </button>
 
-              {showMore && (
-                <div
-                  className="
+                {showMore && (
+                  <div
+                    className="
                     absolute
                     bottom-12
                     right-0
@@ -3175,10 +3175,10 @@ export default function PropertyCard({
                     p-1
                     shadow-2xl
                   "
-                >
-                  <Link
-                    href={`/owner/properties/${documentId}`}
-                    className="
+                  >
+                    <Link
+                      href={`/owner/properties/${documentId}`}
+                      className="
                       flex
                       items-center
                       gap-2
@@ -3189,20 +3189,20 @@ export default function PropertyCard({
                       text-white
                       hover:bg-[var(--bg-section)]
                     "
-                  >
-                    <ExternalLink size={13} />
-                    View Property
-                  </Link>
+                    >
+                      <ExternalLink size={13} />
+                      View Property
+                    </Link>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowMore(false);
-                      toast(
-                        "More actions coming soon."
-                      );
-                    }}
-                    className="
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowMore(false);
+                        toast(
+                          "More actions coming soon."
+                        );
+                      }}
+                      className="
                       flex
                       w-full
                       items-center
@@ -3215,22 +3215,22 @@ export default function PropertyCard({
                       text-white
                       hover:bg-[var(--bg-section)]
                     "
-                  >
-                    <MoreVertical size={13} />
-                    More Options
-                  </button>
+                    >
+                      <MoreVertical size={13} />
+                      More Options
+                    </button>
 
-                  {/* MARK AS SOLD / RENTED */}
-                  {ownerStatus === "ACTIVE" && (
-                    <>
-                      {purpose.toLowerCase() === "sell" || purpose.toLowerCase() === "sale" ? (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowMore(false);
-                            setConfirmAction({ label: "Sold", newStatus: "Sold" });
-                          }}
-                          className="
+                    {/* MARK AS SOLD / RENTED */}
+                    {ownerStatus === "ACTIVE" && (
+                      <>
+                        {purpose.toLowerCase() === "sell" || purpose.toLowerCase() === "sale" ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowMore(false);
+                              setConfirmAction({ label: "Sold", newStatus: "Sold" });
+                            }}
+                            className="
                             flex
                             w-full
                             items-center
@@ -3243,18 +3243,18 @@ export default function PropertyCard({
                             text-[var(--text-primary)]
                             hover:bg-[var(--bg-section)]/10
                           "
-                        >
-                          <CheckCircle size={13} />
-                          Mark as Sold
-                        </button>
-                      ) : purpose.toLowerCase() === "rent" ? (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowMore(false);
-                            setConfirmAction({ label: "Rented", newStatus: "Rented" });
-                          }}
-                          className="
+                          >
+                            <CheckCircle size={13} />
+                            Mark as Sold
+                          </button>
+                        ) : purpose.toLowerCase() === "rent" ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowMore(false);
+                              setConfirmAction({ label: "Rented", newStatus: "Rented" });
+                            }}
+                            className="
                             flex
                             w-full
                             items-center
@@ -3267,24 +3267,24 @@ export default function PropertyCard({
                             text-[var(--text-primary)]
                             hover:bg-[var(--bg-section)]/10
                           "
-                        >
-                          <CheckCircle size={13} />
-                          Mark as Rented
-                        </button>
-                      ) : null}
-                    </>
-                  )}
+                          >
+                            <CheckCircle size={13} />
+                            Mark as Rented
+                          </button>
+                        ) : null}
+                      </>
+                    )}
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowMore(false);
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowMore(false);
 
-                      toast.error(
-                        "Delete action will be connected next."
-                      );
-                    }}
-                    className="
+                        toast.error(
+                          "Delete action will be connected next."
+                        );
+                      }}
+                      className="
                       flex
                       w-full
                       items-center
@@ -3297,22 +3297,22 @@ export default function PropertyCard({
                       text-red-400
                       hover:bg-red-950/30
                     "
-                  >
-                    <Trash2 size={13} />
-                    Delete
-                  </button>
-                </div>
-              )}
+                    >
+                      <Trash2 size={13} />
+                      Delete
+                    </button>
+                  </div>
+                )}
 
+              </div>
             </div>
-          </div>
 
-          {/* DRAFT */}
+            {/* DRAFT */}
 
-          {ownerStatus === "DRAFT" && (
-            <Link
-              href={`/owner/properties/${documentId}/edit`}
-              className="
+            {ownerStatus === "DRAFT" && (
+              <Link
+                href={`/owner/properties/${documentId}/edit`}
+                className="
                 mt-2
                 flex
                 w-full
@@ -3328,97 +3328,97 @@ export default function PropertyCard({
                 transition
                 hover:bg-[var(--bg-section)]
               "
-            >
-              Continue Editing
-            </Link>
-          )}
-        </div>
-      </article>
+              >
+                Continue Editing
+              </Link>
+            )}
+          </div>
+        </article>
 
-      {/* =================================================
+        {/* =================================================
           MARK AS SOLD / RENTED CONFIRMATION MODAL
       ================================================= */}
-      {confirmAction && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
-          onClick={() => !statusUpdating && setConfirmAction(null)}
-        >
+        {confirmAction && (
           <div
-            className="w-full max-w-sm rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-section)] p-6 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
+            onClick={() => !statusUpdating && setConfirmAction(null)}
           >
-            <div className="flex items-start justify-between">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-section)]">
-                <AlertTriangle size={22} className="text-[var(--text-primary)]" />
+            <div
+              className="w-full max-w-sm rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-section)] p-6 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-section)]">
+                  <AlertTriangle size={22} className="text-[var(--text-primary)]" />
+                </div>
+                <button
+                  type="button"
+                  disabled={statusUpdating}
+                  onClick={() => setConfirmAction(null)}
+                  className="rounded-lg p-1 text-[var(--text-primary)] hover:bg-[var(--bg-section)] hover:text-white"
+                >
+                  <X size={18} />
+                </button>
               </div>
-              <button
-                type="button"
-                disabled={statusUpdating}
-                onClick={() => setConfirmAction(null)}
-                className="rounded-lg p-1 text-[var(--text-primary)] hover:bg-[var(--bg-section)] hover:text-white"
-              >
-                <X size={18} />
-              </button>
-            </div>
 
-            <h2 className="mt-4 text-base font-extrabold text-white">
-              Mark Property as {confirmAction.label}?
-            </h2>
+              <h2 className="mt-4 text-base font-extrabold text-white">
+                Mark Property as {confirmAction.label}?
+              </h2>
 
-            <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
-              Are you sure this property has been {confirmAction.label.toLowerCase()}?{" "}
-              This will remove it from active{" "}
-              {confirmAction.label === "Sold" ? "property availability" : "rental availability"}.
-            </p>
+              <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
+                Are you sure this property has been {confirmAction.label.toLowerCase()}?{" "}
+                This will remove it from active{" "}
+                {confirmAction.label === "Sold" ? "property availability" : "rental availability"}.
+              </p>
 
-            <div className="mt-6 flex gap-3">
-              <button
-                type="button"
-                disabled={statusUpdating}
-                onClick={() => setConfirmAction(null)}
-                className="flex-1 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-section)] py-2.5 text-sm font-bold text-white transition hover:border-[var(--border-subtle)] disabled:opacity-50"
-              >
-                Cancel
-              </button>
+              <div className="mt-6 flex gap-3">
+                <button
+                  type="button"
+                  disabled={statusUpdating}
+                  onClick={() => setConfirmAction(null)}
+                  className="flex-1 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-section)] py-2.5 text-sm font-bold text-white transition hover:border-[var(--border-subtle)] disabled:opacity-50"
+                >
+                  Cancel
+                </button>
 
-              <button
-                type="button"
-                disabled={statusUpdating}
-                onClick={async () => {
-                  if (statusUpdating) return;
-                  setStatusUpdating(true);
-                  try {
-                    await updatePropertyStatus(documentId, confirmAction.newStatus);
-                    setLocalStatus(confirmAction.newStatus);
-                    toast.success(
-                      `Property marked as ${confirmAction.label.toLowerCase()} successfully.`
-                    );
-                    setConfirmAction(null);
-                    if (onUpdate) onUpdate();
-                  } catch (err) {
-                    toast.error(
-                      err?.message || `Failed to mark as ${confirmAction.label.toLowerCase()}.`
-                    );
-                  } finally {
-                    setStatusUpdating(false);
-                  }
-                }}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--text-primary)] py-2.5 text-sm font-extrabold text-[var(--text-primary)] transition hover:hover:opacity-80 disabled:opacity-60"
-              >
-                {statusUpdating ? (
-                  <>
-                    <Loader2 size={15} className="animate-spin" />
-                    Marking...
-                  </>
-                ) : (
-                  `Mark as ${confirmAction.label}`
-                )}
-              </button>
+                <button
+                  type="button"
+                  disabled={statusUpdating}
+                  onClick={async () => {
+                    if (statusUpdating) return;
+                    setStatusUpdating(true);
+                    try {
+                      await updatePropertyStatus(documentId, confirmAction.newStatus);
+                      setLocalStatus(confirmAction.newStatus);
+                      toast.success(
+                        `Property marked as ${confirmAction.label.toLowerCase()} successfully.`
+                      );
+                      setConfirmAction(null);
+                      if (onUpdate) onUpdate();
+                    } catch (err) {
+                      toast.error(
+                        err?.message || `Failed to mark as ${confirmAction.label.toLowerCase()}.`
+                      );
+                    } finally {
+                      setStatusUpdating(false);
+                    }
+                  }}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--text-primary)] py-2.5 text-sm font-extrabold text-[var(--text-primary)] transition hover:hover:opacity-80 disabled:opacity-60"
+                >
+                  {statusUpdating ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" />
+                      Marking...
+                    </>
+                  ) : (
+                    `Mark as ${confirmAction.label}`
+                  )}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </>
     );
   }
 
@@ -3649,15 +3649,13 @@ export default function PropertyCard({
                 rounded-lg
                 border
                 transition
-                ${
-                  liked
-                    ? "border-red-400 bg-red-50"
-                    : "border-[var(--border-subtle)] bg-transparent hover:border-red-400 hover:bg-red-50"
+                ${liked
+                  ? "border-red-400 bg-red-50"
+                  : "border-[var(--border-subtle)] bg-transparent hover:border-red-400 hover:bg-red-50"
                 }
-                ${
-                  loading
-                    ? "cursor-not-allowed opacity-50"
-                    : ""
+                ${loading
+                  ? "cursor-not-allowed opacity-50"
+                  : ""
                 }
               `}
               aria-label={

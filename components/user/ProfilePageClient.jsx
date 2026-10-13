@@ -107,14 +107,14 @@ function formatDate(dateStr) {
 
 function EnquiryStatusBadge({ status }) {
   const map = {
-    Pending: "bg-amber-50 text-amber-700 border-amber-200",
-    Contacted: "bg-[#E8F4F0] text-[#0D3326] border-[#0D3326]/20",
-    Replied: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    Closed: "bg-[#F7F4EF] text-[#0D3326]/50 border-[#E5DDD0]",
+    Pending: "bg-amber-500/10 text-amber-600 border-amber-500/20",
+    Contacted: "bg-[var(--bg-surface)] text-[var(--text-primary)] border-[var(--border-subtle)]",
+    Replied: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+    Closed: "bg-[var(--bg-surface)] text-[var(--text-secondary)] border-[var(--border-subtle)]",
   };
-  const cls = map[status] || "bg-[#F7F4EF] text-[#0D3326]/50 border-[#E5DDD0]";
+  const cls = map[status] || "bg-[var(--bg-surface)] text-[var(--text-secondary)] border-[var(--border-subtle)]";
   return (
-    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${cls}`}>
+    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold ${cls}`}>
       {status || "Unknown"}
     </span>
   );
@@ -122,14 +122,14 @@ function EnquiryStatusBadge({ status }) {
 
 function InfoRow({ label, value, icon: Icon }) {
   return (
-    <div className="flex items-start gap-3 py-3 border-b border-[#E5DDD0] last:border-0">
-      {Icon && <Icon size={15} className="mt-0.5 shrink-0 text-[#0D3326]/40" />}
+    <div className="flex items-start gap-3 py-3 border-b border-[var(--border-subtle)] last:border-0">
+      {Icon && <Icon size={15} className="mt-0.5 shrink-0 text-[var(--text-secondary)]" />}
       <div className="min-w-0">
-        <span className="block text-[10px] font-bold uppercase tracking-wider text-[#0D3326]/50">{label}</span>
+        <span className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{label}</span>
         {value ? (
-          <span className="mt-0.5 block text-sm font-semibold text-[#0D3326] break-words">{value}</span>
+          <span className="mt-0.5 block text-sm font-medium text-[var(--text-primary)] break-words">{value}</span>
         ) : (
-          <span className="mt-0.5 block text-sm italic text-[#0D3326]/35">Not added yet</span>
+          <span className="mt-0.5 block text-sm italic text-[var(--text-secondary)] opacity-60">Not added yet</span>
         )}
       </div>
     </div>
@@ -138,14 +138,14 @@ function InfoRow({ label, value, icon: Icon }) {
 
 function NotificationToggle({ label, description, icon: Icon, value, onChange, loading }) {
   return (
-    <div className="flex items-center justify-between py-4 border-b border-[#E5DDD0] last:border-0">
+    <div className="flex items-center justify-between py-4 border-b border-[var(--border-subtle)] last:border-0">
       <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F7F4EF]">
-          <Icon size={16} className="text-[#0D3326]" />
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)]">
+          <Icon size={16} className="text-[var(--text-primary)]" />
         </div>
         <div>
-          <span className="block text-sm font-bold text-[#0D3326]">{label}</span>
-          {description && <span className="mt-0.5 block text-[11px] text-[#0D3326]/50">{description}</span>}
+          <span className="block text-sm font-semibold text-[var(--text-primary)]">{label}</span>
+          {description && <span className="mt-0.5 block text-[11px] text-[var(--text-secondary)]">{description}</span>}
         </div>
       </div>
       <button
@@ -154,9 +154,9 @@ function NotificationToggle({ label, description, icon: Icon, value, onChange, l
         onClick={() => onChange(!value)}
         aria-checked={value}
         role="switch"
-        className={`relative ml-4 inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none disabled:opacity-50 ${value ? "bg-[#0D3326]" : "bg-[#E5DDD0]"}`}
+        className={`relative ml-4 inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none disabled:opacity-50 ${value ? "bg-[var(--btn-primary-bg)]" : "bg-[var(--border-subtle)]"}`}
       >
-        <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ${value ? "translate-x-6" : "translate-x-1"}`} />
+        <span className={`inline-block h-4 w-4 transform rounded-full bg-[var(--bg-card)] shadow-sm transition-transform duration-200 ${value ? "translate-x-6" : "translate-x-1"}`} />
       </button>
     </div>
   );
@@ -164,19 +164,19 @@ function NotificationToggle({ label, description, icon: Icon, value, onChange, l
 
 function SectionCard({ icon: Icon, title, onEdit, children }) {
   return (
-    <section className="rounded-2xl border border-[#E5DDD0] bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-[#E5DDD0] px-5 py-4">
+    <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm">
+      <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-5 py-4">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F7F4EF]">
-            <Icon size={14} className="text-[#0D3326]" />
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-surface)]">
+            <Icon size={14} className="text-[var(--text-primary)]" />
           </div>
-          <h2 className="text-sm font-extrabold text-[#0D3326]">{title}</h2>
+          <h2 className="text-sm font-bold text-[var(--text-primary)]">{title}</h2>
         </div>
         {onEdit && (
           <button
             type="button"
             onClick={onEdit}
-            className="flex items-center gap-1.5 rounded-lg border border-[#E5DDD0] bg-white px-3 py-1.5 text-xs font-bold text-[#0D3326] transition hover:bg-[#F7F4EF]"
+            className="flex items-center gap-1.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-1.5 text-xs font-semibold text-[var(--text-primary)] transition hover:bg-[var(--bg-page)]"
           >
             <Pencil size={11} />Edit
           </button>
@@ -198,19 +198,19 @@ function SavedMiniCard({ property }) {
   const price = formatPrice(property);
   const imageUrl = getPropertyImageUrl(property);
   return (
-    <Link href={`/user/property/${docId}`} className="group flex flex-col overflow-hidden rounded-xl border border-[#E5DDD0] bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
-      <div className="relative h-28 overflow-hidden bg-[#EAE5DC]">
+    <Link href={`/user/property/${docId}`} className="group flex flex-col overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+      <div className="relative h-28 overflow-hidden bg-[var(--bg-surface)]">
         {imageUrl ? (
           <img src={imageUrl} alt={title} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" onError={(e) => { e.currentTarget.style.display = "none"; }} />
         ) : (
-          <div className="flex h-full items-center justify-center"><Building2 size={22} className="text-[#0D3326]/20" /></div>
+          <div className="flex h-full items-center justify-center"><Building2 size={22} className="text-[var(--text-secondary)] opacity-40" /></div>
         )}
-        {purpose && <span className="absolute right-2 top-2 rounded-full bg-[#0D3326] px-2 py-0.5 text-[10px] font-bold text-[#D7AE62]">{purpose === "Sale" ? "For Sale" : "For Rent"}</span>}
+        {purpose && <span className="absolute right-2 top-2 rounded-full bg-[var(--text-primary)] px-2 py-0.5 text-[10px] font-semibold text-[var(--bg-card)]">{purpose === "Sale" ? "For Sale" : "For Rent"}</span>}
       </div>
       <div className="flex flex-col p-3">
-        <p className="line-clamp-1 text-sm font-extrabold text-[#0D3326]">{title}</p>
-        {location && <p className="mt-0.5 flex items-center gap-1 text-[11px] text-[#0D3326]/50"><MapPin size={9} className="text-[#D7AE62]" /><span className="line-clamp-1">{location}</span></p>}
-        <p className="mt-1 text-sm font-extrabold text-[#D7AE62]">{price}</p>
+        <p className="line-clamp-1 text-sm font-bold text-[var(--text-primary)]">{title}</p>
+        {location && <p className="mt-0.5 flex items-center gap-1 text-[11px] text-[var(--text-secondary)]"><MapPin size={9} className="text-[var(--text-secondary)]" /><span className="line-clamp-1">{location}</span></p>}
+        <p className="mt-1 text-sm font-bold text-[var(--text-primary)]">{price}</p>
       </div>
     </Link>
   );
@@ -219,16 +219,16 @@ function SavedMiniCard({ property }) {
 function ProfileSkeleton() {
   return (
     <div className="animate-pulse space-y-6">
-      <div className="overflow-hidden rounded-2xl border border-[#E5DDD0] bg-white">
-        <div className="h-48 bg-[#E5DDD0]" />
+      <div className="overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)]">
+        <div className="h-48 bg-[var(--bg-surface)]" />
         <div className="px-8 pb-8 pt-0">
           <div className="-mt-14 flex items-end gap-5">
-            <div className="h-28 w-28 rounded-full border-4 border-white bg-[#E5DDD0]" />
-            <div className="mb-2 space-y-2"><div className="h-7 w-44 rounded-full bg-[#E5DDD0]" /><div className="h-4 w-28 rounded-full bg-[#E5DDD0]" /></div>
+            <div className="h-28 w-28 rounded-full border-4 border-[var(--bg-card)] bg-[var(--border-subtle)]" />
+            <div className="mb-2 space-y-2"><div className="h-7 w-44 rounded-full bg-[var(--border-subtle)]" /><div className="h-4 w-28 rounded-full bg-[var(--border-subtle)]" /></div>
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">{[1, 2, 3, 4].map((i) => <div key={i} className="h-28 rounded-2xl bg-[#E5DDD0]" />)}</div>
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">{[1, 2, 3, 4].map((i) => <div key={i} className="h-28 rounded-2xl bg-[var(--border-subtle)]" />)}</div>
     </div>
   );
 }
@@ -246,11 +246,11 @@ function EditModal({ title, onClose, onSave, saving, children }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div ref={ref} className="relative w-full max-w-lg rounded-2xl border border-[#E5DDD0] bg-white shadow-2xl">
+      <div ref={ref} className="relative w-full max-w-lg rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#E5DDD0] px-6 py-4">
-          <h3 className="text-base font-extrabold text-[#0D3326]">Edit {title}</h3>
-          <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-lg text-[#0D3326]/50 transition hover:bg-[#F7F4EF] hover:text-[#0D3326]">
+        <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-6 py-4">
+          <h3 className="text-base font-bold text-[var(--text-primary)]">Edit {title}</h3>
+          <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-secondary)] transition hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]">
             <X size={16} />
           </button>
         </div>
@@ -259,11 +259,11 @@ function EditModal({ title, onClose, onSave, saving, children }) {
           {children}
         </div>
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 border-t border-[#E5DDD0] px-6 py-4">
-          <button type="button" onClick={onClose} disabled={saving} className="rounded-xl border border-[#E5DDD0] px-5 py-2.5 text-sm font-bold text-[#0D3326] transition hover:bg-[#F7F4EF] disabled:opacity-50">
+        <div className="flex items-center justify-end gap-3 border-t border-[var(--border-subtle)] px-6 py-4">
+          <button type="button" onClick={onClose} disabled={saving} className="rounded-xl border border-[var(--border-subtle)] px-5 py-2.5 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--bg-surface)] disabled:opacity-50">
             Cancel
           </button>
-          <button type="button" onClick={onSave} disabled={saving} className="flex items-center gap-2 rounded-xl bg-[#0D3326] px-6 py-2.5 text-sm font-bold text-[#D7AE62] transition hover:bg-[#0a2b1f] disabled:opacity-50">
+          <button type="button" onClick={onSave} disabled={saving} className="flex items-center gap-2 rounded-xl bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] px-6 py-2.5 text-sm font-semibold transition hover:opacity-90 disabled:opacity-50">
             {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
             {saving ? "Saving..." : "Save Changes"}
           </button>
@@ -276,13 +276,13 @@ function EditModal({ title, onClose, onSave, saving, children }) {
 function Field({ label, children }) {
   return (
     <div>
-      <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">{label}</label>
+      <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{label}</label>
       {children}
     </div>
   );
 }
 
-const inputCls = "w-full rounded-xl border border-[#E5DDD0] bg-[#FDFAF6] px-4 py-2.5 text-sm font-semibold text-[#0D3326] outline-none transition placeholder:text-[#0D3326]/30 focus:border-[#0D3326] focus:ring-2 focus:ring-[#0D3326]/10";
+const inputCls = "w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-2.5 text-sm font-medium text-[var(--text-primary)] outline-none transition placeholder:text-[var(--text-secondary)]/50 focus:border-[var(--text-primary)] focus:ring-1 focus:ring-[var(--text-primary)]";
 
 /* ─── Main Component ─────────────────────────────────────────────────── */
 
@@ -465,7 +465,7 @@ export default function ProfilePageClient() {
         // Non-fatal — header will sync on next refresh
       }
 
-      toast.success("Saved successfully!", { style: { background: "#0D3326", color: "#D7AE62", fontWeight: "bold" } });
+      toast.success("Saved successfully!", { style: { background: "var(--btn-primary-bg)", color: "var(--btn-primary-text)", fontWeight: "600" } });
       closeModal();
       await loadAll();
     } catch (err) {
@@ -487,7 +487,7 @@ export default function ProfilePageClient() {
       const settingsPayload = { ...updatedSettings };
       if (profile.Settings?.id) settingsPayload.id = profile.Settings.id;
       await updateUserProfile(profile.documentId, { Settings: settingsPayload });
-      toast.success("Saved!", { style: { background: "#0D3326", color: "#D7AE62", fontWeight: "bold" } });
+      toast.success("Saved!", { style: { background: "var(--btn-primary-bg)", color: "var(--btn-primary-text)", fontWeight: "600" } });
     } catch {
       setProfile(prev);
       toast.error("Failed to save preference.");
@@ -529,13 +529,13 @@ export default function ProfilePageClient() {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-[#E5DDD0] bg-white p-16 text-center shadow-sm">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-50">
-          <AlertCircle size={24} className="text-red-400" />
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-16 text-center shadow-sm">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10">
+          <AlertCircle size={24} className="text-red-500" />
         </div>
-        <h2 className="mt-4 text-lg font-extrabold text-[#0D3326]">Unable to Load Profile</h2>
-        <p className="mt-1 text-sm text-[#0D3326]/60">{error}</p>
-        <button type="button" onClick={loadAll} className="mt-6 flex items-center gap-2 rounded-xl bg-[#0D3326] px-6 py-3 font-bold text-[#D7AE62] transition hover:bg-[#0a2b1f]">
+        <h2 className="mt-4 text-lg font-bold text-[var(--text-primary)]">Unable to Load Profile</h2>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">{error}</p>
+        <button type="button" onClick={loadAll} className="hh-btn hh-btn-primary mt-6">
           <RefreshCw size={15} /> Try Again
         </button>
       </div>
@@ -601,18 +601,18 @@ export default function ProfilePageClient() {
       {activeModal === "photo" && (
         <EditModal title="Profile Photo" onClose={closeModal} onSave={saveModal} saving={modalSaving}>
           <div className="flex flex-col items-center gap-5">
-            <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-[#E5DDD0] bg-[#F7F4EF]">
+            <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-[var(--border-subtle)] bg-[var(--bg-surface)]">
               {(photoPreview || profileImageUrl) ? (
                 <img src={photoPreview || profileImageUrl} alt="Preview" className="h-full w-full object-cover" />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-3xl font-extrabold text-[#0D3326]">{initials}</div>
+                <div className="flex h-full w-full items-center justify-center text-3xl font-bold text-[var(--text-primary)]">{initials}</div>
               )}
             </div>
-            <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-[#E5DDD0] bg-[#F7F4EF] px-5 py-2.5 text-sm font-bold text-[#0D3326] transition hover:bg-[#E5DDD0]">
+            <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-2.5 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--bg-page)]">
               <Camera size={15} />Choose Photo
               <input type="file" accept="image/*" className="sr-only" onChange={handlePhotoSelect} />
             </label>
-            {photoFile && <p className="text-xs text-[#0D3326]/60">Selected: {photoFile.name}</p>}
+            {photoFile && <p className="text-xs text-[var(--text-secondary)]">Selected: {photoFile.name}</p>}
           </div>
         </EditModal>
       )}
@@ -621,16 +621,16 @@ export default function ProfilePageClient() {
         <EditModal title="Cover Image" onClose={closeModal} onSave={saveModal} saving={modalSaving}>
           <div className="flex flex-col gap-4">
             <div
-              className="h-36 w-full rounded-xl overflow-hidden"
+              className="h-36 w-full rounded-xl overflow-hidden border border-[var(--border-subtle)]"
               style={coverPreview || coverImageUrl
                 ? { backgroundImage: `url(${coverPreview || coverImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }
-                : { background: "linear-gradient(135deg, #0D3326 0%, #1a4d3a 100%)" }}
+                : { background: "var(--bg-surface)" }}
             />
-            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#E5DDD0] bg-[#F7F4EF] px-5 py-2.5 text-sm font-bold text-[#0D3326] transition hover:bg-[#E5DDD0]">
+            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-2.5 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--bg-page)]">
               <Camera size={15} />Choose Cover Image
               <input type="file" accept="image/*" className="sr-only" onChange={handleCoverSelect} />
             </label>
-            {coverFile && <p className="text-xs text-[#0D3326]/60">Selected: {coverFile.name}</p>}
+            {coverFile && <p className="text-xs text-[var(--text-secondary)]">Selected: {coverFile.name}</p>}
           </div>
         </EditModal>
       )}
@@ -638,26 +638,26 @@ export default function ProfilePageClient() {
       {/* ── Page Content ── */}
       <div className="mx-auto max-w-7xl space-y-5 pb-16">
         {/* Breadcrumb */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[13px] font-semibold text-[#0D3326]/60">
-          <Link href="/user" className="flex items-center gap-1 transition hover:text-[#0D3326]"><Home size={13} /><span>Home</span></Link>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--text-secondary)]">
+          <Link href="/user" className="flex items-center gap-1 transition hover:text-[var(--text-primary)]"><Home size={13} /><span>Home</span></Link>
           <ChevronRight size={11} />
-          <span className="text-[#0D3326]">My Profile</span>
+          <span className="text-[var(--text-primary)] font-semibold">My Profile</span>
         </nav>
 
         {/* Hero */}
-        <div className="overflow-hidden rounded-2xl border border-[#E5DDD0] bg-white shadow-sm">
+        <div className="overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm">
           {/* Cover */}
           <div
             className="relative h-48 w-full sm:h-56"
             style={coverImageUrl
               ? { backgroundImage: `url(${coverImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }
-              : { background: "linear-gradient(135deg, #0D3326 0%, #1a4d3a 60%, #0D3326 100%)" }}
+              : { background: "var(--bg-surface)" }}
           >
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/25" />
             <button
               type="button"
               onClick={() => setActiveModal("cover")}
-              className="absolute right-5 top-5 flex items-center gap-2 rounded-xl bg-white/95 px-4 py-2 text-sm font-bold text-[#0D3326] shadow-sm backdrop-blur-sm transition hover:bg-white"
+              className="absolute right-5 top-5 flex items-center gap-2 rounded-xl bg-[var(--bg-card)]/90 px-4 py-2 text-sm font-semibold text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:bg-[var(--bg-card)] border border-[var(--border-subtle)]"
             >
               <Camera size={13} />Edit Cover
             </button>
@@ -669,39 +669,39 @@ export default function ProfilePageClient() {
               <div className="flex items-end gap-5 -mt-14 sm:-mt-16">
                 {/* Avatar */}
                 <div className="relative shrink-0 z-10">
-                  <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-white bg-white shadow-md sm:h-36 sm:w-36">
+                  <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-[var(--bg-card)] bg-[var(--bg-card)] shadow-md sm:h-36 sm:w-36">
                     {profileImageUrl ? (
                       <img src={profileImageUrl} alt={fullName} className="h-full w-full object-cover" />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-[#F7F4EF] text-4xl font-extrabold text-[#0D3326]">{initials}</div>
+                      <div className="flex h-full w-full items-center justify-center bg-[var(--bg-surface)] text-4xl font-bold text-[var(--text-primary)]">{initials}</div>
                     )}
                   </div>
                   <button
                     type="button"
                     onClick={() => setActiveModal("photo")}
-                    className="absolute bottom-1.5 right-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-[#D7AE62] shadow-md transition hover:bg-[#C99A40]"
+                    className="absolute bottom-1.5 right-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] shadow-md transition hover:opacity-90"
                     title="Change photo"
                   >
-                    <Camera size={14} className="text-[#0D3326]" />
+                    <Camera size={14} />
                   </button>
                 </div>
                 {/* Name */}
                 <div className="mb-2 sm:mb-3">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h1 className="text-xl font-extrabold text-[#0D3326] sm:text-2xl">{fullName}</h1>
+                    <h1 className="text-xl font-bold tracking-tight text-[var(--text-primary)] sm:text-2xl">{fullName}</h1>
                     {isVerified ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-[#E8F4F0] px-2 py-0.5 text-[10px] font-bold text-emerald-700"><BadgeCheck size={11} />Verified</span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-600"><BadgeCheck size={11} />Verified</span>
                     ) : (
-                      <span className="inline-flex items-center rounded-full bg-[#F7F4EF] px-2 py-0.5 text-[10px] font-bold text-[#0D3326]/50">Verification Pending</span>
+                      <span className="inline-flex items-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2 py-0.5 text-[10px] font-semibold text-[var(--text-secondary)]">Verification Pending</span>
                     )}
                   </div>
-                  <p className="mt-0.5 text-xs font-semibold text-[#0D3326]/60">Buyer</p>
-                  {locationStr && <p className="mt-1 flex items-center gap-1 text-xs text-[#0D3326]/60"><MapPin size={12} className="text-[#D7AE62]" />{locationStr}</p>}
-                  {profileDetails?.Bio && <p className="mt-2 max-w-md text-sm text-[#0D3326]/70 leading-relaxed">{profileDetails.Bio}</p>}
+                  <p className="mt-0.5 text-xs font-medium text-[var(--text-secondary)]">Buyer</p>
+                  {locationStr && <p className="mt-1 flex items-center gap-1 text-xs text-[var(--text-secondary)]"><MapPin size={12} className="text-[var(--text-secondary)]" />{locationStr}</p>}
+                  {profileDetails?.Bio && <p className="mt-2 max-w-md text-sm text-[var(--text-secondary)] leading-relaxed">{profileDetails.Bio}</p>}
                 </div>
               </div>
               <div className="pb-2">
-                <button type="button" onClick={() => openModal("personal")} className="flex items-center gap-2 rounded-xl bg-[#0D3326] px-5 py-2.5 text-sm font-bold text-[#D7AE62] transition hover:bg-[#0a2b1f]">
+                <button type="button" onClick={() => openModal("personal")} className="hh-btn hh-btn-primary">
                   <Pencil size={14} />Edit Profile
                 </button>
               </div>
@@ -711,30 +711,30 @@ export default function ProfilePageClient() {
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <Link href="/user/wishlist" className="group flex flex-col items-center justify-center rounded-2xl border border-[#E5DDD0] bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+          <Link href="/user/wishlist" className="group flex flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
             <Heart size={18} className="fill-red-500 text-red-500 mb-2" />
-            <p className="text-3xl font-extrabold text-[#0D3326]">{savedCount}</p>
-            <p className="mt-0.5 text-[10px] font-bold uppercase tracking-wider text-[#0D3326]/50">Saved</p>
+            <p className="text-3xl font-extrabold text-[var(--text-primary)]">{savedCount}</p>
+            <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Saved</p>
           </Link>
-          <Link href="/user/enquiries" className="group flex flex-col items-center justify-center rounded-2xl border border-[#E5DDD0] bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
-            <MessageCircle size={18} className="text-[#0D3326] mb-2" />
-            <p className="text-3xl font-extrabold text-[#0D3326]">{enquiryCount}</p>
-            <p className="mt-0.5 text-[10px] font-bold uppercase tracking-wider text-[#0D3326]/50">Enquiries</p>
+          <Link href="/user/enquiries" className="group flex flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+            <MessageCircle size={18} className="text-[var(--text-primary)] mb-2" />
+            <p className="text-3xl font-extrabold text-[var(--text-primary)]">{enquiryCount}</p>
+            <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Enquiries</p>
           </Link>
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-[#E5DDD0] bg-white p-5 shadow-sm">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 shadow-sm">
             <div className="relative flex items-center justify-center mb-2">
               <svg className="h-10 w-10 -rotate-90" viewBox="0 0 36 36">
-                <path stroke="#F7F4EF" strokeWidth="4" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                <path stroke="#0D3326" strokeWidth="4" strokeDasharray={`${completionScore}, 100`} fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path stroke="var(--border-subtle)" strokeWidth="4" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path stroke="var(--text-primary)" strokeWidth="4" strokeDasharray={`${completionScore}, 100`} fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
               </svg>
-              <span className="absolute text-[10px] font-extrabold text-[#0D3326]">{completionScore}%</span>
+              <span className="absolute text-[10px] font-bold text-[var(--text-primary)]">{completionScore}%</span>
             </div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[#0D3326]/50">Complete</p>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Complete</p>
           </div>
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-[#E5DDD0] bg-white p-5 shadow-sm">
-            <ShieldCheck size={18} className="text-[#D7AE62] mb-2" />
-            <p className="text-lg font-extrabold text-[#0D3326]">Active</p>
-            <p className="mt-0.5 text-[10px] font-bold uppercase tracking-wider text-[#0D3326]/50">Account</p>
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 shadow-sm">
+            <ShieldCheck size={18} className="text-[var(--text-primary)] mb-2" />
+            <p className="text-lg font-bold text-[var(--text-primary)]">Active</p>
+            <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Account</p>
           </div>
         </div>
 
@@ -758,11 +758,11 @@ export default function ProfilePageClient() {
 
             <SectionCard icon={User} title="About Me" onEdit={() => openModal("bio")}>
               {profileDetails?.Bio ? (
-                <p className="text-sm leading-relaxed text-[#0D3326]/80">{profileDetails.Bio}</p>
+                <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{profileDetails.Bio}</p>
               ) : (
-                <div className="rounded-xl bg-[#F7F4EF] p-4 text-center">
-                  <p className="text-sm text-[#0D3326]/50">No introduction added yet.</p>
-                  <button type="button" onClick={() => openModal("bio")} className="mt-2 text-xs font-bold text-[#D7AE62]">Add Introduction</button>
+                <div className="rounded-xl bg-[var(--bg-surface)] p-4 text-center">
+                  <p className="text-sm text-[var(--text-secondary)]">No introduction added yet.</p>
+                  <button type="button" onClick={() => openModal("bio")} className="mt-2 text-xs font-semibold text-[var(--text-primary)] underline">Add Introduction</button>
                 </div>
               )}
             </SectionCard>
@@ -778,15 +778,15 @@ export default function ProfilePageClient() {
             <SectionCard icon={Heart} title={`Saved Properties${savedCount > 0 ? ` (${savedCount})` : ""}`}>
               {previewProperties.length === 0 ? (
                 <div className="flex flex-col items-center py-8 text-center">
-                  <Heart size={28} className="text-[#E5DDD0] mb-3" />
-                  <p className="text-sm font-semibold text-[#0D3326]/60">No saved properties yet</p>
-                  <Link href="/user/properties" className="mt-3 flex items-center gap-1.5 text-xs font-bold text-[#D7AE62]"><Search size={12} />Explore Properties</Link>
+                  <Heart size={28} className="text-[var(--text-secondary)] opacity-30 mb-3" />
+                  <p className="text-sm font-semibold text-[var(--text-secondary)]">No saved properties yet</p>
+                  <Link href="/user/properties" className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-[var(--text-primary)] hover:underline"><Search size={12} />Explore Properties</Link>
                 </div>
               ) : (
                 <>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">{previewProperties.map((p) => <SavedMiniCard key={p?.documentId || p?.id} property={p} />)}</div>
-                  <div className="mt-4 border-t border-[#E5DDD0] pt-4">
-                    <Link href="/user/wishlist" className="flex items-center justify-center gap-1 text-xs font-bold text-[#D7AE62]">View All Saved Properties <ChevronRight size={13} /></Link>
+                  <div className="mt-4 border-t border-[var(--border-subtle)] pt-4">
+                    <Link href="/user/wishlist" className="flex items-center justify-center gap-1 text-xs font-semibold text-[var(--text-primary)] hover:underline">View All Saved Properties <ChevronRight size={13} /></Link>
                   </div>
                 </>
               )}
@@ -799,8 +799,8 @@ export default function ProfilePageClient() {
               <InfoRow icon={Mail} label="Email" value={email} />
               <InfoRow icon={Calendar} label="Member Since" value={profile?.createdAt ? formatDate(profile.createdAt) : "Recently"} />
               <div className="flex items-center justify-between py-3">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#0D3326]/50">Status</span>
-                <span className="rounded-full bg-[#E8F4F0] px-2.5 py-0.5 text-[10px] font-bold text-emerald-700">Active</span>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Status</span>
+                <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-600">Active</span>
               </div>
             </SectionCard>
 
@@ -812,11 +812,11 @@ export default function ProfilePageClient() {
 
             <SectionCard icon={Lock} title="Account & Security">
               <div className="space-y-2.5">
-                <Link href="/user/settings" className="flex w-full items-center justify-between rounded-xl border border-[#E5DDD0] px-4 py-3.5 text-sm font-bold text-[#0D3326] transition hover:bg-[#F7F4EF]">
-                  <span className="flex items-center gap-2.5"><KeyRound size={15} className="text-[#0D3326]/40" />Change Password</span>
-                  <ChevronRight size={13} className="text-[#0D3326]/30" />
+                <Link href="/user/settings" className="flex w-full items-center justify-between rounded-xl border border-[var(--border-subtle)] px-4 py-3.5 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--bg-surface)]">
+                  <span className="flex items-center gap-2.5"><KeyRound size={15} className="text-[var(--text-secondary)]" />Change Password</span>
+                  <ChevronRight size={13} className="text-[var(--text-secondary)]" />
                 </Link>
-                <button type="button" onClick={handleLogout} className="flex w-full items-center justify-between rounded-xl border border-red-100 bg-red-50 px-4 py-3.5 text-sm font-bold text-red-600 transition hover:bg-red-100">
+                <button type="button" onClick={handleLogout} className="flex w-full items-center justify-between rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3.5 text-sm font-semibold text-red-500 transition hover:bg-red-500/20">
                   <span className="flex items-center gap-2.5"><LogOut size={15} />Sign Out</span>
                   <ChevronRight size={13} className="text-red-400" />
                 </button>
@@ -827,8 +827,8 @@ export default function ProfilePageClient() {
             <SectionCard icon={MessageCircle} title="Recent Enquiries">
               {recentEnquiries.length === 0 ? (
                 <div className="flex flex-col items-center py-6 text-center">
-                  <MessageCircle size={26} className="text-[#E5DDD0] mb-2" />
-                  <p className="text-sm font-semibold text-[#0D3326]/60">No enquiries yet</p>
+                  <MessageCircle size={26} className="text-[var(--text-secondary)] opacity-30 mb-2" />
+                  <p className="text-sm font-semibold text-[var(--text-secondary)]">No enquiries yet</p>
                 </div>
               ) : (
                 <>
@@ -840,18 +840,18 @@ export default function ProfilePageClient() {
                       const status = enquiry?.Status || enquiry?.attributes?.Status || "Pending";
                       const date = enquiry?.createdAt || enquiry?.attributes?.createdAt;
                       return (
-                        <div key={eId} className="flex items-start justify-between py-3 border-b border-[#E5DDD0] last:border-0">
+                        <div key={eId} className="flex items-start justify-between py-3 border-b border-[var(--border-subtle)] last:border-0">
                           <div className="min-w-0 pr-3">
-                            <p className="truncate text-sm font-bold text-[#0D3326]">{propTitle}</p>
-                            {date && <p className="mt-0.5 text-[11px] text-[#0D3326]/50">{formatDate(date)}</p>}
+                            <p className="truncate text-sm font-semibold text-[var(--text-primary)]">{propTitle}</p>
+                            {date && <p className="mt-0.5 text-[11px] text-[var(--text-secondary)]">{formatDate(date)}</p>}
                           </div>
                           <div className="shrink-0"><EnquiryStatusBadge status={status} /></div>
                         </div>
                       );
                     })}
                   </div>
-                  <div className="mt-3 border-t border-[#E5DDD0] pt-3">
-                    <Link href="/user/enquiries" className="flex items-center justify-center gap-1 text-xs font-bold text-[#D7AE62]">View All Enquiries <ChevronRight size={13} /></Link>
+                  <div className="mt-3 border-t border-[var(--border-subtle)] pt-3">
+                    <Link href="/user/enquiries" className="flex items-center justify-center gap-1 text-xs font-semibold text-[var(--text-primary)] hover:underline">View All Enquiries <ChevronRight size={13} /></Link>
                   </div>
                 </>
               )}

@@ -133,7 +133,7 @@ function MyEnquiriesContent() {
     return (
       <main className="mx-auto max-w-6xl px-4 py-10 md:px-8">
         <div className="flex h-64 items-center justify-center">
-          <Loader2 className="h-10 w-10 animate-spin text-emerald-900" />
+          <Loader2 className="h-10 w-10 animate-spin text-[var(--text-primary)]" />
         </div>
       </main>
     );
@@ -142,12 +142,12 @@ function MyEnquiriesContent() {
   if (error) {
     return (
       <main className="mx-auto max-w-6xl px-4 py-10 md:px-8">
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-10 text-center">
-          <h2 className="text-xl font-bold text-red-700">Oops!</h2>
-          <p className="mt-2 text-red-600">{error}</p>
+        <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-10 text-center">
+          <h2 className="text-xl font-bold text-red-500">Oops!</h2>
+          <p className="mt-2 text-red-400">{error}</p>
           <button 
             onClick={() => loadEnquiries()}
-            className="mt-6 rounded-lg bg-red-600 px-6 py-2.5 font-semibold text-white transition hover:bg-red-700"
+            className="hh-btn hh-btn-primary mt-6"
           >
             Try Again
           </button>
@@ -160,16 +160,16 @@ function MyEnquiriesContent() {
     return (
       <main className="mx-auto max-w-6xl px-4 py-16 md:px-8">
         <div className="mx-auto max-w-lg text-center">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-stone-100">
-            <MessageSquare size={36} className="text-stone-400" />
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+            <MessageSquare size={36} className="text-[var(--text-secondary)]" />
           </div>
-          <h1 className="mt-6 text-3xl font-bold text-emerald-900">No enquiries yet</h1>
-          <p className="mt-3 text-stone-500 text-lg">
+          <h1 className="mt-6 text-3xl font-bold text-[var(--text-primary)]">No enquiries yet</h1>
+          <p className="mt-3 text-[var(--text-secondary)] text-lg">
             You haven't contacted any property owners yet. Start exploring to find your dream home.
           </p>
           <Link
             href="/user"
-            className="mt-8 inline-block rounded-xl bg-amber-500 px-8 py-3.5 text-lg font-bold text-emerald-900 transition hover:bg-amber-400"
+            className="hh-btn hh-btn-primary mt-8 inline-block px-8 py-3.5 text-base"
           >
             Explore Properties
           </Link>
@@ -183,13 +183,13 @@ function MyEnquiriesContent() {
       {/* Header */}
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
-          <h1 className="text-3xl font-bold text-emerald-900">My Enquiries</h1>
-          <p className="mt-2 text-stone-600">Track your property enquiries, owner responses and site visits.</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">My Enquiries</h1>
+          <p className="mt-2 text-[var(--text-secondary)]">Track your property enquiries, owner responses and site visits.</p>
         </div>
         <button
           onClick={() => loadEnquiries(true)}
           disabled={refreshing}
-          className="flex items-center gap-2 rounded-lg border border-stone-200 bg-white px-4 py-2.5 text-sm font-semibold text-stone-700 transition hover:bg-stone-50 disabled:opacity-50"
+          className="flex items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-2.5 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--bg-surface)] disabled:opacity-50"
         >
           <RefreshCw size={16} className={refreshing ? "animate-spin" : ""} />
           {refreshing ? "Refreshing..." : "Refresh"}
@@ -202,27 +202,27 @@ function MyEnquiriesContent() {
       </div>
 
       {/* Search & Filters */}
-      <div className="mb-8 flex flex-col justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm md:flex-row md:items-center">
+      <div className="mb-8 flex flex-col justify-between gap-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] p-4 shadow-sm md:flex-row md:items-center">
         <div className="relative flex-1 max-w-md">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
           <input
             type="text"
             placeholder="Search by property title or location..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl border border-stone-200 bg-stone-50 py-2.5 pl-10 pr-4 text-sm text-stone-800 outline-none focus:border-emerald-600 focus:bg-white"
+            className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] py-2.5 pl-10 pr-4 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--text-primary)]"
           />
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Filter size={18} className="text-stone-400 mr-1" />
+          <Filter size={18} className="text-[var(--text-secondary)] mr-1" />
           {["All", "Pending", "Contacted", "Site Visit", "Closed"].map((filter) => (
             <button
               key={filter}
               onClick={() => handleFilterChange(filter)}
-              className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
+              className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
                 activeFilter === filter
-                  ? "bg-emerald-900 text-amber-500"
-                  : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+                  ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)]"
+                  : "bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]"
               }`}
             >
               {filter}
@@ -233,11 +233,11 @@ function MyEnquiriesContent() {
 
       {/* List */}
       {filteredEnquiries.length === 0 ? (
-        <div className="rounded-2xl border border-stone-200 bg-white py-16 text-center">
-          <p className="text-lg font-medium text-stone-500">No enquiries found for the selected filters.</p>
+        <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] py-16 text-center">
+          <p className="text-lg font-medium text-[var(--text-secondary)]">No enquiries found for the selected filters.</p>
           <button 
             onClick={() => { setSearchQuery(""); handleFilterChange("All"); }}
-            className="mt-4 text-emerald-700 font-semibold hover:underline"
+            className="mt-4 text-[var(--text-primary)] font-semibold underline underline-offset-4"
           >
             Clear Filters
           </button>
@@ -259,7 +259,7 @@ function MyEnquiriesContent() {
 
 export default function MyEnquiriesClient() {
   return (
-    <Suspense fallback={<div className="p-8 flex justify-center"><Loader2 className="animate-spin text-[#0D3326]" size={24} /></div>}>
+    <Suspense fallback={<div className="p-8 flex justify-center"><Loader2 className="animate-spin text-[var(--text-primary)]" size={24} /></div>}>
       <MyEnquiriesContent />
     </Suspense>
   );

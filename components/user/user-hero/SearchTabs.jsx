@@ -265,16 +265,16 @@ export default function SearchTabs({
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 sm:gap-4 border-b border-[#D7AE62]/20 px-4 sm:px-6 py-4 bg-white/50 backdrop-blur-sm">
+    <div className="flex flex-wrap items-center gap-2 sm:gap-3 border-b border-[var(--border-subtle)] px-4 sm:px-6 py-3.5 bg-[var(--bg-surface)]">
       {tabs.map((tab) => (
         <button
           key={tab.id}
           type="button"
           onClick={() => handleTabClick(tab.value)}
-          className={`rounded-xl px-4 sm:px-8 py-2 sm:py-2.5 text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 ${
+          className={`rounded-xl px-5 sm:px-7 py-2 sm:py-2.5 text-xs sm:text-sm font-bold tracking-wide transition-all duration-200 ${
             activeTab === tab.value
-              ? "bg-[#0D3326] text-[#D7AE62] shadow-lg shadow-[#0D3326]/20"
-              : "bg-[#F5F3EE] text-[#0D3326]/70 hover:bg-[#D7AE62]/20 hover:text-[#0D3326]"
+              ? "bg-[var(--accent)] text-[var(--accent-text)] shadow-sm"
+              : "bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40 border border-[var(--border-subtle)]"
           }`}
         >
           {tab.label}

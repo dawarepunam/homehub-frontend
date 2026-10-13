@@ -63,8 +63,8 @@ export default function BuyerDashboardClient({ heroData, properties }) {
   // ─── Not yet checked ────────────────────────────────────
   if (!authChecked) {
     return (
-      <div className="flex min-h-screen items-center justify-center" style={{ background: "#0D3326" }}>
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#D7AE62]/30 border-t-[#D7AE62]" />
+      <div className="flex min-h-screen items-center justify-center bg-[var(--bg-page)]">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[var(--border-subtle)] border-t-[var(--text-primary)]" />
       </div>
     );
   }
@@ -72,46 +72,24 @@ export default function BuyerDashboardClient({ heroData, properties }) {
   const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL?.replace("/api", "") || "http://localhost:1337";
 
   return (
-    <main className="min-h-screen" style={{ background: "#F5F3EE" }}>
+    <main className="min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)]">
 
       {/* ═══════════════════════════════════════════════════
-          HERO BANNER — premium dark green gradient
+          HERO BANNER — sleek neutral aesthetic
       ═══════════════════════════════════════════════════ */}
-      <section
-        className="relative w-full overflow-hidden"
-        style={{
-          background: "linear-gradient(135deg, #0D3326 0%, #123F32 50%, #1A5240 100%)",
-          minHeight: "420px",
-        }}
-      >
-        {/* Subtle pattern overlay */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, #D7AE62 1px, transparent 0)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-
-        {/* Gold accent line at top */}
-        <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "linear-gradient(90deg, transparent, #D7AE62, transparent)" }} />
-
-        <div className="relative z-10 mx-auto max-w-7xl px-6 py-14 lg:px-8 lg:py-20">
+      <section className="relative w-full overflow-hidden border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] py-14 lg:py-20">
+        <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
           {/* Badge */}
-          <span
-            className="mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
-            style={{ background: "rgba(215,174,98,0.12)", color: "#D7AE62", border: "1px solid rgba(215,174,98,0.25)" }}
-          >
+          <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
             <Home size={12} />
             Buyer Dashboard
           </span>
 
           {/* Greeting */}
-          <h1 className="text-4xl font-extrabold leading-tight text-white lg:text-5xl xl:text-6xl">
+          <h1 className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)] lg:text-5xl">
             {greeting}
           </h1>
-          <p className="mt-3 text-lg" style={{ color: "rgba(255,255,255,0.65)" }}>
+          <p className="mt-3 text-base text-[var(--text-secondary)] sm:text-lg">
             Find a place that feels like home.
           </p>
 
@@ -119,12 +97,7 @@ export default function BuyerDashboardClient({ heroData, properties }) {
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
               href="/user/properties"
-              className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all hover:-translate-y-0.5"
-              style={{
-                background: "linear-gradient(135deg, #D7AE62, #C99A40)",
-                color: "#0D3326",
-                boxShadow: "0 6px 18px rgba(215,174,98,0.30)",
-              }}
+              className="hh-btn hh-btn-primary"
             >
               Browse Properties
               <ArrowRight size={15} />
@@ -135,12 +108,7 @@ export default function BuyerDashboardClient({ heroData, properties }) {
                 localStorage.setItem("activeMode", "seller");
                 router.push("/");
               }}
-              className="inline-flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-bold transition-all hover:-translate-y-0.5"
-              style={{
-                borderColor: "rgba(215,174,98,0.35)",
-                background: "rgba(215,174,98,0.08)",
-                color: "#D7AE62",
-              }}
+              className="hh-btn hh-btn-secondary"
             >
               <Store size={15} />
               Switch to Seller Mode
@@ -153,64 +121,49 @@ export default function BuyerDashboardClient({ heroData, properties }) {
           QUICK STATS
       ═══════════════════════════════════════════════════ */}
       <section className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div
-          className="-mt-10 grid grid-cols-2 gap-4 rounded-2xl p-6 shadow-xl lg:grid-cols-4"
-          style={{ background: "#fff", borderTop: "4px solid #D7AE62" }}
-        >
+        <div className="-mt-8 grid grid-cols-2 gap-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm lg:grid-cols-4">
           {/* Saved */}
-          <Link href="/user/wishlist" className="group flex flex-col items-center gap-2 rounded-xl p-4 text-center transition-all hover:bg-[#F5F3EE]">
-            <div
-              className="flex h-12 w-12 items-center justify-center rounded-full transition-all group-hover:scale-110"
-              style={{ background: "rgba(215,174,98,0.12)" }}
-            >
-              <Heart size={22} style={{ color: "#D7AE62" }} />
+          <Link href="/user/wishlist" className="group flex flex-col items-center gap-2 rounded-xl p-4 text-center transition-all hover:bg-[var(--bg-surface)]">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)] transition-all group-hover:scale-105">
+              <Heart size={20} />
             </div>
-            <span className="text-3xl font-extrabold" style={{ color: "#0D3326" }}>
+            <span className="text-3xl font-extrabold text-[var(--text-primary)]">
               {statsLoading ? "—" : stats.saved}
             </span>
-            <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Saved</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Saved</span>
           </Link>
 
           {/* Enquiries */}
-          <Link href="/user/enquiries" className="group flex flex-col items-center gap-2 rounded-xl p-4 text-center transition-all hover:bg-[#F5F3EE]">
-            <div
-              className="flex h-12 w-12 items-center justify-center rounded-full transition-all group-hover:scale-110"
-              style={{ background: "rgba(34,110,88,0.10)" }}
-            >
-              <MessageSquare size={22} style={{ color: "#226E58" }} />
+          <Link href="/user/enquiries" className="group flex flex-col items-center gap-2 rounded-xl p-4 text-center transition-all hover:bg-[var(--bg-surface)]">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)] transition-all group-hover:scale-105">
+              <MessageSquare size={20} />
             </div>
-            <span className="text-3xl font-extrabold" style={{ color: "#0D3326" }}>
+            <span className="text-3xl font-extrabold text-[var(--text-primary)]">
               {statsLoading ? "—" : stats.enquiries}
             </span>
-            <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Enquiries</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Enquiries</span>
           </Link>
 
           {/* Site Visits */}
           <div className="flex flex-col items-center gap-2 rounded-xl p-4 text-center">
-            <div
-              className="flex h-12 w-12 items-center justify-center rounded-full"
-              style={{ background: "rgba(15,100,110,0.10)" }}
-            >
-              <Eye size={22} style={{ color: "#0F646E" }} />
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
+              <Eye size={20} />
             </div>
-            <span className="text-3xl font-extrabold" style={{ color: "#0D3326" }}>
+            <span className="text-3xl font-extrabold text-[var(--text-primary)]">
               {statsLoading ? "—" : stats.siteVisits}
             </span>
-            <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Site Visits</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Site Visits</span>
           </div>
 
           {/* Recently Viewed */}
           <div className="flex flex-col items-center gap-2 rounded-xl p-4 text-center">
-            <div
-              className="flex h-12 w-12 items-center justify-center rounded-full"
-              style={{ background: "rgba(100,60,15,0.08)" }}
-            >
-              <Clock size={22} style={{ color: "#8B5E1A" }} />
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
+              <Clock size={20} />
             </div>
-            <span className="text-3xl font-extrabold" style={{ color: "#0D3326" }}>
+            <span className="text-3xl font-extrabold text-[var(--text-primary)]">
               {statsLoading ? "—" : stats.recentlyViewed}
             </span>
-            <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Viewed</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Viewed</span>
           </div>
         </div>
       </section>
@@ -221,15 +174,14 @@ export default function BuyerDashboardClient({ heroData, properties }) {
       <section className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-extrabold" style={{ color: "#0D3326" }}>
+            <h2 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
               Featured Properties
             </h2>
-            <p className="mt-1 text-sm text-gray-500">Discover the latest verified listings</p>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">Discover the latest verified listings</p>
           </div>
           <Link
             href="/user/properties"
-            className="inline-flex items-center gap-1.5 rounded-xl border px-4 py-2 text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-md"
-            style={{ borderColor: "#D7AE62", color: "#0D3326" }}
+            className="hh-btn hh-btn-secondary"
           >
             View All
             <ArrowRight size={14} />
@@ -239,9 +191,9 @@ export default function BuyerDashboardClient({ heroData, properties }) {
         {/* Property Cards Grid */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {(properties || []).length === 0 ? (
-            <div className="col-span-3 flex flex-col items-center gap-4 rounded-2xl border border-dashed border-gray-200 py-16 text-center">
-              <Home size={40} className="text-gray-300" />
-              <p className="font-semibold text-gray-400">No properties yet</p>
+            <div className="col-span-3 flex flex-col items-center gap-4 rounded-2xl border border-dashed border-[var(--border-subtle)] py-16 text-center">
+              <Home size={40} className="text-[var(--text-secondary)]" />
+              <p className="font-semibold text-[var(--text-secondary)]">No properties yet</p>
             </div>
           ) : (
             (properties || []).slice(0, 6).map((property) => {
@@ -264,11 +216,10 @@ export default function BuyerDashboardClient({ heroData, properties }) {
                 <Link
                   key={property?.documentId || property?.id}
                   href={`/user/property/${property?.documentId || property?.id}`}
-                  className="group overflow-hidden rounded-2xl bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
-                  style={{ border: "1px solid #EDE8DF" }}
+                  className="group overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
                 >
                   {/* Image */}
-                  <div className="relative h-52 w-full overflow-hidden bg-gray-100">
+                  <div className="relative h-52 w-full overflow-hidden bg-[var(--bg-surface)]">
                     {imageUrl ? (
                       <img
                         src={imageUrl}
@@ -276,55 +227,43 @@ export default function BuyerDashboardClient({ heroData, properties }) {
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
-                      <div className="flex h-full items-center justify-center" style={{ background: "#E8E3D8" }}>
-                        <Home size={36} className="text-gray-400" />
+                      <div className="flex h-full items-center justify-center text-[var(--text-secondary)]">
+                        <Home size={36} />
                       </div>
                     )}
 
                     {/* Status badge */}
-                    <span
-                      className="absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-extrabold uppercase tracking-wide"
-                      style={{
-                        background: status === "Available" ? "#D7AE62" : "#0D3326",
-                        color: status === "Available" ? "#0D3326" : "#D7AE62",
-                      }}
-                    >
+                    <span className="absolute left-3 top-3 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] shadow-sm">
                       {status}
                     </span>
 
                     {/* Type badge */}
-                    <span
-                      className="absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
-                      style={{ background: "rgba(13,51,38,0.80)", color: "#fff", backdropFilter: "blur(4px)" }}
-                    >
+                    <span className="absolute right-3 top-3 rounded-full bg-[var(--text-primary)] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[var(--bg-card)]">
                       {listingType}
                     </span>
                   </div>
 
                   {/* Content */}
                   <div className="p-5">
-                    <h3 className="truncate text-base font-bold" style={{ color: "#0D3326" }}>
+                    <h3 className="truncate text-base font-bold text-[var(--text-primary)]">
                       {title}
                     </h3>
                     {(city || area) && (
-                      <p className="mt-1 truncate text-sm text-gray-500">
+                      <p className="mt-1 truncate text-sm text-[var(--text-secondary)]">
                         {[area, city].filter(Boolean).join(", ")}
                       </p>
                     )}
 
-                    <div className="mt-4 flex items-center justify-between">
+                    <div className="mt-4 flex items-center justify-between border-t border-[var(--border-subtle)] pt-3">
                       {price ? (
-                        <span className="text-lg font-extrabold" style={{ color: "#0D3326" }}>
+                        <span className="text-lg font-bold text-[var(--text-primary)]">
                           ₹{Number(price).toLocaleString("en-IN")}
                         </span>
                       ) : (
-                        <span className="text-sm font-semibold text-gray-400">Price on Request</span>
+                        <span className="text-sm font-semibold text-[var(--text-secondary)]">Price on Request</span>
                       )}
 
-                      <span
-                        className="rounded-lg px-3 py-1.5 text-xs font-bold transition-all group-hover:translate-x-0.5"
-                        style={{ background: "rgba(215,174,98,0.12)", color: "#8B5E1A" }}
-                      >
+                      <span className="text-xs font-semibold text-[var(--text-primary)] transition-all group-hover:translate-x-0.5">
                         View →
                       </span>
                     </div>

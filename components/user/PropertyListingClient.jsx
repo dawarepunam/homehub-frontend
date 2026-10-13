@@ -65,22 +65,21 @@ function extractPrice(property) {
 
 function SkeletonCard() {
   return (
-    <div className="w-full max-w-[340px] h-[460px] rounded-[20px] border border-[#E5DDD0] bg-white overflow-hidden animate-pulse mx-auto">
-      <div className="h-[220px] bg-[#EAE5DC]" />
+    <div className="w-full max-w-[360px] h-[460px] rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] overflow-hidden animate-pulse mx-auto">
+      <div className="h-[220px] bg-[var(--skeleton-base)]" />
       <div className="p-4 flex flex-col gap-3">
-        <div className="h-3 w-24 rounded bg-[#EAE5DC]" />
-        <div className="h-5 w-3/4 rounded bg-[#EAE5DC]" />
-        <div className="h-3 w-1/2 rounded bg-[#EAE5DC]" />
-        <div className="h-6 w-28 rounded bg-[#EAE5DC]" />
+        <div className="h-3 w-24 rounded bg-[var(--skeleton-base)]" />
+        <div className="h-5 w-3/4 rounded bg-[var(--skeleton-base)]" />
+        <div className="h-3 w-1/2 rounded bg-[var(--skeleton-base)]" />
+        <div className="h-6 w-28 rounded bg-[var(--skeleton-base)]" />
         <div className="mt-4 flex gap-2">
-          <div className="h-3 w-12 rounded bg-[#EAE5DC]" />
-          <div className="h-3 w-12 rounded bg-[#EAE5DC]" />
-          <div className="h-3 w-16 rounded bg-[#EAE5DC]" />
+          <div className="h-3 w-12 rounded bg-[var(--skeleton-base)]" />
+          <div className="h-3 w-12 rounded bg-[var(--skeleton-base)]" />
+          <div className="h-3 w-16 rounded bg-[var(--skeleton-base)]" />
         </div>
-        <div className="mt-auto grid grid-cols-3 gap-2">
-          <div className="h-9 rounded-lg bg-[#EAE5DC]" />
-          <div className="h-9 rounded-lg bg-[#EAE5DC]" />
-          <div className="h-9 rounded-lg bg-[#EAE5DC]" />
+        <div className="mt-auto grid grid-cols-2 gap-2">
+          <div className="h-9 rounded-lg bg-[var(--skeleton-base)]" />
+          <div className="h-9 rounded-lg bg-[var(--skeleton-base)]" />
         </div>
       </div>
     </div>
@@ -91,23 +90,23 @@ function SkeletonCard() {
 
 function FilterSelect({ icon: Icon, label, value, onChange, options, placeholder }) {
   return (
-    <div className="group flex h-[68px] items-center gap-3 rounded-xl border border-[#E5DDD0] bg-white px-4 transition hover:border-[#D7AE62] hover:shadow-sm">
-      <Icon size={18} className="shrink-0 text-[#0D3326]/60 group-hover:text-[#D7AE62] transition" />
+    <div className="group flex h-[62px] items-center gap-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3.5 transition hover:border-[var(--border-focus)]">
+      <Icon size={16} className="shrink-0 text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition" />
       <div className="flex w-full min-w-0 flex-col">
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-[#0D3326]/50">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
           {label}
         </span>
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full truncate bg-transparent text-[13px] font-semibold text-[#0D3326] outline-none cursor-pointer"
+          className="w-full truncate bg-transparent text-[13px] font-semibold text-[var(--text-primary)] outline-none cursor-pointer"
         >
-          <option value="">{placeholder}</option>
+          <option value="" className="bg-[var(--bg-card)] text-[var(--text-primary)]">{placeholder}</option>
           {options.map((opt) =>
             typeof opt === "string" ? (
-              <option key={opt} value={opt}>{opt}</option>
+              <option key={opt} value={opt} className="bg-[var(--bg-card)] text-[var(--text-primary)]">{opt}</option>
             ) : (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
+              <option key={opt.value} value={opt.value} className="bg-[var(--bg-card)] text-[var(--text-primary)]">{opt.label}</option>
             )
           )}
         </select>
@@ -338,17 +337,17 @@ export default function PropertyListingClient({ initialProperties, initialType, 
 
   // ─── Render ──────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen" style={{ background: "#F7F4EF" }}>
+    <div className="min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)]">
 
       {/* ─── Top Banner ─────────────────────────────────────────── */}
-      <div className="bg-white border-b border-[#E5DDD0]">
+      <div className="bg-[var(--bg-card)] border-b border-[var(--border-subtle)]">
         <div className="mx-auto max-w-[1400px] px-5 py-6 lg:px-8">
 
           {/* Back Button */}
-          <nav className="mb-5">
+          <nav className="mb-4">
             <Link
               href={backHref}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#0D3326]/60 hover:text-[#D7AE62] transition"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition"
             >
               &larr; Back
             </Link>
@@ -357,25 +356,25 @@ export default function PropertyListingClient({ initialProperties, initialType, 
           {/* Title Row */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-extrabold tracking-tight text-[#0D3326] lg:text-4xl">
+              <h1 className="text-2xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-3xl lg:text-4xl">
                 {pageHeading}
               </h1>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-2.5 flex flex-wrap gap-2">
                 {/* BHK group badge */}
                 {selectedCategoryContains && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D7AE62]/60 bg-[#FBF4E6] px-4 py-1.5 text-xs font-bold text-[#9A7230]">
+                  <span className="hh-badge hh-badge--muted">
                     {selectedCategoryContains.toUpperCase()} Group
                   </span>
                 )}
                 {/* Exact category badge */}
                 {selectedCategory && !selectedCategoryContains && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#0D3326]/20 bg-[#E8F0EB] px-4 py-1.5 text-xs font-bold text-[#0D3326]">
+                  <span className="hh-badge hh-badge--muted">
                     {selectedCategory}
                   </span>
                 )}
                 {/* Type badge only when no specific category at all */}
                 {selectedType && !selectedCategory && !selectedCategoryContains && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#0D3326]/20 bg-[#E8F0EB] px-4 py-1.5 text-xs font-bold text-[#0D3326]">
+                  <span className="hh-badge hh-badge--muted">
                     Type: {selectedType}
                   </span>
                 )}
@@ -383,9 +382,9 @@ export default function PropertyListingClient({ initialProperties, initialType, 
             </div>
 
             {/* Result Count */}
-            <div className="flex shrink-0 items-center gap-2 rounded-xl bg-[#0D3326] px-5 py-3 shadow-sm">
-              <span className="text-2xl font-extrabold text-[#D7AE62]">{filteredProperties.length}</span>
-              <span className="text-sm font-medium text-white/80">
+            <div className="flex shrink-0 items-center gap-2 rounded-xl bg-[var(--accent)] text-[var(--accent-text)] px-4 py-2.5 shadow-sm">
+              <span className="text-xl font-extrabold">{filteredProperties.length}</span>
+              <span className="text-xs font-semibold opacity-90">
                 {filteredProperties.length === 1 ? "Property" : "Properties"} Found
               </span>
             </div>
@@ -394,7 +393,7 @@ export default function PropertyListingClient({ initialProperties, initialType, 
       </div>
 
       {/* ─── Filter Bar ─────────────────────────────────────────── */}
-      <div className="bg-white border-b border-[#E5DDD0] shadow-sm">
+      <div className="bg-[var(--bg-card)] border-b border-[var(--border-subtle)] shadow-sm">
         <div className="mx-auto max-w-[1400px] px-5 py-5 lg:px-8">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
 
@@ -480,69 +479,69 @@ export default function PropertyListingClient({ initialProperties, initialType, 
           {/* Active Filter Chips */}
           <div className="flex flex-wrap items-center gap-2">
             {activeFilters.length > 0 && (
-              <span className="text-xs font-semibold text-[#0D3326]/60 uppercase tracking-wide mr-1">
-                Active Filters:
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mr-1">
+                Active:
               </span>
             )}
             {activeFilters.map((filter) => (
               <button
                 key={filter.key}
                 onClick={() => removeFilter(filter.key)}
-                className="flex items-center gap-1.5 rounded-full border border-[#0D3326]/20 bg-[#0D3326] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#0D3326]/80"
+                className="flex items-center gap-1.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--accent)] text-[var(--accent-text)] px-2.5 py-1 text-xs font-semibold transition hover:opacity-80"
               >
                 {filter.label}
-                <X size={11} className="opacity-70" />
+                <X size={11} className="opacity-80" />
               </button>
             ))}
             {activeFilters.length > 1 && (
               <button
                 onClick={clearAllFilters}
-                className="text-xs font-semibold text-[#D7AE62] hover:text-[#C99A40] transition underline underline-offset-2"
+                className="text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition underline underline-offset-2"
               >
                 Clear All
               </button>
             )}
             {activeFilters.length === 0 && (
-              <span className="text-xs text-[#0D3326]/40 italic">No filters applied</span>
+              <span className="text-xs text-[var(--text-muted)] italic">No filters applied</span>
             )}
           </div>
 
           {/* Sort + View Toggle */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {/* Sort */}
-            <div className="flex items-center gap-2 rounded-xl border border-[#E5DDD0] bg-white px-3 py-2 shadow-sm">
-              <ArrowUpDown size={14} className="text-[#0D3326]/50" />
-              <span className="text-xs font-semibold text-[#0D3326]/60 hidden sm:inline">Sort:</span>
+            <div className="flex items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-3 py-1.5 shadow-sm">
+              <ArrowUpDown size={13} className="text-[var(--text-muted)]" />
+              <span className="text-xs font-semibold text-[var(--text-muted)] hidden sm:inline">Sort:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-transparent text-xs font-bold text-[#0D3326] outline-none cursor-pointer"
+                className="bg-transparent text-xs font-bold text-[var(--text-primary)] outline-none cursor-pointer"
               >
                 {SORT_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  <option key={opt.value} value={opt.value} className="bg-[var(--bg-card)] text-[var(--text-primary)]">{opt.label}</option>
                 ))}
               </select>
             </div>
 
             {/* View Toggle */}
-            <div className="flex items-center rounded-xl border border-[#E5DDD0] bg-white shadow-sm overflow-hidden">
+            <div className="flex items-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm overflow-hidden">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`flex h-9 w-9 items-center justify-center transition ${
-                  viewMode === "grid" ? "bg-[#0D3326] text-[#D7AE62]" : "text-[#0D3326]/50 hover:bg-[#F0EBE2]"
+                className={`flex h-8 w-8 items-center justify-center transition ${
+                  viewMode === "grid" ? "bg-[var(--accent)] text-[var(--accent-text)]" : "text-[var(--text-muted)] hover:bg-[var(--border-subtle)]/30"
                 }`}
                 title="Grid view"
               >
-                <LayoutGrid size={15} />
+                <LayoutGrid size={14} />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`flex h-9 w-9 items-center justify-center transition border-l border-[#E5DDD0] ${
-                  viewMode === "list" ? "bg-[#0D3326] text-[#D7AE62]" : "text-[#0D3326]/50 hover:bg-[#F0EBE2]"
+                className={`flex h-8 w-8 items-center justify-center transition border-l border-[var(--border-subtle)] ${
+                  viewMode === "list" ? "bg-[var(--accent)] text-[var(--accent-text)]" : "text-[var(--text-muted)] hover:bg-[var(--border-subtle)]/30"
                 }`}
                 title="List view"
               >
-                <List size={15} />
+                <List size={14} />
               </button>
             </div>
           </div>
@@ -561,15 +560,15 @@ export default function PropertyListingClient({ initialProperties, initialType, 
 
         {/* Error */}
         {hasError && !isLoading && (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#E5DDD0] bg-white py-20 text-center">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-card)] py-20 text-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-50 mb-4">
               <RefreshCcw size={28} className="text-red-400" />
             </div>
-            <h2 className="text-xl font-bold text-[#0D3326]">Unable to Load Properties</h2>
-            <p className="mt-2 text-sm text-[#0D3326]/60">Please check your connection and try again.</p>
+            <h2 className="text-xl font-bold text-[var(--text-primary)]">Unable to Load Properties</h2>
+            <p className="mt-2 text-sm text-[var(--text-secondary)]">Please check your connection and try again.</p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-6 rounded-xl bg-[#0D3326] px-6 py-2.5 text-sm font-bold text-[#D7AE62] transition hover:opacity-90"
+              className="mt-6 rounded-xl bg-[var(--btn-primary-bg)] px-6 py-2.5 text-sm font-bold text-[var(--btn-primary-text)] transition hover:opacity-90"
             >
               Retry
             </button>
@@ -578,17 +577,17 @@ export default function PropertyListingClient({ initialProperties, initialType, 
 
         {/* Empty State */}
         {!isLoading && !hasError && filteredProperties.length === 0 && (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#E5DDD0] bg-white py-20 text-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#F0EBE2] mb-5">
-              <SearchX size={36} className="text-[#0D3326]/40" />
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-card)] py-20 text-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--bg-surface)] mb-5">
+              <SearchX size={36} className="text-[var(--text-muted)]" />
             </div>
-            <h2 className="text-2xl font-extrabold text-[#0D3326]">No Properties Found</h2>
-            <p className="mt-3 max-w-md text-sm text-[#0D3326]/60">
+            <h2 className="text-2xl font-extrabold text-[var(--text-primary)]">No Properties Found</h2>
+            <p className="mt-3 max-w-md text-sm text-[var(--text-secondary)]">
               No properties match your current filters. Try adjusting the search criteria or clear all filters.
             </p>
             <button
               onClick={clearAllFilters}
-              className="mt-7 rounded-xl bg-[#0D3326] px-8 py-3 text-sm font-bold text-[#D7AE62] transition hover:opacity-90 shadow-md"
+              className="mt-7 rounded-xl bg-[var(--btn-primary-bg)] px-8 py-3 text-sm font-bold text-[var(--btn-primary-text)] transition hover:opacity-90 shadow-md"
             >
               Clear Filters
             </button>
@@ -621,26 +620,26 @@ export default function PropertyListingClient({ initialProperties, initialType, 
           <div className="mt-12 flex flex-col items-center gap-5 sm:flex-row sm:items-center sm:justify-between">
 
             {/* Page Numbers */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5DDD0] bg-white text-[#0D3326] transition hover:border-[#D7AE62] hover:text-[#D7AE62] disabled:opacity-30 disabled:cursor-not-allowed"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-primary)] transition hover:border-[var(--border-focus)] disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <ChevronLeft size={16} />
+                <ChevronLeft size={15} />
               </button>
 
               {getPageNumbers().map((page, i) =>
                 page === "..." ? (
-                  <span key={`ellipsis-${i}`} className="flex h-9 w-9 items-center justify-center text-[#0D3326]/40 text-sm">…</span>
+                  <span key={`ellipsis-${i}`} className="flex h-8 w-8 items-center justify-center text-[var(--text-muted)] text-xs">…</span>
                 ) : (
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm font-semibold transition ${
+                    className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold transition ${
                       currentPage === page
-                        ? "bg-[#0D3326] text-[#D7AE62] shadow-sm"
-                        : "border border-[#E5DDD0] bg-white text-[#0D3326] hover:border-[#D7AE62]"
+                        ? "bg-[var(--accent)] text-[var(--accent-text)] shadow-sm"
+                        : "border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-primary)] hover:border-[var(--border-focus)]"
                     }`}
                   >
                     {page}
@@ -651,23 +650,23 @@ export default function PropertyListingClient({ initialProperties, initialType, 
               <button
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5DDD0] bg-white text-[#0D3326] transition hover:border-[#D7AE62] hover:text-[#D7AE62] disabled:opacity-30 disabled:cursor-not-allowed"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-primary)] transition hover:border-[var(--border-focus)] disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <ChRight size={16} />
+                <ChRight size={15} />
               </button>
             </div>
 
             {/* Per Page */}
-            <div className="flex items-center gap-2 text-sm text-[#0D3326]/70">
-              <span className="font-medium">Show:</span>
-              <div className="flex items-center gap-1 rounded-xl border border-[#E5DDD0] bg-white px-3 py-1.5 shadow-sm">
+            <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+              <span className="font-semibold">Show:</span>
+              <div className="flex items-center gap-1 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-3 py-1 shadow-sm">
                 <select
                   value={pageSize}
                   onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}
-                  className="bg-transparent text-sm font-bold text-[#0D3326] outline-none cursor-pointer"
+                  className="bg-transparent text-xs font-bold text-[var(--text-primary)] outline-none cursor-pointer"
                 >
                   {ITEMS_PER_PAGE_OPTIONS.map((n) => (
-                    <option key={n} value={n}>{n} per page</option>
+                    <option key={n} value={n} className="bg-[var(--bg-card)] text-[var(--text-primary)]">{n} per page</option>
                   ))}
                 </select>
               </div>
@@ -708,12 +707,12 @@ function ListPropertyRow({ property }) {
   return (
     <div
       onClick={() => router.push(viewRoute)}
-      className="flex flex-col sm:flex-row gap-5 rounded-2xl border border-[#E5DDD0] bg-white p-4 shadow-sm transition hover:shadow-md hover:border-[#D7AE62] cursor-pointer"
+      className="flex flex-col sm:flex-row gap-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4 shadow-sm transition hover:shadow-md hover:border-[var(--border-focus)] cursor-pointer"
     >
       {/* Image */}
-      <div className="relative h-[200px] sm:h-[130px] w-full sm:w-[200px] shrink-0 overflow-hidden rounded-xl bg-[#EAE5DC]">
+      <div className="relative h-[200px] sm:h-[130px] w-full sm:w-[200px] shrink-0 overflow-hidden rounded-xl bg-[var(--bg-section)]">
         <img src={imageUrl} alt={property?.Title || "Property"} className="h-full w-full object-cover" />
-        <span className="absolute bottom-2 left-2 rounded-md bg-[#D7AE62] px-2 py-0.5 text-[10px] font-extrabold text-[#0D3326] uppercase">
+        <span className="absolute bottom-2 left-2 rounded-md bg-[var(--accent)] px-2 py-0.5 text-[10px] font-bold text-[var(--accent-text)] uppercase tracking-wider">
           {property?.Purpose || ""}
         </span>
       </div>
@@ -721,16 +720,16 @@ function ListPropertyRow({ property }) {
       {/* Info */}
       <div className="flex flex-1 min-w-0 flex-col justify-between">
         <div>
-          <p className="text-[10px] font-extrabold uppercase tracking-widest text-[#D7AE62]">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
             {property?.Category || property?.Property_Type || ""}
           </p>
-          <h3 className="mt-1 text-base font-extrabold text-[#0D3326] line-clamp-1">{property?.Title || "Untitled"}</h3>
-          <p className="mt-1 flex items-center gap-1 text-xs text-[#0D3326]/60">
-            <MapPin size={11} className="text-[#D7AE62]" />
+          <h3 className="mt-1 text-base font-bold text-[var(--text-primary)] line-clamp-1">{property?.Title || "Untitled"}</h3>
+          <p className="mt-1 flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+            <MapPin size={12} className="text-[var(--text-muted)]" />
             {[property?.Area, property?.City].filter(Boolean).join(", ") || "Location not specified"}
           </p>
         </div>
-        <p className="text-xl font-extrabold text-[#0D3326]">{formatPriceRow(property)}</p>
+        <p className="text-lg font-extrabold text-[var(--text-primary)]">{formatPriceRow(property)}</p>
       </div>
 
       {/* Action */}
@@ -738,7 +737,7 @@ function ListPropertyRow({ property }) {
         <Link
           href={viewRoute}
           onClick={(e) => e.stopPropagation()}
-          className="rounded-xl bg-[#0D3326] px-5 py-2.5 text-xs font-bold text-[#D7AE62] transition hover:opacity-90"
+          className="hh-btn hh-btn-primary hh-btn-sm"
         >
           View Details
         </Link>

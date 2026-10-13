@@ -59,7 +59,7 @@ export default async function UserLayout({ children }) {
   const siteSettings = await getUserSiteSettings();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-[var(--bg-page)] text-[var(--text-primary)] transition-colors duration-200">
       <Providers />
 
       <div className="flex-1 flex flex-col">

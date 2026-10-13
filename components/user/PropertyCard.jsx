@@ -1190,135 +1190,109 @@ export default function PropertyCard({ property }) {
   =================================================== */
 
   return (
-    <div className="group relative w-full max-w-[340px] mx-auto h-[460px]" style={{ perspective: "1000px" }}>
-      <article
-        className="relative w-full h-full transition-transform duration-500 rounded-[20px]"
-        style={{ transformStyle: "preserve-3d" }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "rotateY(180deg)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "rotateY(0deg)";
-        }}
-      >
+    <div className="w-full max-w-[360px] mx-auto">
+      <article className="group relative flex flex-col h-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-[var(--border-focus)]">
+        
         {/* =================================================
-            FRONT SIDE
+            MEDIA / IMAGE CONTAINER
         ================================================= */}
-        <div 
-          className="absolute inset-0 w-full h-full overflow-hidden rounded-[20px] border border-[var(--border-subtle)] bg-[var(--bg-card)] flex flex-col shadow-[var(--shadow-card)]"
-          style={{ backfaceVisibility: "hidden" }}
-        >
-          {/* IMAGE */}
-          <div className="relative h-[220px] w-full overflow-hidden bg-[var(--bg-section)]">
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--bg-section)]">
+          <Link href={viewRoute} className="block w-full h-full relative cursor-pointer">
             <Image
               src={imageUrl}
               alt={title}
               fill
-              sizes="270px"
-              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
               unoptimized
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
+          </Link>
 
-            <span className="absolute left-3 top-3 rounded-md bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide shadow">
+          {/* BADGES */}
+          <div className="absolute left-3 top-3 flex items-center gap-2">
+            <span className="rounded-lg bg-[var(--accent)] text-[var(--accent-text)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider shadow-sm">
               {propertyStatus}
             </span>
-
-            <span className="absolute bottom-3 left-3 rounded-md bg-[var(--bg-page)] text-[var(--text-primary)] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide shadow-sm">
+            <span className="rounded-lg bg-[var(--bg-card)]/90 backdrop-blur-md text-[var(--text-primary)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider shadow-sm border border-[var(--border-subtle)]">
               {purpose}
             </span>
           </div>
 
-          {/* FRONT CONTENT */}
-          <div className="p-4 flex flex-col flex-1 justify-between">
-            <div>
-              <p className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-muted)]">
-                {category || propertyType}
-              </p>
+          {/* WISHLIST BUTTON */}
+          <button
+            type="button"
+            onClick={handleWishlist}
+            disabled={loading}
+            className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--bg-card)]/90 backdrop-blur-md shadow-sm border border-[var(--border-subtle)] transition-all hover:scale-110 active:scale-95"
+            aria-label={liked ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            <Heart size={15} className={liked ? "fill-red-500 text-red-500" : "text-[var(--text-primary)]"} />
+          </button>
 
-              <h3 className="mt-1.5 line-clamp-1 text-[16px] font-extrabold leading-tight text-[var(--text-primary)]" title={title}>
-                {title}
-              </h3>
-
-              <p className="mt-2 flex items-center gap-1.5 text-[12px] text-[var(--text-muted)]">
-                <MapPin size={13} className="shrink-0 text-[var(--text-muted)]" />
-                <span className="truncate">{location || "Location not specified"}</span>
-              </p>
-
-              <p className="mt-3 text-[20px] font-extrabold tracking-tight text-[var(--text-primary)]">
-                {price}
-              </p>
-            </div>
-
-            {/* QUICK DETAILS */}
-            <div className="mt-3 flex items-center gap-3 border-t border-[var(--border-subtle)] pt-3 text-[11px] text-[var(--text-muted)]">
-              {bedrooms !== null && bedrooms !== undefined && (
-                <span className="flex items-center gap-1">
-                  <BedDouble size={12} className="text-[var(--text-primary)]" /> {getSafeValue(bedrooms)} Beds
-                </span>
-              )}
-              {bathrooms !== null && bathrooms !== undefined && (
-                <span className="flex items-center gap-1">
-                  <Bath size={12} className="text-[var(--text-primary)]" /> {getSafeValue(bathrooms)} Baths
-                </span>
-              )}
-              {builtUpArea !== null && builtUpArea !== undefined && (
-                <span className="flex items-center gap-1">
-                  <Maximize size={12} className="text-[var(--text-primary)]" /> {getSafeValue(builtUpArea)} sq.ft
-                </span>
-              )}
-            </div>
+          {/* PRICE DISPLAY ON MEDIA */}
+          <div className="absolute bottom-3 left-3 right-3 flex items-baseline justify-between text-white">
+            <p className="text-xl font-extrabold tracking-tight drop-shadow-sm">
+              {price}
+            </p>
           </div>
         </div>
 
         {/* =================================================
-            BACK SIDE
+            CARD CONTENT
         ================================================= */}
-        <div 
-          className="absolute inset-0 w-full h-full overflow-hidden rounded-[20px] border border-[var(--border-subtle)] bg-[var(--bg-card)] flex flex-col shadow-[var(--shadow-card)] p-5"
-          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-        >
-          <div className="flex-1">
-            <h4 className="text-[var(--text-primary)] font-bold text-xs uppercase tracking-widest border-b border-[var(--border-subtle)] pb-2 mb-4">
-              Property Overview
-            </h4>
-            
-            <ul className="flex flex-col gap-3 text-[12px] text-[var(--text-primary)]">
-              <li className="flex justify-between">
-                <span className="text-[var(--text-muted)]">Type</span>
-                <span className="font-semibold">{propertyType}</span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-[var(--text-muted)]">Category</span>
-                <span className="font-semibold">{category || "-"}</span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-[var(--text-muted)]">Purpose</span>
-                <span className="font-semibold">{purpose}</span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-[var(--text-muted)]">Listed On</span>
-                <span className="font-semibold">{listedDate || "-"}</span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-[var(--text-muted)]">Possession</span>
-                <span className="font-semibold">{getSafeValue(commonDetails?.PossessionStatus, "-")}</span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-[var(--text-muted)]">Furnishing</span>
-                <span className="font-semibold">{getSafeValue(residentialDetails?.FurnishingStatus, "-")}</span>
-              </li>
-            </ul>
+        <div className="flex flex-1 flex-col p-4 justify-between">
+          <div>
+            {/* Category / Type */}
+            <div className="flex items-center justify-between text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+              <span>{category || propertyType}</span>
+              {listedDate && <span>{listedDate}</span>}
+            </div>
+
+            {/* Title */}
+            <h3 className="mt-1 line-clamp-1 text-base font-bold text-[var(--text-primary)] transition group-hover:text-[var(--text-primary)]" title={title}>
+              <Link href={viewRoute}>
+                {title}
+              </Link>
+            </h3>
+
+            {/* Location */}
+            <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+              <MapPin size={13} className="shrink-0 text-[var(--text-muted)]" />
+              <span className="truncate">{location || "Location not specified"}</span>
+            </p>
+
+            {/* Property Key Attributes */}
+            <div className="mt-3.5 flex items-center gap-3 border-t border-[var(--border-subtle)] pt-3 text-xs text-[var(--text-muted)]">
+              {bedrooms !== null && bedrooms !== undefined && (
+                <span className="flex items-center gap-1.5 font-medium">
+                  <BedDouble size={14} className="text-[var(--text-primary)]" /> {getSafeValue(bedrooms)} Beds
+                </span>
+              )}
+              {bathrooms !== null && bathrooms !== undefined && (
+                <span className="flex items-center gap-1.5 font-medium">
+                  <Bath size={14} className="text-[var(--text-primary)]" /> {getSafeValue(bathrooms)} Baths
+                </span>
+              )}
+              {builtUpArea !== null && builtUpArea !== undefined && (
+                <span className="flex items-center gap-1.5 font-medium">
+                  <Maximize size={14} className="text-[var(--text-primary)]" /> {getSafeValue(builtUpArea)} sq.ft
+                </span>
+              )}
+            </div>
           </div>
 
-          {/* ACTIONS */}
-          <div className="mt-auto grid grid-cols-[1fr_1fr_40px] gap-2">
+          {/* =================================================
+              ACTIONS
+          ================================================= */}
+          <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[var(--border-subtle)] pt-3">
             <Link
               href={viewRoute}
               onClick={(e) => { if (!documentId) { e.preventDefault(); toast.error("Property ID not found."); } }}
-              className="flex items-center justify-center gap-1 rounded-lg bg-[var(--btn-primary-bg)] py-2.5 text-[11px] font-extrabold text-[var(--btn-primary-text)] transition opacity-90 hover:opacity-100"
+              className="hh-btn hh-btn-primary hh-btn-sm w-full"
             >
-              <Eye size={13} /> View
+              <Eye size={13} />
+              <span>Details</span>
             </Link>
 
             <button
@@ -1328,19 +1302,9 @@ export default function PropertyCard({ property }) {
                 if (!documentId) { toast.error("Property ID not found."); } 
                 else { setIsContactModalOpen(true); } 
               }}
-              className="flex items-center justify-center rounded-lg border border-[var(--btn-primary-bg)] bg-transparent py-2.5 text-[11px] font-extrabold text-[var(--text-primary)] transition hover:bg-[var(--dropdown-hover-bg)]"
+              className="hh-btn hh-btn-secondary hh-btn-sm w-full"
             >
-              Contact
-            </button>
-
-            <button
-              type="button"
-              onClick={handleWishlist}
-              disabled={loading}
-              className="flex items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-page)] transition hover:bg-[var(--dropdown-hover-bg)]"
-              aria-label={liked ? "Remove from wishlist" : "Add to wishlist"}
-            >
-              <Heart size={15} className={liked ? "fill-red-500 text-red-500" : "text-[var(--text-muted)]"} />
+              <span>Contact</span>
             </button>
           </div>
         </div>

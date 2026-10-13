@@ -15,15 +15,15 @@ export default function UserFeaturedProperties({ properties }) {
 
       {/* Section Heading */}
       <div className="mx-auto mb-12 flex max-w-3xl flex-col items-center justify-center text-center">
-        <h2 className="text-3xl font-extrabold sm:text-4xl" style={{ color: "#0D3326" }}>
+        <h2 className="hh-section-title">
           Featured Properties
         </h2>
-        <p className="mt-4 text-base text-[#0D3326]/70 sm:text-lg">
+        <p className="hh-section-subtitle mt-3">
           Discover the latest verified properties on HomeHub.
         </p>
         <Link 
           href="/user/properties"
-          className="mt-8 inline-flex items-center justify-center rounded-xl border-2 border-[#D7AE62] px-6 py-2.5 text-[#0D3326] font-bold transition hover:bg-[#D7AE62] hover:text-white shadow-sm hover:shadow-md"
+          className="hh-btn hh-btn-secondary mt-6"
         >
           View All Properties
         </Link>

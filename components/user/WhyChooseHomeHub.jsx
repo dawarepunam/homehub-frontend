@@ -25,23 +25,23 @@ const REASONS = [
 
 export default function WhyChooseHomeHub() {
   return (
-    <section className="bg-[#F6F0E5] py-16">
+    <section className="border-t border-[var(--border-subtle)] bg-[var(--bg-card)] py-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto mb-12 flex max-w-3xl flex-col items-center justify-center text-center">
-          <h2 className="text-2xl font-extrabold text-[#0D3326] sm:text-3xl">Why Choose HomeHub?</h2>
-          <p className="mt-4 text-sm text-[#52645B] sm:text-base">
+        <div className="mx-auto mb-14 flex max-w-3xl flex-col items-center justify-center text-center">
+          <h2 className="hh-section-title">Why Choose HomeHub?</h2>
+          <p className="hh-section-subtitle mt-3">
             We make your property journey smooth, transparent, and hassle-free.
           </p>
         </div>
         
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {REASONS.map((reason, index) => (
-            <div key={index} className="flex flex-col items-center text-center">
-              <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#EAE2D1]">
-                <reason.icon size={32} className="text-[#D7AE62]" />
+            <div key={index} className="flex flex-col items-center text-center p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-all duration-200 hover:-translate-y-1 hover:shadow-sm">
+              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-subtle)]">
+                <reason.icon size={26} />
               </div>
-              <h3 className="mb-3 text-xl font-bold text-[#0D3326]">{reason.title}</h3>
-              <p className="text-sm leading-relaxed text-[#52645B]">{reason.desc}</p>
+              <h3 className="mb-2 text-base font-bold text-[var(--text-primary)]">{reason.title}</h3>
+              <p className="text-xs leading-relaxed text-[var(--text-muted)]">{reason.desc}</p>
             </div>
           ))}
         </div>

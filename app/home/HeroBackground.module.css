@@ -39,9 +39,19 @@
 }
 
 @keyframes floatParticle {
-  0% { transform: translate(0, 0); opacity: calc(var(--opacity) * 0.2); }
-  50% { opacity: var(--opacity); }
-  100% { transform: translate(20px, -40px); opacity: calc(var(--opacity) * 0.2); }
+  0% {
+    transform: translate(0, 0);
+    opacity: calc(var(--opacity) * 0.2);
+  }
+
+  50% {
+    opacity: var(--opacity);
+  }
+
+  100% {
+    transform: translate(20px, -40px);
+    opacity: calc(var(--opacity) * 0.2);
+  }
 }
 
 .globeWrapper {
@@ -81,15 +91,33 @@
 }
 
 @keyframes rotateGlobe {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes strokePulse {
-  0% { stroke-dashoffset: 3000; opacity: 0; }
-  10% { opacity: 0.8; }
-  90% { opacity: 0.8; }
-  100% { stroke-dashoffset: 0; opacity: 0; }
+  0% {
+    stroke-dashoffset: 3000;
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.8;
+  }
+
+  90% {
+    opacity: 0.8;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
 }
 
 /* Responsive Scaling */
@@ -113,15 +141,20 @@
     height: 400px;
     top: 45%;
   }
+
   .particlesContainer {
     opacity: 0.6;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .globeSvg, .particle, .pulse {
+
+  .globeSvg,
+  .particle,
+  .pulse {
     animation: none;
   }
+
   .pulse {
     display: none;
   }

@@ -9,12 +9,12 @@ export default async function WishlistPage() {
   const siteSettings = await getUserSiteSettings();
 
   return (
-    <main className="min-h-screen bg-[#F7F4EF]">
+    <main className="min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)]">
       {/* ── Header ─────────────────────────────────────────────── */}
       <UserHeader headerData={siteSettings?.UserHeader} />
 
       {/* ── Wishlist Client ─────────────────────────────────────── */}
-      <Suspense fallback={<div className="flex h-[60vh] items-center justify-center"><div className="h-10 w-10 animate-spin rounded-full border-4 border-[#0D3326] border-t-transparent" /></div>}>
+      <Suspense fallback={<div className="flex h-[60vh] items-center justify-center"><div className="h-10 w-10 animate-spin rounded-full border-4 border-[var(--text-primary)] border-t-transparent" /></div>}>
         <WishlistClient />
       </Suspense>
     </main>

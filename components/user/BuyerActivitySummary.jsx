@@ -43,65 +43,50 @@ export default function BuyerActivitySummary() {
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-      <h2 className="text-2xl font-extrabold mb-6" style={{ color: "#0D3326" }}>Your Activity</h2>
-      <div
-        className="grid grid-cols-2 gap-4 rounded-2xl p-6 shadow-sm lg:grid-cols-4"
-        style={{ background: "#fff", borderTop: "4px solid #D7AE62" }}
-      >
+      <h2 className="text-2xl font-bold tracking-tight text-[var(--text-primary)] mb-6">Your Activity</h2>
+      <div className="grid grid-cols-2 gap-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm lg:grid-cols-4">
         {/* Saved */}
-        <Link href="/user/wishlist" className="group flex flex-col items-center gap-2 rounded-xl p-4 text-center transition-all hover:bg-[#F5F3EE]">
-          <div
-            className="flex h-12 w-12 items-center justify-center rounded-full transition-all group-hover:scale-110"
-            style={{ background: "rgba(215,174,98,0.12)" }}
-          >
-            <Heart size={22} style={{ color: "#D7AE62" }} />
+        <Link href="/user/wishlist" className="group flex flex-col items-center gap-2 rounded-xl p-4 text-center transition-all hover:bg-[var(--bg-surface)]">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)] transition-all group-hover:scale-105">
+            <Heart size={20} />
           </div>
-          <span className="text-3xl font-extrabold" style={{ color: "#0D3326" }}>
+          <span className="text-3xl font-extrabold text-[var(--text-primary)]">
             {stats.saved ?? "—"}
           </span>
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Saved</span>
+          <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Saved</span>
         </Link>
 
         {/* Enquiries */}
-        <Link href="/user/enquiries" className="group flex flex-col items-center gap-2 rounded-xl p-4 text-center transition-all hover:bg-[#F5F3EE]">
-          <div
-            className="flex h-12 w-12 items-center justify-center rounded-full transition-all group-hover:scale-110"
-            style={{ background: "rgba(34,110,88,0.10)" }}
-          >
-            <MessageSquare size={22} style={{ color: "#226E58" }} />
+        <Link href="/user/enquiries" className="group flex flex-col items-center gap-2 rounded-xl p-4 text-center transition-all hover:bg-[var(--bg-surface)]">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)] transition-all group-hover:scale-105">
+            <MessageSquare size={20} />
           </div>
-          <span className="text-3xl font-extrabold" style={{ color: "#0D3326" }}>
+          <span className="text-3xl font-extrabold text-[var(--text-primary)]">
             {stats.enquiries ?? "—"}
           </span>
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Enquiries</span>
+          <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Enquiries</span>
         </Link>
 
         {/* Site Visits */}
         <div className="flex flex-col items-center gap-2 rounded-xl p-4 text-center">
-          <div
-            className="flex h-12 w-12 items-center justify-center rounded-full"
-            style={{ background: "rgba(15,100,110,0.10)" }}
-          >
-            <Eye size={22} style={{ color: "#0F646E" }} />
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
+            <Eye size={20} />
           </div>
-          <span className="text-3xl font-extrabold" style={{ color: "#0D3326" }}>
+          <span className="text-3xl font-extrabold text-[var(--text-primary)]">
             {stats.siteVisits ?? "—"}
           </span>
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Site Visits</span>
+          <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Site Visits</span>
         </div>
 
         {/* Recently Viewed */}
         <div className="flex flex-col items-center gap-2 rounded-xl p-4 text-center">
-          <div
-            className="flex h-12 w-12 items-center justify-center rounded-full"
-            style={{ background: "rgba(100,60,15,0.08)" }}
-          >
-            <Clock size={22} style={{ color: "#8B5E1A" }} />
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
+            <Clock size={20} />
           </div>
-          <span className="text-3xl font-extrabold" style={{ color: "#0D3326" }}>
+          <span className="text-3xl font-extrabold text-[var(--text-primary)]">
             {stats.recentlyViewed ?? "—"}
           </span>
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Viewed</span>
+          <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Viewed</span>
         </div>
       </div>
     </section>

@@ -40,11 +40,11 @@ function getAuthToken() {
 // ─── Password Requirement Row ─────────────────────────────────────────────────
 function RequirementRow({ met, text }) {
   return (
-    <li className="flex items-center gap-2 text-xs text-[#0D3326]/70">
+    <li className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
       {met ? (
         <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
       ) : (
-        <XCircle className="h-4 w-4 shrink-0 text-[#0D3326]/20" />
+        <XCircle className="h-4 w-4 shrink-0 text-[var(--text-secondary)] opacity-30" />
       )}
       {text}
     </li>
@@ -58,16 +58,16 @@ function Skeleton() {
       {[1, 2, 3, 4].map((i) => (
         <div
           key={i}
-          className="animate-pulse rounded-2xl border border-[#E5DDD0] bg-white p-8 space-y-4"
+          className="animate-pulse rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-8 space-y-4"
         >
           <div className="flex items-center gap-4">
-            <div className="h-10 w-10 rounded-full bg-[#EAE5DC]" />
+            <div className="h-10 w-10 rounded-full bg-[var(--border-subtle)]" />
             <div className="space-y-2">
-              <div className="h-4 w-40 rounded bg-[#EAE5DC]" />
-              <div className="h-3 w-56 rounded bg-[#EAE5DC]" />
+              <div className="h-4 w-40 rounded bg-[var(--border-subtle)]" />
+              <div className="h-3 w-56 rounded bg-[var(--border-subtle)]" />
             </div>
           </div>
-          <div className="h-12 w-full rounded-xl bg-[#EAE5DC]" />
+          <div className="h-12 w-full rounded-xl bg-[var(--border-subtle)]" />
         </div>
       ))}
     </div>
@@ -252,17 +252,17 @@ export default function AccountSecurityClient() {
   return (
     <div className="space-y-5 max-w-4xl">
       {/* ── 1. Password & Login ─────────────────────────────────────────── */}
-      <section className="rounded-2xl border border-[#E5DDD0] bg-white shadow-sm overflow-hidden">
+      <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm overflow-hidden">
         {/* Card header */}
-        <div className="flex items-center gap-4 border-b border-[#E5DDD0] bg-[#FBF4E6]/40 px-6 py-5">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 border border-emerald-100">
-            <Lock className="h-5 w-5 text-emerald-600" />
+        <div className="flex items-center gap-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] px-6 py-5">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+            <Lock className="h-5 w-5 text-[var(--text-primary)]" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-[#0D3326]">
+            <h2 className="text-base font-bold text-[var(--text-primary)]">
               Password &amp; Login
             </h2>
-            <p className="text-sm text-[#0D3326]/60">
+            <p className="text-sm text-[var(--text-secondary)]">
               Keep your account secure with a strong password.
             </p>
           </div>
@@ -277,7 +277,7 @@ export default function AccountSecurityClient() {
           >
             {/* Current password */}
             <div className="space-y-2">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">
+              <label className="block text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
                 Current Password
               </label>
               <div className="relative">
@@ -286,12 +286,12 @@ export default function AccountSecurityClient() {
                   value={currentPwd}
                   onChange={(e) => setCurrentPwd(e.target.value)}
                   placeholder="Enter current password"
-                  className="w-full rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/60 px-4 py-3 pr-11 text-sm font-medium text-[#0D3326] outline-none transition focus:border-[#D7AE62] focus:bg-white"
+                  className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-3 pr-11 text-sm font-medium text-[var(--text-primary)] outline-none transition focus:border-[var(--text-primary)] focus:ring-1 focus:ring-[var(--text-primary)]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowCurrent((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#0D3326]/40 hover:text-[#D7AE62] transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                 >
                   {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -300,7 +300,7 @@ export default function AccountSecurityClient() {
 
             {/* New password */}
             <div className="space-y-2">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">
+              <label className="block text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
                 New Password
               </label>
               <div className="relative">
@@ -309,12 +309,12 @@ export default function AccountSecurityClient() {
                   value={newPwd}
                   onChange={(e) => setNewPwd(e.target.value)}
                   placeholder="Enter new password"
-                  className="w-full rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/60 px-4 py-3 pr-11 text-sm font-medium text-[#0D3326] outline-none transition focus:border-[#D7AE62] focus:bg-white"
+                  className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-3 pr-11 text-sm font-medium text-[var(--text-primary)] outline-none transition focus:border-[var(--text-primary)] focus:ring-1 focus:ring-[var(--text-primary)]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowNew((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#0D3326]/40 hover:text-[#D7AE62] transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                 >
                   {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -323,7 +323,7 @@ export default function AccountSecurityClient() {
 
             {/* Confirm password */}
             <div className="space-y-2">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">
+              <label className="block text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
                 Confirm New Password
               </label>
               <input
@@ -331,7 +331,7 @@ export default function AccountSecurityClient() {
                 value={confirmPwd}
                 onChange={(e) => setConfirmPwd(e.target.value)}
                 placeholder="Re-enter new password"
-                className="w-full rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/60 px-4 py-3 text-sm font-medium text-[#0D3326] outline-none transition focus:border-[#D7AE62] focus:bg-white"
+                className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] outline-none transition focus:border-[var(--text-primary)] focus:ring-1 focus:ring-[var(--text-primary)]"
               />
               {confirmPwd && newPwd !== confirmPwd && (
                 <p className="text-xs text-red-500 font-medium mt-1">Passwords do not match.</p>
@@ -341,7 +341,7 @@ export default function AccountSecurityClient() {
             <button
               type="submit"
               disabled={pwdLoading || !currentPwd || !newPwd || !confirmPwd}
-              className="flex items-center gap-2 rounded-xl bg-[#0D3326] px-8 py-3 text-sm font-bold text-[#D7AE62] transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="hh-btn hh-btn-primary"
             >
               {pwdLoading && <Loader2 className="h-4 w-4 animate-spin" />}
               Change Password
@@ -349,10 +349,10 @@ export default function AccountSecurityClient() {
           </form>
 
           {/* Requirements panel */}
-          <div className="md:w-72 shrink-0 rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/60 p-5">
+          <div className="md:w-72 shrink-0 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5">
             <div className="flex items-center gap-2 mb-4">
-              <Shield className="h-4 w-4 text-[#D7AE62]" />
-              <h3 className="text-sm font-bold text-[#0D3326]">
+              <Shield className="h-4 w-4 text-[var(--text-primary)]" />
+              <h3 className="text-sm font-bold text-[var(--text-primary)]">
                 Password Requirements
               </h3>
             </div>
@@ -367,20 +367,20 @@ export default function AccountSecurityClient() {
       </section>
 
       {/* ── 2. Account Information ──────────────────────────────────────── */}
-      <section className="rounded-2xl border border-[#E5DDD0] bg-white shadow-sm overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E5DDD0] bg-[#FBF4E6]/40 px-6 py-5">
+      <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] px-6 py-5">
           <div className="flex items-center gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50 border border-blue-100">
-              <User className="h-5 w-5 text-blue-600" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+              <User className="h-5 w-5 text-[var(--text-primary)]" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-[#0D3326]">Account Information</h2>
-              <p className="text-sm text-[#0D3326]/60">Your personal and account details.</p>
+              <h2 className="text-base font-bold text-[var(--text-primary)]">Account Information</h2>
+              <p className="text-sm text-[var(--text-secondary)]">Your personal and account details.</p>
             </div>
           </div>
           <Link
             href="/user/profile/edit"
-            className="flex w-fit items-center gap-2 rounded-xl border border-[#E5DDD0] bg-white px-5 py-2.5 text-sm font-bold text-[#0D3326] transition hover:bg-[#F7F4EF] shadow-sm"
+            className="hh-btn hh-btn-secondary"
           >
             <Pencil className="h-4 w-4" />
             Edit Profile
@@ -390,22 +390,22 @@ export default function AccountSecurityClient() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 p-6 md:p-8">
           {[
             {
-              icon: <Mail className="h-5 w-5 text-[#D7AE62]" />,
+              icon: <Mail className="h-5 w-5 text-[var(--text-secondary)]" />,
               label: "Email Address",
               value: user?.email || "Not provided",
             },
             {
-              icon: <User className="h-5 w-5 text-[#D7AE62]" />,
+              icon: <User className="h-5 w-5 text-[var(--text-secondary)]" />,
               label: "Account Type",
               value: "Buyer",
             },
             {
-              icon: <Phone className="h-5 w-5 text-[#D7AE62]" />,
+              icon: <Phone className="h-5 w-5 text-[var(--text-secondary)]" />,
               label: "Mobile Number",
               value: mobile || "Not provided",
             },
             {
-              icon: <Calendar className="h-5 w-5 text-[#D7AE62]" />,
+              icon: <Calendar className="h-5 w-5 text-[var(--text-secondary)]" />,
               label: "Member Since",
               value: memberSince,
             },
@@ -413,10 +413,10 @@ export default function AccountSecurityClient() {
             <div key={item.label} className="flex items-start gap-4">
               <div className="mt-0.5 shrink-0">{item.icon}</div>
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/50">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
                   {item.label}
                 </p>
-                <p className="mt-1 text-sm font-semibold text-[#0D3326]">
+                <p className="mt-1 text-sm font-semibold text-[var(--text-primary)]">
                   {item.value}
                 </p>
               </div>
@@ -426,38 +426,38 @@ export default function AccountSecurityClient() {
       </section>
 
       {/* ── 3. Login Security ───────────────────────────────────────────── */}
-      <section className="rounded-2xl border border-[#E5DDD0] bg-white shadow-sm overflow-hidden">
-        <div className="flex items-center gap-4 border-b border-[#E5DDD0] bg-[#FBF4E6]/40 px-6 py-5">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 border border-emerald-100">
-            <Shield className="h-5 w-5 text-emerald-600" />
+      <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm overflow-hidden">
+        <div className="flex items-center gap-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] px-6 py-5">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+            <Shield className="h-5 w-5 text-[var(--text-primary)]" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-[#0D3326]">Login Security</h2>
-            <p className="text-sm text-[#0D3326]/60">
+            <h2 className="text-base font-bold text-[var(--text-primary)]">Login Security</h2>
+            <p className="text-sm text-[var(--text-secondary)]">
               Manage your login sessions and account access.
             </p>
           </div>
         </div>
 
         <div className="p-6 md:p-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/60 p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5">
             <div className="flex items-center gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#E5DDD0] bg-white shrink-0">
-                <Smartphone className="h-5 w-5 text-[#0D3326]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] shrink-0">
+                <Smartphone className="h-5 w-5 text-[var(--text-primary)]" />
               </div>
               <div>
-                <p className="text-sm font-bold text-[#0D3326]">Current Session</p>
-                <p className="text-xs text-[#0D3326]/60 mt-0.5">
+                <p className="text-sm font-bold text-[var(--text-primary)]">Current Session</p>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                   {sysInfo.browser} · {sysInfo.os}
                 </p>
-                <span className="mt-1 inline-block rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700 uppercase tracking-wider">
+                <span className="mt-1 inline-block rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold text-emerald-600 uppercase tracking-wider">
                   Active Now
                 </span>
               </div>
             </div>
             <button
               onClick={handleLogout}
-              className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-red-200 bg-white px-6 py-2.5 text-sm font-bold text-red-600 transition hover:bg-red-50"
+              className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-6 py-2.5 text-sm font-semibold text-red-500 transition hover:bg-red-500/20"
             >
               <LogOut className="h-4 w-4" />
               Logout
@@ -467,28 +467,28 @@ export default function AccountSecurityClient() {
       </section>
 
       {/* ── 4. Danger Zone ──────────────────────────────────────────────── */}
-      <section className="rounded-2xl border border-red-200 bg-white shadow-sm overflow-hidden">
-        <div className="flex items-center gap-4 border-b border-red-100 bg-red-50/60 px-6 py-5">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100 border border-red-200">
-            <AlertTriangle className="h-5 w-5 text-red-600" />
+      <section className="rounded-2xl border border-red-500/20 bg-[var(--bg-card)] shadow-sm overflow-hidden">
+        <div className="flex items-center gap-4 border-b border-red-500/20 bg-red-500/10 px-6 py-5">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/20 border border-red-500/30">
+            <AlertTriangle className="h-5 w-5 text-red-500" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-red-700">Danger Zone</h2>
-            <p className="text-sm text-red-600/70">
+            <h2 className="text-base font-bold text-red-500">Danger Zone</h2>
+            <p className="text-sm text-red-500/80">
               Permanently delete your account and all associated data.
             </p>
           </div>
         </div>
 
         <div className="p-6 md:p-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-red-100 bg-red-50/40 p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-red-500/20 bg-red-500/5 p-5">
             <div className="flex items-start gap-4">
-              <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100">
-                <Trash2 className="h-5 w-5 text-red-600" />
+              <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/10">
+                <Trash2 className="h-5 w-5 text-red-500" />
               </div>
               <div>
-                <p className="text-sm font-bold text-red-700">Delete Account</p>
-                <p className="text-xs text-red-600/70 mt-0.5 max-w-sm">
+                <p className="text-sm font-bold text-red-500">Delete Account</p>
+                <p className="text-xs text-red-500/80 mt-0.5 max-w-sm">
                   This action is permanent and cannot be undone. All your
                   saved properties, messages and profile data will be
                   permanently erased.
@@ -509,36 +509,36 @@ export default function AccountSecurityClient() {
       {/* ── Delete Confirmation Modal ──────────────────────────────────── */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl border border-red-200 bg-white shadow-2xl overflow-hidden">
-            <div className="flex items-center gap-3 border-b border-red-100 bg-red-50 px-6 py-4">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-100">
-                <Trash2 className="h-5 w-5 text-red-600" />
+          <div className="w-full max-w-md rounded-2xl border border-red-500/20 bg-[var(--bg-card)] shadow-2xl overflow-hidden">
+            <div className="flex items-center gap-3 border-b border-red-500/20 bg-red-500/10 px-6 py-4">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-500/20">
+                <Trash2 className="h-5 w-5 text-red-500" />
               </div>
-              <h2 className="font-bold text-red-700">Delete Account?</h2>
+              <h2 className="font-bold text-red-500">Delete Account?</h2>
             </div>
             <div className="p-6 space-y-4">
-              <p className="text-sm text-[#0D3326]/80">
+              <p className="text-sm text-[var(--text-secondary)]">
                 This will <strong>permanently</strong> delete your HomeHub account, your profile, saved properties, and all data. <br />
-                <span className="text-red-600 font-bold">This cannot be undone.</span>
+                <span className="text-red-500 font-bold">This cannot be undone.</span>
               </p>
               <div className="space-y-2">
-                <label className="text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">
-                  Type <span className="text-red-600 font-mono">DELETE</span> to confirm
+                <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+                  Type <span className="text-red-500 font-mono">DELETE</span> to confirm
                 </label>
                 <input
                   type="text"
                   value={deleteConfirmText}
                   onChange={(e) => setDeleteConfirmText(e.target.value)}
                   placeholder="Type DELETE here"
-                  className="w-full rounded-xl border border-red-200 bg-red-50/40 px-4 py-3 text-sm font-bold text-[#0D3326] outline-none focus:border-red-400 focus:bg-white"
+                  className="w-full rounded-xl border border-red-500/30 bg-red-500/5 px-4 py-3 text-sm font-bold text-[var(--text-primary)] outline-none focus:border-red-500"
                 />
               </div>
             </div>
-            <div className="flex gap-3 border-t border-[#E5DDD0] bg-white px-6 py-4">
+            <div className="flex gap-3 border-t border-[var(--border-subtle)] bg-[var(--bg-card)] px-6 py-4">
               <button
                 onClick={() => setShowDeleteModal(false)}
                 disabled={deleting}
-                className="flex-1 rounded-xl border border-[#E5DDD0] py-2.5 text-sm font-bold text-[#0D3326]/70 hover:bg-[#F7F4EF] transition-colors disabled:opacity-50"
+                className="flex-1 rounded-xl border border-[var(--border-subtle)] py-2.5 text-sm font-semibold text-[var(--text-secondary)] hover:bg-[var(--bg-surface)] transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>

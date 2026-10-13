@@ -129,15 +129,15 @@ function sortProperties(list, sortKey) {
 
 function SkeletonCard() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#E5DDD0] bg-white shadow-sm animate-pulse">
-      <div className="h-52 bg-[#E5DDD0]" />
+    <div className="overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm animate-pulse">
+      <div className="h-52 bg-[var(--bg-surface)]" />
       <div className="p-5 space-y-3">
-        <div className="h-4 w-3/4 rounded-full bg-[#E5DDD0]" />
-        <div className="h-3 w-1/2 rounded-full bg-[#E5DDD0]" />
-        <div className="h-5 w-1/3 rounded-full bg-[#E5DDD0]" />
+        <div className="h-4 w-3/4 rounded-full bg-[var(--border-subtle)]" />
+        <div className="h-3 w-1/2 rounded-full bg-[var(--border-subtle)]" />
+        <div className="h-5 w-1/3 rounded-full bg-[var(--border-subtle)]" />
         <div className="flex gap-2 pt-2">
-          <div className="h-10 flex-1 rounded-xl bg-[#E5DDD0]" />
-          <div className="h-10 w-12 rounded-xl bg-[#E5DDD0]" />
+          <div className="h-10 flex-1 rounded-xl bg-[var(--border-subtle)]" />
+          <div className="h-10 w-12 rounded-xl bg-[var(--border-subtle)]" />
         </div>
       </div>
     </div>
@@ -186,20 +186,13 @@ function SavedPropertyCard({ property, onRemove, removingId }) {
 
   const locationStr = [area, city].filter(Boolean).join(", ");
 
-  const purposeBadge =
-    purpose === "Sale"
-      ? "bg-[#0D3326] text-[#D7AE62]"
-      : purpose === "Rent"
-      ? "bg-[#1a4d3a] text-[#D7AE62]"
-      : "bg-[#0D3326]/80 text-[#D7AE62]";
-
   return (
     <article
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-[#E5DDD0] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[#D7AE62]/30"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[var(--text-primary)]/30"
       aria-label={`Saved property: ${title}`}
     >
       {/* Image */}
-      <div className="relative h-52 overflow-hidden bg-[#EAE5DC] shrink-0">
+      <div className="relative h-52 overflow-hidden bg-[var(--bg-surface)] shrink-0">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -212,25 +205,25 @@ function SavedPropertyCard({ property, onRemove, removingId }) {
           />
         ) : (
           <div className="flex h-full flex-col items-center justify-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#0D3326]/10">
-              <svg className="h-7 w-7 text-[#0D3326]/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--border-subtle)]">
+              <svg className="h-7 w-7 text-[var(--text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9.75L12 3l9 6.75V21H3V9.75z" />
               </svg>
             </div>
-            <span className="mt-2 text-xs text-[#0D3326]/40 font-semibold">No Image</span>
+            <span className="mt-2 text-xs text-[var(--text-secondary)] font-semibold">No Image</span>
           </div>
         )}
 
         {/* Property Type badge */}
         {propertyType && (
-          <span className="absolute left-3 top-3 rounded-full border border-white/20 bg-white/90 px-2.5 py-0.5 text-[11px] font-bold text-[#0D3326] backdrop-blur-sm shadow-sm">
+          <span className="absolute left-3 top-3 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)]/90 px-2.5 py-0.5 text-[11px] font-bold text-[var(--text-primary)] backdrop-blur-sm shadow-sm">
             {propertyType}
           </span>
         )}
 
         {/* Purpose badge */}
         {purpose && (
-          <span className={`absolute top-3 rounded-full px-2.5 py-0.5 text-[11px] font-bold shadow-sm ${purposeBadge} ${propertyType ? "right-12" : "right-3"}`}>
+          <span className={`absolute top-3 rounded-full px-2.5 py-0.5 text-[11px] font-bold shadow-sm bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] ${propertyType ? "right-12" : "right-3"}`}>
             {purpose === "Sale" ? "For Sale" : purpose === "Rent" ? "For Rent" : purpose}
           </span>
         )}
@@ -241,7 +234,7 @@ function SavedPropertyCard({ property, onRemove, removingId }) {
           onClick={() => onRemove(property)}
           disabled={isRemoving}
           aria-label="Remove property from saved properties"
-          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md transition hover:bg-red-50 disabled:opacity-60"
+          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--bg-card)] shadow-md transition hover:bg-red-500/10 disabled:opacity-60 border border-[var(--border-subtle)]"
         >
           {isRemoving ? (
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-200 border-t-red-500" />
@@ -254,41 +247,41 @@ function SavedPropertyCard({ property, onRemove, removingId }) {
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
         {category && (
-          <span className="mb-2 inline-block w-fit rounded-full border border-[#E5DDD0] bg-[#F7F4EF] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#0D3326]/60">
+          <span className="mb-2 inline-block w-fit rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">
             {category}
           </span>
         )}
 
-        <h2 className="line-clamp-2 text-base font-extrabold leading-snug text-[#0D3326]">
+        <h2 className="line-clamp-2 text-base font-extrabold leading-snug text-[var(--text-primary)]">
           {title}
         </h2>
 
         {locationStr && (
-          <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[#0D3326]/60">
-            <MapPin size={12} className="shrink-0 text-[#D7AE62]" />
+          <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
+            <MapPin size={12} className="shrink-0 text-[var(--text-primary)]" />
             <span className="line-clamp-1">{locationStr}</span>
           </p>
         )}
 
-        <p className="mt-3 text-lg font-extrabold text-[#0D3326]">{price}</p>
+        <p className="mt-3 text-lg font-extrabold text-[var(--text-primary)]">{price}</p>
 
         {(bedrooms || bathrooms || builtArea) && (
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
             {bedrooms && (
-              <span className="flex items-center gap-1 text-xs font-semibold text-[#0D3326]/60">
-                <BedDouble size={12} className="text-[#D7AE62]" />
+              <span className="flex items-center gap-1 text-xs font-semibold text-[var(--text-secondary)]">
+                <BedDouble size={12} className="text-[var(--text-primary)]" />
                 {bedrooms} Bed
               </span>
             )}
             {bathrooms && (
-              <span className="flex items-center gap-1 text-xs font-semibold text-[#0D3326]/60">
-                <Bath size={12} className="text-[#D7AE62]" />
+              <span className="flex items-center gap-1 text-xs font-semibold text-[var(--text-secondary)]">
+                <Bath size={12} className="text-[var(--text-primary)]" />
                 {bathrooms} Bath
               </span>
             )}
             {builtArea && (
-              <span className="flex items-center gap-1 text-xs font-semibold text-[#0D3326]/60">
-                <Maximize size={12} className="text-[#D7AE62]" />
+              <span className="flex items-center gap-1 text-xs font-semibold text-[var(--text-secondary)]">
+                <Maximize size={12} className="text-[var(--text-primary)]" />
                 {builtArea} {areaUnit}
               </span>
             )}
@@ -296,12 +289,12 @@ function SavedPropertyCard({ property, onRemove, removingId }) {
         )}
 
         <div className="flex-1" />
-        <div className="mt-4 border-t border-[#E5DDD0]/60" />
+        <div className="mt-4 border-t border-[var(--border-subtle)]" />
 
         <div className="mt-4 flex gap-2.5">
           <Link
             href={`/user/property/${documentId}`}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#0D3326] py-2.5 text-sm font-bold text-[#D7AE62] transition hover:bg-[#0a2b1f]"
+            className="hh-btn hh-btn-primary flex-1 py-2.5 text-sm font-bold flex items-center justify-center gap-1.5"
             aria-label={`View details for ${title}`}
           >
             <Eye size={15} />
@@ -312,7 +305,7 @@ function SavedPropertyCard({ property, onRemove, removingId }) {
             onClick={() => onRemove(property)}
             disabled={isRemoving}
             aria-label="Remove property from saved properties"
-            className="flex items-center justify-center rounded-xl border border-[#E5DDD0] bg-white px-3 text-[#0D3326]/50 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-3 text-[var(--text-secondary)] transition hover:border-red-400 hover:bg-red-500/10 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isRemoving ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-200 border-t-red-500" />
@@ -438,9 +431,7 @@ export default function WishlistClient() {
         prev.filter((item) => item?.documentId !== propertyDocumentId)
       );
 
-      toast.success("Property removed from saved list.", {
-        style: { background: "#0D3326", color: "#D7AE62", fontWeight: "bold" },
-      });
+      toast.success("Property removed from saved list.");
     } catch (err) {
       console.error("REMOVE ERROR:", err);
       toast.error(err?.message || "Unable to remove property.");
@@ -457,10 +448,10 @@ export default function WishlistClient() {
       <div className="mx-auto max-w-[1280px] px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-start justify-between gap-4">
           <div className="space-y-3">
-            <div className="h-9 w-56 animate-pulse rounded-full bg-[#E5DDD0]" />
-            <div className="h-4 w-40 animate-pulse rounded-full bg-[#E5DDD0]" />
+            <div className="h-9 w-56 animate-pulse rounded-full bg-[var(--border-subtle)]" />
+            <div className="h-4 w-40 animate-pulse rounded-full bg-[var(--border-subtle)]" />
           </div>
-          <div className="h-10 w-40 animate-pulse rounded-xl bg-[#E5DDD0]" />
+          <div className="h-10 w-40 animate-pulse rounded-xl bg-[var(--border-subtle)]" />
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((i) => <SkeletonCard key={i} />)}
@@ -473,16 +464,16 @@ export default function WishlistClient() {
   if (error) {
     return (
       <div className="mx-auto max-w-[1280px] px-4 py-20 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-[#E5DDD0] bg-white p-16 text-center shadow-sm">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
-            <AlertCircle size={28} className="text-red-400" />
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-16 text-center shadow-sm">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 text-red-500">
+            <AlertCircle size={28} />
           </div>
-          <h2 className="mt-5 text-xl font-extrabold text-[#0D3326]">Unable to Load Saved Properties</h2>
-          <p className="mt-2 max-w-xs text-sm text-[#0D3326]/60">{error}</p>
+          <h2 className="mt-5 text-xl font-extrabold text-[var(--text-primary)]">Unable to Load Saved Properties</h2>
+          <p className="mt-2 max-w-xs text-sm text-[var(--text-secondary)]">{error}</p>
           <button
             type="button"
             onClick={loadWishlist}
-            className="mt-6 flex items-center gap-2 rounded-xl bg-[#0D3326] px-6 py-3 font-bold text-[#D7AE62] transition hover:bg-[#0a2b1f]"
+            className="hh-btn hh-btn-primary mt-6 flex items-center gap-2"
           >
             <RefreshCw size={16} />
             Try Again
@@ -496,17 +487,17 @@ export default function WishlistClient() {
   if (properties.length === 0) {
     return (
       <div className="mx-auto max-w-[1280px] px-4 py-20 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-[#E5DDD0] bg-white p-16 text-center shadow-sm">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#F7F4EF] ring-4 ring-[#E5DDD0]">
-            <Heart size={36} className="text-[#D7AE62]" />
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-16 text-center shadow-sm">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--bg-surface)] ring-4 ring-[var(--border-subtle)]">
+            <Heart size={36} className="text-[var(--text-secondary)]" />
           </div>
-          <h2 className="mt-6 text-2xl font-extrabold text-[#0D3326]">No Saved Properties Yet</h2>
-          <p className="mt-2 max-w-sm text-sm leading-relaxed text-[#0D3326]/60">
+          <h2 className="mt-6 text-2xl font-extrabold text-[var(--text-primary)]">No Saved Properties Yet</h2>
+          <p className="mt-2 max-w-sm text-sm leading-relaxed text-[var(--text-secondary)]">
             Save properties you are interested in and they will appear here for easy access anytime.
           </p>
           <Link
             href="/user/properties"
-            className="mt-8 flex items-center gap-2 rounded-xl bg-[#0D3326] px-8 py-3.5 font-bold text-[#D7AE62] transition hover:bg-[#0a2b1f]"
+            className="hh-btn hh-btn-primary mt-8 flex items-center gap-2"
           >
             <Search size={16} />
             Explore Properties
@@ -525,39 +516,39 @@ export default function WishlistClient() {
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0D3326]">
-              <Heart size={20} className="fill-[#D7AE62] text-[#D7AE62]" />
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)]">
+              <Heart size={20} className="fill-current" />
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold text-[#0D3326] sm:text-3xl">Saved Properties</h1>
-              <p className="text-sm text-[#0D3326]/60">Properties you have saved for later</p>
+              <h1 className="text-2xl font-extrabold text-[var(--text-primary)] sm:text-3xl">Saved Properties</h1>
+              <p className="text-sm text-[var(--text-secondary)]">Properties you have saved for later</p>
             </div>
           </div>
-          <p className="mt-4 inline-flex items-center rounded-full border border-[#E5DDD0] bg-white px-4 py-1.5 text-sm font-bold text-[#0D3326] shadow-sm">
-            <Heart size={13} className="mr-1.5 fill-[#D7AE62] text-[#D7AE62]" />
+          <p className="mt-4 inline-flex items-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-1.5 text-sm font-bold text-[var(--text-primary)] shadow-sm">
+            <Heart size={13} className="mr-1.5 fill-current text-red-500" />
             {count} {count === 1 ? "Property" : "Properties"} Saved
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 sm:flex-nowrap">
           {/* Sort */}
-          <div className="flex items-center gap-2 rounded-xl border border-[#E5DDD0] bg-white px-3 py-2 shadow-sm">
-            <SlidersHorizontal size={15} className="text-[#0D3326]/50" />
+          <div className="flex items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-3 py-2 shadow-sm">
+            <SlidersHorizontal size={15} className="text-[var(--text-secondary)]" />
             <select
               value={sortKey}
               onChange={(e) => setSortKey(e.target.value)}
-              className="appearance-none bg-transparent text-sm font-semibold text-[#0D3326] outline-none cursor-pointer"
+              className="appearance-none bg-transparent text-sm font-semibold text-[var(--text-primary)] outline-none cursor-pointer"
               aria-label="Sort saved properties"
             >
-              <option value="recent">Recently Saved</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
+              <option value="recent" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Recently Saved</option>
+              <option value="price_asc" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Price: Low to High</option>
+              <option value="price_desc" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Price: High to Low</option>
             </select>
           </div>
 
           <Link
             href="/user/properties"
-            className="flex items-center gap-2 rounded-xl bg-[#0D3326] px-5 py-2.5 text-sm font-bold text-[#D7AE62] transition hover:bg-[#0a2b1f]"
+            className="hh-btn hh-btn-primary flex items-center gap-2"
           >
             Explore More
             <ArrowRight size={15} />
@@ -579,6 +570,6 @@ export default function WishlistClient() {
           );
         })}
       </div>
-      </div>
+    </div>
   );
 }

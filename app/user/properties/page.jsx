@@ -11,10 +11,10 @@ const cleanLabel = (value) =>
 // Loading fallback shown while the page shell hydrates
 function ListingFallback() {
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: "#F7F4EF" }}>
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-page)]">
       <div className="flex flex-col items-center gap-4">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#D7AE62] border-t-transparent" />
-        <p className="text-sm font-medium text-[#0D3326]/60">Loading properties…</p>
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[var(--text-primary)] border-t-transparent" />
+        <p className="text-sm font-medium text-[var(--text-secondary)]">Loading properties…</p>
       </div>
     </div>
   );

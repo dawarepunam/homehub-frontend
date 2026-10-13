@@ -67,24 +67,24 @@ function SearchJourneyCard({ hasSearch }) {
   ];
 
   return (
-    <div className="rounded-2xl border border-[#E5DDD0] bg-white shadow-sm p-6">
-      <h3 className="font-bold text-[#0D3326] text-base">Your Search Journey</h3>
-      <p className="text-xs text-[#0D3326]/60 mt-0.5 mb-5">From search to your dream home</p>
+    <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm p-6">
+      <h3 className="font-bold text-[var(--text-primary)] text-base">Your Search Journey</h3>
+      <p className="text-xs text-[var(--text-secondary)] mt-0.5 mb-5">From search to your dream home</p>
 
       <div className="relative space-y-5">
-        <div className="absolute left-[19px] top-4 bottom-4 w-px bg-[#E5DDD0]" />
+        <div className="absolute left-[19px] top-4 bottom-4 w-px bg-[var(--border-subtle)]" />
 
         {steps.map((step, i) => (
           <div key={i} className={`flex items-start gap-3 relative z-10 ${!step.done && i > 0 ? "opacity-50" : ""}`}>
-            <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center shrink-0 ${step.done ? "border-[#D7AE62] bg-[#FBF4E6]" : "border-[#E5DDD0] bg-white"}`}>
-              <Search className={`w-4 h-4 ${step.done ? "text-[#D7AE62]" : "text-[#0D3326]/30"}`} />
+            <div className={`w-10 h-10 rounded-full border flex items-center justify-center shrink-0 ${step.done ? "border-[var(--btn-primary-bg)] bg-[var(--bg-surface)] text-[var(--text-primary)]" : "border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)]"}`}>
+              <Search className="w-4 h-4" />
             </div>
             <div className="pt-1 flex-1 min-w-0">
-              <p className={`text-sm font-bold truncate ${step.done ? "text-[#0D3326]" : "text-[#0D3326]/50"}`}>{step.label}</p>
-              <p className="text-xs text-[#0D3326]/50 mt-0.5">{step.sub}</p>
+              <p className={`text-sm font-bold truncate ${step.done ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"}`}>{step.label}</p>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">{step.sub}</p>
             </div>
             {step.done && (
-              <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-1.5" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-1.5" />
             )}
           </div>
         ))}
@@ -139,41 +139,41 @@ function SearchFormModal({ initial, onClose, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-[#E5DDD0] overflow-y-auto max-h-[95vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="relative w-full max-w-lg bg-[var(--bg-card)] rounded-2xl shadow-2xl border border-[var(--border-subtle)] overflow-y-auto max-h-[95vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#E5DDD0] bg-[#FBF4E6]/60">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]">
           <div>
-            <h2 className="font-bold text-[#0D3326] text-lg">
+            <h2 className="font-bold text-[var(--text-primary)] text-lg">
               {initial ? "Edit Search" : "Create New Search"}
             </h2>
-            <p className="text-xs text-[#0D3326]/60 mt-0.5">
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
               Save your property search and get notified about matching properties.
             </p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-[#E5DDD0]/60 transition-colors">
-            <X className="w-5 h-5 text-[#0D3326]/60" />
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-[var(--border-subtle)] transition-colors">
+            <X className="w-5 h-5 text-[var(--text-secondary)]" />
           </button>
         </div>
 
         {/* Body */}
         <div className="px-6 py-5 space-y-5">
           {err && (
-            <div className="flex items-center gap-2 rounded-xl bg-red-50 border border-red-100 p-3 text-sm text-red-700">
+            <div className="flex items-center gap-2 rounded-xl bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-600 dark:text-red-400">
               <AlertCircle className="w-4 h-4 shrink-0" />
               {err}
             </div>
           )}
 
           {/* Note about single search */}
-          <div className="flex items-start gap-2 rounded-xl bg-blue-50 border border-blue-100 p-3 text-xs text-blue-700">
-            <Info className="w-4 h-4 shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-3 text-xs text-[var(--text-secondary)]">
+            <Info className="w-4 h-4 shrink-0 mt-0.5 text-[var(--text-primary)]" />
             <span>Your property requirement is saved as your primary search. Saving a new one will replace the existing one.</span>
           </div>
 
           {/* Purpose */}
           <div className="space-y-2">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">Looking for</label>
+            <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">Looking for</label>
             <div className="flex gap-3">
               {["Buy", "Rent"].map((p) => (
                 <button
@@ -181,8 +181,8 @@ function SearchFormModal({ initial, onClose, onSave }) {
                   onClick={() => setPurpose(p)}
                   className={`flex-1 rounded-xl border py-2.5 text-sm font-bold transition ${
                     purpose === p
-                      ? "border-[#D7AE62] bg-[#FBF4E6] text-[#9A7230]"
-                      : "border-[#E5DDD0] bg-white text-[#0D3326]/70 hover:border-[#D7AE62]/50"
+                      ? "border-[var(--btn-primary-bg)] bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)]"
+                      : "border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--text-primary)]"
                   }`}
                 >
                   {p}
@@ -194,23 +194,23 @@ function SearchFormModal({ initial, onClose, onSave }) {
           {/* Location */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">Location</label>
+              <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">Location</label>
               <input
                 type="text"
                 placeholder="Select Location"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="w-full rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/50 px-3 py-2.5 text-sm text-[#0D3326] outline-none focus:border-[#D7AE62] focus:bg-white placeholder:text-[#0D3326]/30"
+                className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--text-primary)] focus:bg-[var(--bg-card)] placeholder:text-[var(--text-secondary)]"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">Area / Locality</label>
+              <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">Area / Locality</label>
               <input
                 type="text"
                 placeholder="Select Area"
                 value={area}
                 onChange={(e) => setArea(e.target.value)}
-                className="w-full rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/50 px-3 py-2.5 text-sm text-[#0D3326] outline-none focus:border-[#D7AE62] focus:bg-white placeholder:text-[#0D3326]/30"
+                className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--text-primary)] focus:bg-[var(--bg-card)] placeholder:text-[var(--text-secondary)]"
               />
             </div>
           </div>
@@ -218,11 +218,11 @@ function SearchFormModal({ initial, onClose, onSave }) {
           {/* Property Type */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">Property Type</label>
+              <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">Property Type</label>
               <select
                 value={category}
                 onChange={(e) => handleCategoryChange(e.target.value)}
-                className="w-full rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/50 px-3 py-2.5 text-sm text-[#0D3326] outline-none focus:border-[#D7AE62] focus:bg-white"
+                className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--text-primary)] focus:bg-[var(--bg-card)]"
               >
                 <option value="">Select Type</option>
                 {PROPERTY_CATEGORIES.map((c) => (
@@ -231,12 +231,12 @@ function SearchFormModal({ initial, onClose, onSave }) {
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">Category / BHK</label>
+              <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">Category / BHK</label>
               {category === "Residential" ? (
                 <select
                   value={bhk}
                   onChange={(e) => setBhk(e.target.value)}
-                  className="w-full rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/50 px-3 py-2.5 text-sm text-[#0D3326] outline-none focus:border-[#D7AE62] focus:bg-white"
+                  className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--text-primary)] focus:bg-[var(--bg-card)]"
                 >
                   <option value="">Select BHK</option>
                   {BHK_OPTIONS.map((b) => (
@@ -248,7 +248,7 @@ function SearchFormModal({ initial, onClose, onSave }) {
                   value={propertyType}
                   onChange={(e) => setPropertyType(e.target.value)}
                   disabled={!category}
-                  className="w-full rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/50 px-3 py-2.5 text-sm text-[#0D3326] outline-none focus:border-[#D7AE62] focus:bg-white disabled:opacity-50"
+                  className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--text-primary)] focus:bg-[var(--bg-card)] disabled:opacity-50"
                 >
                   <option value="">Select Category</option>
                   {(PROPERTY_TYPES[category] || []).map((t) => (
@@ -262,62 +262,62 @@ function SearchFormModal({ initial, onClose, onSave }) {
           {/* Budget */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">Min Budget (₹)</label>
+              <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">Min Budget (₹)</label>
               <input
                 type="number"
                 placeholder="Min"
                 value={minBudget}
                 onChange={(e) => setMinBudget(e.target.value)}
-                className="w-full rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/50 px-3 py-2.5 text-sm text-[#0D3326] outline-none focus:border-[#D7AE62] focus:bg-white"
+                className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--text-primary)] focus:bg-[var(--bg-card)]"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">Max Budget (₹)</label>
+              <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">Max Budget (₹)</label>
               <input
                 type="number"
                 placeholder="Max"
                 value={maxBudget}
                 onChange={(e) => setMaxBudget(e.target.value)}
-                className="w-full rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/50 px-3 py-2.5 text-sm text-[#0D3326] outline-none focus:border-[#D7AE62] focus:bg-white"
+                className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--text-primary)] focus:bg-[var(--bg-card)]"
               />
             </div>
           </div>
 
-          {/* Search Name (display only — not saved to Strapi; shown as label) */}
+          {/* Search Name */}
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-[#0D3326]/60">Search Name (optional label)</label>
+            <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">Search Name (optional label)</label>
             <input
               type="text"
               placeholder={`e.g. ${bhk ? bhk + " BHK" : ""} ${propertyType || category || "Property"} in ${city || "…"}`.trim()}
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
-              className="w-full rounded-xl border border-[#E5DDD0] bg-[#F7F4EF]/50 px-3 py-2.5 text-sm text-[#0D3326] outline-none focus:border-[#D7AE62] focus:bg-white placeholder:text-[#0D3326]/30"
+              className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--text-primary)] focus:bg-[var(--bg-card)] placeholder:text-[var(--text-secondary)]"
             />
-            <p className="text-[10px] text-[#0D3326]/40">This name is used only as a display label in the UI.</p>
+            <p className="text-[10px] text-[var(--text-secondary)]">This name is used only as a display label in the UI.</p>
           </div>
 
           {/* Alert note */}
-          <div className="flex items-center gap-2 rounded-xl border border-[#E5DDD0] p-3">
-            <Bell className="w-4 h-4 text-[#D7AE62] shrink-0" />
-            <p className="text-xs text-[#0D3326]/70">
-              <span className="font-bold">Alert: </span>Property alerts are managed under <Link href="/user/profile/property-alerts" className="underline hover:text-[#0D3326]">Property Alerts</Link>.
+          <div className="flex items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3">
+            <Bell className="w-4 h-4 text-[var(--text-primary)] shrink-0" />
+            <p className="text-xs text-[var(--text-secondary)]">
+              <span className="font-bold text-[var(--text-primary)]">Alert: </span>Property alerts are managed under <Link href="/user/profile/property-alerts" className="underline hover:text-[var(--text-primary)] font-semibold">Property Alerts</Link>.
             </p>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[#E5DDD0] bg-white">
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[var(--border-subtle)] bg-[var(--bg-card)]">
           <button
             onClick={onClose}
             disabled={saving}
-            className="px-5 py-2.5 text-sm font-bold text-[#0D3326]/70 border border-[#E5DDD0] rounded-xl hover:bg-[#F7F4EF] transition-colors disabled:opacity-50"
+            className="px-5 py-2.5 text-sm font-bold text-[var(--text-secondary)] border border-[var(--border-subtle)] rounded-xl hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)] transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold bg-[#D7AE62] text-white rounded-xl hover:bg-[#C49A4F] transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {saving && <Loader2 className="w-4 h-4 animate-spin" />}
             Save Search
@@ -331,22 +331,22 @@ function SearchFormModal({ initial, onClose, onSave }) {
 // ─── Delete Confirm Modal ─────────────────────────────────────────────────────
 function DeleteConfirmModal({ onCancel, onConfirm, loading }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl border border-[#E5DDD0] p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="w-full max-w-sm bg-[var(--bg-card)] rounded-2xl shadow-2xl border border-[var(--border-subtle)] p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center">
             <Trash2 className="w-5 h-5 text-red-500" />
           </div>
-          <h2 className="font-bold text-[#0D3326]">Delete Saved Search?</h2>
+          <h2 className="font-bold text-[var(--text-primary)]">Delete Saved Search?</h2>
         </div>
-        <p className="text-sm text-[#0D3326]/70 mb-6">
+        <p className="text-sm text-[var(--text-secondary)] mb-6">
           This will permanently remove your saved property requirement. You can create a new one anytime.
         </p>
         <div className="flex gap-3">
           <button
             onClick={onCancel}
             disabled={loading}
-            className="flex-1 py-2.5 text-sm font-bold border border-[#E5DDD0] rounded-xl text-[#0D3326]/70 hover:bg-[#F7F4EF] transition-colors disabled:opacity-50"
+            className="flex-1 py-2.5 text-sm font-bold border border-[var(--border-subtle)] rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)] transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
@@ -367,25 +367,25 @@ function DeleteConfirmModal({ onCancel, onConfirm, loading }) {
 // ─── Skeleton Loading Card ────────────────────────────────────────────────────
 function SkeletonCard() {
   return (
-    <div className="animate-pulse rounded-2xl border border-[#E5DDD0] bg-white shadow-sm p-6 space-y-4">
+    <div className="animate-pulse rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm p-6 space-y-4">
       <div className="flex justify-between">
         <div className="space-y-2">
-          <div className="h-5 w-40 bg-[#EAE5DC] rounded" />
-          <div className="h-4 w-24 bg-[#EAE5DC] rounded" />
+          <div className="h-5 w-40 bg-[var(--border-subtle)] rounded" />
+          <div className="h-4 w-24 bg-[var(--border-subtle)] rounded" />
         </div>
-        <div className="h-4 w-20 bg-[#EAE5DC] rounded" />
+        <div className="h-4 w-20 bg-[var(--border-subtle)] rounded" />
       </div>
       <div className="flex gap-4">
-        <div className="h-4 w-28 bg-[#EAE5DC] rounded" />
-        <div className="h-4 w-28 bg-[#EAE5DC] rounded" />
+        <div className="h-4 w-28 bg-[var(--border-subtle)] rounded" />
+        <div className="h-4 w-28 bg-[var(--border-subtle)] rounded" />
       </div>
       <div className="flex gap-4">
-        <div className="h-4 w-36 bg-[#EAE5DC] rounded" />
-        <div className="h-4 w-36 bg-[#EAE5DC] rounded" />
+        <div className="h-4 w-36 bg-[var(--border-subtle)] rounded" />
+        <div className="h-4 w-36 bg-[var(--border-subtle)] rounded" />
       </div>
       <div className="flex gap-3 pt-2">
-        <div className="h-9 w-32 bg-[#EAE5DC] rounded-xl" />
-        <div className="h-9 w-24 bg-[#EAE5DC] rounded-xl" />
+        <div className="h-9 w-32 bg-[var(--border-subtle)] rounded-xl" />
+        <div className="h-9 w-24 bg-[var(--border-subtle)] rounded-xl" />
       </div>
     </div>
   );
@@ -414,29 +414,29 @@ function SavedSearchCard({ prefs, updatedAt, onEdit, onDelete }) {
     : null;
 
   return (
-    <div className="rounded-2xl border border-[#E5DDD0] bg-white shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+    <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm overflow-hidden hover:shadow-md transition-shadow">
       <div className="p-5 sm:p-6">
         {/* Top row */}
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-base font-bold text-[#0D3326] truncate">{displayName}</h3>
+              <h3 className="text-base font-bold text-[var(--text-primary)] truncate">{displayName}</h3>
               <button
                 onClick={onEdit}
                 title="Edit search"
-                className="p-1 rounded-full text-[#0D3326]/40 hover:text-[#D7AE62] hover:bg-[#FBF4E6] transition-colors"
+                className="p-1 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)] transition-colors"
               >
                 <Pencil className="w-3.5 h-3.5" />
               </button>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
               {prefs.Purpose && (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#0D3326] text-[#D7AE62]">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)]">
                   {prefs.Purpose}
                 </span>
               )}
               {prefs.PreferredCategory && (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F7F4EF] text-[#0D3326]/80 border border-[#E5DDD0]">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)]">
                   {prefs.PreferredCategory}
                 </span>
               )}
@@ -445,8 +445,8 @@ function SavedSearchCard({ prefs, updatedAt, onEdit, onDelete }) {
 
           {/* Alert Status & Menu */}
           <div className="flex items-center gap-2 shrink-0">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               Alert Active
             </div>
 
@@ -454,7 +454,7 @@ function SavedSearchCard({ prefs, updatedAt, onEdit, onDelete }) {
             <div className="relative">
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="p-1.5 rounded-full hover:bg-[#F7F4EF] transition-colors text-[#0D3326]/50"
+                className="p-1.5 rounded-full hover:bg-[var(--bg-surface)] transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <circle cx="12" cy="5" r="1.5" />
@@ -466,33 +466,33 @@ function SavedSearchCard({ prefs, updatedAt, onEdit, onDelete }) {
               {menuOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
-                  <div className="absolute right-0 top-8 z-20 w-44 rounded-xl border border-[#E5DDD0] bg-white shadow-xl overflow-hidden">
+                  <div className="absolute right-0 top-8 z-20 w-44 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-xl overflow-hidden">
                     <Link
                       href={searchUrl}
-                      className="flex items-center gap-2.5 px-4 py-3 text-sm font-bold text-[#0D3326] hover:bg-[#F7F4EF] transition-colors"
+                      className="flex items-center gap-2.5 px-4 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-surface)] transition-colors"
                       onClick={() => setMenuOpen(false)}
                     >
-                      <ExternalLink className="w-4 h-4 text-[#0D3326]/50" />
+                      <ExternalLink className="w-4 h-4 text-[var(--text-secondary)]" />
                       View Properties
                     </Link>
                     <button
-                      className="flex items-center gap-2.5 px-4 py-3 text-sm font-bold text-[#0D3326] hover:bg-[#F7F4EF] transition-colors w-full"
+                      className="flex items-center gap-2.5 px-4 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-surface)] transition-colors w-full"
                       onClick={() => { setMenuOpen(false); onEdit(); }}
                     >
-                      <Pencil className="w-4 h-4 text-[#0D3326]/50" />
+                      <Pencil className="w-4 h-4 text-[var(--text-secondary)]" />
                       Edit Search
                     </button>
                     <Link
                       href="/user/profile/property-alerts"
-                      className="flex items-center gap-2.5 px-4 py-3 text-sm font-bold text-[#0D3326] hover:bg-[#F7F4EF] transition-colors"
+                      className="flex items-center gap-2.5 px-4 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-surface)] transition-colors"
                       onClick={() => setMenuOpen(false)}
                     >
-                      <Bell className="w-4 h-4 text-[#0D3326]/50" />
+                      <Bell className="w-4 h-4 text-[var(--text-secondary)]" />
                       Manage Alert
                     </Link>
-                    <div className="border-t border-[#E5DDD0]" />
+                    <div className="border-t border-[var(--border-subtle)]" />
                     <button
-                      className="flex items-center gap-2.5 px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors w-full"
+                      className="flex items-center gap-2.5 px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-500/10 transition-colors w-full"
                       onClick={() => { setMenuOpen(false); onDelete(); }}
                     >
                       <Trash2 className="w-4 h-4" />
@@ -508,33 +508,33 @@ function SavedSearchCard({ prefs, updatedAt, onEdit, onDelete }) {
         {/* Details row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6 text-sm mb-4">
           {(prefs.PreferredCity || prefs.PreferredArea) && (
-            <div className="flex items-center gap-2 text-[#0D3326]/70">
-              <MapPin className="w-4 h-4 text-[#D7AE62] shrink-0" />
+            <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+              <MapPin className="w-4 h-4 text-[var(--text-primary)] shrink-0" />
               <span className="truncate">
                 {[prefs.PreferredCity, prefs.PreferredArea].filter(Boolean).join(", ")}
               </span>
             </div>
           )}
           {prefs.PropertyType && (
-            <div className="flex items-center gap-2 text-[#0D3326]/70">
-              <Home className="w-4 h-4 text-[#D7AE62] shrink-0" />
+            <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+              <Home className="w-4 h-4 text-[var(--text-primary)] shrink-0" />
               <span>{prefs.PropertyType}</span>
             </div>
           )}
           {prefs.BHK && (
-            <div className="flex items-center gap-2 text-[#0D3326]/70">
-              <Bed className="w-4 h-4 text-[#D7AE62] shrink-0" />
+            <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+              <Bed className="w-4 h-4 text-[var(--text-primary)] shrink-0" />
               <span>{prefs.BHK} BHK</span>
             </div>
           )}
           {budgetStr && (
-            <div className="flex items-center gap-2 text-[#0D3326]/70">
-              <IndianRupee className="w-4 h-4 text-[#D7AE62] shrink-0" />
+            <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+              <IndianRupee className="w-4 h-4 text-[var(--text-primary)] shrink-0" />
               <span>{budgetStr}</span>
             </div>
           )}
           {updatedDate && (
-            <div className="flex items-center gap-2 text-[#0D3326]/50 text-xs">
+            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs">
               <Calendar className="w-3.5 h-3.5 shrink-0" />
               <span>Updated {updatedDate}</span>
             </div>
@@ -542,24 +542,24 @@ function SavedSearchCard({ prefs, updatedAt, onEdit, onDelete }) {
         </div>
 
         {/* Action buttons */}
-        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-[#E5DDD0]">
+        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-[var(--border-subtle)]">
           <Link
             href={searchUrl}
-            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#0D3326] text-[#D7AE62] text-sm font-bold hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-sm font-bold hover:opacity-90 transition-opacity"
           >
             <ExternalLink className="w-4 h-4" />
             View Properties
           </Link>
           <button
             onClick={onEdit}
-            className="flex items-center gap-2 px-5 py-2 rounded-xl border border-[#E5DDD0] text-[#0D3326]/80 text-sm font-bold hover:bg-[#F7F4EF] transition-colors"
+            className="flex items-center gap-2 px-5 py-2 rounded-xl border border-[var(--border-subtle)] text-[var(--text-primary)] text-sm font-bold hover:bg-[var(--bg-surface)] transition-colors"
           >
             <Pencil className="w-4 h-4" />
             Edit Search
           </button>
           <button
             onClick={onDelete}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-red-100 text-red-600 text-sm font-bold hover:bg-red-50 transition-colors ml-auto"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-red-500/20 text-red-600 text-sm font-bold hover:bg-red-500/10 transition-colors ml-auto"
           >
             <Trash2 className="w-4 h-4" />
             Delete
@@ -689,15 +689,15 @@ export default function SavedSearchesClient() {
         {/* Header row */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-[#0D3326]">Saved Searches</h1>
-            <p className="mt-1 text-sm text-[#0D3326]/70">
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Saved Searches</h1>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">
               Manage your saved property searches and alerts.
             </p>
           </div>
           {!loading && !error && !prefs && (
             <button
               onClick={openCreate}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0D3326] text-[#D7AE62] text-sm font-bold hover:opacity-90 transition-opacity shadow-sm"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-sm font-bold hover:opacity-90 transition-opacity shadow-sm"
             >
               <Plus className="w-4 h-4" />
               Create New Search
@@ -714,13 +714,13 @@ export default function SavedSearchesClient() {
 
             {/* Error */}
             {!loading && error && (
-              <div className="rounded-2xl border border-red-100 bg-white p-10 text-center shadow-sm">
-                <AlertCircle className="w-10 h-10 text-red-400 mx-auto mb-3" />
-                <h3 className="font-bold text-[#0D3326] mb-1">Unable to load your saved searches</h3>
-                <p className="text-sm text-[#0D3326]/60 mb-5">{error}</p>
+              <div className="rounded-2xl border border-red-500/20 bg-[var(--bg-card)] p-10 text-center shadow-sm">
+                <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-3" />
+                <h3 className="font-bold text-[var(--text-primary)] mb-1">Unable to load your saved searches</h3>
+                <p className="text-sm text-[var(--text-secondary)] mb-5">{error}</p>
                 <button
                   onClick={loadData}
-                  className="px-6 py-2.5 rounded-xl bg-[#0D3326] text-[#D7AE62] text-sm font-bold hover:opacity-90 transition-opacity"
+                  className="px-6 py-2.5 rounded-xl bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-sm font-bold hover:opacity-90 transition-opacity"
                 >
                   Retry
                 </button>
@@ -729,17 +729,17 @@ export default function SavedSearchesClient() {
 
             {/* Empty state */}
             {!loading && !error && !prefs && (
-              <div className="rounded-2xl border border-dashed border-[#D7AE62]/50 bg-[#FBF4E6]/30 p-12 text-center shadow-sm">
-                <div className="w-16 h-16 rounded-full bg-[#FBF4E6] border border-[#D7AE62]/30 flex items-center justify-center mx-auto mb-4">
-                  <Search className="w-7 h-7 text-[#D7AE62]" />
+              <div className="rounded-2xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-card)] p-12 text-center shadow-sm">
+                <div className="w-16 h-16 rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-7 h-7 text-[var(--text-primary)]" />
                 </div>
-                <h3 className="text-lg font-bold text-[#0D3326] mb-2">No Saved Searches Yet</h3>
-                <p className="text-sm text-[#0D3326]/60 mb-6 max-w-xs mx-auto">
+                <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">No Saved Searches Yet</h3>
+                <p className="text-sm text-[var(--text-secondary)] mb-6 max-w-xs mx-auto">
                   Save your property search preferences and we'll help you find matching properties.
                 </p>
                 <button
                   onClick={openCreate}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0D3326] text-[#D7AE62] text-sm font-bold hover:opacity-90 transition-opacity shadow-sm"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-sm font-bold hover:opacity-90 transition-opacity shadow-sm"
                 >
                   <Plus className="w-4 h-4" />
                   Create Your First Search
@@ -751,10 +751,10 @@ export default function SavedSearchesClient() {
             {!loading && !error && prefs && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-bold text-[#0D3326]/60">1 saved search</p>
+                  <p className="text-sm font-bold text-[var(--text-secondary)]">1 saved search</p>
                   <button
                     onClick={openCreate}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-[#E5DDD0] bg-white text-xs font-bold text-[#0D3326] hover:bg-[#F7F4EF] transition-colors shadow-sm"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-xs font-bold text-[var(--text-primary)] hover:bg-[var(--bg-surface)] transition-colors shadow-sm"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Replace / Create New
@@ -769,8 +769,8 @@ export default function SavedSearchesClient() {
                 />
 
                 {/* Note about backend */}
-                <div className="flex items-start gap-2 rounded-xl bg-blue-50 border border-blue-100 p-3 text-xs text-blue-700">
-                  <Info className="w-4 h-4 shrink-0 mt-0.5" />
+                <div className="flex items-start gap-2 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-3 text-xs text-[var(--text-secondary)]">
+                  <Info className="w-4 h-4 shrink-0 mt-0.5 text-[var(--text-primary)]" />
                   <span>
                     Currently, HomeHub supports one saved property requirement per account. 
                     Multiple saved searches will be available in a future update.
@@ -780,9 +780,9 @@ export default function SavedSearchesClient() {
             )}
 
             {/* Continue exploring */}
-            <div className="pt-4 border-t border-[#E5DDD0]">
-              <h3 className="font-bold text-[#0D3326] mb-1">Continue Exploring</h3>
-              <p className="text-xs text-[#0D3326]/60 mb-4">Discover more properties and manage your search.</p>
+            <div className="pt-4 border-t border-[var(--border-subtle)]">
+              <h3 className="font-bold text-[var(--text-primary)] mb-1">Continue Exploring</h3>
+              <p className="text-xs text-[var(--text-secondary)] mb-4">Discover more properties and manage your search.</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {[
                   { label: "Search Properties", sub: "Find your next home", href: "/user/search", icon: Search },
@@ -792,18 +792,18 @@ export default function SavedSearchesClient() {
                   <Link
                     key={item.label}
                     href={item.href}
-                    className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#E5DDD0] hover:border-[#D7AE62] transition-colors group shadow-sm"
+                    className="flex items-center justify-between p-4 bg-[var(--bg-card)] rounded-xl border border-[var(--border-subtle)] hover:border-[var(--text-primary)] transition-colors group shadow-sm"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="bg-gray-50 p-2 rounded-full group-hover:bg-[#FBF4E6] transition-colors">
-                        <item.icon className="w-4 h-4 text-[#0D3326] group-hover:text-[#D7AE62]" />
+                      <div className="bg-[var(--bg-surface)] p-2 rounded-full group-hover:bg-[var(--btn-primary-bg)] group-hover:text-[var(--btn-primary-text)] transition-colors text-[var(--text-primary)]">
+                        <item.icon className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="font-bold text-[#0D3326] text-sm">{item.label}</p>
-                        <p className="text-xs text-[#0D3326]/50">{item.sub}</p>
+                        <p className="font-bold text-[var(--text-primary)] text-sm">{item.label}</p>
+                        <p className="text-xs text-[var(--text-secondary)]">{item.sub}</p>
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-[#0D3326]/20 group-hover:text-[#D7AE62]" />
+                    <ChevronRight className="w-4 h-4 text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors" />
                   </Link>
                 ))}
               </div>
@@ -814,17 +814,17 @@ export default function SavedSearchesClient() {
           <div className="hidden lg:block w-72 shrink-0 space-y-5">
             <SearchJourneyCard hasSearch={!!prefs} />
 
-            <div className="rounded-2xl border border-[#E5DDD0] bg-[#F8F6F3] p-5 text-center">
-              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm border border-[#E5DDD0]">
-                <Search className="w-6 h-6 text-[#D7AE62]" />
+            <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5 text-center">
+              <div className="w-14 h-14 bg-[var(--bg-card)] rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm border border-[var(--border-subtle)]">
+                <Search className="w-6 h-6 text-[var(--text-primary)]" />
               </div>
-              <h4 className="font-bold text-[#0D3326] text-sm mb-1">Looking for something specific?</h4>
-              <p className="text-xs text-[#0D3326]/60 mb-4">
+              <h4 className="font-bold text-[var(--text-primary)] text-sm mb-1">Looking for something specific?</h4>
+              <p className="text-xs text-[var(--text-secondary)] mb-4">
                 Update your requirements to get better property recommendations.
               </p>
               <Link
                 href="/user/profile/requirements"
-                className="inline-flex items-center justify-center w-full px-4 py-2.5 bg-[#D7AE62] text-white font-bold text-sm rounded-xl hover:bg-[#C49A4F] transition-colors gap-1.5"
+                className="inline-flex items-center justify-center w-full px-4 py-2.5 bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-bold text-sm rounded-xl hover:opacity-90 transition-opacity gap-1.5"
               >
                 Update Requirement <ChevronRight className="w-4 h-4" />
               </Link>

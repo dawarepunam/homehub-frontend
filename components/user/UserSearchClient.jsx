@@ -100,15 +100,10 @@ function SearchPropertyCard({ property }) {
   const price = formatPrice(property?.Price);
   const docId = property?.documentId || property?.id;
 
-  const purposeColor =
-    purpose?.toLowerCase() === "sale" || purpose?.toLowerCase() === "buy"
-      ? "bg-emerald-700 text-white"
-      : "bg-amber-500 text-emerald-900";
-
   return (
-    <div className="group overflow-hidden rounded-2xl bg-white shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-stone-100">
+    <div className="group overflow-hidden rounded-2xl bg-[var(--bg-card)] shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-[var(--border-subtle)] hover:border-[var(--border-focus)]">
       {/* Image */}
-      <div className="relative h-52 w-full overflow-hidden bg-stone-100">
+      <div className="relative h-52 w-full overflow-hidden bg-[var(--bg-section)]">
         {imgUrl ? (
           <img
             src={imgUrl}
@@ -116,20 +111,20 @@ function SearchPropertyCard({ property }) {
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center flex-col gap-2 text-stone-400">
-            <Home size={36} />
-            <span className="text-sm font-medium">No Image</span>
+          <div className="flex h-full w-full items-center justify-center flex-col gap-2 text-[var(--text-muted)]">
+            <Home size={32} />
+            <span className="text-xs font-semibold">No Image</span>
           </div>
         )}
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
           {type && (
-            <span className="rounded-full bg-emerald-900/90 px-3 py-1 text-xs font-semibold text-amber-400 backdrop-blur-sm">
+            <span className="rounded-lg bg-[var(--accent)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--accent-text)] shadow-sm">
               {type}
             </span>
           )}
           {purpose && (
-            <span className={`rounded-full px-3 py-1 text-xs font-bold backdrop-blur-sm ${purposeColor}`}>
+            <span className="rounded-lg bg-[var(--bg-card)]/90 backdrop-blur-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--text-primary)] border border-[var(--border-subtle)] shadow-sm">
               {purpose}
             </span>
           )}
@@ -137,43 +132,45 @@ function SearchPropertyCard({ property }) {
       </div>
 
       {/* Content */}
-      <div className="p-5">
-        {category && (
-          <p className="mb-1 text-xs font-bold uppercase tracking-widest text-amber-600">
-            {category}
-          </p>
-        )}
-        <h3 className="text-base font-bold text-emerald-900 line-clamp-2 leading-snug">
-          {title}
-        </h3>
+      <div className="p-4 flex flex-col justify-between">
+        <div>
+          {category && (
+            <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+              {category}
+            </p>
+          )}
+          <h3 className="text-base font-bold text-[var(--text-primary)] line-clamp-1 leading-snug">
+            {title}
+          </h3>
 
-        {(city || area) && (
-          <p className="mt-2 flex items-center gap-1.5 text-sm text-stone-500">
-            <MapPin size={14} className="shrink-0 text-amber-500" />
-            {[area, city].filter(Boolean).join(", ")}
-          </p>
-        )}
+          {(city || area) && (
+            <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+              <MapPin size={13} className="shrink-0 text-[var(--text-muted)]" />
+              {[area, city].filter(Boolean).join(", ")}
+            </p>
+          )}
 
-        {price && (
-          <p className="mt-3 text-xl font-extrabold text-emerald-900">
-            {price}
-            {purpose?.toLowerCase() === "rent" && (
-              <span className="ml-1 text-sm font-normal text-stone-500">/month</span>
-            )}
-          </p>
-        )}
+          {price && (
+            <p className="mt-3 text-lg font-extrabold text-[var(--text-primary)]">
+              {price}
+              {purpose?.toLowerCase() === "rent" && (
+                <span className="ml-1 text-xs font-normal text-[var(--text-muted)]">/month</span>
+              )}
+            </p>
+          )}
+        </div>
 
         {/* Actions */}
-        <div className="mt-4 flex items-center justify-between gap-3">
+        <div className="mt-4 flex items-center justify-between gap-2 border-t border-[var(--border-subtle)] pt-3">
           {docId ? (
             <Link
               href={`/user/property/${docId}`}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-900 px-4 py-2.5 text-sm font-bold text-amber-400 transition hover:bg-emerald-800"
+              className="hh-btn hh-btn-primary hh-btn-sm w-full"
             >
-              View Details <ArrowRight size={15} />
+              <span>View Details</span> <ArrowRight size={13} />
             </Link>
           ) : (
-            <span className="flex-1 rounded-xl bg-stone-200 px-4 py-2.5 text-center text-sm text-stone-400">
+            <span className="w-full text-center text-xs font-semibold text-[var(--text-muted)] py-2">
               Unavailable
             </span>
           )}
@@ -328,26 +325,26 @@ export default function UserSearchClient() {
 
   return (
     <>
-      <div className="mx-auto max-w-7xl px-6 py-8 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 lg:px-8">
         {/* ---- Back Button ---- */}
         <div className="mb-6">
           <button
             onClick={() => router.push("/user")}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-900 transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
           >
             ← Back
           </button>
         </div>
 
         {/* ---- Results Count + Sort ---- */}
-        <div className="mb-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
             {loading ? (
-              <div className="h-6 w-36 animate-pulse rounded bg-stone-200" />
+              <div className="h-6 w-36 animate-pulse rounded bg-[var(--skeleton-base)]" />
             ) : error ? null : (
-              <p className="text-lg font-bold text-emerald-900">
+              <p className="text-xl font-extrabold text-[var(--text-primary)]">
                 {total}{" "}
-                <span className="font-normal text-stone-600">
+                <span className="text-sm font-normal text-[var(--text-muted)]">
                   {total === 1 ? "Property" : "Properties"} Found
                 </span>
               </p>
@@ -355,15 +352,15 @@ export default function UserSearchClient() {
           </div>
 
           {/* Sort dropdown */}
-          <div className="flex items-center gap-3">
-            <ArrowUpDown size={16} className="text-stone-500 shrink-0" />
+          <div className="flex items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-3 py-1.5 shadow-sm">
+            <ArrowUpDown size={14} className="text-[var(--text-muted)] shrink-0" />
             <select
               value={sort}
               onChange={(e) => handleSortChange(e.target.value)}
-              className="rounded-xl border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-stone-700 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+              className="bg-transparent text-xs font-bold text-[var(--text-primary)] outline-none cursor-pointer"
             >
               {SORT_OPTIONS.map((o) => (
-                <option key={o.label} value={o.value}>
+                <option key={o.label} value={o.value} className="bg-[var(--bg-card)] text-[var(--text-primary)]">
                   Sort: {o.label}
                 </option>
               ))}
@@ -374,20 +371,20 @@ export default function UserSearchClient() {
         {/* ---- Active Filter Chips ---- */}
         {hasFilters && (
           <div className="mb-6 flex flex-wrap items-center gap-2">
-            <SlidersHorizontal size={16} className="text-stone-500 shrink-0" />
+            <SlidersHorizontal size={14} className="text-[var(--text-muted)] shrink-0" />
             {activeFilters.map(({ key, label }) => (
               <button
                 key={key}
                 onClick={() => removeFilter(key)}
-                className="flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-100"
+                className="flex items-center gap-1.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--accent)] px-2.5 py-1 text-xs font-semibold text-[var(--accent-text)] transition hover:opacity-80"
               >
                 {label}
-                <X size={13} className="text-emerald-600" />
+                <X size={11} className="opacity-80" />
               </button>
             ))}
             <button
               onClick={clearAll}
-              className="ml-2 text-sm font-semibold text-stone-500 underline hover:text-emerald-700"
+              className="ml-2 text-xs font-semibold text-[var(--text-muted)] underline hover:text-[var(--text-primary)]"
             >
               Clear All
             </button>
@@ -399,29 +396,29 @@ export default function UserSearchClient() {
 
         {/* ---- Error ---- */}
         {!loading && error && (
-          <div className="mx-auto max-w-lg rounded-2xl border border-red-200 bg-red-50 p-10 text-center">
-            <AlertCircle className="mx-auto mb-3 h-12 w-12 text-red-400" />
-            <h2 className="text-xl font-bold text-red-700">
+          <div className="mx-auto max-w-lg rounded-2xl border border-red-500/20 bg-red-500/10 p-8 text-center text-red-500">
+            <AlertCircle className="mx-auto mb-3 h-10 w-10 text-red-500" />
+            <h2 className="text-lg font-bold">
               Unable to load search results
             </h2>
-            <p className="mt-2 text-red-600">{error}</p>
+            <p className="mt-1 text-xs">{error}</p>
             <button
               onClick={fetchProperties}
-              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-red-600 px-6 py-2.5 font-semibold text-white transition hover:bg-red-700"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2 text-xs font-bold text-white transition hover:bg-red-700"
             >
-              <RefreshCw size={16} /> Try Again
+              <RefreshCw size={14} /> Try Again
             </button>
           </div>
         )}
 
         {/* ---- No Results ---- */}
         {!loading && !error && properties.length === 0 && (
-          <div className="mx-auto max-w-lg rounded-2xl border border-stone-200 bg-white p-12 text-center shadow-sm">
-            <Search className="mx-auto mb-4 h-14 w-14 text-stone-300" />
-            <h2 className="text-2xl font-bold text-emerald-900">
+          <div className="mx-auto max-w-lg rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-10 text-center shadow-sm">
+            <Search className="mx-auto mb-4 h-12 w-12 text-[var(--text-muted)] opacity-40" />
+            <h2 className="text-xl font-bold text-[var(--text-primary)]">
               No Properties Found
             </h2>
-            <p className="mt-3 text-stone-500">
+            <p className="mt-2 text-xs text-[var(--text-muted)]">
               No properties match your selected filters. Try changing your search
               criteria.
             </p>
@@ -429,14 +426,14 @@ export default function UserSearchClient() {
               {hasFilters && (
                 <button
                   onClick={clearAll}
-                  className="rounded-xl border border-stone-300 px-6 py-2.5 font-semibold text-stone-700 transition hover:bg-stone-50"
+                  className="hh-btn hh-btn-secondary hh-btn-sm"
                 >
                   Clear All Filters
                 </button>
               )}
               <Link
                 href="/user"
-                className="rounded-xl bg-emerald-900 px-6 py-2.5 font-semibold text-amber-400 transition hover:bg-emerald-800"
+                className="hh-btn hh-btn-primary hh-btn-sm"
               >
                 Back to Home
               </Link>

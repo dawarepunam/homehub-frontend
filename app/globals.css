@@ -1060,3 +1060,551 @@ body {
   opacity: 1;
 }
 
+/* =========================================================
+   PHASE 1 — EXTENDED DESIGN TOKENS
+   Neutral-Black accent direction.
+   All additions below are purely additive — no existing
+   token or CSS rule has been modified.
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   LIGHT THEME — new tokens (appended to :root)
+   --------------------------------------------------------- */
+:root {
+
+  /* ── Accent — Neutral Black ────────────────────────────
+     Aliases --btn-primary-* so the accent is #111111 in
+     light mode and #ffffff in dark mode.
+     Components use --accent instead of hardcoded values.  */
+  --accent:            var(--btn-primary-bg);
+  --accent-text:       var(--btn-primary-text);
+  --accent-light:      rgba(0, 0, 0, 0.05);
+  --accent-border:     rgba(0, 0, 0, 0.12);
+
+  /* ── Card hover shadow ───────────────────────────────── */
+  --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.12),
+                       0 2px 8px  rgba(0, 0, 0, 0.06);
+
+  /* ── Input / Form ────────────────────────────────────── */
+  --input-bg:              var(--bg-page);
+  --input-border:          rgba(0, 0, 0, 0.12);
+  --input-border-focus:    var(--text-primary);
+  --input-ring-focus:      rgba(0, 0, 0, 0.08);
+  --input-placeholder:     #999999;
+  --input-text:            var(--text-primary);
+  --input-label:           var(--text-muted);
+
+  /* ── Sidebar ─────────────────────────────────────────── */
+  --sidebar-bg:            var(--bg-card);
+  --sidebar-border:        var(--border-subtle);
+  --sidebar-item-hover-bg: var(--bg-section);
+  --sidebar-active-bg:     rgba(0, 0, 0, 0.05);
+  --sidebar-active-text:   var(--text-primary);
+  --sidebar-active-border: var(--text-primary);
+  --sidebar-muted:         var(--text-muted);
+
+  /* ── Badges / Tags ───────────────────────────────────── */
+  --badge-bg:              rgba(0, 0, 0, 0.05);
+  --badge-text:            var(--text-primary);
+  --badge-border:          rgba(0, 0, 0, 0.08);
+
+  --badge-success-bg:      rgba(22, 163, 74, 0.10);
+  --badge-success-text:    #15803d;
+  --badge-success-border:  rgba(22, 163, 74, 0.20);
+
+  --badge-warning-bg:      rgba(202, 138, 4, 0.10);
+  --badge-warning-text:    #a16207;
+  --badge-warning-border:  rgba(202, 138, 4, 0.20);
+
+  --badge-error-bg:        rgba(220, 38, 38, 0.10);
+  --badge-error-text:      #b91c1c;
+  --badge-error-border:    rgba(220, 38, 38, 0.20);
+
+  --badge-muted-bg:        var(--bg-section);
+  --badge-muted-text:      var(--text-muted);
+  --badge-muted-border:    var(--border-subtle);
+
+  /* ── Status (text / icon use) ────────────────────────── */
+  --status-success:   #16a34a;
+  --status-warning:   #ca8a04;
+  --status-error:     #dc2626;
+  --status-info:      #2563eb;
+
+  /* ── Divider ─────────────────────────────────────────── */
+  --divider:          var(--border-subtle);
+
+  /* ── Skeleton ────────────────────────────────────────── */
+  --skeleton-base:    var(--bg-section);
+  --skeleton-shimmer: rgba(255, 255, 255, 0.50);
+
+  /* ── Focus ring ──────────────────────────────────────── */
+  --focus-ring:       0 0 0 3px rgba(0, 0, 0, 0.10);
+}
+
+/* ---------------------------------------------------------
+   DARK THEME — overrides for all new tokens
+   --------------------------------------------------------- */
+:root[data-theme="dark"] {
+
+  /* Accent — neutral white on dark */
+  --accent:            var(--btn-primary-bg);
+  --accent-text:       var(--btn-primary-text);
+  --accent-light:      rgba(255, 255, 255, 0.07);
+  --accent-border:     rgba(255, 255, 255, 0.15);
+
+  /* Card hover shadow — deeper on dark */
+  --shadow-card-hover: 0 16px 48px rgba(0, 0, 0, 0.60),
+                       0 2px 12px rgba(0, 0, 0, 0.30);
+
+  /* Input / Form */
+  --input-bg:              var(--bg-page);
+  --input-border:          rgba(255, 255, 255, 0.12);
+  --input-border-focus:    var(--text-primary);
+  --input-ring-focus:      rgba(255, 255, 255, 0.08);
+  --input-placeholder:     #666666;
+  --input-text:            var(--text-primary);
+  --input-label:           var(--text-muted);
+
+  /* Sidebar */
+  --sidebar-bg:            var(--bg-card);
+  --sidebar-border:        var(--border-subtle);
+  --sidebar-item-hover-bg: var(--bg-section);
+  --sidebar-active-bg:     rgba(255, 255, 255, 0.06);
+  --sidebar-active-text:   var(--text-primary);
+  --sidebar-active-border: var(--text-primary);
+  --sidebar-muted:         var(--text-muted);
+
+  /* Badges */
+  --badge-bg:              rgba(255, 255, 255, 0.06);
+  --badge-text:            var(--text-primary);
+  --badge-border:          rgba(255, 255, 255, 0.10);
+
+  --badge-success-bg:      rgba(22, 163, 74, 0.15);
+  --badge-success-text:    #4ade80;
+  --badge-success-border:  rgba(22, 163, 74, 0.25);
+
+  --badge-warning-bg:      rgba(202, 138, 4, 0.15);
+  --badge-warning-text:    #fbbf24;
+  --badge-warning-border:  rgba(202, 138, 4, 0.25);
+
+  --badge-error-bg:        rgba(220, 38, 38, 0.15);
+  --badge-error-text:      #f87171;
+  --badge-error-border:    rgba(220, 38, 38, 0.25);
+
+  --badge-muted-bg:        var(--bg-section);
+  --badge-muted-text:      var(--text-muted);
+  --badge-muted-border:    var(--border-subtle);
+
+  /* Divider */
+  --divider:          var(--border-subtle);
+
+  /* Skeleton */
+  --skeleton-base:    var(--bg-section);
+  --skeleton-shimmer: rgba(255, 255, 255, 0.04);
+
+  /* Focus ring */
+  --focus-ring:       0 0 0 3px rgba(255, 255, 255, 0.10);
+}
+
+/* =========================================================
+   PHASE 1 — REUSABLE UTILITY CLASSES
+   Every class references CSS variables only.
+   No hardcoded colors.
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   TYPOGRAPHY UTILITIES
+   --------------------------------------------------------- */
+
+.hh-section-title {
+  font-size: var(--text-section);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: var(--text-primary);
+}
+
+.hh-section-subtitle {
+  font-size: var(--text-body-lg);
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.hh-card-title {
+  font-size: var(--text-card-title);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.hh-card-meta {
+  font-size: var(--text-tiny);
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ---------------------------------------------------------
+   BUTTON UTILITIES
+   --------------------------------------------------------- */
+
+/* Base foundation — not used alone */
+.hh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: var(--radius-btn);
+  font-size: var(--text-small);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.18s ease,
+              transform 0.15s ease,
+              background-color 0.18s ease,
+              border-color 0.18s ease,
+              box-shadow 0.18s ease;
+}
+
+.hh-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Primary — solid fill */
+.hh-btn-primary {
+  background: var(--accent);
+  color:       var(--accent-text);
+  border-color: transparent;
+}
+.hh-btn-primary:hover {
+  opacity: 0.84;
+  transform: translateY(-1px);
+}
+.hh-btn-primary:active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.hh-btn-primary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Secondary — outlined */
+.hh-btn-secondary {
+  background: transparent;
+  color:       var(--text-primary);
+  border-color: var(--input-border);
+}
+.hh-btn-secondary:hover {
+  border-color: var(--text-primary);
+  background: var(--accent-light);
+  transform: translateY(-1px);
+}
+.hh-btn-secondary:active {
+  transform: translateY(0);
+}
+.hh-btn-secondary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Ghost — minimal */
+.hh-btn-ghost {
+  background: transparent;
+  color:       var(--text-muted);
+  border-color: transparent;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.hh-btn-ghost:hover {
+  color: var(--text-primary);
+  background: var(--accent-light);
+}
+.hh-btn-ghost:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Size modifiers */
+.hh-btn-sm {
+  padding: 7px 14px;
+  font-size: var(--text-tiny);
+}
+.hh-btn-lg {
+  padding: 13px 28px;
+  font-size: var(--text-body-lg);
+}
+
+/* ---------------------------------------------------------
+   FORM / INPUT UTILITIES
+   --------------------------------------------------------- */
+
+.hh-input,
+.hh-select,
+.hh-textarea {
+  width: 100%;
+  background: var(--input-bg);
+  color: var(--input-text);
+  border: 1.5px solid var(--input-border);
+  border-radius: var(--radius-btn);
+  padding: 10px 14px;
+  font-size: var(--text-body);
+  font-weight: 500;
+  font-family: inherit;
+  line-height: 1.5;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.hh-input::placeholder,
+.hh-textarea::placeholder {
+  color: var(--input-placeholder);
+  font-weight: 400;
+}
+
+.hh-input:focus,
+.hh-select:focus,
+.hh-textarea:focus {
+  border-color: var(--input-border-focus);
+  box-shadow: 0 0 0 3px var(--input-ring-focus);
+}
+
+.hh-select {
+  cursor: pointer;
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.hh-textarea {
+  resize: vertical;
+  min-height: 96px;
+}
+
+.hh-label {
+  display: block;
+  font-size: var(--text-tiny);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--input-label);
+  margin-bottom: 6px;
+}
+
+.hh-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Input with leading icon */
+.hh-input-wrap {
+  position: relative;
+}
+
+.hh-input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--input-placeholder);
+  pointer-events: none;
+  width: 16px;
+  height: 16px;
+}
+
+.hh-input-wrap .hh-input {
+  padding-left: 40px;
+}
+
+/* ---------------------------------------------------------
+   BADGE / TAG UTILITIES
+   --------------------------------------------------------- */
+
+.hh-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: var(--text-tiny);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border: 1px solid var(--badge-border);
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  white-space: nowrap;
+}
+
+.hh-badge--success {
+  background:   var(--badge-success-bg);
+  color:        var(--badge-success-text);
+  border-color: var(--badge-success-border);
+}
+
+.hh-badge--warning {
+  background:   var(--badge-warning-bg);
+  color:        var(--badge-warning-text);
+  border-color: var(--badge-warning-border);
+}
+
+.hh-badge--error {
+  background:   var(--badge-error-bg);
+  color:        var(--badge-error-text);
+  border-color: var(--badge-error-border);
+}
+
+.hh-badge--muted {
+  background:   var(--badge-muted-bg);
+  color:        var(--badge-muted-text);
+  border-color: var(--badge-muted-border);
+}
+
+/* ---------------------------------------------------------
+   EMPTY STATE UTILITIES
+   --------------------------------------------------------- */
+
+.hh-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 72px 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.hh-empty-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg-section);
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.hh-empty-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.hh-empty-desc {
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+
+/* ---------------------------------------------------------
+   SKELETON UTILITY
+   Supplements np-skeleton-* classes. Reuses the existing
+   @keyframes np-shimmer defined earlier in this file.
+   --------------------------------------------------------- */
+
+.hh-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--skeleton-base);
+  border-radius: 6px;
+}
+
+.hh-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent              0%,
+    var(--skeleton-shimmer)  50%,
+    transparent              100%
+  );
+  animation: np-shimmer 1.6s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------
+   DIVIDER UTILITY
+   --------------------------------------------------------- */
+
+.hh-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--divider);
+  border: none;
+  margin: 0;
+}
+
+/* ---------------------------------------------------------
+   FOCUS UTILITY
+   --------------------------------------------------------- */
+
+.hh-focusable:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-btn);
+}
+
+/* =========================================================
+   PHASE 1 — PREFERS-REDUCED-MOTION
+   Safe approach:
+   • Uses 0.01ms (not 0ms) so JS transitionend listeners
+     still fire — avoids silent state-machine hangs.
+   • Does NOT remove or hide any element.
+   • Stops shimmer on skeletons (static placeholder visible).
+   • Stops np-pulse dot (stays at full opacity/scale).
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  body {
+    transition: none !important;
+  }
+
+  /* Shimmer skeletons become static placeholders */
+  .np-skeleton-img::after,
+  .np-skeleton-line::after,
+  .np-skeleton-btn::after,
+  .hh-skeleton::after {
+    animation: none !important;
+    background: var(--skeleton-shimmer);
+    opacity: 0.35;
+  }
+
+  /* Pulsing eyebrow dot becomes static */
+  .np-hero__eyebrow-dot {
+    animation: none !important;
+    opacity: 1;
+    transform: scale(1);
+  }
+}

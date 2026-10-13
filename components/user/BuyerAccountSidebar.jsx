@@ -142,23 +142,23 @@ export default function BuyerAccountSidebar() {
     <>
       {/* MOBILE DROPDOWN NAVIGATION */}
       <div className="lg:hidden mb-6">
-        <div className="rounded-xl border border-[#E5DDD0] bg-white p-4 shadow-sm">
+        <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4 shadow-sm">
           <div className="mb-4">
-            <h2 className="text-sm font-extrabold text-[#0D3326]">MY ACCOUNT</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">MY ACCOUNT</h2>
           </div>
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex w-full items-center justify-between rounded-xl border border-[#E5DDD0] bg-[#F7F4EF] px-4 py-3 text-sm font-bold text-[#0D3326]"
+            className="flex w-full items-center justify-between rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)]"
           >
             <span>{activeItemName}</span>
-            <ChevronDown size={16} className={`transition-transform ${mobileMenuOpen ? "rotate-180" : ""}`} />
+            <ChevronDown size={16} className={`text-[var(--text-secondary)] transition-transform ${mobileMenuOpen ? "rotate-180" : ""}`} />
           </button>
           
           {mobileMenuOpen && (
-            <div className="mt-2 space-y-4 rounded-xl border border-[#E5DDD0] bg-white p-2 shadow-lg">
+            <div className="mt-2 space-y-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-2 shadow-lg">
               {sections.map((section, idx) => (
                 <div key={idx} className="pb-2">
-                  <p className="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-[#0D3326]/50">
+                  <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
                     {section.title}
                   </p>
                   {section.items.map((item) => {
@@ -169,26 +169,26 @@ export default function BuyerAccountSidebar() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-bold transition-all ${
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
                           isActive 
-                            ? "bg-[#0D3326] text-[#F3E7D2]" 
-                            : "text-[#0D3326]/80 hover:bg-[#F7F4EF] hover:text-[#0D3326]"
+                            ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)]" 
+                            : "text-[var(--text-secondary)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]"
                         }`}
                       >
-                        <Icon size={16} className={isActive ? "text-[#D7AE62]" : "text-[#0D3326]/50"} />
+                        <Icon size={16} className={isActive ? "text-[var(--btn-primary-text)]" : "text-[var(--text-secondary)]"} />
                         {item.name}
                       </Link>
                     );
                   })}
                 </div>
               ))}
-              <div className="border-t border-[#E5DDD0] pt-2">
-                <p className="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-[#0D3326]/50">
+              <div className="border-t border-[var(--border-subtle)] pt-2">
+                <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
                   ACCOUNT
                 </p>
                 <button
                   onClick={handleLogout}
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-bold text-red-600 transition-all hover:bg-red-50"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-red-500 transition-all hover:bg-red-500/10"
                 >
                   <LogOut size={16} />
                   Logout
@@ -201,40 +201,40 @@ export default function BuyerAccountSidebar() {
 
       {/* DESKTOP SIDEBAR */}
       <aside className="hidden lg:block w-72 shrink-0">
-        <div className="sticky top-28 rounded-2xl border border-[#E5DDD0] bg-[#FDFAF6] shadow-sm overflow-hidden pb-4">
+        <div className="sticky top-28 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm overflow-hidden pb-4">
           
-          <div className="px-6 py-5 border-b border-[#E5DDD0] bg-white">
-             <h2 className="text-sm font-extrabold tracking-wider text-[#0D3326] mb-4">MY ACCOUNT</h2>
+          <div className="px-6 py-5 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+             <h2 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-4">MY ACCOUNT</h2>
              
              {loading ? (
                <div className="animate-pulse flex items-center gap-4">
-                 <div className="h-16 w-16 rounded-full bg-[#E5DDD0]" />
+                 <div className="h-16 w-16 rounded-full bg-[var(--border-subtle)]" />
                  <div className="space-y-2">
-                   <div className="h-4 w-24 bg-[#E5DDD0] rounded" />
-                   <div className="h-3 w-16 bg-[#E5DDD0] rounded" />
+                   <div className="h-4 w-24 bg-[var(--border-subtle)] rounded" />
+                   <div className="h-3 w-16 bg-[var(--border-subtle)] rounded" />
                  </div>
                </div>
              ) : (
                <div className="flex items-center gap-4">
-                 <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-[#D7AE62] bg-[#F7F4EF]">
+                 <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[var(--border-subtle)] bg-[var(--bg-page)]">
                    {profileImageUrl ? (
                      <img src={profileImageUrl} alt={fullName} className="h-full w-full object-cover" />
                    ) : (
-                     <div className="flex h-full w-full items-center justify-center text-xl font-extrabold text-[#0D3326]">
+                     <div className="flex h-full w-full items-center justify-center text-xl font-bold text-[var(--text-primary)]">
                        {initials}
                      </div>
                    )}
                  </div>
                  <div className="min-w-0">
-                   <h3 className="truncate text-base font-extrabold text-[#0D3326]" title={fullName}>
+                   <h3 className="truncate text-base font-bold text-[var(--text-primary)]" title={fullName}>
                      {fullName}
                    </h3>
-                   <span className="mt-0.5 inline-block rounded-full bg-[#E8F4F0] px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                   <span className="mt-1 inline-block rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] px-2 py-0.5 text-[10px] font-semibold text-[var(--text-secondary)]">
                      Buyer
                    </span>
                    {locationStr && (
-                     <p className="mt-1 flex items-center gap-1 truncate text-xs font-semibold text-[#0D3326]/60">
-                       <MapPin size={10} className="shrink-0 text-[#D7AE62]" />
+                     <p className="mt-1.5 flex items-center gap-1.5 truncate text-xs font-medium text-[var(--text-secondary)]">
+                       <MapPin size={11} className="shrink-0 text-[var(--text-secondary)]" />
                        <span className="truncate">{locationStr}</span>
                      </p>
                    )}
@@ -246,7 +246,7 @@ export default function BuyerAccountSidebar() {
           <div className="px-4 py-4 space-y-6">
             {sections.map((section, idx) => (
               <div key={idx}>
-                <h4 className="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-[#0D3326]/50">
+                <h4 className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
                   {section.title}
                 </h4>
                 <div className="space-y-1">
@@ -257,13 +257,13 @@ export default function BuyerAccountSidebar() {
                       <Link
                         key={item.href}
                         href={item.href}
-                        className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition-all ${
+                        className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${
                           isActive 
-                            ? "bg-[#0D3326] text-[#F3E7D2] shadow-sm" 
-                            : "text-[#0D3326]/80 hover:bg-[#F7F4EF] hover:text-[#0D3326]"
+                            ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] shadow-sm" 
+                            : "text-[var(--text-secondary)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]"
                         }`}
                       >
-                        <Icon size={16} className={isActive ? "text-[#D7AE62]" : "text-[#0D3326]/50"} />
+                        <Icon size={16} className={isActive ? "text-[var(--btn-primary-text)]" : "text-[var(--text-secondary)]"} />
                         {item.name}
                       </Link>
                     );
@@ -273,14 +273,14 @@ export default function BuyerAccountSidebar() {
             ))}
 
             <div>
-              <h4 className="mb-2 px-2 text-[10px] font-bold uppercase tracking-wider text-[#0D3326]/50">
+              <h4 className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
                 ACCOUNT
               </h4>
               <button
                 onClick={handleLogout}
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-red-600 transition-all hover:bg-red-50 hover:text-red-700"
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-red-500 transition-all hover:bg-red-500/10 hover:text-red-600"
               >
-                <LogOut size={16} className="text-red-500" />
+                <LogOut size={16} />
                 Logout
               </button>
             </div>
