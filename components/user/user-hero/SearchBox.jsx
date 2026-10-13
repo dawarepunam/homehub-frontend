@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import homeStyles from "@/app/home/HomeSearch.module.css";
 import SearchTabs from "./SearchTabs";
 import SearchFilters from "./SearchFilters";
 
@@ -15,7 +16,7 @@ export default function SearchBox({ searchData }) {
   if (!searchData) return null;
 
   return (
-    <div className="w-full rounded-[18px] bg-[var(--search-bg)] border border-[var(--search-border)] backdrop-blur-[24px] shadow-2xl p-3 sm:p-3.5 transition-all duration-200">
+    <div className={homeStyles.searchCard}>
       {/* ================= Tabs (Buy / Rent / Sale) ================= */}
       <SearchTabs
         searchData={searchData}
@@ -24,12 +25,10 @@ export default function SearchBox({ searchData }) {
       />
 
       {/* ================= Filters Grid ================= */}
-      <div className="pt-1">
-        <SearchFilters
-          searchData={searchData}
-          activePurpose={activePurpose}
-        />
-      </div>
+      <SearchFilters
+        searchData={searchData}
+        activePurpose={activePurpose}
+      />
     </div>
   );
 }

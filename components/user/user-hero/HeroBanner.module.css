@@ -98,10 +98,10 @@
   width: 100%;
 }
 
-/* SEARCH CONTAINER */
+/* SEARCH CONTAINER — Matches HomeHero 780px compact width */
 .searchContainer {
   width: 100%;
-  max-width: 1040px;
+  max-width: 780px;
   margin-top: 36px;
 }
 
@@ -137,7 +137,7 @@
     max-width: 480px;
   }
   .searchContainer {
-    max-width: 780px;
+    max-width: 640px;
     margin-top: 32px;
   }
 }

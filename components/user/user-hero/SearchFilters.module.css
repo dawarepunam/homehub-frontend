@@ -1,0 +1,16 @@
+/* Responsive 5-column layout for User page search bar matching HomeSearch */
+.userFieldsGrid {
+  grid-template-columns: 1.2fr 1fr 1fr 1fr auto !important;
+}
+
+@media (max-width: 780px) {
+  .userFieldsGrid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .userFieldsGrid {
+    grid-template-columns: 1fr !important;
+  }
+}
