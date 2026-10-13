@@ -135,7 +135,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronRight, Building, Home, Factory } from "lucide-react";
 
 export default function UserDropdown({ menuItem }) {
   if (!menuItem) return null;
@@ -148,41 +148,52 @@ export default function UserDropdown({ menuItem }) {
     return null;
   }
 
-  // Define static fallback categories since Strapi doesn't provide them via MenuItem yet.
-  // In a full implementation, these would come from a "PropertyTypes" relation.
+  // Tailored categories per property type
   let popularCategories = [];
   let quickLinks = [];
+  let IconComponent = Home;
 
   if (menuItem.Title === "Residential") {
-    popularCategories = ["1 BHK", "2 BHK", "3 BHK", "4 BHK", "5+ BHK", "Apartments", "Independent House", "Villa", "Plot / Land", "PG / Co-living"];
-    quickLinks = ["Properties for Sale", "Properties for Rent", "New Projects", "View All Residential"];
+    popularCategories = ["1 BHK", "2 BHK", "3 BHK", "4 BHK", "Villas", "Plots"];
+    quickLinks = ["Properties for Sale", "Properties for Rent", "View All Residential"];
+    IconComponent = Home;
   } else if (menuItem.Title === "Commercial") {
-    popularCategories = ["Office Spaces", "Shops", "Showrooms", "Warehouses", "Commercial Plots", "Co-working Spaces", "Business Centres"];
+    popularCategories = ["Office Spaces", "Shops", "Showrooms", "Warehouses", "Co-working"];
     quickLinks = ["Commercial for Sale", "Commercial for Rent", "View All Commercial"];
+    IconComponent = Building;
   } else if (menuItem.Title === "Industrial") {
-    popularCategories = ["Factory", "Industrial Shed", "Warehouse", "Industrial Land", "Manufacturing Unit", "Logistics / Storage"];
+    popularCategories = ["Factory", "Industrial Shed", "Warehouse", "Industrial Land"];
     quickLinks = ["Industrial for Sale", "Industrial for Rent", "View All Industrial"];
+    IconComponent = Factory;
   }
 
   return (
     <div
-      className="w-max overflow-hidden rounded-2xl bg-[var(--bg-card)] shadow-2xl transition-all border border-[var(--border-subtle)] text-[var(--text-primary)]"
+      className="w-auto overflow-hidden rounded-2xl bg-[var(--bg-card)] shadow-2xl border border-[var(--border-subtle)] text-[var(--text-primary)] transition-all"
+      style={{
+        width: "max-content",
+        maxWidth: "min(680px, calc(100vw - 32px))",
+      }}
     >
-      <div className="grid grid-cols-4 gap-8 p-7" style={{ minWidth: "780px" }}>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 p-5 sm:p-6">
         
         {/* Column 1: Popular Categories */}
-        <div className="flex flex-col gap-3">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-[var(--border-subtle)] pb-2">
-            Popular {menuItem.Title}
-          </h4>
-          <ul className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2.5">
+          <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] pb-2">
+            <IconComponent size={14} className="text-[var(--accent)] shrink-0" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+              Popular {menuItem.Title}
+            </h4>
+          </div>
+          <ul className="flex flex-col gap-1.5 pt-1">
             {popularCategories.map((cat, idx) => (
               <li key={idx}>
                 <Link
                   href={`/user/properties?type=${encodeURIComponent(menuItem.Slug)}&category=${encodeURIComponent(cat.toLowerCase())}`}
-                  className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                  className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)] transition-all"
                 >
-                  {cat}
+                  <span>{cat}</span>
+                  <ChevronRight size={12} className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[var(--text-muted)]" />
                 </Link>
               </li>
             ))}
@@ -190,59 +201,44 @@ export default function UserDropdown({ menuItem }) {
         </div>
 
         {/* Column 2: Buy / Rent (Dynamic from Strapi) */}
-        <div className="flex flex-col gap-6">
-          {dropdownItems.map((item, index) => (
-            <div key={item.id || index} className="flex flex-col gap-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-[var(--border-subtle)] pb-2">
-                {item.Text}
-              </h4>
-              <ul className="flex flex-col gap-2">
-                <li>
-                  <Link
-                    href={`/user/properties?type=${encodeURIComponent(menuItem.Slug)}&purpose=${encodeURIComponent(item.Slug)}`}
-                    className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-                  >
-                    View All {item.Text}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        {/* Column 3: Featured Types */}
-        <div className="flex flex-col gap-3">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] border-b border-[var(--border-subtle)] pb-2">
-            Property Types
-          </h4>
-          <ul className="flex flex-col gap-2">
-            {popularCategories.slice(0, 5).map((cat, idx) => (
-              <li key={`type-${idx}`}>
+        <div className="flex flex-col gap-4">
+          <div className="border-b border-[var(--border-subtle)] pb-2">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+              Explore by Purpose
+            </h4>
+          </div>
+          <div className="flex flex-col gap-3">
+            {dropdownItems.map((item, index) => (
+              <div key={item.id || index} className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3 transition hover:border-[var(--border-focus)]">
+                <span className="text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] block">
+                  {item.Text}
+                </span>
                 <Link
-                  href={`/user/properties?type=${encodeURIComponent(menuItem.Slug)}&category=${encodeURIComponent(cat.toLowerCase())}`}
-                  className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                  href={`/user/properties?type=${encodeURIComponent(menuItem.Slug)}&purpose=${encodeURIComponent(item.Slug)}`}
+                  className="mt-1 flex items-center justify-between text-xs sm:text-sm font-semibold text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors group"
                 >
-                  {cat}
+                  <span>Browse {item.Text}</span>
+                  <ArrowRight size={13} className="transition-transform group-hover:translate-x-1 text-[var(--text-muted)]" />
                 </Link>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
 
-        {/* Column 4: Quick Links */}
-        <div className="flex flex-col gap-3">
+        {/* Column 3: Quick Links */}
+        <div className="flex flex-col gap-2.5 bg-[var(--bg-surface)] p-4 rounded-xl border border-[var(--border-subtle)]">
           <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] border-b border-[var(--border-subtle)] pb-2">
             Quick Links
           </h4>
-          <ul className="flex flex-col gap-2.5">
+          <ul className="flex flex-col gap-2 pt-1">
             {quickLinks.map((link, idx) => (
               <li key={idx}>
                 <Link
                   href={`/user/properties?type=${encodeURIComponent(menuItem.Slug)}`}
-                  className="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)] hover:opacity-80 transition-opacity group"
+                  className="flex items-center justify-between text-xs sm:text-sm font-semibold text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors group py-1"
                 >
-                  {link}
-                  <ArrowRight size={13} className="transition-transform group-hover:translate-x-1 text-[var(--text-muted)]" />
+                  <span className="truncate">{link}</span>
+                  <ArrowRight size={13} className="shrink-0 transition-transform group-hover:translate-x-1 text-[var(--text-muted)]" />
                 </Link>
               </li>
             ))}

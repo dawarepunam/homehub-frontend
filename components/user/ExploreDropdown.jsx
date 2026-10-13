@@ -6,9 +6,13 @@ import { ArrowRight, Calculator, Map, Heart, History, Compass, Search } from "lu
 export default function ExploreDropdown() {
   return (
     <div
-      className="w-max overflow-hidden rounded-2xl bg-[var(--bg-card)] shadow-2xl transition-all border border-[var(--border-subtle)] text-[var(--text-primary)]"
+      className="w-auto overflow-hidden rounded-2xl bg-[var(--bg-card)] shadow-2xl transition-all border border-[var(--border-subtle)] text-[var(--text-primary)]"
+      style={{
+        width: "max-content",
+        maxWidth: "min(640px, calc(100vw - 32px))",
+      }}
     >
-      <div className="grid grid-cols-3 gap-8 p-7" style={{ minWidth: "680px" }}>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 p-5 sm:p-6">
         
         {/* Column 1: Explore Properties */}
         <div className="flex flex-col gap-3">

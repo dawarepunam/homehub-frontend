@@ -726,7 +726,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, MapPin, ArrowLeftRight, Check, Home, LogOut, Heart, MessageSquare } from "lucide-react";
+import { Menu, MapPin, ArrowLeftRight, Check, Home, LogOut, Heart, MessageSquare, Sun, Moon } from "lucide-react";
 
 import ProfileDropdown from "./ProfileDropdown";
 import UserDropdown from "./UserDropdown";
@@ -742,6 +742,27 @@ export default function UserHeader({ headerData }) {
   const [activeMenu, setActiveMenu] = useState(null);
   const [user, setUser] = useState(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [theme, setTheme] = useState("light");
+
+  // Sync initial theme
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      setTheme("dark");
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      setTheme("light");
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+  };
 
   // ─── Mode Switcher ───────────────────────────────────────────
   // activeMode is purely a UI/navigation preference.
@@ -1023,6 +1044,21 @@ export default function UserHeader({ headerData }) {
               Login
             </Link>
           )}
+
+          {/* ── DARK/LIGHT THEME TOGGLE (Far Right) ────── */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+            title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] transition-all duration-200 hover:bg-[var(--border-subtle)]/50 hover:scale-105 active:scale-95 ml-1"
+          >
+            {theme === "light" ? (
+              <Moon size={16} className="text-[var(--text-primary)] transition-transform duration-200" />
+            ) : (
+              <Sun size={16} className="text-[var(--accent)] transition-transform duration-200" />
+            )}
+          </button>
         </div>
       </div>
 
@@ -1056,7 +1092,7 @@ export default function UserHeader({ headerData }) {
               {activeMenu === item.id &&
                 item.HasDropdown &&
                 item.DropdownItem.length > 0 && (
-                  <div className="absolute left-1/2 top-[100%] z-[9999] -translate-x-1/2 pt-2">
+                  <div className="absolute left-0 top-full z-[9999] pt-2 animate-in fade-in-50 zoom-in-95 duration-150">
                     <UserDropdown menuItem={item} />
                   </div>
                 )}
@@ -1082,7 +1118,7 @@ export default function UserHeader({ headerData }) {
             </button>
 
             {activeMenu === "explore" && (
-              <div className="absolute left-1/2 top-[100%] z-[9999] -translate-x-1/2 pt-2">
+              <div className="absolute left-0 top-full z-[9999] pt-2 animate-in fade-in-50 zoom-in-95 duration-150">
                 <ExploreDropdown />
               </div>
             )}
