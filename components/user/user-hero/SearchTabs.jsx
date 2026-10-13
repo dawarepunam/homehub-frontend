@@ -1,263 +1,26 @@
-// "use client";
-
-// import { useState } from "react";
-
-// export default function SearchTabs({ searchData }) {
-//   if (!searchData) return null;
-
-//   // ===============================
-//   // Tabs From Strapi
-//   // ===============================
-
-//   const tabs = searchData.SearchTabs || [];
-
-//   if (tabs.length === 0) return null;
-
-//   // ===============================
-//   // Default Active Tab
-//   // ===============================
-
-//   const defaultTab =
-//     tabs.find((tab) => tab.isDefault)?.value || tabs[0]?.value || "";
-
-//   const [activeTab, setActiveTab] = useState(defaultTab);
-
-//   return (
-//     <div className="flex flex-wrap items-center gap-3 border-b border-gray-200 px-6 py-5">
-//       {tabs.map((tab) => (
-//         <button
-//           key={tab.id}
-//           type="button"
-//           onClick={() => setActiveTab(tab.value)}
-//           className={`rounded-xl px-7 py-3 text-base font-semibold transition-all duration-200 ${
-//             activeTab === tab.value
-//               ? "bg-blue-600 text-white shadow-lg"
-//               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-//           }`}
-//         >
-//           {tab.label}
-//         </button>
-//       ))}
-//     </div>
-//   );
-// }
-// "use client";
-
-// import { useEffect, useState } from "react";
-
-// export default function SearchTabs({
-//   searchData,
-//   activePurpose,
-//   onPurposeChange,
-// }) {
-//   if (!searchData) return null;
-
-//   // ===============================
-//   // Tabs From Strapi
-//   // ===============================
-
-//   const tabs = searchData.SearchTabs || [];
-
-//   if (tabs.length === 0) return null;
-
-//   // ===============================
-//   // Default Active Tab
-//   // ===============================
-
-//   const defaultTab =
-//     tabs.find((tab) => tab.isDefault)?.value || tabs[0]?.value || "";
-
-//   const [activeTab, setActiveTab] = useState(activePurpose || defaultTab);
-
-//   // Parent ला default tab पाठवण्यासाठी
-
-//   useEffect(() => {
-//     if (onPurposeChange) {
-//       onPurposeChange(activeTab);
-//     }
-//   }, []);
-
-//   // Tab Click
-
-//   const handleTabClick = (value) => {
-//     setActiveTab(value);
-
-//     if (onPurposeChange) {
-//       onPurposeChange(value);
-//     }
-//   };
-
-//   return (
-//     <div className="flex flex-wrap items-center gap-3 border-b border-gray-200 px-6 py-5">
-//       {tabs.map((tab) => (
-//         <button
-//           key={tab.id}
-//           type="button"
-//           onClick={() => handleTabClick(tab.value)}
-//           className={`rounded-xl px-7 py-3 text-base font-semibold transition-all duration-200 ${
-//             activeTab === tab.value
-//               ? "bg-blue-600 text-white shadow-lg"
-//               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-//           }`}
-//         >
-//           {tab.label}
-//         </button>
-//       ))}
-//     </div>
-//   );
-// }
-// "use client";
-
-// import { useEffect, useState } from "react";
-
-// export default function SearchTabs({
-//   searchData,
-//   activePurpose,
-//   onPurposeChange,
-// }) {
-//   if (!searchData) return null;
-
-//   // ===============================
-//   // Tabs From Strapi
-//   // ===============================
-
-//   const tabs = searchData.SearchTabs || [];
-
-//   if (tabs.length === 0) return null;
-
-//   // ===============================
-//   // Default Active Tab
-//   // ===============================
-
-//   const defaultTab =
-//     tabs.find((tab) => tab.isDefault)?.value || tabs[0]?.value || "";
-
-//   const [activeTab, setActiveTab] = useState(activePurpose || defaultTab);
-
-//   // ===============================
-//   // Parent Sync
-//   // ===============================
-
-//   useEffect(() => {
-//     if (onPurposeChange) {
-//       onPurposeChange(activeTab);
-//     }
-//   }, [activeTab, onPurposeChange]);
-
-//   // ===============================
-//   // Update if Parent changes
-//   // ===============================
-
-//   useEffect(() => {
-//     if (activePurpose && activePurpose !== activeTab) {
-//       setActiveTab(activePurpose);
-//     }
-//   }, [activePurpose, activeTab]);
-
-//   // ===============================
-//   // Tab Click
-//   // ===============================
-
-//   const handleTabClick = (value) => {
-//     setActiveTab(value);
-//   };
-
-//   return (
-//     <div className="flex flex-wrap items-center gap-3 border-b border-gray-200 px-6 py-5">
-//       {tabs.map((tab) => (
-//         <button
-//           key={tab.id}
-//           type="button"
-//           onClick={() => handleTabClick(tab.value)}
-//           className={`rounded-xl px-7 py-3 text-base font-semibold transition-all duration-300 ${
-//             activeTab === tab.value
-//               ? "bg-blue-600 text-white shadow-lg"
-//               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-//           }`}
-//         >
-//           {tab.label}
-//         </button>
-//       ))}
-//     </div>
-//   );
-// }
-// "use client";
-
-// import { useEffect, useState } from "react";
-
-// export default function SearchTabs({
-//   searchData,
-//   activePurpose,
-//   onPurposeChange,
-// }) {
-//   const tabs = searchData?.SearchTabs || [];
-
-//   const defaultTab =
-//     tabs.find((tab) => tab.isDefault)?.value || tabs[0]?.value || "";
-
-//   const [activeTab, setActiveTab] = useState(activePurpose || defaultTab);
-
-//   // Parent ला active tab पाठव
-//   useEffect(() => {
-//     onPurposeChange?.(activeTab);
-//   }, [activeTab, onPurposeChange]);
-
-//   if (!searchData || tabs.length === 0) {
-//     return null;
-//   }
-
-//   const handleTabClick = (value) => {
-//     setActiveTab(value);
-//   };
-
-//   return (
-//     <div className="flex flex-wrap items-center gap-3 border-b border-gray-200 px-6 py-5">
-//       {tabs.map((tab) => (
-//         <button
-//           key={tab.id}
-//           type="button"
-//           onClick={() => handleTabClick(tab.value)}
-//           className={`rounded-xl px-7 py-3 text-base font-semibold transition-all duration-300 ${
-//             activeTab === tab.value
-//               ? "bg-blue-600 text-white shadow-lg"
-//               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-//           }`}
-//         >
-//           {tab.label}
-//         </button>
-//       ))}
-//     </div>
-//   );
-// }
 "use client";
 
 import { useEffect, useState } from "react";
+
+const TABS = [
+  { label: "Buy", value: "buy", icon: "⌂" },
+  { label: "Rent", value: "rent", icon: "⚿" },
+  { label: "Sale", value: "sale", icon: "₹" },
+];
 
 export default function SearchTabs({
   activePurpose,
   onPurposeChange,
 }) {
-  const tabs = [
-    { id: 1, label: "Buy", value: "buy" },
-    { id: 2, label: "Rent", value: "rent" },
-    { id: 3, label: "Sale", value: "sale" }
-  ];
-
   const defaultTab = "buy";
-
   const [activeTab, setActiveTab] = useState(activePurpose || defaultTab);
 
-  // Parent state sync
+  // Sync with parent state
   useEffect(() => {
-    if (activePurpose !== activeTab && activePurpose) {
+    if (activePurpose && activePurpose !== activeTab) {
       setActiveTab(activePurpose);
     }
   }, [activePurpose]);
-
-  // Send active tab to parent
-  useEffect(() => {
-    onPurposeChange?.(activeTab);
-  }, [activeTab, onPurposeChange]);
 
   const handleTabClick = (value) => {
     setActiveTab(value);
@@ -265,21 +28,30 @@ export default function SearchTabs({
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 sm:gap-3 border-b border-[var(--border-subtle)] px-4 sm:px-6 py-3.5 bg-[var(--bg-surface)]">
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          type="button"
-          onClick={() => handleTabClick(tab.value)}
-          className={`rounded-xl px-5 sm:px-7 py-2 sm:py-2.5 text-xs sm:text-sm font-bold tracking-wide transition-all duration-200 ${
-            activeTab === tab.value
-              ? "bg-[var(--accent)] text-[var(--accent-text)] shadow-sm"
-              : "bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40 border border-[var(--border-subtle)]"
-          }`}
-        >
-          {tab.label}
-        </button>
-      ))}
+    <div
+      className="flex items-center gap-1 p-1 bg-[var(--search-field-bg)] rounded-xl overflow-x-auto scrollbar-none mb-3.5"
+      role="tablist"
+    >
+      {TABS.map((tab) => {
+        const isActive = activeTab?.toLowerCase() === tab.value.toLowerCase();
+        return (
+          <button
+            key={tab.value}
+            type="button"
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => handleTabClick(tab.value)}
+            className={`inline-flex items-center gap-1.5 px-5 py-2 rounded-[9px] text-sm font-semibold transition-all duration-200 whitespace-nowrap cursor-pointer ${
+              isActive
+                ? "bg-[var(--border-subtle)] text-[var(--text-primary)] border border-white/20 shadow-sm font-bold"
+                : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-white/5 border border-transparent"
+            }`}
+          >
+            <span className="text-[15px]">{tab.icon}</span>
+            <span>{tab.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
