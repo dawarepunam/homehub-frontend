@@ -6,6 +6,7 @@ import homeStyles from "@/app/home/HomeSearch.module.css";
 import styles from "./SearchFilters.module.css";
 import { getProperties } from "@/services/property";
 import { normalizeStr, formatLabel } from "@/utils/normalize";
+import { MapPin, Navigation, Building2, Home, Search } from "lucide-react";
 
 export default function SearchFilters({ activePurpose }) {
   const router = useRouter();
@@ -99,7 +100,9 @@ export default function SearchFilters({ activePurpose }) {
     <div className={`${homeStyles.fields} ${styles.userFieldsGrid}`}>
       {/* 1. Location / City */}
       <div className={homeStyles.field}>
-        <div className={homeStyles.fieldIcon}>⌖</div>
+        <div className={homeStyles.fieldIcon} aria-hidden="true">
+          <MapPin size={16} strokeWidth={2} />
+        </div>
         <div className={homeStyles.fieldBody}>
           <label className={homeStyles.fieldLabel}>Location</label>
           <select
@@ -119,7 +122,9 @@ export default function SearchFilters({ activePurpose }) {
 
       {/* 2. Area */}
       <div className={homeStyles.field}>
-        <div className={homeStyles.fieldIcon}>🗺</div>
+        <div className={homeStyles.fieldIcon} aria-hidden="true">
+          <Navigation size={16} strokeWidth={2} />
+        </div>
         <div className={homeStyles.fieldBody}>
           <label className={homeStyles.fieldLabel}>Area</label>
           <select
@@ -139,7 +144,9 @@ export default function SearchFilters({ activePurpose }) {
 
       {/* 3. Property Type */}
       <div className={homeStyles.field}>
-        <div className={homeStyles.fieldIcon}>🏢</div>
+        <div className={homeStyles.fieldIcon} aria-hidden="true">
+          <Building2 size={16} strokeWidth={2} />
+        </div>
         <div className={homeStyles.fieldBody}>
           <label className={homeStyles.fieldLabel}>Type</label>
           <select
@@ -159,7 +166,9 @@ export default function SearchFilters({ activePurpose }) {
 
       {/* 4. Category */}
       <div className={homeStyles.field}>
-        <div className={homeStyles.fieldIcon}>⌂</div>
+        <div className={homeStyles.fieldIcon} aria-hidden="true">
+          <Home size={16} strokeWidth={2} />
+        </div>
         <div className={homeStyles.fieldBody}>
           <label className={homeStyles.fieldLabel}>Category</label>
           <select
@@ -184,7 +193,7 @@ export default function SearchFilters({ activePurpose }) {
         className={homeStyles.searchButton}
         aria-label="Search Properties"
       >
-        <span className={homeStyles.searchBtnIcon}>⌕</span>
+        <Search size={16} strokeWidth={2.5} className={homeStyles.searchBtnIcon} />
         <span>Search</span>
       </button>
     </div>

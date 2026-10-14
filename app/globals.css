@@ -1608,3 +1608,191 @@ body {
     transform: scale(1);
   }
 }
+
+/* =========================================================
+   MISSING TOKENS — BUYER/USER MODULE
+   These tokens are referenced widely in /components/user/**
+   but were not defined in the global token sets above.
+   Adding them additively here to avoid modifying existing
+   token blocks.
+   ========================================================= */
+
+/* Light theme — missing surface tokens */
+:root {
+  /* Mid-layer surface between --bg-page and --bg-card */
+  --bg-surface:           var(--bg-section);
+
+  /* Interactive border focus state */
+  --border-focus:         var(--text-primary);
+
+  /* Secondary text — slightly muted but readable */
+  --text-secondary:       var(--text-muted);
+
+  /* Section divider background (alternating) */
+  --bg-alt:               #f4f4f4;
+
+  /* Card inner elevated surface */
+  --bg-elevated:          #eeeeee;
+}
+
+/* Dark theme — missing surface tokens */
+:root[data-theme="dark"] {
+  --bg-surface:           #1a1a1a;
+  --border-focus:         var(--text-primary);
+  --text-secondary:       #888888;
+  --bg-alt:               #131313;
+  --bg-elevated:          #252525;
+}
+
+/* =========================================================
+   BUYER/USER MODULE — SCROLL-REVEAL ANIMATION
+   Lightweight viewport-triggered fade+slide-up.
+   Applied via JS intersection observer in ScrollReveal.jsx
+   or as a CSS-only variant here.
+   ========================================================= */
+
+@keyframes hh-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hh-reveal {
+  animation: hh-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hh-reveal--delay-1 { animation-delay: 0.08s; }
+.hh-reveal--delay-2 { animation-delay: 0.16s; }
+.hh-reveal--delay-3 { animation-delay: 0.24s; }
+.hh-reveal--delay-4 { animation-delay: 0.32s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hh-reveal {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* =========================================================
+   BUYER/USER MODULE — PREMIUM SECTION UTILITIES
+   ========================================================= */
+
+/* Section label / eyebrow pill */
+.hh-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 100px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+/* Inline pulsing indicator dot */
+.hh-eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  flex-shrink: 0;
+  animation: np-pulse 2.2s ease-in-out infinite;
+}
+
+/* Premium icon box used in feature/tool cards */
+.hh-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  flex-shrink: 0;
+  transition: background 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+}
+
+.group:hover .hh-icon-box {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: transparent;
+  transform: scale(1.06);
+}
+
+/* Arrow cue in cards */
+.hh-card-arrow {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 18px;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.group:hover .hh-card-arrow {
+  transform: translate(3px, -3px);
+  color: var(--text-primary);
+}
+
+/* Premium card base — theme-aware */
+.hh-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.3s ease;
+  will-change: transform;
+}
+
+.hh-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--border-hover);
+}
+
+/* Location card gradient overlays (for PopularLocations) */
+.hh-location-card {
+  position: relative;
+  display: block;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.4s ease;
+}
+
+.hh-location-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .hh-location-card:hover {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* No-scrollbar utility */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+

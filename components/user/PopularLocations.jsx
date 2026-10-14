@@ -2,21 +2,43 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { MapPin } from "lucide-react";
+import { MapPin, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-// Normalize a city string: trim whitespace, collapse internal spaces, lowercase.
+// ─────────────────────────────────────────────────────────────────────────────
+// CITY GRADIENT PALETTE
+// Each city gets a unique dark charcoal gradient so cards look distinct
+// without relying on the single Unsplash image that was previously hardcoded.
+// These are purely decorative background gradients — no content is affected.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const CITY_GRADIENTS = [
+  "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)",
+  "linear-gradient(135deg, #111820 0%, #1d2d3a 50%, #111820 100%)",
+  "linear-gradient(135deg, #1c1410 0%, #2e2018 50%, #1c1410 100%)",
+  "linear-gradient(135deg, #101810 0%, #1a2a1a 50%, #101810 100%)",
+  "linear-gradient(135deg, #181018 0%, #271827 50%, #181018 100%)",
+  "linear-gradient(135deg, #0f1520 0%, #1a2535 50%, #0f1520 100%)",
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NORMALIZE / DISPLAY
+// ─────────────────────────────────────────────────────────────────────────────
+
 function normalizeCity(raw) {
   return String(raw).trim().replace(/\s+/g, " ").toLowerCase();
 }
 
-// Produce a Title-Cased display label from a normalised city string.
 function displayCity(normalised) {
   return normalised
     .split(" ")
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POPULAR LOCATIONS
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function PopularLocations({ properties = [] }) {
   const cities = useMemo(() => {
@@ -46,33 +68,36 @@ export default function PopularLocations({ properties = [] }) {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.09 },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 22 },
     show: {
       opacity: 1,
       y: 0,
-      transition: { type: "spring", stiffness: 300, damping: 24 },
+      transition: { type: "spring", stiffness: 280, damping: 22 },
     },
   };
 
   return (
     <section
       id="popular-locations"
-      className="mx-auto max-w-[1200px] px-6 py-20 lg:px-8"
+      className="mx-auto max-w-[1200px] px-5 sm:px-8 py-16 sm:py-20"
     >
-      <div className="mx-auto mb-16 flex max-w-3xl flex-col items-center justify-center text-center">
+      {/* ── Section Header ── */}
+      <div className="mb-12 flex flex-col items-center text-center gap-3">
+        <span className="hh-eyebrow">
+          <span className="hh-eyebrow-dot" aria-hidden="true" />
+          Cities
+        </span>
         <motion.h2
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="text-3xl font-extrabold tracking-tight sm:text-4xl text-[var(--text-primary)]"
+          className="hh-section-title"
         >
           Popular Locations
         </motion.h2>
@@ -81,47 +106,73 @@ export default function PopularLocations({ properties = [] }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-          className="mt-4 text-base text-[var(--text-muted)] sm:text-lg font-medium"
+          className="hh-section-subtitle max-w-lg"
         >
-          Discover prime real estate in the most sought-after cities.
+          Discover prime real estate in the most sought-after cities across India.
         </motion.p>
       </div>
 
+      {/* ── Location Cards ── */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, margin: "-50px" }}
-        className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        viewport={{ once: true, margin: "-40px" }}
+        className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
       >
-        {cities.map((city) => (
+        {cities.map((city, index) => (
           <motion.div key={city.name} variants={itemVariants}>
             <Link
               href={`/user/properties?city=${encodeURIComponent(city.name)}&from=popular-locations`}
-              className="group relative block h-[280px] w-full overflow-hidden rounded-[var(--radius-card)] bg-[var(--bg-card)] shadow-[var(--shadow-card)] transition-all duration-500 hover:-translate-y-1 hover:shadow-xl border border-[var(--border-subtle)] hover:border-[var(--border-hover)]"
+              className="group relative block h-[260px] w-full overflow-hidden rounded-[var(--radius-card)] border border-[var(--border-subtle)] transition-all duration-400 hover:-translate-y-1 hover:border-[var(--border-hover)] hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-focus)]"
             >
+              {/* Charcoal gradient background — unique per city */}
               <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 ease-out group-hover:scale-110"
+                className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105"
+                style={{ background: CITY_GRADIENTS[index % CITY_GRADIENTS.length] }}
+                aria-hidden="true"
+              />
+
+              {/* Subtle architectural grid pattern overlay */}
+              <div
+                className="absolute inset-0 opacity-[0.07]"
                 style={{
                   backgroundImage:
-                    'url("https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=2744&auto=format&fit=crop")',
+                    "linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)",
+                  backgroundSize: "48px 48px",
                 }}
+                aria-hidden="true"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 transition-opacity duration-500 group-hover:opacity-90" />
 
-              <div className="absolute bottom-6 left-6 right-6 flex flex-col transform transition-transform duration-500 group-hover:-translate-y-2">
-                <span className="text-3xl font-extrabold text-white tracking-tight drop-shadow-md">
+              {/* Gradient scrim for text legibility */}
+              <div
+                className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/5 transition-opacity duration-400 group-hover:from-black/90"
+                aria-hidden="true"
+              />
+
+              {/* Content */}
+              <div className="absolute inset-0 flex flex-col justify-end p-6">
+                {/* City Name */}
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-none mb-2 drop-shadow-md transition-transform duration-300 group-hover:-translate-y-1">
                   {city.name}
-                </span>
-                <div className="mt-2 flex items-center gap-2 overflow-hidden">
-                  <motion.div
-                    initial={{ x: -10, opacity: 0 }}
-                    whileHover={{ x: 0, opacity: 1 }}
-                    className="flex items-center gap-1.5 text-sm font-semibold text-white/90 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/20 transition-colors group-hover:bg-white group-hover:text-black group-hover:border-white"
-                  >
-                    <MapPin size={14} className="group-hover:text-black" />
+                </h3>
+
+                {/* Property count pill */}
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm px-3 py-1.5 text-xs font-semibold text-white/90 transition-all duration-300 group-hover:bg-white group-hover:text-black group-hover:border-white">
+                    <MapPin
+                      size={12}
+                      strokeWidth={2.5}
+                      className="shrink-0"
+                      aria-hidden="true"
+                    />
                     {city.count} {city.count === 1 ? "Property" : "Properties"}
-                  </motion.div>
+                  </span>
+
+                  {/* Arrow cue — appears on hover */}
+                  <span className="ml-auto flex items-center justify-center w-8 h-8 rounded-full border border-white/20 bg-white/10 text-white opacity-0 translate-y-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 group-hover:bg-white group-hover:text-black">
+                    <ArrowUpRight size={14} strokeWidth={2.5} aria-hidden="true" />
+                  </span>
                 </div>
               </div>
             </Link>
