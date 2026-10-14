@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import ContactOwnerModal from "@/components/user/ContactOwnerModal";
+import PropertyCard from "@/components/user/PropertyCard";
 
 // =====================================================
 // CONFIG
@@ -458,9 +459,9 @@ export default function UserSearchClient() {
 
         {/* ---- Results Grid ---- */}
         {!loading && !error && properties.length > 0 && (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
             {properties.map((property) => (
-              <SearchPropertyCard
+              <PropertyCard
                 key={property.documentId || property.id}
                 property={property}
                 onContact={() => setContactModalProperty(property)}

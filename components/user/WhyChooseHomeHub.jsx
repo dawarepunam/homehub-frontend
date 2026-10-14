@@ -34,7 +34,7 @@ const REASONS = [
 export default function WhyChooseHomeHub() {
   return (
     <section className="bg-[var(--bg-card)] border-t border-[var(--border-subtle)]">
-      <div className="mx-auto max-w-[1200px] px-5 sm:px-8 py-16 sm:py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
 
         {/* ── Section Header ── */}
         <div className="mb-14 flex flex-col items-center text-center gap-3">

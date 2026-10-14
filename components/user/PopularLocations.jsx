@@ -84,7 +84,7 @@ export default function PopularLocations({ properties = [] }) {
   return (
     <section
       id="popular-locations"
-      className="mx-auto max-w-[1200px] px-5 sm:px-8 py-16 sm:py-20"
+      className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20"
     >
       {/* ── Section Header ── */}
       <div className="mb-12 flex flex-col items-center text-center gap-3">

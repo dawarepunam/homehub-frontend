@@ -179,7 +179,7 @@ function MyEnquiriesContent() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10 md:px-8">
+    <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
       {/* Header */}
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>

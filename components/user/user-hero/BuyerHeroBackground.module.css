@@ -15,11 +15,11 @@
   width: 100%;
   height: 100%;
   background-image: 
-    radial-gradient(circle at 50% 34%, transparent 0%, var(--bg-page) 85%),
-    linear-gradient(to bottom, transparent 35%, var(--bg-page) 98%),
+    radial-gradient(circle at 50% 60%, transparent 0%, var(--bg-page) 88%),
+    linear-gradient(to bottom, transparent 45%, var(--bg-page) 98%),
     url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2000&auto=format&fit=crop");
   background-size: cover;
-  background-position: center 36%;
+  background-position: center 65%;
   opacity: 0.16;
   filter: grayscale(100%) contrast(110%);
   pointer-events: none;
@@ -31,14 +31,14 @@
   filter: grayscale(100%) contrast(125%) brightness(85%);
 }
 
-/* Ambient Radial Vignette fading completely into --bg-page at bottom */
+/* Ambient Radial Vignette — sides/top dark, bottom opens up to reveal lower globe arc */
 .vignette {
   position: absolute;
   inset: 0;
   z-index: 3;
   background: 
-    radial-gradient(circle at 50% 46%, transparent 15%, var(--bg-page) 80%),
-    linear-gradient(to bottom, transparent 65%, var(--bg-page) 99%);
+    radial-gradient(ellipse 90% 70% at 50% 40%, transparent 20%, var(--bg-page) 82%),
+    linear-gradient(to bottom, transparent 82%, var(--bg-page) 100%);
   pointer-events: none;
 }
 
@@ -72,18 +72,17 @@
   }
   100% {
     transform: translate3d(14px, -28px, 0);
-    opacity: calc(var(--opacity) * 0.35);
   }
 }
 
-/* Wireframe Globe & Geodesic Grid — STATIC (NO ROTATION) & Shifted slightly lower for visual balance */
+/* Wireframe Globe & Geodesic Grid — STATIC (NO ROTATION) & Positioned lower with full bottom arc visible */
 .globeWrapper {
   position: absolute;
-  top: 54%;
+  top: 67%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 760px;
-  height: 760px;
+  width: 630px;
+  height: 630px;
   z-index: 2;
   opacity: 0.85;
   pointer-events: none;
@@ -98,7 +97,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
-  height: 260px;
+  height: 220px;
   z-index: 3;
   pointer-events: none;
   /* Light centre bloom fading to transparent — theme-adaptive */
@@ -169,13 +168,13 @@
 /* Responsive Scaling */
 @media (max-width: 1024px) {
   .globeWrapper {
-    width: 640px;
-    height: 640px;
-    top: 54%;
+    width: 560px;
+    height: 560px;
+    top: 67%;
   }
   .bottomGlow {
     width: 90%;
-    height: 220px;
+    height: 200px;
   }
 }
 
@@ -183,28 +182,28 @@
   .globeWrapper {
     width: 480px;
     height: 480px;
-    top: 52%;
+    top: 66%;
   }
   .heroImageLayer {
     opacity: 0.12;
   }
   .bottomGlow {
     width: 100%;
-    height: 180px;
+    height: 160px;
   }
 }
 
 @media (max-width: 480px) {
   .globeWrapper {
-    width: 350px;
-    height: 350px;
-    top: 50%;
+    width: 360px;
+    height: 360px;
+    top: 62%;
   }
   .particlesContainer {
     opacity: 0.8;
   }
   .bottomGlow {
-    height: 140px;
+    height: 130px;
   }
 }
 

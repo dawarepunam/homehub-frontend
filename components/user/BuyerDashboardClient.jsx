@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Heart, MessageSquare, Eye, Clock, ArrowRight, Home, Store } from "lucide-react";
 import { getUserWishlist } from "@/services/wishlistService";
 import { getMyEnquiries } from "@/services/enquiry";
+import PropertyCard from "@/components/user/PropertyCard";
 
 export default function BuyerDashboardClient({ heroData, properties }) {
   const router = useRouter();
@@ -196,81 +197,12 @@ export default function BuyerDashboardClient({ heroData, properties }) {
               <p className="font-semibold text-[var(--text-secondary)]">No properties yet</p>
             </div>
           ) : (
-            (properties || []).slice(0, 6).map((property) => {
-              const cover = property?.CoverImage?.[0] || property?.CoverImage || null;
-              const imageUrl = cover?.url
-                ? cover.url.startsWith("http")
-                  ? cover.url
-                  : `${STRAPI_URL}${cover.url}`
-                : null;
-
-              const common = property?.PropertyCommonDetails || {};
-              const title = property?.Title || property?.title || "Property";
-              const city = common?.City || property?.City || "";
-              const area = common?.Area || property?.Area || "";
-              const price = common?.Price || property?.Price || null;
-              const listingType = property?.Listing_Type || "SALE";
-              const status = property?.Status || "Available";
-
-              return (
-                <Link
-                  key={property?.documentId || property?.id}
-                  href={`/user/property/${property?.documentId || property?.id}`}
-                  className="group overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
-                >
-                  {/* Image */}
-                  <div className="relative h-52 w-full overflow-hidden bg-[var(--bg-surface)]">
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt={title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-[var(--text-secondary)]">
-                        <Home size={36} />
-                      </div>
-                    )}
-
-                    {/* Status badge */}
-                    <span className="absolute left-3 top-3 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] shadow-sm">
-                      {status}
-                    </span>
-
-                    {/* Type badge */}
-                    <span className="absolute right-3 top-3 rounded-full bg-[var(--text-primary)] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[var(--bg-card)]">
-                      {listingType}
-                    </span>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-5">
-                    <h3 className="truncate text-base font-bold text-[var(--text-primary)]">
-                      {title}
-                    </h3>
-                    {(city || area) && (
-                      <p className="mt-1 truncate text-sm text-[var(--text-secondary)]">
-                        {[area, city].filter(Boolean).join(", ")}
-                      </p>
-                    )}
-
-                    <div className="mt-4 flex items-center justify-between border-t border-[var(--border-subtle)] pt-3">
-                      {price ? (
-                        <span className="text-lg font-bold text-[var(--text-primary)]">
-                          ₹{Number(price).toLocaleString("en-IN")}
-                        </span>
-                      ) : (
-                        <span className="text-sm font-semibold text-[var(--text-secondary)]">Price on Request</span>
-                      )}
-
-                      <span className="text-xs font-semibold text-[var(--text-primary)] transition-all group-hover:translate-x-0.5">
-                        View →
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })
+            (properties || []).slice(0, 6).map((property) => (
+              <PropertyCard
+                key={property?.documentId || property?.id}
+                property={property}
+              />
+            ))
           )}
         </div>
       </section>

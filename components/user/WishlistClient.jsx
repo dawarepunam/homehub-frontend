@@ -14,6 +14,7 @@ import {
   RefreshCw,
   ArrowRight,
   Eye,
+  Phone,
   SlidersHorizontal,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -190,11 +191,11 @@ function SavedPropertyCard({ property, onRemove, removingId, onContact }) {
 
   return (
     <article
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[var(--text-primary)]/30"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-[var(--border-hover,rgba(255,255,255,0.18))]"
       aria-label={`Saved property: ${title}`}
     >
-      {/* Image */}
-      <div className="relative h-52 overflow-hidden bg-[var(--bg-surface)] shrink-0">
+      {/* Image Container (16:10 aspect ratio) */}
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--bg-section)] shrink-0">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -207,100 +208,106 @@ function SavedPropertyCard({ property, onRemove, removingId, onContact }) {
           />
         ) : (
           <div className="flex h-full flex-col items-center justify-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--border-subtle)]">
-              <svg className="h-7 w-7 text-[var(--text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9.75L12 3l9 6.75V21H3V9.75z" />
-              </svg>
-            </div>
-            <span className="mt-2 text-xs text-[var(--text-secondary)] font-semibold">No Image</span>
+            <span className="text-xs text-[var(--text-secondary)] font-semibold">No Image</span>
           </div>
         )}
 
-        {/* Property Type badge */}
-        {propertyType && (
-          <span className="absolute left-3 top-3 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)]/90 px-2.5 py-0.5 text-[11px] font-bold text-[var(--text-primary)] backdrop-blur-sm shadow-sm">
-            {propertyType}
-          </span>
-        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/15 pointer-events-none" />
 
-        {/* Purpose badge */}
-        {purpose && (
-          <span className={`absolute top-3 rounded-full px-2.5 py-0.5 text-[11px] font-bold shadow-sm bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] ${propertyType ? "right-12" : "right-3"}`}>
-            {purpose === "Sale" ? "For Sale" : purpose === "Rent" ? "For Rent" : purpose}
-          </span>
-        )}
+        {/* Badges */}
+        <div className="absolute left-2.5 top-2.5 flex items-center gap-1.5 flex-wrap">
+          {purpose && (
+            <span className="rounded-md bg-[var(--accent)] text-[var(--accent-text)] px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider shadow-sm">
+              {purpose}
+            </span>
+          )}
+          {propertyType && (
+            <span className="rounded-md bg-[var(--bg-card)]/90 backdrop-blur-md text-[var(--text-primary)] px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider shadow-sm border border-[var(--border-subtle)]">
+              {propertyType}
+            </span>
+          )}
+        </div>
 
-        {/* Remove heart */}
+        {/* Wishlist Heart Remove */}
         <button
           type="button"
           onClick={() => onRemove(property)}
           disabled={isRemoving}
           aria-label="Remove property from saved properties"
-          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--bg-card)] shadow-md transition hover:bg-red-500/10 disabled:opacity-60 border border-[var(--border-subtle)]"
+          className="absolute right-2.5 top-2.5 flex h-7 w-7 items-center justify-center rounded-full bg-[var(--bg-card)]/90 backdrop-blur-md shadow-sm border border-[var(--border-subtle)] transition-all hover:scale-110 active:scale-95 disabled:opacity-60"
         >
           {isRemoving ? (
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-200 border-t-red-500" />
+            <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-red-200 border-t-red-500" />
           ) : (
-            <Heart size={16} className="fill-red-500 text-red-500" />
+            <Heart size={13} className="fill-red-500 text-red-500" />
           )}
         </button>
+
+        {/* Price on Image */}
+        <div className="absolute bottom-2 left-2.5 right-2.5 flex items-baseline justify-between text-white pointer-events-none">
+          <span className="text-lg font-extrabold tracking-tight drop-shadow-md">
+            {price}
+          </span>
+          {category && (
+            <span className="text-[10px] font-bold text-white/85 tracking-wide px-1.5 py-0.5 rounded bg-black/40 backdrop-blur-sm">
+              {category}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Content */}
-      <div className="flex flex-1 flex-col p-5">
-        {category && (
-          <span className="mb-2 inline-block w-fit rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-            {category}
-          </span>
-        )}
-
-        <h2 className="line-clamp-2 text-base font-extrabold leading-snug text-[var(--text-primary)]">
-          {title}
-        </h2>
-
-        {locationStr && (
-          <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
-            <MapPin size={12} className="shrink-0 text-[var(--text-primary)]" />
-            <span className="line-clamp-1">{locationStr}</span>
-          </p>
-        )}
-
-        <p className="mt-3 text-lg font-extrabold text-[var(--text-primary)]">{price}</p>
-
-        {(bedrooms || bathrooms || builtArea) && (
-          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
-            {bedrooms && (
-              <span className="flex items-center gap-1 text-xs font-semibold text-[var(--text-secondary)]">
-                <BedDouble size={12} className="text-[var(--text-primary)]" />
-                {bedrooms} Bed
-              </span>
-            )}
-            {bathrooms && (
-              <span className="flex items-center gap-1 text-xs font-semibold text-[var(--text-secondary)]">
-                <Bath size={12} className="text-[var(--text-primary)]" />
-                {bathrooms} Bath
-              </span>
-            )}
-            {builtArea && (
-              <span className="flex items-center gap-1 text-xs font-semibold text-[var(--text-secondary)]">
-                <Maximize size={12} className="text-[var(--text-primary)]" />
-                {builtArea} {areaUnit}
+      <div className="flex flex-1 flex-col p-3.5 sm:p-4 justify-between">
+        <div>
+          <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+            <span>{propertyType || "Property"}</span>
+            {locationStr && (
+              <span className="flex items-center gap-1 font-semibold normal-case text-xs text-[var(--text-secondary)] truncate max-w-[55%]">
+                <MapPin size={11} className="shrink-0 text-[var(--text-muted)]" />
+                <span className="truncate">{locationStr}</span>
               </span>
             )}
           </div>
-        )}
 
-        <div className="flex-1" />
-        <div className="mt-4 border-t border-[var(--border-subtle)]" />
+          <h3 
+            className="mt-1.5 line-clamp-2 text-sm font-bold text-[var(--text-primary)] leading-snug transition-colors group-hover:text-[var(--text-primary)]"
+            title={title}
+          >
+            <Link href={`/user/property/${documentId}`}>
+              {title}
+            </Link>
+          </h3>
 
-        <div className="mt-4 flex gap-2">
+          <div className="mt-3 flex items-center gap-2.5 border-t border-[var(--border-subtle)] pt-2.5 text-[11px] text-[var(--text-secondary)] font-medium">
+            {bedrooms && (
+              <span className="flex items-center gap-1">
+                <BedDouble size={13} className="text-[var(--text-muted)]" />
+                <span>{bedrooms} Beds</span>
+              </span>
+            )}
+            {bathrooms && (
+              <span className="flex items-center gap-1">
+                <Bath size={13} className="text-[var(--text-muted)]" />
+                <span>{bathrooms} Baths</span>
+              </span>
+            )}
+            {builtArea && (
+              <span className="flex items-center gap-1">
+                <Maximize size={13} className="text-[var(--text-muted)]" />
+                <span>{builtArea} {areaUnit}</span>
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-3.5 grid grid-cols-2 gap-2 border-t border-[var(--border-subtle)] pt-3">
           <Link
             href={`/user/property/${documentId}`}
-            className="hh-btn hh-btn-primary flex-1 py-2 text-xs font-bold flex items-center justify-center gap-1"
+            className="hh-btn hh-btn-primary hh-btn-sm w-full text-center justify-center font-bold text-xs"
             aria-label={`View details for ${title}`}
           >
-            <Eye size={13} />
-            Details
+            <Eye size={12} />
+            <span>Details</span>
           </Link>
           <button
             type="button"
@@ -308,22 +315,10 @@ function SavedPropertyCard({ property, onRemove, removingId, onContact }) {
               e.preventDefault();
               if (onContact) onContact();
             }}
-            className="hh-btn hh-btn-secondary flex-1 py-2 text-xs font-bold flex items-center justify-center gap-1"
+            className="hh-btn hh-btn-secondary hh-btn-sm w-full text-center justify-center font-bold text-xs"
           >
-            Contact
-          </button>
-          <button
-            type="button"
-            onClick={() => onRemove(property)}
-            disabled={isRemoving}
-            aria-label="Remove property from saved properties"
-            className="flex items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-2.5 text-[var(--text-secondary)] transition hover:border-red-400 hover:bg-red-500/10 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isRemoving ? (
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-200 border-t-red-500" />
-            ) : (
-              <Trash2 size={14} />
-            )}
+            <Phone size={12} />
+            <span>Contact</span>
           </button>
         </div>
       </div>
@@ -524,7 +519,7 @@ export default function WishlistClient() {
   const count = properties.length;
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Page Header */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>

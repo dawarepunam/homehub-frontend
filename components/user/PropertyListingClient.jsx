@@ -343,7 +343,7 @@ export default function PropertyListingClient({ initialProperties, initialType, 
 
       {/* ─── Top Banner ─────────────────────────────────────────── */}
       <div className="bg-[var(--bg-card)] border-b border-[var(--border-subtle)]">
-        <div className="mx-auto max-w-[1400px] px-5 py-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
 
           {/* Back Button */}
           <nav className="mb-4">
@@ -391,12 +391,46 @@ export default function PropertyListingClient({ initialProperties, initialType, 
               </span>
             </div>
           </div>
+
+          {/* Category Navigation Pills — styled matching main UserHeader pill nav */}
+          <div className="mt-6 flex flex-wrap items-center gap-2 pt-4 border-t border-[var(--border-subtle)]">
+            <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mr-1">
+              Category:
+            </span>
+            {[
+              { label: "All Properties", value: "" },
+              { label: "Residential", value: "Residential" },
+              { label: "Commercial", value: "Commercial" },
+              { label: "Industrial", value: "Industrial" },
+            ].map((cat) => {
+              const isSelected = (!selectedType && cat.value === "") || (selectedType?.toLowerCase() === cat.value.toLowerCase());
+              return (
+                <button
+                  key={cat.label}
+                  type="button"
+                  onClick={() => {
+                    setSelectedType(cat.value);
+                    setSelectedCategory("");
+                    setSelectedCategoryContains("");
+                  }}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    isSelected
+                      ? "bg-[var(--accent)] text-[var(--accent-text)] shadow-sm"
+                      : "bg-[var(--bg-surface)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--header-hover-bg,rgba(255,255,255,0.08))] border border-[var(--border-subtle)]"
+                  }`}
+                >
+                  <span>{cat.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
         </div>
       </div>
 
       {/* ─── Filter Bar ─────────────────────────────────────────── */}
       <div className="bg-[var(--bg-card)] border-b border-[var(--border-subtle)] shadow-sm">
-        <div className="mx-auto max-w-[1400px] px-5 py-5 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
 
             <FilterSelect
@@ -475,7 +509,7 @@ export default function PropertyListingClient({ initialProperties, initialType, 
       </div>
 
       {/* ─── Active Filters + Sort Row ───────────────────────────── */}
-      <div className="mx-auto max-w-[1400px] px-5 py-4 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
           {/* Active Filter Chips */}
@@ -551,12 +585,12 @@ export default function PropertyListingClient({ initialProperties, initialType, 
       </div>
 
       {/* ─── Property Grid ───────────────────────────────────────── */}
-      <div className="mx-auto max-w-[1400px] px-5 pb-10 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12">
 
         {/* Loading */}
         {isLoading && (
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
-            {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
+            {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         )}
 
@@ -599,11 +633,12 @@ export default function PropertyListingClient({ initialProperties, initialType, 
         {/* Cards */}
         {!isLoading && !hasError && paginatedProperties.length > 0 && (
           viewMode === "grid" ? (
-            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
               {paginatedProperties.map((property) => (
                 <PropertyCard
                   key={property.documentId || property.id}
                   property={property}
+                  onContact={() => setContactModalProperty(property)}
                 />
               ))}
             </div>
@@ -716,40 +751,109 @@ function ListPropertyRow({ property, onContact }) {
       : `${STRAPI_BASE}${property.CoverImage.url}`
     : "/no-property.png";
 
+  const commonDetails = property?.PropertyCommonDetails || {};
+  const residentialDetails = property?.ResidentialDetails || {};
+  const propertyType = property?.Property_Type || "";
+  const isCommercial = propertyType.toLowerCase().includes("commercial");
+  const isIndustrial = propertyType.toLowerCase().includes("industrial");
+
+  const bedrooms =
+    residentialDetails?.Bedrooms ??
+    commonDetails?.Bedrooms ??
+    property?.Bedrooms ??
+    property?.BHK ??
+    null;
+
+  const bathrooms =
+    residentialDetails?.Bathrooms ??
+    commonDetails?.Bathrooms ??
+    property?.Bathrooms ??
+    null;
+
+  const areaUnit = commonDetails?.Area_Unit || commonDetails?.AreaUnit || "sq.ft";
+  const builtUpArea =
+    commonDetails?.Built_upArea ??
+    commonDetails?.BuiltUpArea ??
+    commonDetails?.CarpetArea ??
+    commonDetails?.Area ??
+    property?.BuiltUpArea ??
+    property?.AreaSize ??
+    null;
+
   return (
     <div
       onClick={() => router.push(viewRoute)}
-      className="flex flex-col sm:flex-row gap-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4 shadow-sm transition hover:shadow-md hover:border-[var(--border-focus)] cursor-pointer"
+      className="group flex flex-col sm:flex-row gap-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-3.5 transition-all duration-300 hover:shadow-md hover:border-[var(--border-hover,rgba(255,255,255,0.18))] cursor-pointer items-start sm:items-center"
     >
       {/* Image */}
-      <div className="relative h-[200px] sm:h-[130px] w-full sm:w-[200px] shrink-0 overflow-hidden rounded-xl bg-[var(--bg-section)]">
-        <img src={imageUrl} alt={property?.Title || "Property"} className="h-full w-full object-cover" />
-        <span className="absolute bottom-2 left-2 rounded-md bg-[var(--accent)] px-2 py-0.5 text-[10px] font-bold text-[var(--accent-text)] uppercase tracking-wider">
-          {property?.Purpose || ""}
-        </span>
+      <div className="relative h-[180px] sm:h-[110px] w-full sm:w-[160px] shrink-0 overflow-hidden rounded-xl bg-[var(--bg-section)]">
+        <img 
+          src={imageUrl} 
+          alt={property?.Title || "Property"} 
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+        {property?.Purpose && (
+          <span className="absolute bottom-2 left-2 rounded-md bg-[var(--accent)] px-2 py-0.5 text-[9px] font-extrabold text-[var(--accent-text)] uppercase tracking-wider">
+            {property.Purpose}
+          </span>
+        )}
       </div>
 
       {/* Info */}
-      <div className="flex flex-1 min-w-0 flex-col justify-between">
+      <div className="flex flex-1 min-w-0 flex-col justify-between self-stretch">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
-            {property?.Category || property?.Property_Type || ""}
-          </p>
-          <h3 className="mt-1 text-base font-bold text-[var(--text-primary)] line-clamp-1">{property?.Title || "Untitled"}</h3>
-          <p className="mt-1 flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
-            <MapPin size={12} className="text-[var(--text-muted)]" />
-            {[property?.Area, property?.City].filter(Boolean).join(", ") || "Location not specified"}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+              {property?.Category || property?.Property_Type || "Property"}
+            </span>
+            {property?.PropertyStatus && (
+              <span className="rounded bg-[var(--bg-surface)] px-1.5 py-0.5 text-[9px] font-semibold text-[var(--text-secondary)] border border-[var(--border-subtle)]">
+                {property.PropertyStatus}
+              </span>
+            )}
+          </div>
+          <h3 className="mt-1 text-sm font-bold text-[var(--text-primary)] line-clamp-2 leading-snug">
+            {property?.Title || "Untitled"}
+          </h3>
+          <p className="mt-1 flex items-center gap-1 text-xs text-[var(--text-secondary)]">
+            <MapPin size={11} className="shrink-0 text-[var(--text-muted)]" />
+            <span className="truncate">{[property?.Area, property?.City].filter(Boolean).join(", ") || "Location not specified"}</span>
           </p>
         </div>
-        <p className="text-lg font-extrabold text-[var(--text-primary)]">{formatPriceRow(property)}</p>
+
+        {/* Specs & Price */}
+        <div className="mt-2.5 flex flex-wrap items-center gap-3 border-t border-[var(--border-subtle)] pt-2">
+          <p className="text-base font-extrabold text-[var(--text-primary)]">
+            {formatPriceRow(property)}
+          </p>
+
+          <div className="flex items-center gap-2.5 text-[11px] text-[var(--text-secondary)]">
+            {!isCommercial && !isIndustrial && bedrooms !== null && bedrooms !== undefined && (
+              <span className="flex items-center gap-1 font-medium">
+                <BedDouble size={12} className="text-[var(--text-muted)]" /> {bedrooms} Beds
+              </span>
+            )}
+            {!isCommercial && !isIndustrial && bathrooms !== null && bathrooms !== undefined && (
+              <span className="flex items-center gap-1 font-medium">
+                <Bath size={12} className="text-[var(--text-muted)]" /> {bathrooms} Baths
+              </span>
+            )}
+            {builtUpArea !== null && builtUpArea !== undefined && (
+              <span className="flex items-center gap-1 font-medium">
+                <Maximize size={12} className="text-[var(--text-muted)]" /> {builtUpArea} {areaUnit}
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Action */}
-      <div className="flex shrink-0 items-center gap-2">
+      {/* Action Buttons */}
+      <div className="flex shrink-0 items-center gap-2 self-end sm:self-center w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-[var(--border-subtle)]">
         <Link
           href={viewRoute}
           onClick={(e) => e.stopPropagation()}
-          className="hh-btn hh-btn-primary hh-btn-sm"
+          className="hh-btn hh-btn-primary hh-btn-sm flex-1 sm:flex-initial text-xs font-bold"
         >
           Details
         </Link>
@@ -759,7 +863,7 @@ function ListPropertyRow({ property, onContact }) {
             e.stopPropagation();
             if (onContact) onContact();
           }}
-          className="hh-btn hh-btn-secondary hh-btn-sm"
+          className="hh-btn hh-btn-secondary hh-btn-sm flex-1 sm:flex-initial text-xs font-bold"
         >
           Contact
         </button>

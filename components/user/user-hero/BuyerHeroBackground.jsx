@@ -76,7 +76,7 @@ export default function BuyerHeroBackground({ customImageUrl }) {
         style={
           customImageUrl
             ? {
-                backgroundImage: `radial-gradient(circle at 50% 28%, transparent 0%, var(--bg-page) 85%), linear-gradient(to bottom, transparent 35%, var(--bg-page) 98%), url(${customImageUrl})`,
+                backgroundImage: `radial-gradient(circle at 50% 58%, transparent 0%, var(--bg-page) 85%), linear-gradient(to bottom, transparent 40%, var(--bg-page) 98%), url(${customImageUrl})`,
               }
             : undefined
         }

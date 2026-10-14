@@ -414,7 +414,7 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
       )}
 
       {/* ── Page Container ── */}
-      <div className="mx-auto max-w-[1280px] px-4 pt-5 pb-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pt-5 pb-6 sm:px-6 lg:px-8">
 
         {/* Top Bar */}
         <div className="flex items-center justify-between gap-3 mb-5">
@@ -796,7 +796,7 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
               <h2 className="text-xl font-extrabold text-[var(--text-primary)]">You May Also Like</h2>
               <p className="mt-1 text-sm text-[var(--text-secondary)]">Similar properties in this category.</p>
             </div>
-            <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {relatedProperties.map((item) => (
                 <PropertyCard key={item.documentId || item.id} property={item} />
               ))}
