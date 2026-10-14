@@ -1,300 +1,3 @@
-// "use client";
-// import { useState } from "react";
-// import Link from "next/link";
-// import { ArrowLeft, CheckCircle2, MapPin } from "lucide-react";
-
-// import PropertyCard from "./PropertyCard";
-
-// const STRAPI_URL =
-//   process.env.NEXT_PUBLIC_STRAPI_BASE_URL ||
-//   process.env.NEXT_PUBLIC_STRAPI_URL?.replace("/api", "") ||
-//   "http://localhost:1337";
-
-// const getMediaUrl = (media) => {
-//   if (!media) return null;
-
-//   const url =
-//     media?.url || media?.formats?.large?.url || media?.formats?.medium?.url;
-
-//   if (!url) return null;
-
-//   return url.startsWith("http") ? url : `${STRAPI_URL}${url}`;
-// };
-
-// const getGallery = (property) => {
-//   const gallery =
-//     property?.Gallery ||
-//     property?.GalleryImages ||
-//     property?.PropertyGallery ||
-//     property?.PropertyImage ||
-//     property?.Images ||
-//     [];
-
-//   return Array.isArray(gallery) ? gallery.map(getMediaUrl).filter(Boolean) : [];
-// };
-
-// const renderValue = (value) => {
-//   if (value === null || value === undefined || value === "") return "-";
-//   if (Array.isArray(value)) return value.join(", ");
-//   if (typeof value === "object") return null;
-
-//   return value.toString();
-// };
-
-// const renderRichText = (description) => {
-//   if (!description) return "No description available.";
-//   if (typeof description === "string") return description;
-
-//   if (Array.isArray(description)) {
-//     return description
-//       .map((block) =>
-//         block?.children?.map((child) => child?.text || "").join(" "),
-//       )
-//       .filter(Boolean)
-//       .join("\n\n");
-//   }
-
-//   return "No description available.";
-// };
-
-// const DetailGrid = ({ title, items }) => {
-//   const visibleItems = items.filter((item) => renderValue(item.value));
-
-//   if (visibleItems.length === 0) return null;
-
-//   return (
-//     <section className="rounded-lg border bg-white p-6 shadow-sm">
-//       <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
-
-//       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-//         {visibleItems.map((item) => (
-//           <div key={item.label} className="rounded-lg bg-gray-50 p-4">
-//             <p className="text-sm font-medium text-gray-500">{item.label}</p>
-//             <p className="mt-2 font-semibold text-gray-900">
-//               {renderValue(item.value)}
-//             </p>
-//           </div>
-//         ))}
-//       </div>
-//     </section>
-//   );
-// };
-
-// const ObjectDetails = ({ title, data }) => {
-//   if (!data || typeof data !== "object") return null;
-
-//   const items = Object.entries(data)
-//     .filter(
-//       ([key]) => !["id", "documentId", "createdAt", "updatedAt"].includes(key),
-//     )
-//     .map(([key, value]) => ({
-//       label: key.replace(/_/g, " "),
-//       value,
-//     }));
-
-//   return <DetailGrid title={title} items={items} />;
-// };
-
-// export default function PropertyDetails({ property, relatedProperties = [] }) {
-//   if (!property) {
-//     return (
-//       <section className="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
-//         <h2 className="text-3xl font-bold text-gray-900">Property Not Found</h2>
-
-//         <Link
-//           href="/user"
-//           className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700"
-//         >
-//           <ArrowLeft size={18} />
-//           Back
-//         </Link>
-//       </section>
-//     );
-//   }
-
-//   const coverImage = getMediaUrl(property?.CoverImage) || "/no-property.png";
-//   const gallery = getGallery(property);
-//   const commonDetails = property?.PropertyCommonDetails || {};
-//   const residentialDetails =
-//     property?.ResidentialDetails ||
-//     property?.ResidentialPropertyDetails ||
-//     property?.PropertyResidentialDetails;
-//   const description = renderRichText(property?.Description);
-//   const features =
-//     property?.PropertyFeatures ||
-//     property?.Features ||
-//     property?.Amenities ||
-//     [];
-
-//   const strapiOverview = Array.isArray(property?.PropertyOverview)
-//     ? property.PropertyOverview.map((item) => ({
-//         label: item.Title,
-//         value: item.Value,
-//       }))
-//     : [];
-
-//   const overviewItems = [
-//     ...strapiOverview,
-//     { label: "Price", value: commonDetails.Price },
-//     {
-//       label: "Carpet Area",
-//       value:
-//         `${commonDetails.CarpetArea || "-"} ${commonDetails.Area_Unit || ""}`.trim(),
-//     },
-//     {
-//       label: "Built-up Area",
-//       value:
-//         `${commonDetails.Built_upArea || "-"} ${commonDetails.Area_Unit || ""}`.trim(),
-//     },
-//     { label: "Parking", value: commonDetails.Parking },
-//     { label: "Facing", value: commonDetails.Facing },
-//     { label: "Property Age", value: commonDetails.PropertyAge },
-//     { label: "Available From", value: commonDetails.AvailableForm },
-//     { label: "Status", value: property.PropertyStatus },
-//     { label: "Category", value: property.Category },
-//   ];
-
-//   const featureList = Array.isArray(features)
-//     ? features
-//     : features
-//       ? features.toString().split(",")
-//       : [];
-
-//   return (
-//     <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-//       <button
-//         type="button"
-//         onClick={() => window.history.back()}
-//         className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-blue-600 hover:text-blue-700"
-//       >
-//         <ArrowLeft size={16} />
-//         Back
-//       </button>
-
-//       <div className="mt-6 overflow-hidden rounded-lg border bg-white shadow-sm">
-//         <img
-//           src={coverImage}
-//           alt={property.Title}
-//           className="h-[320px] w-full object-cover sm:h-[460px]"
-//         />
-//       </div>
-
-//       {gallery.length > 0 && (
-//         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-//           {gallery.map((image) => (
-//             <img
-//               key={image}
-//               src={image}
-//               alt={property.Title}
-//               className="h-36 w-full rounded-lg object-cover"
-//             />
-//           ))}
-//         </div>
-//       )}
-
-//       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
-//         <div className="space-y-8">
-//           <section className="rounded-lg border bg-white p-6 shadow-sm">
-//             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-//               <div>
-//                 <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-//                   {property.Title}
-//                 </h1>
-
-//                 <p className="mt-3 flex items-center gap-2 text-gray-600">
-//                   <MapPin size={18} className="shrink-0 text-blue-600" />
-//                   {property.Area}
-//                   {property.Area && property.City ? ", " : ""}
-//                   {property.City}
-//                 </p>
-//               </div>
-
-//               <p className="text-2xl font-bold text-blue-600">
-//                 {commonDetails.Price || "Price on Request"}
-//               </p>
-//             </div>
-
-//             <div className="mt-5 flex flex-wrap gap-3">
-//               <span className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700">
-//                 {property.Purpose}
-//               </span>
-
-//               <span className="rounded-full bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700">
-//                 {property.Property_Type}
-//               </span>
-//             </div>
-//           </section>
-
-//           <section className="rounded-lg border bg-white p-6 shadow-sm">
-//             <h2 className="text-2xl font-bold text-gray-900">Description</h2>
-//             <div className="mt-4 whitespace-pre-line leading-7 text-gray-700">
-//               {description}
-//             </div>
-//           </section>
-
-//           <DetailGrid title="Property Overview" items={overviewItems} />
-
-//           {featureList.length > 0 && (
-//             <section className="rounded-lg border bg-white p-6 shadow-sm">
-//               <h2 className="text-2xl font-bold text-gray-900">
-//                 Property Features
-//               </h2>
-
-//               <div className="mt-5 grid gap-3 sm:grid-cols-2">
-//                 {featureList.map((feature) => (
-//                   <div
-//                     key={feature.id || feature.Name || feature}
-//                     className="flex items-center gap-3 text-gray-700"
-//                   >
-//                     <CheckCircle2
-//                       size={18}
-//                       className="shrink-0 text-emerald-600"
-//                     />
-//                     <span>
-//                       {feature.Name ||
-//                         feature.Title ||
-//                         feature.Text ||
-//                         renderValue(feature)}
-//                     </span>
-//                   </div>
-//                 ))}
-//               </div>
-//             </section>
-//           )}
-
-//           <ObjectDetails
-//             title="Residential Details"
-//             data={residentialDetails}
-//           />
-//         </div>
-
-//         <aside className="h-fit rounded-lg border bg-white p-6 shadow-sm">
-//           <p className="text-sm font-semibold text-gray-500">
-//             Interested in this property?
-//           </p>
-
-//           <Link
-//             href={`/user/contact-owner/${property.documentId}`}
-//             className="mt-4 block rounded-lg bg-blue-600 px-5 py-3 text-center font-semibold text-white transition hover:bg-blue-700"
-//           >
-//             Contact Owner
-//           </Link>
-//         </aside>
-//       </div>
-
-//       {relatedProperties.length > 0 && (
-//         <section className="mt-12">
-//           <h2 className="text-2xl font-bold text-gray-900">
-//             Related Properties
-//           </h2>
-
-//           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-//             {relatedProperties.map((item) => (
-//               <PropertyCard key={item.documentId || item.id} property={item} />
-//             ))}
-//           </div>
-//         </section>
-//       )}
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
@@ -329,7 +32,13 @@ import {
   Car,
   Wifi,
   PhoneCall,
-  Wind
+  Wind,
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight,
+  Building2,
+  Calendar,
+  Tag,
 } from "lucide-react";
 
 import PropertyCard from "./PropertyCard";
@@ -345,23 +54,18 @@ const STRAPI_URL =
 
 const getMediaUrl = (media) => {
   if (!media) return null;
-
   const url =
     media?.url ||
     media?.formats?.large?.url ||
     media?.formats?.medium?.url ||
     media?.formats?.small?.url;
-
   if (!url) return null;
-
   return url.startsWith("http") ? url : `${STRAPI_URL}${url}`;
 };
 
-
-
-  // =====================================================
-  // GALLERY
-  // =====================================================
+// =====================================================
+// GALLERY
+// =====================================================
 
 const getGallery = (property) => {
   const gallery =
@@ -372,10 +76,55 @@ const getGallery = (property) => {
     property?.PropertyGallery ||
     property?.Images ||
     [];
-
   if (!Array.isArray(gallery)) return [];
   return gallery.map(getMediaUrl).filter(Boolean);
 };
+
+// =====================================================
+// PRICE FORMATTER — Indian system (actual raw number)
+// Matches logic in ownerInsights.js / localityInsights.js
+// e.g. 8500000 => "Rs 85 Lac", 15000000 => "Rs 1.50 Cr"
+// =====================================================
+
+function formatIndianPrice(raw) {
+  if (raw === null || raw === undefined || raw === "") return null;
+  const num = Number(raw);
+  if (isNaN(num) || num <= 0) return typeof raw === "string" && raw.trim() ? raw : null;
+
+  if (num >= 10000000) {
+    const cr = num / 10000000;
+    return `\u20B9${cr % 1 === 0 ? cr.toFixed(0) : cr.toFixed(2)} Cr`;
+  }
+  if (num >= 100000) {
+    const lac = num / 100000;
+    return `\u20B9${lac % 1 === 0 ? lac.toFixed(0) : lac.toFixed(2)} Lac`;
+  }
+  return `\u20B9${num.toLocaleString("en-IN")}`;
+}
+
+// =====================================================
+// GOOGLE MAPS URL BUILDER
+// Uses lat/lng if available; otherwise builds from address
+// =====================================================
+
+function buildMapsUrl(property) {
+  const lat = property?.Latitude || property?.latitude || property?.Lat;
+  const lng = property?.Longitude || property?.longitude || property?.Lng;
+  if (lat && lng && !isNaN(Number(lat)) && !isNaN(Number(lng))) {
+    return `https://www.google.com/maps?q=${Number(lat)},${Number(lng)}`;
+  }
+  const parts = [
+    property?.Address,
+    property?.Locality,
+    property?.Area,
+    property?.City,
+    property?.State,
+    property?.PinCode,
+  ].filter(Boolean);
+  if (parts.length === 0) return null;
+  const query = encodeURIComponent(parts.join(", "));
+  return `https://www.google.com/maps/search/?api=1&query=${query}`;
+}
 
 // =====================================================
 // VALUE FORMATTER
@@ -395,7 +144,6 @@ const renderValue = (value) => {
 const renderRichText = (description) => {
   if (!description) return "No description available.";
   if (typeof description === "string") return description;
-
   if (Array.isArray(description)) {
     return description
       .map((block) =>
@@ -404,31 +152,33 @@ const renderRichText = (description) => {
       .filter(Boolean)
       .join("\n\n");
   }
-
   return "No description available.";
 };
 
 // =====================================================
-// DETAIL GRID
+// DETAIL GRID — compact, 2-col mobile, 3-col desktop
 // =====================================================
 
 function DetailGrid({ title, items }) {
   const visibleItems = items.filter(
-    (item) => item?.value !== null && item?.value !== undefined && item?.value !== "" && item?.value !== "-"
+    (item) =>
+      item?.value !== null &&
+      item?.value !== undefined &&
+      item?.value !== "" &&
+      item?.value !== "-"
   );
-
   if (visibleItems.length === 0) return null;
 
   return (
-    <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm sm:p-8">
-      <h2 className="text-xl font-extrabold text-[var(--text-primary)]">{title}</h2>
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 sm:p-6 shadow-sm">
+      <h2 className="text-base font-extrabold text-[var(--text-primary)] mb-5">{title}</h2>
+      <div className="grid gap-x-6 gap-y-4 grid-cols-2 sm:grid-cols-3">
         {visibleItems.map((item, index) => (
-          <div key={`${item.label}-${index}`} className="flex flex-col border-b border-[var(--border-subtle)] pb-3">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+          <div key={`${item.label}-${index}`} className="flex flex-col gap-0.5">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
               {item.label}
             </span>
-            <span className="mt-1 font-bold text-[var(--text-primary)] text-sm">
+            <span className="text-sm font-semibold text-[var(--text-primary)] leading-snug">
               {renderValue(item.value)}
             </span>
           </div>
@@ -439,7 +189,7 @@ function DetailGrid({ title, items }) {
 }
 
 // =====================================================
-// PROPERTY DETAILS COMPONENT
+// PROPERTY DETAILS — MAIN COMPONENT
 // =====================================================
 
 export default function PropertyDetails({ property, relatedProperties = [] }) {
@@ -448,31 +198,30 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [isDescExpanded, setIsDescExpanded] = useState(false);
 
-  // Prevent scroll when lightbox is open
   useEffect(() => {
-    if (showLightbox) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
+    document.body.style.overflow = showLightbox ? "hidden" : "auto";
+    return () => { document.body.style.overflow = "auto"; };
   }, [showLightbox]);
 
+  const coverImage = getMediaUrl(property?.CoverImage) || "/no-property.png";
+  const gallery = getGallery(property);
+  const allImages = useMemo(() => {
+    return [coverImage, ...gallery.filter((img) => img !== coverImage)];
+  }, [coverImage, gallery]);
+
   // ===================================================
-  // NOT FOUND STATE
+  // NOT FOUND
   // ===================================================
 
   if (!property) {
     return (
-      <section className="flex min-h-[60vh] items-center justify-center px-4 py-20 bg-[var(--bg-base)]">
+      <section className="flex min-h-[60vh] items-center justify-center px-4 py-20 bg-[var(--bg-page)]">
         <div className="w-full max-w-lg rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-10 text-center shadow-sm">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--bg-surface)]">
             <SearchX size={28} className="text-[var(--text-muted)]" />
           </div>
           <h2 className="mt-5 text-2xl font-extrabold text-[var(--text-primary)]">Property Not Found</h2>
-          <p className="mt-2 text-sm text-[var(--text-secondary)]">The property may have been removed or is no longer available.</p>
+          <p className="mt-2 text-sm text-[var(--text-secondary)]">This property may have been removed or is no longer available.</p>
           <Link
             href="/user"
             className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[var(--btn-primary-bg)] px-6 py-3 font-bold text-[var(--btn-primary-text)] transition hover:opacity-90"
@@ -488,104 +237,118 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
   // DATA EXTRACTION
   // ===================================================
 
-  const coverImage = getMediaUrl(property?.CoverImage) || "/no-property.png";
-  const gallery = getGallery(property);
-  const allImages = useMemo(() => {
-    return [coverImage, ...gallery.filter((image) => image !== coverImage)];
-  }, [coverImage, gallery]);
-
   const commonDetails = property?.PropertyCommonDetails || {};
   const residentialDetails =
-    property?.ResidentialDetails || property?.ResidentialPropertyDetails || property?.PropertyResidentialDetails;
+    property?.ResidentialDetails ||
+    property?.ResidentialPropertyDetails ||
+    property?.PropertyResidentialDetails;
 
   const descriptionText = renderRichText(property?.Description);
   const isLongDescription = descriptionText.length > 400;
 
-  // ===================================================
-  // FEATURES / AMENITIES
-  // ===================================================
+  // Price
+  const rawPrice = commonDetails?.Price || property?.Price;
+  const formattedPrice = formatIndianPrice(rawPrice) || "Price on Request";
 
+  // Amenities
   const rawAmenities = property?.PropertyAmenities || {};
-  const fallbackFeatures = Array.isArray(property?.Features) ? property.Features : 
-                           typeof property?.Features === "string" ? property.Features.split(",") : [];
+  const fallbackFeatures = Array.isArray(property?.Features)
+    ? property.Features
+    : typeof property?.Features === "string"
+    ? property.Features.split(",")
+    : [];
 
   const amenityIconMap = {
-    Parking: { icon: CarFront, label: "Parking" },
-    Lift: { icon: ArrowUpDown, label: "Elevator / Lift" },
-    Security: { icon: ShieldCheck, label: "24/7 Security" },
-    CCTV: { icon: Camera, label: "CCTV Surveillance" },
-    PowerBackup: { icon: Zap, label: "Power Backup" },
-    Gym: { icon: Dumbbell, label: "Gymnasium" },
-    SwimmingPool: { icon: Waves, label: "Swimming Pool" },
-    Garden: { icon: Trees, label: "Garden / Park" },
-    ClubHouse: { icon: Club, label: "Club House" },
-    WaterSupply: { icon: Droplets, label: "24/7 Water Supply" },
-    FireSafety: { icon: Flame, label: "Fire Safety" },
-    VisitorParking: { icon: Car, label: "Visitor Parking" },
-    Wifi: { icon: Wifi, label: "Wi-Fi" },
-    Intercom: { icon: PhoneCall, label: "Intercom" },
-    AC: { icon: Wind, label: "Air Conditioning" }
+    Parking:        { icon: CarFront,   label: "Parking" },
+    Lift:           { icon: ArrowUpDown,label: "Elevator / Lift" },
+    Security:       { icon: ShieldCheck,label: "24/7 Security" },
+    CCTV:           { icon: Camera,     label: "CCTV" },
+    PowerBackup:    { icon: Zap,        label: "Power Backup" },
+    Gym:            { icon: Dumbbell,   label: "Gymnasium" },
+    SwimmingPool:   { icon: Waves,      label: "Swimming Pool" },
+    Garden:         { icon: Trees,      label: "Garden / Park" },
+    ClubHouse:      { icon: Club,       label: "Club House" },
+    WaterSupply:    { icon: Droplets,   label: "Water Supply" },
+    FireSafety:     { icon: Flame,      label: "Fire Safety" },
+    VisitorParking: { icon: Car,        label: "Visitor Parking" },
+    Wifi:           { icon: Wifi,       label: "Wi-Fi" },
+    Intercom:       { icon: PhoneCall,  label: "Intercom" },
+    AC:             { icon: Wind,       label: "Air Conditioning" },
   };
 
   const featureList = [];
-
-  // Parse existing boolean component
   if (typeof rawAmenities === "object" && Object.keys(rawAmenities).length > 0) {
     Object.entries(rawAmenities).forEach(([key, value]) => {
-      if (value === true && !['id', '__component'].includes(key)) {
-        const mapped = amenityIconMap[key] || { icon: CheckCircle2, label: key.replace(/([A-Z])/g, ' $1').trim() };
+      if (value === true && !["id", "__component"].includes(key)) {
+        const mapped = amenityIconMap[key] || {
+          icon: CheckCircle2,
+          label: key.replace(/([A-Z])/g, " $1").trim(),
+        };
         featureList.push(mapped);
       }
     });
   }
-
-  // Parse fallback features if any
-  fallbackFeatures.forEach(feature => {
+  fallbackFeatures.forEach((feature) => {
     const featureStr = renderValue(feature).trim();
-    if (featureStr && !featureList.some(f => f.label.toLowerCase() === featureStr.toLowerCase())) {
+    if (featureStr && !featureList.some((f) => f.label.toLowerCase() === featureStr.toLowerCase())) {
       featureList.push({ icon: CheckCircle2, label: featureStr });
     }
   });
 
-  const areaUnit = commonDetails?.Area_Unit || commonDetails?.AreaUnit || "";
+  // Key highlights
+  const areaUnit   = commonDetails?.Area_Unit || commonDetails?.AreaUnit || "";
   const carpetArea = commonDetails?.CarpetArea ? `${commonDetails.CarpetArea} ${areaUnit}`.trim() : null;
   const builtupArea = commonDetails?.Built_upArea ? `${commonDetails.Built_upArea} ${areaUnit}`.trim() : null;
+  const beds    = residentialDetails?.Bedrooms   || commonDetails?.Bedrooms   || property?.Bedrooms;
+  const baths   = residentialDetails?.Bathrooms  || commonDetails?.Bathrooms  || property?.Bathrooms;
+  const furnish = residentialDetails?.Furnishing || commonDetails?.Furnishing;
+  const park    = commonDetails?.Parking;
+  const propArea = carpetArea || builtupArea || null;
 
-  // Overview Items
+  // Overview
   const strapiOverview = Array.isArray(property?.PropertyOverview)
     ? property.PropertyOverview.map((item) => ({ label: item?.Title, value: item?.Value }))
     : [];
 
   const overviewItems = [
     ...strapiOverview,
-    { label: "Price", value: commonDetails?.Price || property?.Price },
-    { label: "Carpet Area", value: carpetArea },
+    { label: "Carpet Area",   value: carpetArea },
     { label: "Built-up Area", value: builtupArea },
-    { label: "Floor", value: residentialDetails?.Floor_No || commonDetails?.Floor },
-    { label: "Total Floors", value: residentialDetails?.Total_Floors || commonDetails?.TotalFloors },
-    { label: "Furnishing", value: residentialDetails?.Furnishing || commonDetails?.Furnishing },
-    { label: "Parking", value: commonDetails?.Parking },
-    { label: "Facing", value: commonDetails?.Facing },
-    { label: "Property Age", value: commonDetails?.PropertyAge },
-    { label: "Possession / Available", value: commonDetails?.AvailableForm || commonDetails?.AvailableFrom },
-    { label: "Status", value: property?.PropertyStatus },
-    { label: "Listed On", value: property?.publishedAt ? new Date(property.publishedAt).toLocaleDateString() : null },
+    { label: "Floor",         value: residentialDetails?.Floor_No || commonDetails?.Floor },
+    { label: "Total Floors",  value: residentialDetails?.Total_Floors || commonDetails?.TotalFloors },
+    { label: "Furnishing",    value: furnish },
+    { label: "Parking",       value: park },
+    { label: "Facing",        value: commonDetails?.Facing },
+    { label: "Property Age",  value: commonDetails?.PropertyAge },
+    { label: "Available From",value: commonDetails?.AvailableForm || commonDetails?.AvailableFrom },
+    { label: "Status",        value: property?.PropertyStatus },
+    {
+      label: "Listed On",
+      value: property?.publishedAt
+        ? new Date(property.publishedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+        : null,
+    },
   ];
 
-  const displayPrice = commonDetails?.Price || property?.Price || "Price on Request";
-  const beds = residentialDetails?.Bedrooms || commonDetails?.Bedrooms || property?.Bedrooms;
-  const baths = residentialDetails?.Bathrooms || commonDetails?.Bathrooms || property?.Bathrooms;
-  const furnish = residentialDetails?.Furnishing || commonDetails?.Furnishing;
-  const park = commonDetails?.Parking;
-  const propArea = carpetArea || builtupArea || property?.Area;
+  // Location
+  const addressParts = [
+    property?.Address,
+    property?.Locality,
+    property?.Area,
+    property?.City,
+    property?.State,
+    property?.PinCode,
+  ].filter(Boolean);
+  const displayAddress  = addressParts.length > 0 ? addressParts.join(", ") : null;
+  const shortLocation   = [property?.Area, property?.City, property?.State].filter(Boolean).join(", ");
+  const mapsUrl         = buildMapsUrl(property);
 
+  // Share
   const handleShare = () => {
     if (typeof navigator !== "undefined" && navigator.share) {
-      navigator.share({
-        title: property.Title,
-        text: `Check out this property on HomeHub`,
-        url: window.location.href,
-      }).catch(() => {});
+      navigator.share({ title: property.Title, text: "Check out this property on HomeHub", url: window.location.href }).catch(() => {});
+    } else if (typeof window !== "undefined") {
+      navigator.clipboard?.writeText(window.location.href).catch(() => {});
     }
   };
 
@@ -594,274 +357,296 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
   // ===================================================
 
   return (
-    <div className="bg-[var(--bg-page)] text-[var(--text-primary)] min-h-screen pb-24 lg:pb-12 relative">
-      
-      {/* ── Lightbox Modal ── */}
+    <div className="bg-[var(--bg-page)] text-[var(--text-primary)] min-h-screen pb-24 lg:pb-12">
+
+      {/* ── Lightbox ── */}
       {showLightbox && (
-        <div className="fixed inset-0 z-[99999] flex flex-col bg-black/95 backdrop-blur-md">
-          <div className="flex items-center justify-between p-4 sm:p-6">
-            <div className="text-white font-semibold text-sm">
+        <div className="fixed inset-0 z-[99999] flex flex-col bg-black/96 backdrop-blur-md">
+          <div className="flex items-center justify-between px-4 py-3 sm:px-6 border-b border-white/10">
+            <span className="text-white/60 text-xs font-semibold tracking-widest uppercase">
               {lightboxIndex + 1} / {allImages.length}
-            </div>
+            </span>
             <button
               onClick={() => setShowLightbox(false)}
               className="rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition"
+              aria-label="Close gallery"
             >
-              <X size={24} />
+              <X size={22} />
             </button>
           </div>
-          <div className="flex-1 flex items-center justify-center p-4">
+          <div className="flex-1 flex items-center justify-center p-4 relative">
+            <button
+              onClick={() => setLightboxIndex((p) => (p > 0 ? p - 1 : allImages.length - 1))}
+              className="absolute left-3 sm:left-6 z-10 rounded-full bg-white/10 p-3 text-white hover:bg-white/20 transition"
+              aria-label="Previous"
+            >
+              <ChevronLeft size={22} />
+            </button>
             <img
               src={allImages[lightboxIndex]}
-              alt={`Gallery Image ${lightboxIndex + 1}`}
-              className="max-h-full max-w-full object-contain select-none"
+              alt={`Gallery image ${lightboxIndex + 1}`}
+              className="max-h-full max-w-full object-contain select-none rounded-lg"
             />
+            <button
+              onClick={() => setLightboxIndex((p) => (p < allImages.length - 1 ? p + 1 : 0))}
+              className="absolute right-3 sm:right-6 z-10 rounded-full bg-white/10 p-3 text-white hover:bg-white/20 transition"
+              aria-label="Next"
+            >
+              <ChevronRight size={22} />
+            </button>
           </div>
-          <div className="flex items-center justify-center gap-6 p-6">
-            <button
-              onClick={() => setLightboxIndex((prev) => (prev > 0 ? prev - 1 : allImages.length - 1))}
-              className="rounded-full bg-white/10 p-3 text-white hover:bg-white/20 transition"
-            >
-              <ArrowLeft size={20} />
-            </button>
-            <div className="hidden sm:flex gap-2 overflow-x-auto max-w-[50vw] px-2 snap-x hide-scrollbar">
-              {allImages.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setLightboxIndex(idx)}
-                  className={`h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2 transition snap-center ${
-                    lightboxIndex === idx ? "border-white" : "border-transparent opacity-50 hover:opacity-100"
-                  }`}
-                >
-                  <img src={img} alt="" className="h-full w-full object-cover" />
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={() => setLightboxIndex((prev) => (prev < allImages.length - 1 ? prev + 1 : 0))}
-              className="rounded-full bg-white/10 p-3 text-white hover:bg-white/20 transition transform rotate-180"
-            >
-              <ArrowLeft size={20} />
-            </button>
+          <div className="flex items-center justify-center gap-2 p-4 overflow-x-auto border-t border-white/10">
+            {allImages.map((img, idx) => (
+              <button
+                key={idx}
+                onClick={() => setLightboxIndex(idx)}
+                className={`shrink-0 h-14 w-20 rounded-lg overflow-hidden border-2 transition ${
+                  lightboxIndex === idx ? "border-white opacity-100" : "border-transparent opacity-40 hover:opacity-70"
+                }`}
+              >
+                <img src={img} alt="" className="h-full w-full object-cover" />
+              </button>
+            ))}
           </div>
         </div>
       )}
 
-      {/* ── Main Content Container ── */}
-      <div className="mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-8">
-        
-        {/* Top Action Bar */}
-        <div className="flex items-center justify-between gap-4 mb-5">
+      {/* ── Page Container ── */}
+      <div className="mx-auto max-w-[1280px] px-4 pt-5 pb-6 sm:px-6 lg:px-8">
+
+        {/* Top Bar */}
+        <div className="flex items-center justify-between gap-3 mb-5">
           <button
             type="button"
             onClick={() => window.history.back()}
-            className="hh-btn hh-btn-secondary hh-btn-sm"
+            className="hh-btn hh-btn-secondary hh-btn-sm inline-flex items-center gap-1.5"
           >
             <ArrowLeft size={14} /> Back
           </button>
           <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={handleShare}
-              className="hh-btn hh-btn-secondary hh-btn-sm"
-            >
+            <button type="button" onClick={handleShare} className="hh-btn hh-btn-secondary hh-btn-sm inline-flex items-center gap-1.5">
               <Share2 size={14} /> Share
             </button>
-            <button
-              type="button"
-              onClick={() => setLiked(!liked)}
-              className="hh-btn hh-btn-secondary hh-btn-sm"
-            >
-              <Heart size={14} className={liked ? "fill-red-500 text-red-500" : ""} /> {liked ? "Saved" : "Save"}
+            <button type="button" onClick={() => setLiked(!liked)} className="hh-btn hh-btn-secondary hh-btn-sm inline-flex items-center gap-1.5">
+              <Heart size={14} className={liked ? "fill-red-500 text-red-500" : ""} />
+              {liked ? "Saved" : "Save"}
             </button>
           </div>
         </div>
 
-        {/* ── Premium Image Gallery ── */}
-        <div className="relative mb-8 grid grid-cols-1 gap-2 lg:grid-cols-[2fr_1fr] h-[300px] sm:h-[450px] lg:h-[500px] rounded-2xl overflow-hidden shadow-sm bg-[var(--bg-section)] border border-[var(--border-subtle)]">
-          <div
-            className="relative h-full w-full cursor-pointer overflow-hidden group"
-            onClick={() => { setLightboxIndex(0); setShowLightbox(true); }}
-          >
-            <img src={allImages[0]} alt="Primary" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-            
-            {/* Badges Overlay */}
-            <div className="absolute top-4 left-4 flex flex-col gap-2">
-              <div className="flex gap-2">
+        {/* ── GALLERY — compact two-column layout ── */}
+        {/* Desktop: 360px; Tablet: 300px; Mobile: 220px */}
+        <div className="relative mb-6 rounded-2xl overflow-hidden border border-[var(--border-subtle)] shadow-sm bg-[var(--bg-section)]">
+          <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-[3px] h-[220px] sm:h-[300px] lg:h-[360px]">
+
+            {/* Primary image */}
+            <div
+              className="relative h-full cursor-pointer overflow-hidden group"
+              onClick={() => { setLightboxIndex(0); setShowLightbox(true); }}
+            >
+              <img
+                src={allImages[0]}
+                alt={property.Title || "Property"}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              />
+              {/* Status badges */}
+              <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
                 {property?.Purpose && (
-                  <span className="rounded-lg bg-[var(--accent)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--accent-text)] shadow-sm">
+                  <span className="rounded-lg bg-[var(--accent)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--accent-text)]">
                     For {property.Purpose}
                   </span>
                 )}
                 {property?.PropertyStatus && (
-                  <span className="rounded-lg bg-[var(--bg-card)]/90 backdrop-blur-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--text-primary)] border border-[var(--border-subtle)] shadow-sm">
+                  <span className="rounded-lg bg-[var(--bg-card)]/90 backdrop-blur-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--text-primary)] border border-[var(--border-subtle)]">
                     {property.PropertyStatus}
                   </span>
                 )}
               </div>
-            </div>
-            {/* Hover overlay indicator */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition flex items-center justify-center">
-              <span className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all rounded-full bg-black/60 px-4 py-2 text-xs font-bold text-white flex items-center gap-2 backdrop-blur">
-                <Maximize size={15}/> Enlarge
-              </span>
-            </div>
-          </div>
-
-          <div className="hidden lg:grid grid-rows-2 gap-2 h-full">
-            {allImages.slice(1, 3).map((img, idx) => (
-              <div
-                key={idx}
-                className="relative h-full w-full cursor-pointer overflow-hidden group"
-                onClick={() => { setLightboxIndex(idx + 1); setShowLightbox(true); }}
-              >
-                <img src={img} alt={`Gallery ${idx+1}`} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition" />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition pointer-events-none flex items-center justify-center">
+                <span className="opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-all rounded-full bg-black/60 px-3 py-1.5 text-[11px] font-bold text-white flex items-center gap-1.5 backdrop-blur">
+                  <Maximize size={12} /> View
+                </span>
               </div>
-            ))}
-            {allImages.length === 2 && <div className="bg-[var(--bg-surface)] h-full w-full" />}
-            {allImages.length === 1 && <div className="bg-[var(--bg-surface)] h-full w-full row-span-2" />}
+            </div>
+
+            {/* Secondary thumbnails — desktop only */}
+            <div className="hidden lg:grid grid-rows-2 gap-[3px] h-full">
+              {allImages.length >= 2 ? (
+                <>
+                  {allImages.slice(1, 3).map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="relative cursor-pointer overflow-hidden group"
+                      onClick={() => { setLightboxIndex(idx + 1); setShowLightbox(true); }}
+                    >
+                      <img
+                        src={img}
+                        alt={`View ${idx + 2}`}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition" />
+                      {idx === 1 && allImages.length > 3 && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                          <span className="text-white font-bold text-sm">+{allImages.length - 3} more</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  {allImages.length === 2 && (
+                    <div className="bg-[var(--bg-surface)] flex items-center justify-center">
+                      <ImageIcon size={24} className="text-[var(--text-muted)] opacity-25" />
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="row-span-2 bg-[var(--bg-surface)] flex items-center justify-center">
+                  <ImageIcon size={28} className="text-[var(--text-muted)] opacity-25" />
+                </div>
+              )}
+            </div>
           </div>
 
+          {/* Photo count badge */}
           <button
             onClick={() => { setLightboxIndex(0); setShowLightbox(true); }}
-            className="absolute bottom-4 right-4 flex items-center gap-2 rounded-xl bg-[var(--bg-card)]/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-[var(--text-primary)] border border-[var(--border-subtle)] shadow transition hover:bg-[var(--bg-card)]"
+            className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-xl bg-[var(--bg-card)]/90 backdrop-blur-md px-3 py-1.5 text-[11px] font-bold text-[var(--text-primary)] border border-[var(--border-subtle)] shadow transition hover:bg-[var(--bg-card)]"
           >
-            <ImageIcon size={15} /> 1 / {allImages.length} Photos
+            <ImageIcon size={12} />
+            {allImages.length === 1 ? "1 Photo" : `View all ${allImages.length} photos`}
           </button>
         </div>
 
         {/* ── Two Column Layout ── */}
-        <div className="flex flex-col lg:flex-row gap-8 items-start relative">
-          
-          {/* Left Column: Content */}
-          <div className="flex-1 w-full space-y-8">
-            
-            {/* Title & Price Header */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <p className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--text-secondary)]">
-                  {property?.Property_Type || ""} {property?.Category ? `• ${property.Category}` : ""}
+        <div className="flex flex-col lg:flex-row gap-6 items-start">
+
+          {/* LEFT COLUMN */}
+          <div className="flex-1 w-full min-w-0 space-y-5">
+
+            {/* Title, Location & Price card */}
+            <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 sm:p-6 shadow-sm">
+              {/* Eyebrow */}
+              <p className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--text-muted)] mb-2 flex items-center gap-2 flex-wrap">
+                {property?.Property_Type && <span>{property.Property_Type}</span>}
+                {property?.Category && (
+                  <><span className="opacity-30">•</span><span>{property.Category}</span></>
+                )}
+              </p>
+              {/* Title */}
+              <h1 className="text-xl sm:text-2xl font-extrabold text-[var(--text-primary)] leading-tight">
+                {property.Title}
+              </h1>
+              {/* Location */}
+              {shortLocation && (
+                <p className="mt-2 flex items-center gap-1.5 text-sm text-[var(--text-secondary)]">
+                  <MapPin size={14} className="shrink-0 text-[var(--text-primary)]" />
+                  {shortLocation}
                 </p>
-                <h1 className="mt-2 text-2xl font-extrabold text-[var(--text-primary)] sm:text-3xl leading-tight">
-                  {property.Title}
-                </h1>
-                <p className="mt-3 flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)]">
-                  <MapPin size={16} className="text-[var(--text-primary)]" />
-                  {[property.Area, property.City, property.State].filter(Boolean).join(", ") || "Location not specified"}
-                </p>
-              </div>
-              <div className="sm:text-right shrink-0">
-                <p className="text-3xl font-extrabold text-[var(--text-primary)]">{displayPrice}</p>
-                {property?.Purpose === "Rent" && <p className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wide mt-1">Per Month</p>}
+              )}
+              <div className="my-4 border-t border-[var(--border-subtle)]" />
+              {/* Price + badges row */}
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-1">
+                    {property?.Purpose === "Rent" ? "Monthly Rent" : "Asking Price"}
+                  </p>
+                  <p className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)]">
+                    {formattedPrice}
+                  </p>
+                  {property?.Purpose === "Rent" && (
+                    <p className="text-xs text-[var(--text-muted)] mt-0.5">per month</p>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {property?.Purpose && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-1 text-xs font-bold text-[var(--text-primary)]">
+                      <Tag size={11} /> For {property.Purpose}
+                    </span>
+                  )}
+                  {property?.PropertyStatus && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--badge-success-border,rgba(22,163,74,0.2))] bg-[var(--badge-success-bg,rgba(22,163,74,0.08))] px-3 py-1 text-xs font-bold text-[var(--badge-success-text,#15803d)]">
+                      {property.PropertyStatus}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Quick Stats Bar */}
-            <div className="flex flex-wrap gap-4 border-y border-[var(--border-subtle)] py-5">
-              {beds && (
-                <div className="flex items-center gap-3 pr-4 border-r border-[var(--border-subtle)] last:border-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)]">
-                    <BedDouble size={18} />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Bedrooms</p>
-                    <p className="text-sm font-bold text-[var(--text-primary)]">{beds}</p>
-                  </div>
+            {/* Key Highlights */}
+            {(beds || baths || propArea || furnish || park) && (
+              <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-4 shadow-sm overflow-x-auto">
+                <div className="flex gap-0 min-w-0">
+                  {[
+                    beds    && { icon: BedDouble, label: "Bedrooms",   value: beds },
+                    baths   && { icon: Bath,      label: "Bathrooms",  value: baths },
+                    propArea&& { icon: Maximize,  label: "Area",       value: propArea },
+                    furnish && { icon: Sofa,      label: "Furnishing", value: furnish },
+                    park    && { icon: CarFront,  label: "Parking",    value: park },
+                  ].filter(Boolean).map((stat, idx, arr) => {
+                    const Icon = stat.icon;
+                    return (
+                      <div
+                        key={idx}
+                        className={`flex items-center gap-2.5 flex-1 min-w-[90px] px-3 ${idx < arr.length - 1 ? "border-r border-[var(--border-subtle)]" : ""}`}
+                      >
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                          <Icon size={15} className="text-[var(--text-primary)]" />
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{stat.label}</p>
+                          <p className="text-sm font-bold text-[var(--text-primary)] whitespace-nowrap">{stat.value}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              )}
-              {baths && (
-                <div className="flex items-center gap-3 pr-4 border-r border-[var(--border-subtle)] last:border-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)]">
-                    <Bath size={18} />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Bathrooms</p>
-                    <p className="text-sm font-bold text-[var(--text-primary)]">{baths}</p>
-                  </div>
-                </div>
-              )}
-              {propArea && (
-                <div className="flex items-center gap-3 pr-4 border-r border-[var(--border-subtle)] last:border-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)]">
-                    <Maximize size={18} />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Area</p>
-                    <p className="text-sm font-bold text-[var(--text-primary)]">{propArea}</p>
-                  </div>
-                </div>
-              )}
-              {furnish && (
-                <div className="flex items-center gap-3 pr-4 border-r border-[var(--border-subtle)] last:border-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)]">
-                    <Sofa size={18} />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Furnishing</p>
-                    <p className="text-sm font-bold text-[var(--text-primary)]">{furnish}</p>
-                  </div>
-                </div>
-              )}
-              {park && (
-                <div className="flex items-center gap-3 pr-4 border-r border-[var(--border-subtle)] last:border-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-subtle)]">
-                    <CarFront size={18} />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Parking</p>
-                    <p className="text-sm font-bold text-[var(--text-primary)]">{park}</p>
-                  </div>
-                </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            {/* Description Section */}
-            <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm sm:p-8">
-              <h2 className="text-xl font-extrabold text-[var(--text-primary)]">About This Property</h2>
-              <div className="mt-4 relative">
+            {/* About This Property */}
+            <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 sm:p-6 shadow-sm">
+              <h2 className="text-base font-extrabold text-[var(--text-primary)] mb-3">About This Property</h2>
+              <div className="relative">
                 <div
                   className={`text-sm leading-relaxed text-[var(--text-secondary)] whitespace-pre-line overflow-hidden transition-all duration-300 ${
-                    !isDescExpanded && isLongDescription ? "max-h-[140px]" : "max-h-none"
+                    !isDescExpanded && isLongDescription ? "max-h-[130px]" : "max-h-none"
                   }`}
                 >
                   {descriptionText}
                 </div>
                 {!isDescExpanded && isLongDescription && (
-                  <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[var(--bg-card)] to-transparent pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[var(--bg-card)] to-transparent pointer-events-none" />
                 )}
               </div>
               {isLongDescription && (
                 <button
                   onClick={() => setIsDescExpanded(!isDescExpanded)}
-                  className="mt-4 flex items-center gap-1.5 text-sm font-bold text-[var(--text-primary)] hover:underline transition"
+                  className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-[var(--text-primary)] hover:underline transition"
                 >
-                  {isDescExpanded ? (
-                    <>Read Less <ChevronUp size={16} /></>
-                  ) : (
-                    <>Read More <ChevronDown size={16} /></>
-                  )}
+                  {isDescExpanded ? <><ChevronUp size={14} /> Read Less</> : <><ChevronDown size={14} /> Read More</>}
                 </button>
               )}
             </section>
 
-            {/* Property Overview Grid */}
+            {/* Property Overview */}
             <DetailGrid title="Property Overview" items={overviewItems} />
 
-            {/* Amenities Section */}
+            {/* Amenities */}
             {featureList.length > 0 && (
-              <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm sm:p-8">
-                <h2 className="text-xl font-extrabold text-[var(--text-primary)]">Amenities & Features</h2>
-                <div className="mt-6 grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+              <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 sm:p-6 shadow-sm">
+                <h2 className="text-base font-extrabold text-[var(--text-primary)] mb-4">Amenities &amp; Features</h2>
+                <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
                   {featureList.map((feature, index) => {
                     const IconComp = feature?.icon || CheckCircle2;
-                    const label = feature?.label || feature?.Name || feature?.Title || feature?.Text || renderValue(feature);
+                    const label = feature?.label || "";
                     return (
-                      <div key={index} className="flex flex-col items-start gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 transition-all hover:border-[var(--text-primary)]/40 hover:shadow-md group">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] transition-transform group-hover:scale-105">
-                          <IconComp size={18} />
+                      <div
+                        key={index}
+                        className="flex items-center gap-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3 transition hover:border-[var(--text-primary)]/30 hover:shadow-sm"
+                      >
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+                          <IconComp size={14} className="text-[var(--text-primary)]" />
                         </div>
-                        <span className="text-sm font-semibold text-[var(--text-primary)] mt-1">{label}</span>
+                        <span className="text-xs font-semibold text-[var(--text-primary)] leading-snug">{label}</span>
                       </div>
                     );
                   })}
@@ -869,76 +654,145 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
               </section>
             )}
 
-            {/* Location Section */}
-            <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm sm:p-8">
-              <h2 className="text-xl font-extrabold text-[var(--text-primary)]">Location</h2>
-              <div className="mt-6 flex items-start gap-4 rounded-xl bg-[var(--bg-surface)] p-5 border border-[var(--border-subtle)]">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-sm text-[var(--text-primary)]">
-                  <MapPin size={22} />
+            {/* Location — clickable to Google Maps */}
+            <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 sm:p-6 shadow-sm">
+              <h2 className="text-base font-extrabold text-[var(--text-primary)] mb-4">Location</h2>
+              <div className="flex items-start gap-4 rounded-xl bg-[var(--bg-surface)] p-4 border border-[var(--border-subtle)]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-sm">
+                  <MapPin size={18} className="text-[var(--text-primary)]" />
                 </div>
-                <div>
-                  <h3 className="font-bold text-[var(--text-primary)]">Property Address</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">
-                    {[
-                      property.Address,
-                      property.Locality,
-                      property.Area,
-                      property.City,
-                      property.State,
-                      property.PinCode,
-                    ]
-                      .filter(Boolean)
-                      .join(", ") || "Address not provided by the owner."}
-                  </p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-sm text-[var(--text-primary)]">Property Address</h3>
+                  {displayAddress ? (
+                    <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">{displayAddress}</p>
+                  ) : (
+                    <p className="mt-1 text-sm text-[var(--text-muted)] italic">Address not provided by the owner.</p>
+                  )}
+                  {mapsUrl && (
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex items-center gap-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-3.5 py-2 text-xs font-bold text-[var(--text-primary)] shadow-sm transition hover:border-[var(--text-primary)] hover:shadow-md"
+                    >
+                      <ExternalLink size={12} /> View on Google Maps
+                    </a>
+                  )}
                 </div>
               </div>
             </section>
+
+            {/* Mobile: inline contact card */}
+            <div className="block lg:hidden">
+              <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 shadow-sm">
+                <h3 className="text-base font-extrabold text-[var(--text-primary)]">Interested in this property?</h3>
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">Connect with the owner to arrange a viewing.</p>
+                <div className="mt-4 flex flex-col gap-2.5">
+                  <Link
+                    href={`/user/contact-owner/${property.documentId || property.id}`}
+                    className="hh-btn hh-btn-primary w-full py-3 text-center font-bold flex items-center justify-center gap-2 text-sm"
+                  >
+                    <Phone size={16} /> Contact Owner
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setLiked(!liked)}
+                    className="hh-btn hh-btn-secondary w-full py-2.5 text-center font-bold flex items-center justify-center gap-2 text-sm"
+                  >
+                    <Heart size={16} className={liked ? "fill-current" : ""} />
+                    {liked ? "Saved to Wishlist" : "Save Property"}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Right Column: Sticky Action Card (Desktop Only) */}
-          <aside className="hidden lg:block w-[360px] shrink-0 sticky top-6">
-            <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-lg shadow-black/5">
-              <h3 className="text-lg font-extrabold text-[var(--text-primary)]">Interested in this property?</h3>
-              <p className="mt-2 text-sm text-[var(--text-secondary)] leading-relaxed">
-                Connect with the owner directly to arrange a viewing or negotiate terms.
-              </p>
-              
-              <div className="mt-6 flex flex-col gap-3">
-                <Link
-                  href={`/user/contact-owner/${property.documentId || property.id}`}
-                  className="hh-btn hh-btn-primary w-full py-3.5 text-center font-bold flex items-center justify-center gap-2"
-                >
-                  <Phone size={18} /> Contact Owner
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => setLiked(!liked)}
-                  className="hh-btn hh-btn-secondary w-full py-3 text-center font-bold flex items-center justify-center gap-2"
-                >
-                  <Heart size={18} className={liked ? "fill-current" : ""} /> 
-                  {liked ? "Saved to Wishlist" : "Save Property"}
-                </button>
+          {/* RIGHT COLUMN — sticky sidebar, desktop only */}
+          <aside className="hidden lg:block w-[320px] xl:w-[340px] shrink-0">
+            <div className="sticky top-[88px] space-y-4">
+
+              {/* Price + CTA */}
+              <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 shadow-lg shadow-black/5">
+                <p className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--text-muted)] mb-1">
+                  {property?.Purpose === "Rent" ? "Monthly Rent" : "Asking Price"}
+                </p>
+                <p className="text-2xl font-extrabold text-[var(--text-primary)]">{formattedPrice}</p>
+                {property?.Purpose === "Rent" && (
+                  <p className="text-xs text-[var(--text-muted)] mt-0.5">per month</p>
+                )}
+                <div className="mt-4 border-t border-[var(--border-subtle)] pt-4 flex flex-col gap-2.5">
+                  <Link
+                    href={`/user/contact-owner/${property.documentId || property.id}`}
+                    className="hh-btn hh-btn-primary w-full py-3 text-center font-bold flex items-center justify-center gap-2 text-sm"
+                  >
+                    <Phone size={16} /> Contact Owner
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setLiked(!liked)}
+                    className="hh-btn hh-btn-secondary w-full py-2.5 text-center font-bold flex items-center justify-center gap-2 text-sm"
+                  >
+                    <Heart size={16} className={liked ? "fill-current" : ""} />
+                    {liked ? "Saved to Wishlist" : "Save Property"}
+                  </button>
+                </div>
               </div>
 
-              <div className="mt-6 rounded-xl bg-[var(--bg-surface)] p-4 border border-[var(--border-subtle)] text-center">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Listed By</p>
-                <p className="mt-1 text-sm font-extrabold text-[var(--text-primary)]">Owner</p>
-                {property.publishedAt && (
-                  <p className="mt-1 text-xs text-[var(--text-secondary)]">
-                    Posted on {new Date(property.publishedAt).toLocaleDateString()}
-                  </p>
+              {/* Listed By */}
+              <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                    <Building2 size={17} className="text-[var(--text-primary)]" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">Listed By</p>
+                    <p className="text-sm font-extrabold text-[var(--text-primary)]">
+                      {property?.Owner?.username || property?.Owner?.name || "Owner"}
+                    </p>
+                  </div>
+                </div>
+                {property?.publishedAt && (
+                  <div className="mt-3 flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                    <Calendar size={11} />
+                    Posted {new Date(property.publishedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                  </div>
                 )}
               </div>
+
+              {/* Location quick card */}
+              {(shortLocation || displayAddress) && (
+                <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-2">Location</p>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-3">
+                    {shortLocation || displayAddress}
+                  </p>
+                  {mapsUrl && (
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-1.5 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-2 text-xs font-bold text-[var(--text-primary)] shadow-sm transition hover:border-[var(--text-primary)]"
+                    >
+                      <ExternalLink size={12} /> View on Google Maps
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </aside>
         </div>
 
-        {/* ── Similar Properties ── */}
+        {/* ── You May Also Like ── */}
         {relatedProperties.length > 0 && (
-          <section className="mt-16 border-t border-[var(--border-subtle)] pt-12">
-            <h2 className="text-2xl font-extrabold text-[var(--text-primary)]">You May Also Like</h2>
-            <p className="mt-2 text-sm text-[var(--text-secondary)]">Explore similar properties in this category.</p>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <section className="mt-14 border-t border-[var(--border-subtle)] pt-10">
+            <div className="mb-6">
+              <p className="hh-eyebrow mb-2 inline-flex items-center gap-2">
+                <span className="hh-eyebrow-dot" aria-hidden="true" /> More Like This
+              </p>
+              <h2 className="text-xl font-extrabold text-[var(--text-primary)]">You May Also Like</h2>
+              <p className="mt-1 text-sm text-[var(--text-secondary)]">Similar properties in this category.</p>
+            </div>
+            <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {relatedProperties.map((item) => (
                 <PropertyCard key={item.documentId || item.id} property={item} />
               ))}
@@ -947,19 +801,20 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
         )}
       </div>
 
-      {/* ── Mobile Sticky Bottom Action Bar ── */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between gap-3 border-t border-[var(--border-subtle)] bg-[var(--bg-card)] p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] lg:hidden">
+      {/* ── Mobile sticky bottom bar ── */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between gap-2.5 border-t border-[var(--border-subtle)] bg-[var(--bg-card)]/95 backdrop-blur-md p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] lg:hidden">
         <button
           onClick={() => setLiked(!liked)}
-          className="hh-btn hh-btn-secondary flex-1 h-12 flex items-center justify-center gap-2 text-sm font-bold"
+          className="hh-btn hh-btn-secondary flex-1 h-11 flex items-center justify-center gap-2 text-sm font-bold"
         >
-          <Heart size={18} className={liked ? "fill-current" : ""} /> Save
+          <Heart size={16} className={liked ? "fill-current" : ""} />
+          {liked ? "Saved" : "Save"}
         </button>
         <Link
           href={`/user/contact-owner/${property.documentId || property.id}`}
-          className="hh-btn hh-btn-primary flex-1 h-12 flex items-center justify-center gap-2 text-sm font-bold"
+          className="hh-btn hh-btn-primary flex-1 h-11 flex items-center justify-center gap-2 text-sm font-bold"
         >
-          <Phone size={18} /> Contact
+          <Phone size={16} /> Contact Owner
         </Link>
       </div>
 

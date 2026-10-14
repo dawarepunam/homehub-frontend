@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import HeroBackground from "@/app/home/HeroBackground";
+import BuyerHeroBackground from "./BuyerHeroBackground";
+import { getStrapiMedia } from "@/utils/getStrapiMedia";
 import styles from "./HeroBanner.module.css";
 
 export default function HeroBanner({ data, children }) {
@@ -30,28 +31,38 @@ export default function HeroBanner({ data, children }) {
     }
   }, []);
 
+  const customImageUrl =
+    data?.backgroundImage?.url
+      ? getStrapiMedia(data.backgroundImage)
+      : data?.BackgroundImage?.url
+      ? getStrapiMedia(data.BackgroundImage)
+      : null;
+
   const displayHeading =
-    user && greeting ? greeting : data?.heading || "Find a place you'll love.";
+    user && greeting ? greeting : data?.heading || data?.Heading || "Find a place you'll love.";
   const displaySubHeading = user
-    ? "Find a place that feels like home."
+    ? "Discover homes, spaces & properties tailored to your lifestyle."
     : data?.subHeading ||
       data?.subheading ||
+      data?.Subheading ||
       "Discover homes, spaces & properties that fit your lifestyle across India's top cities.";
 
-  const badgeText = data?.badgeText || "India's Trusted Property Platform";
+  const badgeText = data?.badgeText || data?.BadgeText || "HOMEHUB • REAL ESTATE DISCOVERY";
 
   return (
-    <section className={styles.heroWrapper}>
-      {/* Reusing the exact existing Home Page HeroBackground */}
-      <HeroBackground />
+    <section className={styles.heroWrapper} aria-label="Buyer Hero Section">
+      {/* Static Luxury Hero Backdrop with Visible Globe and Floating Particles */}
+      <BuyerHeroBackground customImageUrl={customImageUrl} />
 
       <div className={styles.heroInner}>
         <div className={styles.heroContent}>
+          {/* Eyebrow badge */}
           <div className={styles.badge}>
             <span className={styles.badgeDot} />
-            {badgeText}
+            <span>{badgeText}</span>
           </div>
 
+          {/* Clean Main Headline */}
           <h1 className={styles.title}>
             {user && greeting ? (
               displayHeading
@@ -63,6 +74,7 @@ export default function HeroBanner({ data, children }) {
             )}
           </h1>
 
+          {/* Refined Description */}
           <p className={styles.description}>{displaySubHeading}</p>
         </div>
 

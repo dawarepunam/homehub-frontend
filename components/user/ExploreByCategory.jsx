@@ -61,7 +61,7 @@ const EXPLORE_CATEGORIES = [
 
 export default function ExploreByCategory() {
   return (
-    <section id="explore-categories" className="bg-[var(--bg-section)] border-y border-[var(--border-subtle)]">
+    <section id="explore-categories" className="bg-[var(--bg-section)] border-y border-[var(--border-subtle)]" style={{ marginTop: "40px" }}>
       <div className="mx-auto max-w-[1200px] px-5 sm:px-8 py-16 sm:py-20">
 
         {/* ── Section Header ── */}
