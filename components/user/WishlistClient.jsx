@@ -23,6 +23,8 @@ import {
   removeFromWishlist,
 } from "@/services/wishlistService";
 
+import ContactOwnerModal from "@/components/user/ContactOwnerModal";
+
 // =====================================================
 // CONSTANTS
 // =====================================================
@@ -148,7 +150,7 @@ function SkeletonCard() {
 // SAVED PROPERTY CARD
 // =====================================================
 
-function SavedPropertyCard({ property, onRemove, removingId }) {
+function SavedPropertyCard({ property, onRemove, removingId, onContact }) {
   const documentId = getPropValue(property, "documentId") || getPropValue(property, "id");
   const isRemoving = removingId === documentId;
 
@@ -291,26 +293,36 @@ function SavedPropertyCard({ property, onRemove, removingId }) {
         <div className="flex-1" />
         <div className="mt-4 border-t border-[var(--border-subtle)]" />
 
-        <div className="mt-4 flex gap-2.5">
+        <div className="mt-4 flex gap-2">
           <Link
             href={`/user/property/${documentId}`}
-            className="hh-btn hh-btn-primary flex-1 py-2.5 text-sm font-bold flex items-center justify-center gap-1.5"
+            className="hh-btn hh-btn-primary flex-1 py-2 text-xs font-bold flex items-center justify-center gap-1"
             aria-label={`View details for ${title}`}
           >
-            <Eye size={15} />
-            View Property
+            <Eye size={13} />
+            Details
           </Link>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              if (onContact) onContact();
+            }}
+            className="hh-btn hh-btn-secondary flex-1 py-2 text-xs font-bold flex items-center justify-center gap-1"
+          >
+            Contact
+          </button>
           <button
             type="button"
             onClick={() => onRemove(property)}
             disabled={isRemoving}
             aria-label="Remove property from saved properties"
-            className="flex items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-3 text-[var(--text-secondary)] transition hover:border-red-400 hover:bg-red-500/10 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-2.5 text-[var(--text-secondary)] transition hover:border-red-400 hover:bg-red-500/10 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isRemoving ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-200 border-t-red-500" />
             ) : (
-              <Trash2 size={16} />
+              <Trash2 size={14} />
             )}
           </button>
         </div>
@@ -329,6 +341,7 @@ export default function WishlistClient() {
   const [error, setError] = useState(null);
   const [removingId, setRemovingId] = useState(null);
   const [sortKey, setSortKey] = useState("recent");
+  const [contactModalProperty, setContactModalProperty] = useState(null);
 
   const loadWishlist = useCallback(async () => {
     try {
@@ -566,10 +579,17 @@ export default function WishlistClient() {
               property={property}
               onRemove={handleRemove}
               removingId={removingId}
+              onContact={() => setContactModalProperty(property)}
             />
           );
         })}
       </div>
+
+      <ContactOwnerModal
+        isOpen={Boolean(contactModalProperty)}
+        onClose={() => setContactModalProperty(null)}
+        property={contactModalProperty}
+      />
     </div>
   );
 }

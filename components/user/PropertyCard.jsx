@@ -929,6 +929,54 @@ export default function PropertyCard({ property }) {
   const [loading, setLoading] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
+  const documentId =
+    property?.documentId ||
+    property?.id;
+
+  /* ===================================================
+     CHECK WISHLIST
+  =================================================== */
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function checkWishlist() {
+      if (!documentId) {
+        return;
+      }
+
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("token") ||
+            localStorage.getItem("jwt") ||
+            localStorage.getItem("strapi_jwt")
+          : null;
+
+      if (!token) {
+        return;
+      }
+
+      try {
+        const result =
+          await isPropertyInWishlist(
+            documentId
+          );
+
+        if (mounted) {
+          setLiked(Boolean(result));
+        }
+      } catch (error) {
+        console.error("Wishlist check error:", error);
+      }
+    }
+
+    checkWishlist();
+
+    return () => {
+      mounted = false;
+    };
+  }, [documentId]);
+
   if (!property) {
     return null;
   }
@@ -936,10 +984,6 @@ export default function PropertyCard({ property }) {
   /* ===================================================
      PROPERTY DATA
   =================================================== */
-
-  const documentId =
-    property?.documentId ||
-    property?.id;
 
   const title = getSafeValue(
     property?.Title,
@@ -1049,53 +1093,6 @@ export default function PropertyCard({ property }) {
   const contactRoute = documentId
     ? `/user/contact-owner/${documentId}`
     : "#";
-
-  /* ===================================================
-     CHECK WISHLIST
-  =================================================== */
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function checkWishlist() {
-      if (!documentId) {
-        return;
-      }
-
-      const token =
-        typeof window !== "undefined"
-          ? localStorage.getItem("token") ||
-            localStorage.getItem("jwt") ||
-            localStorage.getItem("strapi_jwt")
-          : null;
-
-      if (!token) {
-        return;
-      }
-
-      try {
-        const result =
-          await isPropertyInWishlist(
-            documentId
-          );
-
-        if (mounted) {
-          setLiked(Boolean(result));
-        }
-      } catch (error) {
-        console.error(
-          "CHECK PROPERTY WISHLIST ERROR:",
-          error
-        );
-      }
-    }
-
-    checkWishlist();
-
-    return () => {
-      mounted = false;
-    };
-  }, [documentId]);
 
   /* ===================================================
      WISHLIST

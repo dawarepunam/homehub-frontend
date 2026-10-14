@@ -2080,6 +2080,7 @@ import {
 } from "@/services/wishlistService";
 
 import RoleSelectionModal from "@/app/home/RoleSelectionModal";
+import ContactOwnerModal from "@/components/user/ContactOwnerModal";
 
 import {
   getPropertyViews,
@@ -2321,6 +2322,7 @@ export default function PropertyCard({
 
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [showRoleModal, setShowRoleModal] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState("");
 
   const handleProtectedAction = (e, actionType, redirectUrl) => {
@@ -3613,12 +3615,19 @@ export default function PropertyCard({
                 hover:opacity-80
               "
             >
-              View Details
+              Detailed
             </Link>
 
-            <Link
-              href={`/user/contact-owner/${documentId}`}
-              onClick={(e) => handleProtectedAction(e, "contact", `/user/contact-owner/${documentId}`)}
+            <button
+              type="button"
+              onClick={(e) => {
+                const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+                if (!token || token === "null" || token === "undefined") {
+                  handleProtectedAction(e, "contact", `/user/contact-owner/${documentId}`);
+                } else {
+                  setIsContactModalOpen(true);
+                }
+              }}
               className="
                 rounded-lg
                 border
@@ -3632,11 +3641,11 @@ export default function PropertyCard({
                 text-[var(--text-primary)]
                 transition
                 hover:bg-[var(--text-primary)]
-                hover:text-[var(--text-primary)]
+                hover:text-[var(--bg-page)]
               "
             >
-              Contact Owner
-            </Link>
+              Contact
+            </button>
 
             <button
               type="button"
@@ -3676,6 +3685,12 @@ export default function PropertyCard({
           </div>
         </div>
       </article>
+
+      <ContactOwnerModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+        property={property}
+      />
 
       {showLoginPrompt && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">

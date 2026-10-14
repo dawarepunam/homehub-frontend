@@ -15,6 +15,8 @@ import {
   RefreshCw,
 } from "lucide-react";
 
+import ContactOwnerModal from "@/components/user/ContactOwnerModal";
+
 // =====================================================
 // CONFIG
 // =====================================================
@@ -89,7 +91,7 @@ const SORT_OPTIONS = [
 // PROPERTY CARD
 // =====================================================
 
-function SearchPropertyCard({ property }) {
+function SearchPropertyCard({ property, onContact }) {
   const imgUrl = resolveImageUrl(property);
   const title = property?.Title || "Untitled Property";
   const type = property?.Property_Type || "";
@@ -163,12 +165,24 @@ function SearchPropertyCard({ property }) {
         {/* Actions */}
         <div className="mt-4 flex items-center justify-between gap-2 border-t border-[var(--border-subtle)] pt-3">
           {docId ? (
-            <Link
-              href={`/user/property/${docId}`}
-              className="hh-btn hh-btn-primary hh-btn-sm w-full"
-            >
-              <span>View Details</span> <ArrowRight size={13} />
-            </Link>
+            <>
+              <Link
+                href={`/user/property/${docId}`}
+                className="hh-btn hh-btn-primary hh-btn-sm flex-1 text-center justify-center"
+              >
+                <span>Details</span>
+              </Link>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onContact) onContact();
+                }}
+                className="hh-btn hh-btn-secondary hh-btn-sm flex-1 text-center justify-center"
+              >
+                <span>Contact</span>
+              </button>
+            </>
           ) : (
             <span className="w-full text-center text-xs font-semibold text-[var(--text-muted)] py-2">
               Unavailable
@@ -225,6 +239,7 @@ export default function UserSearchClient() {
   const [error, setError] = useState("");
   const [total, setTotal] = useState(0);
   const [sort, setSort] = useState(sortParam);
+  const [contactModalProperty, setContactModalProperty] = useState(null);
 
   // ---- Fetch from Strapi with proper filters ----
   const fetchProperties = useCallback(async () => {
@@ -448,12 +463,19 @@ export default function UserSearchClient() {
               <SearchPropertyCard
                 key={property.documentId || property.id}
                 property={property}
+                onContact={() => setContactModalProperty(property)}
               />
             ))}
           </div>
         )}
 
       </div>
+
+      <ContactOwnerModal
+        isOpen={Boolean(contactModalProperty)}
+        onClose={() => setContactModalProperty(null)}
+        property={contactModalProperty}
+      />
     </>
   );
 }

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import styles from "./FeaturedProperties.module.css";
 import RoleSelectionModal from "./RoleSelectionModal";
+import ContactOwnerModal from "@/components/user/ContactOwnerModal";
 import { getUserWishlist, addToWishlist, removeFromWishlist } from "@/services/wishlistService";
 import { getStrapiMedia } from "@/utils/getStrapiMedia";
 
@@ -15,6 +16,7 @@ export default function FeaturedProperties({ data, properties }) {
   const [isLoadingSaved, setIsLoadingSaved] = useState(true);
   const [savingPropertyId, setSavingPropertyId] = useState(null);
   const [showRoleModal, setShowRoleModal] = useState(false);
+  const [contactModalProperty, setContactModalProperty] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
 
@@ -145,6 +147,15 @@ export default function FeaturedProperties({ data, properties }) {
       setShowRoleModal(true);
     } else {
       window.location.href = `/property/${propertyId}`;
+    }
+  };
+
+  const handleContactClick = (e, property) => {
+    e.preventDefault();
+    if (!isLoggedIn) {
+      setShowRoleModal(true);
+    } else {
+      setContactModalProperty(property);
     }
   };
 
@@ -544,19 +555,30 @@ export default function FeaturedProperties({ data, properties }) {
 
                     </div>
 
-                    <a
-                      href={`/property/${propertyId}`}
-                      onClick={(e) => handleViewDetailsClick(e, propertyId)}
-                      className={
-                        styles.viewButton
-                      }
-                    >
-                      View Details
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                      <a
+                        href={`/property/${propertyId}`}
+                        onClick={(e) => handleViewDetailsClick(e, propertyId)}
+                        className={
+                          styles.viewButton
+                        }
+                      >
+                        Detailed
+                      </a>
 
-                      <span>
-                        →
-                      </span>
-                    </a>
+                      <button
+                        type="button"
+                        onClick={(e) => handleContactClick(e, property)}
+                        className={
+                          styles.viewButton
+                        }
+                        style={{
+                          cursor: "pointer",
+                        }}
+                      >
+                        Contact
+                      </button>
+                    </div>
 
                   </div>
 
@@ -569,6 +591,15 @@ export default function FeaturedProperties({ data, properties }) {
         </div>
 
       </div>
+
+      {/* =========================
+          CONTACT OWNER MODAL
+      ========================= */}
+      <ContactOwnerModal
+        isOpen={Boolean(contactModalProperty)}
+        onClose={() => setContactModalProperty(null)}
+        property={contactModalProperty}
+      />
 
       {/* =========================
           ROLE SELECTION MODAL

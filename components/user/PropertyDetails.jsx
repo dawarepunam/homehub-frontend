@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 
 import PropertyCard from "./PropertyCard";
+import ContactOwnerModal from "./ContactOwnerModal";
 
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_BASE_URL ||
@@ -197,6 +198,7 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
   const [showLightbox, setShowLightbox] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [isDescExpanded, setIsDescExpanded] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = showLightbox ? "hidden" : "auto";
@@ -688,12 +690,13 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
                 <h3 className="text-base font-extrabold text-[var(--text-primary)]">Interested in this property?</h3>
                 <p className="mt-1 text-sm text-[var(--text-secondary)]">Connect with the owner to arrange a viewing.</p>
                 <div className="mt-4 flex flex-col gap-2.5">
-                  <Link
-                    href={`/user/contact-owner/${property.documentId || property.id}`}
+                  <button
+                    type="button"
+                    onClick={() => setIsContactModalOpen(true)}
                     className="hh-btn hh-btn-primary w-full py-3 text-center font-bold flex items-center justify-center gap-2 text-sm"
                   >
-                    <Phone size={16} /> Contact Owner
-                  </Link>
+                    <Phone size={16} /> Contact
+                  </button>
                   <button
                     type="button"
                     onClick={() => setLiked(!liked)}
@@ -721,12 +724,13 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
                   <p className="text-xs text-[var(--text-muted)] mt-0.5">per month</p>
                 )}
                 <div className="mt-4 border-t border-[var(--border-subtle)] pt-4 flex flex-col gap-2.5">
-                  <Link
-                    href={`/user/contact-owner/${property.documentId || property.id}`}
+                  <button
+                    type="button"
+                    onClick={() => setIsContactModalOpen(true)}
                     className="hh-btn hh-btn-primary w-full py-3 text-center font-bold flex items-center justify-center gap-2 text-sm"
                   >
-                    <Phone size={16} /> Contact Owner
-                  </Link>
+                    <Phone size={16} /> Contact
+                  </button>
                   <button
                     type="button"
                     onClick={() => setLiked(!liked)}
@@ -810,13 +814,20 @@ export default function PropertyDetails({ property, relatedProperties = [] }) {
           <Heart size={16} className={liked ? "fill-current" : ""} />
           {liked ? "Saved" : "Save"}
         </button>
-        <Link
-          href={`/user/contact-owner/${property.documentId || property.id}`}
+        <button
+          type="button"
+          onClick={() => setIsContactModalOpen(true)}
           className="hh-btn hh-btn-primary flex-1 h-11 flex items-center justify-center gap-2 text-sm font-bold"
         >
-          <Phone size={16} /> Contact Owner
-        </Link>
+          <Phone size={16} /> Contact
+        </button>
       </div>
+
+      <ContactOwnerModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+        property={property}
+      />
 
     </div>
   );

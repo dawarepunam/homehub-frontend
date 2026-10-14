@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 
 import PropertyCard from "@/components/user/PropertyCard";
+import ContactOwnerModal from "@/components/user/ContactOwnerModal";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -139,6 +140,7 @@ export default function PropertyListingClient({ initialProperties, initialType, 
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [allProperties, setAllProperties] = useState(initialProperties || []);
+  const [contactModalProperty, setContactModalProperty] = useState(null);
 
   // ─── Read source context to determine Back button destination ─────────────
   const fromPopularLocations = searchParams.get("from") === "popular-locations";
@@ -609,7 +611,11 @@ export default function PropertyListingClient({ initialProperties, initialType, 
             /* List View */
             <div className="flex flex-col gap-4">
               {paginatedProperties.map((property) => (
-                <ListPropertyRow key={property.documentId || property.id} property={property} />
+                <ListPropertyRow 
+                  key={property.documentId || property.id} 
+                  property={property} 
+                  onContact={() => setContactModalProperty(property)}
+                />
               ))}
             </div>
           )
@@ -674,6 +680,12 @@ export default function PropertyListingClient({ initialProperties, initialType, 
           </div>
         )}
       </div>
+
+      <ContactOwnerModal
+        isOpen={Boolean(contactModalProperty)}
+        onClose={() => setContactModalProperty(null)}
+        property={contactModalProperty}
+      />
     </div>
   );
 }
@@ -694,7 +706,7 @@ function formatPriceRow(property) {
   return `₹${num.toLocaleString("en-IN")}`;
 }
 
-function ListPropertyRow({ property }) {
+function ListPropertyRow({ property, onContact }) {
   const router = useRouter();
   const docId = property?.documentId || property?.id;
   const viewRoute = `/user/property/${docId}`;
@@ -733,14 +745,24 @@ function ListPropertyRow({ property }) {
       </div>
 
       {/* Action */}
-      <div className="flex shrink-0 items-center">
+      <div className="flex shrink-0 items-center gap-2">
         <Link
           href={viewRoute}
           onClick={(e) => e.stopPropagation()}
           className="hh-btn hh-btn-primary hh-btn-sm"
         >
-          View Details
+          Details
         </Link>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onContact) onContact();
+          }}
+          className="hh-btn hh-btn-secondary hh-btn-sm"
+        >
+          Contact
+        </button>
       </div>
     </div>
   );
