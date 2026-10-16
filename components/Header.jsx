@@ -5265,9 +5265,12 @@ import {
   Mail,
   ArrowLeftRight,
   Check,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 import NotificationBell from "./NotificationBell";
+import styles from "./SellerHeader.module.css";
 
 /* =========================================================
    STRAPI
@@ -5354,6 +5357,25 @@ export default function Header({ headerData }) {
   // It does NOT affect the Strapi JWT or authentication role.
   const [activeMode, setActiveMode] = useState("seller");
   const [modeSwitcherOpen, setModeSwitcherOpen] = useState(false);
+
+  // ─── Dark/Light Theme ────────────────────────────────────────
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const currentTheme =
+      document.documentElement.getAttribute("data-theme") ||
+      localStorage.getItem("theme") ||
+      "light";
+    setTheme(currentTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+    document.documentElement.setAttribute("data-theme", nextTheme);
+  };
 
   const headerRef = useRef(null);
 
@@ -5609,6 +5631,38 @@ export default function Header({ headerData }) {
           item?.isActive !== false
         );
       })
+      .map((item) => {
+        const title = (item?.Title || item?.title || "").trim().toLowerCase();
+        if (title === "my properties") {
+          return {
+            ...item,
+            Url: "/owner/properties",
+            url: "/owner/properties",
+          };
+        }
+        if (title === "site visits" || title === "site visit") {
+          return {
+            ...item,
+            Url: "/owner/site-visits/upcoming",
+            url: "/owner/site-visits/upcoming",
+          };
+        }
+        if (title === "enquiries" || title === "enquiry") {
+          return {
+            ...item,
+            Url: "/owner/enquiries/new",
+            url: "/owner/enquiries/new",
+          };
+        }
+        if (title === "promotion" || title === "promotions") {
+          return {
+            ...item,
+            Url: "/owner/promotions",
+            url: "/owner/promotions",
+          };
+        }
+        return item;
+      })
       .sort((a, b) => {
         const orderA =
           Number(
@@ -5697,10 +5751,44 @@ export default function Header({ headerData }) {
   const profileImage =
     ownerProfile?.ProfileDetails?.ProfileImage;
 
-  const profileImageUrl =
-    profileImage?.url
-      ? `${STRAPI_URL}${profileImage.url}`
-      : null;
+  function resolveMediaUrl(media) {
+    if (!media) return null;
+    const raw = Array.isArray(media) ? media[0] : media;
+    const item = raw?.data ?? raw;
+    const attrs = item?.attributes ?? item;
+    const rawUrl =
+      attrs?.formats?.large?.url ??
+      attrs?.formats?.medium?.url ??
+      attrs?.formats?.thumbnail?.url ??
+      attrs?.url;
+
+    if (!rawUrl || typeof rawUrl !== "string" || !rawUrl.trim()) return null;
+
+    const trimmed = rawUrl.trim();
+    if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+      return trimmed;
+    }
+
+    const base = (STRAPI_URL || "http://localhost:1337").replace(/\/$/, "");
+    const path = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+    return `${base}${path}`;
+  }
+
+  function isValidUrl(url) {
+    if (!url || typeof url !== "string") return false;
+    try {
+      new URL(url, "http://localhost:3000");
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  const rawProfileImageUrl = resolveMediaUrl(profileImage);
+  const profileImageUrl = isValidUrl(rawProfileImageUrl) ? rawProfileImageUrl : null;
+
+  const rawLogoUrl = resolveMediaUrl(effectiveHeaderData?.Logo);
+  const logoUrl = isValidUrl(rawLogoUrl) ? rawLogoUrl : null;
 
   const ownerInitial =
     ownerName.charAt(0).toUpperCase();
@@ -5761,9 +5849,84 @@ export default function Header({ headerData }) {
      DROPDOWN ITEMS FROM STRAPI
   ======================================================= */
 
+  function isMyPropertiesItem(item) {
+    const title = (item?.Title || item?.title || "").trim().toLowerCase();
+    const url = (item?.Url || item?.URL || item?.url || "").trim().toLowerCase();
+    return title === "my properties" || url === "/owner/properties" || url.startsWith("/owner/properties/");
+  }
+
+  function isSiteVisitsItem(item) {
+    const title = (item?.Title || item?.title || "").trim().toLowerCase();
+    const url = (item?.Url || item?.URL || item?.url || "").trim().toLowerCase();
+    return (
+      title === "site visits" ||
+      title === "site visit" ||
+      url === "/owner/site-visits" ||
+      url.startsWith("/owner/site-visits/")
+    );
+  }
+
+  function isEnquiriesItem(item) {
+    const title = (item?.Title || item?.title || "").trim().toLowerCase();
+    const url = (item?.Url || item?.URL || item?.url || "").trim().toLowerCase();
+    return (
+      title === "enquiries" ||
+      title === "enquiry" ||
+      url === "/owner/enquiries" ||
+      url.startsWith("/owner/enquiries/")
+    );
+  }
+
+  function isPromotionsItem(item) {
+    const title = (item?.Title || item?.title || "").trim().toLowerCase();
+    const url = (item?.Url || item?.URL || item?.url || "").trim().toLowerCase();
+    return (
+      title === "promotion" ||
+      title === "promotions" ||
+      url === "/owner/promotions" ||
+      url.startsWith("/owner/promotions/")
+    );
+  }
+
+  function isInsightsItem(item) {
+    const title = (item?.Title || item?.title || "").trim().toLowerCase();
+    const url = (item?.Url || item?.URL || item?.url || "").trim().toLowerCase();
+    return (
+      title === "insights" ||
+      title === "performance" ||
+      url === "/owner/insights" ||
+      url.startsWith("/owner/insights/")
+    );
+  }
+
   function getDropdownItems(item) {
-    const parentTitle = (item?.Title || item?.title || "").trim().toLowerCase();
-    if (parentTitle === "promotions") {
+    // HOMEHUB SELLER FIX: "My Properties" is a single clickable navigation item
+    // that navigates directly to All Properties (/owner/properties) without a dropdown submenu.
+    if (isMyPropertiesItem(item)) {
+      return [];
+    }
+
+    // HOMEHUB SELLER FIX: "Site Visits" is a single clickable navigation item
+    // that navigates directly to Upcoming Site Visits (/owner/site-visits/upcoming) without a dropdown submenu.
+    if (isSiteVisitsItem(item)) {
+      return [];
+    }
+
+    // HOMEHUB SELLER FIX: "Enquiries" is a single clickable navigation item
+    // that navigates directly to New Enquiries (/owner/enquiries/new) without a dropdown submenu.
+    if (isEnquiriesItem(item)) {
+      return [];
+    }
+
+    // HOMEHUB SELLER FIX: "Promotion" is a single clickable navigation item
+    // that navigates directly to Promotions (/owner/promotions) without a dropdown submenu.
+    if (isPromotionsItem(item)) {
+      return [];
+    }
+
+    // HOMEHUB SELLER FIX: "Performance" (formerly Insights) is a single clickable navigation item
+    // that navigates directly to Performance (/owner/insights/performance) without a dropdown submenu.
+    if (isInsightsItem(item)) {
       return [];
     }
 
@@ -5784,8 +5947,7 @@ export default function Header({ headerData }) {
 
     // ─────────────────────────────────────────────────────────────
     // OWNER PROPERTY WORKFLOW: remove "Pending" and "Drafts" from
-    // the My Properties dropdown — only All Properties / Active /
-    // Sold / Rented are part of the required Owner-facing workflow.
+    // the dropdown — only required items are shown.
     // (Strapi Draft & Publish functionality is NOT affected.)
     // ─────────────────────────────────────────────────────────────
     const EXCLUDED_TITLES = ["pending", "drafts", "draft"];
@@ -5898,7 +6060,7 @@ export default function Header({ headerData }) {
   }
 
   /* =======================================================
-     CLOSE DROPDOWN WHEN CLICKING OUTSIDE
+     CLOSE DROPDOWN WHEN CLICKING OUTSIDE OR PRESSING ESCAPE
   ======================================================= */
 
   useEffect(() => {
@@ -5906,177 +6068,66 @@ export default function Header({ headerData }) {
       if (headerRef.current && !headerRef.current.contains(event.target)) {
         setOpenDropdown(null);
         setProfileOpen(false);
+        setModeSwitcherOpen(false);
       }
     }
+    function handleKeyDown(event) {
+      if (event.key === "Escape") {
+        setOpenDropdown(null);
+        setProfileOpen(false);
+        setModeSwitcherOpen(false);
+      }
+    }
+
     document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
-  /* =======================================================
-     UI
-  ======================================================= */
-
   return (
-    <header
-      ref={headerRef}
-      className="
-        sticky
-        top-0
-        z-50
-        border-b
-        border-[#2E6654]
-        bg-gradient-to-r
-        from-[#0A372C]
-        via-[#104A3A]
-        to-[#0A372C]
-        shadow-[0_8px_35px_rgba(8,48,38,0.30)]
-      "
-    >
-      {/* GOLD TOP LINE */}
-      <div
-        className="
-          h-[2px]
-          w-full
-          bg-gradient-to-r
-          from-transparent
-          via-[#D7AE62]
-          to-transparent
-          opacity-90
-        "
-      />
-
-      <div
-        className="
-          mx-auto
-          max-w-[1600px]
-          px-5
-          sm:px-7
-          lg:px-10
-        "
-      >
-        {/* =================================================
-            MAIN HEADER
-        ================================================= */}
-
-        <div
-          className="
-            flex
-            min-h-[78px]
-            items-center
-            gap-5
-          "
-        >
-          {/* =================================================
-              LOGO
-          ================================================= */}
-
-          <Link
-            href="/owner"
-            onClick={closeMenus}
-            className="
-              group
-              flex
-              shrink-0
-              items-center
-              gap-3
-            "
-          >
-            {effectiveHeaderData?.Logo?.url ? (
-              <div
-                className="
-                  relative
-                  flex
-                  h-12
-                  w-12
-                  items-center
-                  justify-center
-                  overflow-hidden
-                  rounded-xl
-                  border
-                  border-[#D7AE62]/70
-                  bg-[#F2E6CF]
-                  shadow-[0_5px_18px_rgba(0,0,0,0.20)]
-                  transition-all
-                  duration-300
-                  group-hover:scale-105
-                  group-hover:shadow-[0_7px_22px_rgba(215,174,98,0.20)]
-                "
-              >
+    <>
+      <header ref={headerRef} className={styles.headerWrapper}>
+        <div className={styles.pillContainer}>
+          <div className={styles.pillInner}>
+            {/* BRAND */}
+            <Link href="/owner" onClick={closeMenus} className={styles.brand}>
+              {logoUrl ? (
                 <Image
-                  src={`${STRAPI_URL}${effectiveHeaderData.Logo.url}`}
+                  src={logoUrl}
                   alt={effectiveHeaderData?.Brand || "HomeHub"}
-                  width={48}
-                  height={48}
-                  className="h-full w-full object-cover"
+                  width={34}
+                  height={34}
+                  className={styles.brandLogo}
                   unoptimized
                 />
+              ) : (
+                <div className={styles.brandMark}>H</div>
+              )}
+              <div className={styles.brandTextGroup}>
+                <span className={styles.brandName}>
+                  {effectiveHeaderData?.Brand || "HomeHub"}
+                </span>
+                <span className={styles.brandBadge}>Seller</span>
               </div>
-            ) : (
-              <div
-                className="
-                  flex
-                  h-12
-                  w-12
-                  items-center
-                  justify-center
-                  rounded-xl
-                  border
-                  border-[#E2BB6D]
-                  bg-[#D7AE62]
-                  text-[#123F32]
-                "
-              >
-                <Home size={24} />
-              </div>
-            )}
+            </Link>
 
-            <div className="hidden sm:block">
-              <h1
-                className="
-                  text-[23px]
-                  font-extrabold
-                  leading-none
-                  tracking-tight
-                  text-[#F7F0E3]
-                "
-              >
-                {effectiveHeaderData?.Brand || "HomeHub"}
-              </h1>
-              <p
-                className="
-                  mt-0.5
-                  text-[9px]
-                  font-bold
-                  uppercase
-                  tracking-[0.22em]
-                  text-[#D7AE62]
-                "
-              >
-                Owner Portal
-              </p>
-            </div>
-          </Link>
-
-          {/* =================================================
-              DESKTOP NAVIGATION
-          ================================================= */}
-
-          <nav
-            className="
-              hidden
-              min-w-0
-              flex-1
-              items-center
-              justify-center
-              lg:flex
-            "
-          >
-            <div className="flex items-center gap-1">
+            {/* DESKTOP CAPSULE NAVIGATION */}
+            <nav className={styles.nav} aria-label="Seller Navigation">
               {ownerNavItems.length > 0 ? (
                 ownerNavItems.map((item, index) => {
-                  const title = item?.Title || item?.title || "Menu";
-                  const url = item?.Url || item?.URL || item?.url || "#";
-                  const icon = item?.Icon || item?.icon || "";
+                  let title = item?.Title || item?.title || "Menu";
+                  let url = item?.Url || item?.URL || item?.url || "#";
+                  // HOMEHUB SELLER FIX: Strapi stores this item as "Insights".
+                  // Override the visible label to "Performance" and ensure the
+                  // link always goes directly to /owner/insights/performance.
+                  if (isInsightsItem(item)) {
+                    title = "Performance";
+                    url = "/owner/insights/performance";
+                  }
                   const dropdownItems = getDropdownItems(item);
                   const hasDropdown = dropdownItems.length > 0;
                   const active = isActive(url);
@@ -6087,70 +6138,82 @@ export default function Header({ headerData }) {
                   return (
                     <div
                       key={`${title}-${index}`}
-                      className="relative flex h-full items-center"
-                      onMouseEnter={() => { if (hasDropdown) setOpenDropdown(index); }}
-                      onMouseLeave={() => { if (hasDropdown) setOpenDropdown(null); }}
+                      className={styles.navItemWrapper}
+                      onMouseEnter={() => {
+                        if (hasDropdown) setOpenDropdown(index);
+                      }}
+                      onMouseLeave={() => {
+                        if (hasDropdown) setOpenDropdown(null);
+                      }}
                     >
                       {hasDropdown ? (
                         <button
                           type="button"
+                          onClick={() => setOpenDropdown(isOpen ? null : index)}
                           onFocus={() => setOpenDropdown(index)}
+                          className={`${styles.navButton} ${
+                            highlighted ? styles.navButtonActive : ""
+                          }`}
                           aria-expanded={isOpen}
-                          className={`group relative flex items-center gap-2 rounded-xl px-3.5 py-3 text-[13px] font-bold transition-all duration-200 ${highlighted ? "bg-[#D7AE62] text-[#123F32] shadow-[0_5px_20px_rgba(215,174,98,0.25)]" : "text-[#DDE9E3] hover:bg-[#174F3E] hover:text-[#F3D59B]"}`}
+                          aria-haspopup="true"
                         >
-                          <span className={`flex items-center justify-center transition-transform duration-200 group-hover:scale-110 ${highlighted ? "text-[#123F32]" : "text-[#C9D8D1]"}`}>
-                            {renderIcon(icon, 20)}
-                          </span>
-                          <span className="whitespace-nowrap">{title}</span>
-                          {highlighted && <span className="absolute bottom-[3px] left-1/2 h-[2px] w-7 -translate-x-1/2 rounded-full bg-[#123F32]/45" />}
+                          <span>{title}</span>
                         </button>
                       ) : (
                         <Link
                           href={url}
                           onClick={closeMenus}
-                          className={`group relative flex items-center gap-2.5 rounded-xl px-3.5 py-3 text-[13px] font-bold transition-all duration-200 ${active ? "bg-[#D7AE62] text-[#123F32] shadow-[0_5px_20px_rgba(215,174,98,0.22)]" : "text-[#DDE9E3] hover:bg-[#174F3E] hover:text-[#F3D59B]"}`}
+                          className={`${styles.navButton} ${
+                            active ? styles.navButtonActive : ""
+                          }`}
                         >
-                          <span className={`transition-transform duration-200 group-hover:scale-110 ${active ? "text-[#123F32]" : "text-[#C9D8D1]"}`}>
-                            {renderIcon(icon, 20)}
-                          </span>
-                          <span className="whitespace-nowrap">{title}</span>
-                          {active && <span className="absolute bottom-[3px] left-1/2 h-[2px] w-6 -translate-x-1/2 rounded-full bg-[#123F32]/45" />}
+                          <span>{title}</span>
                         </Link>
                       )}
 
-                      {hasDropdown && (
+                      {hasDropdown && isOpen && (
                         <div
-                          className={`absolute left-1/2 top-full z-[100] min-w-[240px] w-max max-w-[320px] -translate-x-1/2 pt-1.5 transition-all duration-200 ease-out ${isOpen ? "pointer-events-auto translate-y-0 opacity-100 visible" : "pointer-events-none translate-y-1.5 opacity-0 invisible"}`}
+                          className={styles.dropdownPanelWrapper}
                           onMouseEnter={() => setOpenDropdown(index)}
+                          onMouseLeave={() => setOpenDropdown(null)}
                         >
-                          <span className="absolute left-0 right-0 top-0 h-2" />
-                          <div className="overflow-hidden rounded-xl border border-[#D7AE62]/45 bg-[#F7F0E3] shadow-[0_22px_55px_rgba(10,55,44,0.38)]">
-                            <div className="border-b border-[#E1D4BB] bg-[#EEE2CC] px-4 py-3">
-                              <div className="flex items-center gap-2">
-                                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#D7AE62] text-[#123F32]">
-                                  {renderIcon(icon, 17)}
-                                </span>
-                                <p className="text-sm font-extrabold text-[#173F35]">{title}</p>
-                              </div>
+                          <div
+                            className="w-auto overflow-hidden rounded-2xl bg-[var(--bg-card)] shadow-2xl border border-[var(--border-subtle)] text-[var(--text-primary)] transition-all"
+                            style={{
+                              minWidth: 240,
+                              maxWidth: "min(400px, calc(100vw - 32px))",
+                            }}
+                          >
+                            <div className="bg-[var(--bg-surface)] px-4 py-3 border-b border-[var(--border-subtle)]">
+                              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+                                {title}
+                              </h4>
                             </div>
-                            <div className="p-2">
-                              {dropdownItems.map((dropdownItem, dropdownIndex) => {
-                                const dTitle = dropdownItem?.Title || dropdownItem?.title || "Option";
-                                const dUrl = dropdownItem?.Url || dropdownItem?.URL || dropdownItem?.url || "#";
-                                const dIcon = dropdownItem?.Icon || dropdownItem?.icon || "";
+                            <div className="p-2 flex flex-col gap-1">
+                              {dropdownItems.map((dropdownItem, dIdx) => {
+                                const dTitle =
+                                  dropdownItem?.Title ||
+                                  dropdownItem?.title ||
+                                  "Option";
+                                const dUrl =
+                                  dropdownItem?.Url ||
+                                  dropdownItem?.URL ||
+                                  dropdownItem?.url ||
+                                  "#";
                                 const dActive = isActive(dUrl);
+
                                 return (
                                   <Link
-                                    key={`${dTitle}-${dropdownIndex}`}
+                                    key={`${dTitle}-${dIdx}`}
                                     href={dUrl}
                                     onClick={closeMenus}
-                                    className={`group flex items-center gap-3 rounded-xl px-3 py-3 transition-all duration-200 ${dActive ? "bg-[#D7AE62]/25 ring-1 ring-[#D7AE62]/40" : "hover:bg-[#EDE1CC]"}`}
+                                    className={`flex items-center rounded-xl px-3.5 py-2 text-xs sm:text-sm font-semibold transition ${
+                                      dActive
+                                        ? "bg-[var(--border-subtle)] text-[var(--text-primary)]"
+                                        : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]"
+                                    }`}
                                   >
-                                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-all duration-200 ${dActive ? "bg-[#D7AE62] text-[#123F32]" : "bg-[#E8DDCA] text-[#8B6728] group-hover:bg-[#D7AE62] group-hover:text-[#123F32]"}`}>
-                                      {renderIcon(dIcon, 17)}
-                                    </span>
-                                    <span className="block text-[13px] font-bold text-[#29493E]">{dTitle}</span>
-                                    <ChevronRight size={16} className="ml-auto shrink-0 text-[#8B6728] opacity-0 transition-opacity group-hover:opacity-100" />
+                                    <span>{dTitle}</span>
                                   </Link>
                                 );
                               })}
@@ -6163,892 +6226,391 @@ export default function Header({ headerData }) {
                 })
               ) : (
                 <>
-                  <Link href="/owner/dashboard" onClick={closeMenus} className={`group relative flex items-center gap-2.5 rounded-xl px-3.5 py-3 text-[13px] font-bold transition-all duration-200 ${isActive("/owner/dashboard") ? "bg-[#D7AE62] text-[#123F32]" : "text-[#DDE9E3] hover:bg-[#174F3E] hover:text-[#F3D59B]"}`}>
-                    <Home size={20} /><span>Dashboard</span>
-                  </Link>
-                  <Link href="/owner/properties" onClick={closeMenus} className={`group relative flex items-center gap-2.5 rounded-xl px-3.5 py-3 text-[13px] font-bold transition-all duration-200 ${isActive("/owner/properties") ? "bg-[#D7AE62] text-[#123F32]" : "text-[#DDE9E3] hover:bg-[#174F3E] hover:text-[#F3D59B]"}`}>
-                    <Building2 size={20} /><span>My Properties</span>
-                  </Link>
-                  <Link href="/owner/enquiries/new" onClick={closeMenus} className={`group relative flex items-center gap-2.5 rounded-xl px-3.5 py-3 text-[13px] font-bold transition-all duration-200 ${isActive("/owner/enquiries") ? "bg-[#D7AE62] text-[#123F32]" : "text-[#DDE9E3] hover:bg-[#174F3E] hover:text-[#F3D59B]"}`}>
-                    <MessageSquare size={20} /><span>Enquiries</span>
-                  </Link>
-                  <Link href="/owner/enquiries/site-visits" onClick={closeMenus} className={`group relative flex items-center gap-2.5 rounded-xl px-3.5 py-3 text-[13px] font-bold transition-all duration-200 ${isActive("/owner/enquiries/site-visits") ? "bg-[#D7AE62] text-[#123F32]" : "text-[#DDE9E3] hover:bg-[#174F3E] hover:text-[#F3D59B]"}`}>
-                    <CalendarDays size={20} /><span>Site Visits</span>
-                  </Link>
-                  <Link href="/owner/insights" onClick={closeMenus} className={`group relative flex items-center gap-2.5 rounded-xl px-3.5 py-3 text-[13px] font-bold transition-all duration-200 ${isActive("/owner/insights") ? "bg-[#D7AE62] text-[#123F32]" : "text-[#DDE9E3] hover:bg-[#174F3E] hover:text-[#F3D59B]"}`}>
-                    <BarChart3 size={20} /><span>Insights</span>
-                  </Link>
-
-                  {/* Promotions Link */}
-                  <Link href="/owner/promotions" onClick={closeMenus} className={`group relative flex items-center gap-2.5 rounded-xl px-3.5 py-3 text-[13px] font-bold transition-all duration-200 ${isActive("/owner/promotions") ? "bg-[#D7AE62] text-[#123F32]" : "text-[#DDE9E3] hover:bg-[#174F3E] hover:text-[#F3D59B]"}`}>
-                    <Tag size={20} /><span>Promotions</span>
-                  </Link>
+                  {[
+                    { href: "/owner", label: "Dashboard" },
+                    { href: "/owner/properties", label: "My Properties" },
+                    { href: "/owner/enquiries/new", label: "Enquiries" },
+                    { href: "/owner/site-visits/upcoming", label: "Site Visits" },
+                    { href: "/owner/insights/performance", label: "Performance" },
+                    { href: "/owner/promotions", label: "Promotions" },
+                  ].map(({ href, label }) => {
+                    const navActive = isActive(href);
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        onClick={closeMenus}
+                        className={`${styles.navButton} ${
+                          navActive ? styles.navButtonActive : ""
+                        }`}
+                      >
+                        <span>{label}</span>
+                      </Link>
+                    );
+                  })}
                 </>
               )}
-            </div>
-          </nav>
+            </nav>
 
-          {/* =================================================
-              RIGHT SIDE
-          ================================================= */}
-
-          <div
-            className="
-              ml-auto
-              flex
-              shrink-0
-              items-center
-              gap-2
-              lg:gap-3
-            "
-          >
-            {/* ── MODE SWITCHER ──────────────────────────────── */}
-
-            <div className="relative hidden lg:block">
-              <button
-                type="button"
-                onClick={() => setModeSwitcherOpen((p) => !p)}
-                aria-label="Switch mode"
-                className={`
-                  flex h-11 items-center gap-2 rounded-xl border px-3
-                  text-[13px] font-bold transition-all duration-200
-                  ${
-                    modeSwitcherOpen
-                      ? "border-[#D7AE62] bg-[#1B513F] text-[#F3D59B] shadow-[0_4px_18px_rgba(215,174,98,0.18)]"
-                      : "border-[#4A7465] bg-[#164B3B] text-[#DDE9E3] hover:border-[#D7AE62] hover:bg-[#1B513F] hover:text-[#F3D59B]"
-                  }
-                `}
+            {/* RIGHT ACTIONS */}
+            <div className={styles.actions}>
+              {/* ADD PROPERTY BUTTON */}
+              <Link
+                href="/add-property"
+                className={styles.actionPrimaryBtn}
+                title="Post New Property"
               >
-                {activeMode === "seller" ? (
-                  <>
-                    <Home size={15} />
-                    <span>Seller Mode</span>
-                  </>
-                ) : (
-                  <>
-                    <ArrowLeftRight size={15} />
-                    <span>Buyer Mode</span>
-                  </>
-                )}
-                <ChevronDown
-                  size={13}
-                  className={`transition-transform duration-200 ${modeSwitcherOpen ? "rotate-180" : ""}`}
-                />
-              </button>
+                <span className="text-base leading-none font-bold">+</span>
+                <span className="hidden sm:inline">Add Property</span>
+              </Link>
 
-              {modeSwitcherOpen && (
-                <div className="absolute right-0 top-full mt-2 w-[180px] overflow-hidden rounded-xl border border-[#D5C6AA] bg-[#F4EBDD] shadow-[0_18px_50px_rgba(18,63,50,0.28)] z-[200]">
-                  <div className="p-1.5">
+              {/* NOTIFICATION BELL */}
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <NotificationBell />
+              </div>
+
+              {/* MODE SWITCHER */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setModeSwitcherOpen((p) => !p)}
+                  aria-label="Switch mode"
+                  className={styles.actionPillBtn}
+                >
+                  <ArrowLeftRight size={13} />
+                  <span className="hidden md:inline">
+                    {activeMode === "seller" ? "Seller" : "Buyer"}
+                  </span>
+                  <ChevronDown
+                    size={11}
+                    className={`transition-transform ${
+                      modeSwitcherOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {modeSwitcherOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-[190px] overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-xl z-[1200] p-1.5">
                     <button
                       type="button"
                       onClick={() => handleModeSwitch("seller")}
-                      className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-[13px] font-bold transition ${
+                      className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-semibold transition ${
                         activeMode === "seller"
-                          ? "bg-[#D7AE62]/20 text-[#174B3B]"
-                          : "text-[#365247] hover:bg-[#E7D8BD] hover:text-[#174B3B]"
+                          ? "bg-[var(--accent)] text-[var(--accent-text)]"
+                          : "text-[var(--text-primary)] hover:bg-[var(--bg-surface)]"
                       }`}
                     >
-                      <Home size={15} />
+                      <Home size={13} />
                       <span className="flex-1 text-left">Seller Mode</span>
-                      {activeMode === "seller" && <Check size={14} className="text-[#D7AE62]" />}
+                      {activeMode === "seller" && <Check size={13} />}
                     </button>
 
                     <button
                       type="button"
                       onClick={() => handleModeSwitch("buyer")}
-                      className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-[13px] font-bold transition ${
+                      className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-semibold transition ${
                         activeMode === "buyer"
-                          ? "bg-[#D7AE62]/20 text-[#174B3B]"
-                          : "text-[#365247] hover:bg-[#E7D8BD] hover:text-[#174B3B]"
+                          ? "bg-[var(--accent)] text-[var(--accent-text)]"
+                          : "text-[var(--text-primary)] hover:bg-[var(--bg-surface)]"
                       }`}
                     >
-                      <ArrowLeftRight size={15} />
+                      <ArrowLeftRight size={13} />
                       <span className="flex-1 text-left">Buyer Mode</span>
-                      {activeMode === "buyer" && <Check size={14} className="text-[#D7AE62]" />}
+                      {activeMode === "buyer" && <Check size={13} />}
                     </button>
 
-                    <div className="my-1.5 mx-1 h-px bg-[#D5C6AA]" />
-                    
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-[13px] font-bold text-[#9B4036] transition hover:bg-[#EBD4CB]"
-                    >
-                      <LogOut size={15} />
-                      <span className="flex-1 text-left">Logout</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* NOTIFICATION */}
-
-            <div
-              className="
-                flex
-                h-11
-                w-11
-                shrink-0
-                items-center
-                justify-center
-                rounded-xl
-                border
-                border-[#4A7465]
-                bg-[#164B3B]
-                text-[#F3D59B]
-                shadow-[0_3px_12px_rgba(0,0,0,0.12)]
-                transition-all
-                duration-200
-                hover:border-[#D7AE62]
-                hover:bg-[#1C5947]
-                hover:text-[#F6D58D]
-                [&_button]:!border-0
-                [&_button]:!bg-transparent
-                [&_button]:!p-0
-                [&_button]:!text-[#F3D59B]
-                [&_svg]:!h-[20px]
-                [&_svg]:!w-[20px]
-                [&_svg]:!text-[#F3D59B]
-              "
-              title="Notifications"
-            >
-              <NotificationBell />
-            </div>
-
-            {/* PROFILE */}
-
-            <div
-              className="
-                relative
-                hidden
-                lg:block
-              "
-            >
-              <button
-                type="button"
-                onClick={() =>
-                  setProfileOpen(
-                    (previous) => !previous
-                  )
-                }
-                aria-label="Open profile menu"
-                className={`
-                  group
-                  flex
-                  h-11
-                  items-center
-                  gap-2
-                  rounded-xl
-                  border
-                  px-1.5
-                  py-1.5
-                  transition-all
-                  duration-200
-
-                  ${
-                    profileOpen
-                      ? `
-                        border-[#D7AE62]
-                        bg-[#1B513F]
-                        shadow-[0_5px_20px_rgba(215,174,98,0.15)]
-                      `
-                      : `
-                        border-[#416C5C]
-                        bg-[#174B3B]
-                        hover:border-[#D7AE62]
-                        hover:bg-[#1B513F]
-                      `
-                  }
-                `}
-              >
-                {profileImageUrl ? (
-                  <Image
-                    src={profileImageUrl}
-                    alt="Profile"
-                    width={36}
-                    height={36}
-                    className="
-                      h-9
-                      w-9
-                      rounded-full
-                      object-cover
-                      ring-2
-                      ring-[#D7AE62]/60
-                    "
-                    unoptimized
-                  />
-                ) : (
-                  <div
-                    className="
-                      flex
-                      h-9
-                      w-9
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-[#D7AE62]
-                      font-bold
-                      text-[#123F32]
-                    "
-                  >
-                    {ownerInitial}
+                    <div className="border-t border-[var(--border-subtle)] mt-1 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-semibold text-red-500 transition hover:bg-red-500/10"
+                      >
+                        <LogOut size={13} />
+                        <span>Logout</span>
+                      </button>
+                    </div>
                   </div>
                 )}
+              </div>
 
-              </button>
-
-              {/* PROFILE DROPDOWN */}
-
-              {profileOpen && (
-                <div
-                  className="
-                    absolute
-                    right-0
-                    top-full
-                    mt-3
-                    w-[230px]
-                    overflow-hidden
-                    rounded-xl
-                    border
-                    border-[#D5C6AA]
-                    bg-[#F4EBDD]
-                    shadow-[0_22px_60px_rgba(18,63,50,0.32)]
-                  "
+              {/* PROFILE BUTTON / MENU */}
+              <div
+                className="relative"
+                onMouseEnter={() => setProfileOpen(true)}
+                onMouseLeave={() => setProfileOpen(false)}
+              >
+                <button
+                  type="button"
+                  onClick={() => router.push(ownerProfileUrl)}
+                  className="flex items-center gap-2 cursor-pointer pl-1"
+                  aria-label="Owner profile"
                 >
-                  <div className="p-2">
-                    {false ? (
-                      ownerMenuItems.map(
-                        (item, index) => {
-                          const title =
-                            item?.Title ||
-                            item?.title ||
-                            "Menu";
-
-                          const url =
-                            item?.Url ||
-                            item?.URL ||
-                            item?.url ||
-                            "#";
-
-                          const icon =
-                            item?.Icon ||
-                            item?.icon ||
-                            "";
-
-                          return (
-                            <Link
-                              key={`${title}-${index}`}
-                              href={url}
-                              onClick={closeMenus}
-                              className="
-                                group
-                                flex
-                                items-center
-                                gap-3
-                                rounded-xl
-                                px-3
-                                py-2.5
-                                text-sm
-                                font-semibold
-                                text-[#365247]
-                                transition
-                                hover:bg-[#E7D8BD]
-                                hover:text-[#174B3B]
-                              "
-                            >
-                              <span
-                                className="
-                                  flex
-                                  h-9
-                                  w-9
-                                  shrink-0
-                                  items-center
-                                  justify-center
-                                  rounded-lg
-                                  bg-[#E8DCC8]
-                                  text-[#A97928]
-                                  transition
-                                  group-hover:bg-[#D7AE62]
-                                  group-hover:text-[#123F32]
-                                "
-                              >
-                                {renderIcon(
-                                  icon,
-                                  18
-                                )}
-                              </span>
-
-                              <span className="flex-1">
-                                {title}
-                              </span>
-
-                              <span
-                                className="
-                                  text-[#9B8A70]
-                                  transition
-                                  group-hover:translate-x-1
-                                  group-hover:text-[#A97928]
-                                "
-                              >
-                                →
-                              </span>
-                            </Link>
-                          );
-                        }
-                      )
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full overflow-hidden text-xs font-bold shrink-0 bg-[var(--text-primary)] text-[var(--bg-page)]">
+                    {profileImageUrl ? (
+                      <Image
+                        src={profileImageUrl}
+                        alt="Profile"
+                        width={32}
+                        height={32}
+                        className="h-full w-full object-cover"
+                        unoptimized
+                      />
                     ) : (
-                      <>
+                      <span>{ownerInitial}</span>
+                    )}
+                  </div>
+                </button>
+
+                {profileOpen && (
+                  <div className="absolute right-0 top-full mt-2 z-[99999]">
+                    <div
+                      className="w-72 overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-2xl text-[var(--text-primary)]"
+                      style={{ position: "relative" }}
+                    >
+                      <div className="bg-[var(--bg-surface)] px-5 py-4 border-b border-[var(--border-subtle)]">
+                        <h3 className="text-sm font-bold text-[var(--text-primary)]">
+                          {ownerName}
+                        </h3>
+                        <p className="mt-0.5 text-xs text-[var(--text-muted)] truncate">
+                          {ownerEmail || "Property Owner"}
+                        </p>
+                      </div>
+
+                      <div className="p-1.5 space-y-0.5">
                         <Link
                           href={ownerProfileUrl}
                           onClick={closeMenus}
-                          className="
-                            flex
-                            items-center
-                            gap-3
-                            rounded-xl
-                            px-3
-                            py-2.5
-                            text-sm
-                            font-semibold
-                            text-[#365247]
-                            transition
-                            hover:bg-[#E7D8BD]
-                          "
+                          className="flex items-center justify-between rounded-xl px-3.5 py-2.5 transition hover:bg-[var(--bg-surface)] text-[var(--text-primary)]"
                         >
-                          <UserRound
-                            size={18}
-                            className="text-[#A97928]"
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--border-subtle)]/40 text-[var(--text-primary)]">
+                              <UserRound size={16} />
+                            </div>
+                            <span className="text-sm font-semibold">
+                              My Profile
+                            </span>
+                          </div>
+                          <ChevronRight
+                            size={15}
+                            className="text-[var(--text-muted)]"
                           />
-                          My Profile
                         </Link>
-                        
+
                         <Link
-                          href="/"
+                          href="/owner/properties"
                           onClick={closeMenus}
-                          className="
-                            flex
-                            items-center
-                            gap-3
-                            rounded-xl
-                            px-3
-                            py-2.5
-                            text-sm
-                            font-semibold
-                            text-[#365247]
-                            transition
-                            hover:bg-[#E7D8BD]
-                          "
+                          className="flex items-center justify-between rounded-xl px-3.5 py-2.5 transition hover:bg-[var(--bg-surface)] text-[var(--text-primary)]"
                         >
-                          <span className="flex h-5 w-5 items-center justify-center rounded-md bg-[#D7AE62] text-[#123F32] font-bold text-xs">B</span>
-                          Switch to Buyer
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--border-subtle)]/40 text-[var(--text-primary)]">
+                              <Building2 size={16} />
+                            </div>
+                            <span className="text-sm font-semibold">
+                              My Properties
+                            </span>
+                          </div>
+                          <ChevronRight
+                            size={15}
+                            className="text-[var(--text-muted)]"
+                          />
                         </Link>
-                      </>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
 
-            {/* ADD PROPERTY */}
-
-            <Link
-              href="/add-property"
-              onClick={closeMenus}
-              className="
-                hidden
-                xl:flex
-                items-center
-                gap-2
-                rounded-xl
-                border
-                border-[#D7AE62]
-                bg-[#D7AE62]
-                px-5
-                py-3
-                text-[13px]
-                font-extrabold
-                text-[#123F32]
-                shadow-[0_5px_16px_rgba(215,174,98,0.18)]
-                transition-all
-                duration-200
-                hover:-translate-y-0.5
-                hover:bg-[#E4C27E]
-                hover:shadow-[0_8px_22px_rgba(215,174,98,0.28)]
-              "
-            >
-              <span className="text-base">
-                +
-              </span>
-
-              Add Property
-            </Link>
-
-            {/* MOBILE BUTTON */}
-
-            <button
-              type="button"
-              onClick={() =>
-                setMobileMenuOpen(
-                  (previous) => !previous
-                )
-              }
-              className="
-                flex
-                h-10
-                w-10
-                items-center
-                justify-center
-                rounded-xl
-                border
-                border-[#416C5C]
-                bg-[#174B3B]
-                text-[#F3E7D2]
-                transition-all
-                hover:border-[#D7AE62]
-                hover:text-[#D7AE62]
-                lg:hidden
-              "
-              aria-label="Open menu"
-            >
-              {mobileMenuOpen ? (
-                <X size={21} />
-              ) : (
-                <Menu size={21} />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* =====================================================
-            MOBILE MENU
-        ===================================================== */}
-
-        {mobileMenuOpen && (
-          <div
-            className="
-              border-t
-              border-[#2F6653]
-              py-4
-              lg:hidden
-            "
-          >
-            <div
-              className="
-                mb-4
-                rounded-2xl
-                border
-                border-[#416C5C]
-                bg-[#174B3B]
-                p-4
-              "
-            >
-              <div
-                className="
-                  flex
-                  items-center
-                  gap-3
-                "
-              >
-                {profileImageUrl ? (
-                  <Image
-                    src={profileImageUrl}
-                    alt="Profile"
-                    width={48}
-                    height={48}
-                    className="
-                      h-12
-                      w-12
-                      rounded-full
-                      object-cover
-                      ring-2
-                      ring-[#D7AE62]/60
-                    "
-                    unoptimized
-                  />
-                ) : (
-                  <div
-                    className="
-                      flex
-                      h-12
-                      w-12
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-[#D7AE62]
-                      font-bold
-                      text-[#123F32]
-                    "
-                  >
-                    {ownerInitial}
-                  </div>
-                )}
-
-                <div className="min-w-0">
-                  <p
-                    className="
-                      truncate
-                      font-extrabold
-                      text-[#F5ECDD]
-                    "
-                  >
-                    {loadingOwner
-                      ? "Loading..."
-                      : ownerName}
-                  </p>
-
-                  <p
-                    className="
-                      truncate
-                      text-xs
-                      text-[#BFD0C7]
-                    "
-                  >
-                    {ownerEmail}
-                  </p>
-
-                  <p
-                    className="
-                      mt-1
-                      text-[10px]
-                      font-bold
-                      uppercase
-                      tracking-wider
-                      text-[#D7AE62]
-                    "
-                  >
-                    Property Owner
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* MOBILE NAV */}
-
-            <div className="space-y-1">
-              {ownerNavItems.map(
-                (item, index) => {
-                  const title =
-                    item?.Title ||
-                    item?.title ||
-                    "Menu";
-
-                  const url =
-                    item?.Url ||
-                    item?.URL ||
-                    item?.url ||
-                    "#";
-
-                  const icon =
-                    item?.Icon ||
-                    item?.icon ||
-                    "";
-
-                  const dropdownItems =
-                    getDropdownItems(item);
-
-                  const hasDropdown =
-                    dropdownItems.length > 0;
-
-                  const active =
-                    isActive(url);
-
-                  const dropdownActive =
-                    isDropdownActive(
-                      dropdownItems
-                    );
-
-                  const isOpen =
-                    openDropdown ===
-                    `mobile-${index}`;
-
-                  return (
-                    <div
-                      key={`${title}-mobile-${index}`}
-                    >
-                      {hasDropdown ? (
                         <button
                           type="button"
-                          onClick={() =>
-                            setOpenDropdown(
-                              isOpen
-                                ? null
-                                : `mobile-${index}`
-                            )
-                          }
-                          className={`
-                            flex
-                            w-full
-                            items-center
-                            gap-3
-                            rounded-xl
-                            px-3
-                            py-3
-                            text-sm
-                            font-semibold
-                            transition-all
-
-                            ${
-                              active ||
-                              dropdownActive ||
-                              isOpen
-                                ? `
-                                  bg-[#D7AE62]
-                                  text-[#123F32]
-                                `
-                                : `
-                                  text-[#DDE9E1]
-                                  hover:bg-[#1B513F]
-                                  hover:text-[#F3D59B]
-                                `
-                            }
-                          `}
+                          onClick={handleLogout}
+                          className="flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-left transition hover:bg-red-500/10 text-red-500"
                         >
-                          <span
-                            className="
-                              flex
-                              h-9
-                              w-9
-                              items-center
-                              justify-center
-                              rounded-lg
-                              bg-[#225541]
-                            "
-                          >
-                            {renderIcon(
-                              icon,
-                              19
-                            )}
-                          </span>
-
-                          <span className="flex-1 text-left">
-                            {title}
-                          </span>
-
-                        </button>
-                      ) : (
-                        <Link
-                          href={url}
-                          onClick={closeMenus}
-                          className={`
-                            flex
-                            items-center
-                            gap-3
-                            rounded-xl
-                            px-3
-                            py-3
-                            text-sm
-                            font-semibold
-                            transition-all
-
-                            ${
-                              active
-                                ? `
-                                  bg-[#D7AE62]
-                                  text-[#123F32]
-                                `
-                                : `
-                                  text-[#DDE9E1]
-                                  hover:bg-[#1B513F]
-                                  hover:text-[#F3D59B]
-                                `
-                            }
-                          `}
-                        >
-                          <span
-                            className="
-                              flex
-                              h-9
-                              w-9
-                              items-center
-                              justify-center
-                              rounded-lg
-                              bg-[#225541]
-                            "
-                          >
-                            {renderIcon(
-                              icon,
-                              19
-                            )}
-                          </span>
-
-                          {title}
-                        </Link>
-                      )}
-
-                      {/* MOBILE DROPDOWN */}
-
-                      {hasDropdown &&
-                        isOpen && (
-                          <div
-                            className="
-                              ml-12
-                              mt-1
-                              space-y-1
-                              border-l-2
-                              border-[#D7AE62]/50
-                              pl-3
-                            "
-                          >
-                            {dropdownItems.map(
-                              (
-                                dropdownItem,
-                                dropdownIndex
-                              ) => {
-                                const dropdownTitle =
-                                  dropdownItem?.Title ||
-                                  dropdownItem?.title ||
-                                  "Option";
-
-                                const dropdownUrl =
-                                  dropdownItem?.Url ||
-                                  dropdownItem?.URL ||
-                                  dropdownItem?.url ||
-                                  "#";
-
-                                const dropdownIcon =
-                                  dropdownItem?.Icon ||
-                                  dropdownItem?.icon ||
-                                  "";
-
-                                const dropdownActive =
-                                  isActive(
-                                    dropdownUrl
-                                  );
-
-                                return (
-                                  <Link
-                                    key={`${dropdownTitle}-${dropdownIndex}`}
-                                    href={dropdownUrl}
-                                    onClick={
-                                      closeMenus
-                                    }
-                                    className={`
-                                      flex
-                                      items-center
-                                      gap-3
-                                      rounded-lg
-                                      px-3
-                                      py-2.5
-                                      text-xs
-                                      font-semibold
-                                      transition
-                                      ${
-                                        dropdownActive
-                                          ? `
-                                            bg-[#D7AE62]/20
-                                            text-[#F3D59B]
-                                          `
-                                          : `
-                                            text-[#DDE9E1]
-                                            hover:bg-[#1B513F]
-                                            hover:text-[#F3D59B]
-                                          `
-                                      }
-                                    `}
-                                  >
-                                    <span
-                                      className={`
-                                        flex
-                                        h-7
-                                        w-7
-                                        items-center
-                                        justify-center
-                                        rounded-md
-                                        ${
-                                          dropdownActive
-                                            ? `
-                                              bg-[#D7AE62]
-                                              text-[#123F32]
-                                            `
-                                            : "bg-[#225541]"
-                                        }
-                                      `}
-                                    >
-                                      {renderIcon(
-                                        dropdownIcon,
-                                        14
-                                      )}
-                                    </span>
-
-                                    {dropdownTitle}
-                                  </Link>
-                                );
-                              }
-                            )}
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/10 text-red-500">
+                              <LogOut size={16} />
+                            </div>
+                            <span className="text-sm font-semibold text-red-500">
+                              Logout
+                            </span>
                           </div>
-                        )}
+                          <ChevronRight size={15} className="text-red-400" />
+                        </button>
+                      </div>
                     </div>
-                  );
-                }
-              )}
+                  </div>
+                )}
+              </div>
+
+              {/* THEME TOGGLE */}
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label={`Switch to ${
+                  theme === "light" ? "dark" : "light"
+                } mode`}
+                className={styles.iconBtn}
+              >
+                {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
+              </button>
+
+              {/* MOBILE HAMBURGER */}
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen((p) => !p)}
+                aria-label="Toggle navigation menu"
+                className={styles.hamburgerBtn}
+              >
+                {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* MOBILE DRAWER */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-[1100] bg-black/60 backdrop-blur-sm lg:hidden animate-in fade-in duration-200"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <div
+            className="fixed top-0 right-0 h-full w-[85vw] max-w-[340px] bg-[var(--bg-card)] border-l border-[var(--border-subtle)] p-6 flex flex-col gap-6 shadow-2xl overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--text-primary)] text-[var(--bg-page)] font-bold text-sm">
+                  H
+                </div>
+                <span className="font-extrabold text-base text-[var(--text-primary)]">
+                  {effectiveHeaderData?.Brand || "HomeHub"}
+                </span>
+                <span className={styles.brandBadge}>Seller</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-1 rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+              >
+                <X size={20} />
+              </button>
             </div>
 
-            {/* MOBILE ADD PROPERTY */}
-
-            <Link
-              href="/add-property"
-              onClick={closeMenus}
-              className="
-                mt-4
-                flex
-                w-full
-                items-center
-                justify-center
-                gap-2
-                rounded-xl
-                border
-                border-[#D7AE62]
-                bg-[#D7AE62]
-                px-5
-                py-3.5
-                text-sm
-                font-extrabold
-                text-[#123F32]
-                shadow-[0_6px_18px_rgba(215,174,98,0.20)]
-                transition-all
-                hover:bg-[#E4C27E]
-              "
-            >
-              <span className="text-lg">
-                +
+            {/* Navigation in Mobile Drawer */}
+            <nav className="flex flex-col gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                Seller Navigation
               </span>
 
-              Add Property
-            </Link>
+              {ownerNavItems.length > 0 ? (
+                ownerNavItems.map((item, index) => {
+                  let title = item?.Title || item?.title || "Menu";
+                  let url = item?.Url || item?.URL || item?.url || "#";
+                  // HOMEHUB SELLER FIX: Strapi stores this item as "Insights".
+                  // Override the visible label to "Performance" and ensure the
+                  // link always goes directly to /owner/insights/performance.
+                  if (isInsightsItem(item)) {
+                    title = "Performance";
+                    url = "/owner/insights/performance";
+                  }
+                  const dropdownItems = getDropdownItems(item);
+                  const hasDropdown = dropdownItems.length > 0;
+                  const active = isActive(url);
 
-            {/* MOBILE LOGOUT */}
+                  return (
+                    <div key={title} className="flex flex-col py-1">
+                      <Link
+                        href={url}
+                        onClick={closeMenus}
+                        className={`text-sm font-semibold transition ${
+                          active
+                            ? "text-[var(--text-primary)]"
+                            : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                        }`}
+                      >
+                        {title}
+                      </Link>
+                      {hasDropdown && (
+                        <div className="flex flex-col pl-3 mt-1.5 gap-1.5 border-l border-[var(--border-subtle)]">
+                          {dropdownItems.map((dropdown, dIdx) => (
+                            <Link
+                              key={dIdx}
+                              href={
+                                dropdown?.Url ||
+                                dropdown?.URL ||
+                                dropdown?.url ||
+                                "#"
+                              }
+                              onClick={closeMenus}
+                              className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] py-0.5"
+                            >
+                              {dropdown?.Title || dropdown?.title || "Option"}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                <>
+                  {[
+                    { href: "/owner", label: "Dashboard" },
+                    { href: "/owner/properties", label: "My Properties" },
+                    { href: "/owner/enquiries/new", label: "Enquiries" },
+                    {
+                      href: "/owner/site-visits/upcoming",
+                      label: "Site Visits",
+                    },
+                    {
+                      href: "/owner/insights/performance",
+                      label: "Performance",
+                    },
+                    { href: "/owner/promotions", label: "Promotions" },
+                  ].map(({ href, label }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      onClick={closeMenus}
+                      className="text-sm font-semibold text-[var(--text-primary)] py-1"
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </>
+              )}
 
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="
-                mt-2
-                flex
-                w-full
-                items-center
-                justify-center
-                gap-2
-                rounded-xl
-                border
-                border-[#70443E]
-                bg-[#492E2A]
-                px-5
-                py-3.5
-                text-sm
-                font-bold
-                text-[#F0C9C2]
-                transition
-                hover:bg-[#59342F]
-              "
-            >
-              <LogOut size={17} />
-
-              Logout
-            </button>
+              <div className="pt-4 border-t border-[var(--border-subtle)] flex flex-col gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                  Actions
+                </span>
+                <Link
+                  href="/add-property"
+                  onClick={closeMenus}
+                  className="flex items-center justify-center gap-2 rounded-xl py-2.5 px-4 bg-[var(--text-primary)] text-[var(--bg-page)] text-sm font-bold shadow-sm"
+                >
+                  <span>+</span> Add Property
+                </Link>
+                <Link
+                  href={ownerProfileUrl}
+                  onClick={closeMenus}
+                  className="flex items-center gap-2 text-sm text-[var(--text-primary)] py-1.5"
+                >
+                  <UserRound size={15} /> My Profile
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 text-sm text-red-500 py-1.5 text-left"
+                >
+                  <LogOut size={15} /> Logout
+                </button>
+              </div>
+            </nav>
           </div>
-        )}
-      </div>
-    </header>
+        </div>
+      )}
+    </>
   );
 }

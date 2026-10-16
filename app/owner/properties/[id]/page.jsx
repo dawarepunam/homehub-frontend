@@ -26,6 +26,14 @@ import {
   Dumbbell,
   Waves,
   TreePine,
+  ExternalLink,
+  Layers,
+  Compass,
+  Clock,
+  Sparkles,
+  Eye,
+  Heart,
+  MessageSquare,
 } from "lucide-react";
 
 import Header from "@/components/Header";
@@ -49,18 +57,11 @@ const STRAPI_URL =
 ===================================================== */
 
 function safeText(value, fallback = "") {
-  if (
-    value === null ||
-    value === undefined ||
-    value === ""
-  ) {
+  if (value === null || value === undefined || value === "") {
     return fallback;
   }
 
-  if (
-    typeof value === "string" ||
-    typeof value === "number"
-  ) {
+  if (typeof value === "string" || typeof value === "number") {
     return String(value);
   }
 
@@ -103,7 +104,7 @@ function safeText(value, fallback = "") {
 
 function getImageUrl(image) {
   if (!image) {
-    return "https://placehold.co/800x600/1B1916/D7AE62?text=No+Image+Available";
+    return "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80";
   }
 
   const url =
@@ -113,7 +114,7 @@ function getImageUrl(image) {
     "";
 
   if (!url) {
-    return "https://placehold.co/800x600/1B1916/D7AE62?text=No+Image+Available";
+    return "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80";
   }
 
   if (url.startsWith("http")) {
@@ -121,25 +122,6 @@ function getImageUrl(image) {
   }
 
   return `${STRAPI_URL}${url}`;
-}
-
-/* =====================================================
-   NORMALIZE PROPERTY
-===================================================== */
-
-function normalizeProperty(data) {
-  if (!data) {
-    return null;
-  }
-
-  if (data.attributes) {
-    return {
-      id: data.id,
-      ...data.attributes,
-    };
-  }
-
-  return data;
 }
 
 /* =====================================================
@@ -192,15 +174,11 @@ function getMediaArray(value) {
 }
 
 /* =====================================================
-   PRICE FORMAT
+   PRICE FORMAT (INDIAN CURRENCY & UNITS)
 ===================================================== */
 
 function formatPrice(price, units) {
-  if (
-    price === null ||
-    price === undefined ||
-    price === ""
-  ) {
+  if (price === null || price === undefined || price === "") {
     return "Price on Request";
   }
 
@@ -210,16 +188,10 @@ function formatPrice(price, units) {
     return safeText(price, "Price on Request");
   }
 
-  const formatted = new Intl.NumberFormat(
-    "en-IN"
-  ).format(numericPrice);
+  const formatted = new Intl.NumberFormat("en-IN").format(numericPrice);
+  const unit = safeText(units, "").trim();
 
-  const unit = safeText(units, "INR");
-
-  if (
-    unit &&
-    unit.toLowerCase() !== "inr"
-  ) {
+  if (unit && unit.toLowerCase() !== "inr") {
     return `₹${formatted} ${unit}`;
   }
 
@@ -231,19 +203,14 @@ function formatPrice(price, units) {
 ===================================================== */
 
 function formatDate(date) {
-  if (!date) {
-    return "";
-  }
+  if (!date) return "";
 
   try {
-    return new Intl.DateTimeFormat(
-      "en-IN",
-      {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }
-    ).format(new Date(date));
+    return new Intl.DateTimeFormat("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }).format(new Date(date));
   } catch {
     return "";
   }
@@ -251,31 +218,23 @@ function formatDate(date) {
 
 /* =====================================================
    CATEGORY → BEDROOM FALLBACK
-
-   Example:
-   Two BHK → 2
-   Three BHK → 3
 ===================================================== */
 
 function getBedroomsFromCategory(category) {
   const value = safeText(category).toLowerCase();
 
-  if (value.includes("one bhk") || value.includes("1 bhk")) {
+  if (value.includes("one bhk") || value.includes("1 bhk") || value.includes("1bhk")) {
     return 1;
   }
-
-  if (value.includes("two bhk") || value.includes("2 bhk")) {
+  if (value.includes("two bhk") || value.includes("2 bhk") || value.includes("2bhk")) {
     return 2;
   }
-
-  if (value.includes("three bhk") || value.includes("3 bhk")) {
+  if (value.includes("three bhk") || value.includes("3 bhk") || value.includes("3bhk")) {
     return 3;
   }
-
-  if (value.includes("four bhk") || value.includes("4 bhk")) {
+  if (value.includes("four bhk") || value.includes("4 bhk") || value.includes("4bhk")) {
     return 4;
   }
-
   return null;
 }
 
@@ -287,56 +246,69 @@ function formatAmenityName(key) {
   return safeText(key)
     .replace(/([A-Z])/g, " $1")
     .replace(/_/g, " ")
-    .replace(/^./, (char) =>
-      char.toUpperCase()
-    )
+    .replace(/^./, (char) => char.toUpperCase())
     .trim();
 }
 
-/* =====================================================
-   STATUS STYLE
-===================================================== */
-
-function getStatusClass(status) {
-  const value = safeText(status).toLowerCase();
-
-  if (
-    value === "available" ||
-    value === "active"
-  ) {
-    return "bg-[#0E7658] text-white";
-  }
-
-  if (value === "pending") {
-    return "bg-[#C98619] text-white";
-  }
-
-  if (value === "sold") {
-    return "bg-[#B42318] text-white";
-  }
-
-  if (value === "rented") {
-    return "bg-[#7651A8] text-white";
-  }
-
-  if (value === "inactive" || value === "draft") {
-    return "bg-[#64748B] text-white";
-  }
-
-  if (value === "reserved") {
-    return "bg-[#0369A1] text-white";
-  }
-
-  return "bg-[#64748B] text-white";
+function getAmenityIcon(key) {
+  const k = key.toLowerCase();
+  if (k.includes("park") || k.includes("car")) return <Car size={15} className="text-[var(--seller-text)]" />;
+  if (k.includes("lift") || k.includes("elev")) return <Building2 size={15} className="text-[var(--seller-text)]" />;
+  if (k.includes("secur")) return <Shield size={15} className="text-[var(--seller-text)]" />;
+  if (k.includes("cctv")) return <Cctv size={15} className="text-[var(--seller-text)]" />;
+  if (k.includes("power") || k.includes("backup") || k.includes("elect")) return <Zap size={15} className="text-[var(--seller-text)]" />;
+  if (k.includes("gym") || k.includes("fit")) return <Dumbbell size={15} className="text-[var(--seller-text)]" />;
+  if (k.includes("swim") || k.includes("pool") || k.includes("water")) return <Waves size={15} className="text-[var(--seller-text)]" />;
+  if (k.includes("garden") || k.includes("tree") || k.includes("park")) return <TreePine size={15} className="text-[var(--seller-text)]" />;
+  return <CheckCircle2 size={15} className="text-[var(--seller-text-muted)]" />;
 }
 
 /* =====================================================
-   PAGE
+   STATUS BADGE STYLING
 ===================================================== */
 
-export default function OwnerPropertyDetailsPage({
-  params,
-}) {
+function getStatusBadge(status) {
+  const s = safeText(status).toLowerCase();
+  if (s === "available" || s === "active") {
+    return {
+      label: "Active",
+      classes: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
+      dot: "bg-emerald-500",
+    };
+  }
+  if (s === "pending") {
+    return {
+      label: "Pending",
+      classes: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20",
+      dot: "bg-amber-500",
+    };
+  }
+  if (s === "sold") {
+    return {
+      label: "Sold",
+      classes: "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20",
+      dot: "bg-red-500",
+    };
+  }
+  if (s === "rented") {
+    return {
+      label: "Rented",
+      classes: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20",
+      dot: "bg-purple-500",
+    };
+  }
+  return {
+    label: safeText(status, "Draft"),
+    classes: "bg-[var(--seller-bg-subtle)] text-[var(--seller-text-muted)] border border-[var(--seller-border)]",
+    dot: "bg-[var(--seller-text-subtle)]",
+  };
+}
+
+/* =====================================================
+   MAIN COMPONENT
+===================================================== */
+
+export default function OwnerPropertyDetailsPage({ params }) {
   const searchParams = useSearchParams();
   const from = searchParams.get("from");
 
@@ -356,13 +328,11 @@ export default function OwnerPropertyDetailsPage({
 
   const [property, setProperty] = useState(null);
   const [dashboard, setDashboard] = useState(null);
-
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] =
-    useState("");
-
+  const [errorMessage, setErrorMessage] = useState("");
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [isDeactivating, setIsDeactivating] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
 
   const handleDeactivate = async () => {
     const docId = property?.documentId || property?.id;
@@ -374,11 +344,9 @@ export default function OwnerPropertyDetailsPage({
       setIsDeactivating(true);
       await updatePropertyStatus(docId, "INACTIVE");
       toast.success("Property has been deactivated successfully.");
-      
-      // Update local state to show as inactive
       setProperty((prev) => ({
         ...prev,
-        PropertyStatus: "INACTIVE"
+        PropertyStatus: "INACTIVE",
       }));
       setShowDeactivateModal(false);
     } catch (err) {
@@ -387,9 +355,6 @@ export default function OwnerPropertyDetailsPage({
       setIsDeactivating(false);
     }
   };
-
-  const [activeImage, setActiveImage] =
-    useState(0);
 
   /* ===================================================
      LOAD PROPERTY
@@ -404,41 +369,21 @@ export default function OwnerPropertyDetailsPage({
         setErrorMessage("");
 
         const resolvedParams =
-          typeof params?.then === "function"
-            ? await params
-            : params;
-
+          typeof params?.then === "function" ? await params : params;
         const id = resolvedParams?.id;
 
         if (!id) {
-          throw new Error(
-            "Property ID not found."
-          );
+          throw new Error("Property ID not found.");
         }
-
-        /* ---------------------------------------------
-           OWNER DASHBOARD
-        --------------------------------------------- */
 
         try {
-          const dashboardData =
-            await getOwnerDashboard();
-
+          const dashboardData = await getOwnerDashboard();
           if (!cancelled) {
-            setDashboard(
-              dashboardData || null
-            );
+            setDashboard(dashboardData || null);
           }
         } catch (dashboardError) {
-          console.warn(
-            "Owner dashboard could not load:",
-            dashboardError
-          );
+          console.warn("Owner dashboard could not load:", dashboardError);
         }
-
-        /* ---------------------------------------------
-           TOKEN
-        --------------------------------------------- */
 
         const token =
           typeof window !== "undefined"
@@ -447,53 +392,32 @@ export default function OwnerPropertyDetailsPage({
               localStorage.getItem("strapi_jwt")
             : null;
 
-        /* ---------------------------------------------
-           STRAPI PROPERTY
-        --------------------------------------------- */
-
         const response = await fetch(
           `${STRAPI_URL}/api/properties/${id}?populate=*`,
           {
-            headers: token
-              ? {
-                  Authorization: `Bearer ${token}`,
-                }
-              : {},
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
             cache: "no-store",
           }
         );
 
         if (!response.ok) {
-          throw new Error(
-            `Unable to load property. Status: ${response.status}`
-          );
+          throw new Error(`Unable to load property. Status: ${response.status}`);
         }
 
-        const result =
-          await response.json();
-
+        const result = await response.json();
         const propertyData = result?.data;
 
         if (!propertyData) {
-          throw new Error(
-            "Property not found."
-          );
+          throw new Error("Property not found.");
         }
 
         if (!cancelled) {
           setProperty(propertyData);
         }
       } catch (error) {
-        console.error(
-          "OWNER PROPERTY DETAILS ERROR:",
-          error
-        );
-
+        console.error("OWNER PROPERTY DETAILS ERROR:", error);
         if (!cancelled) {
-          setErrorMessage(
-            error?.message ||
-              "Unable to load property details."
-          );
+          setErrorMessage(error?.message || "Unable to load property details.");
         }
       } finally {
         if (!cancelled) {
@@ -510,16 +434,15 @@ export default function OwnerPropertyDetailsPage({
   }, [params]);
 
   /* ===================================================
-     LOADING
+     LOADING STATE
   =================================================== */
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#F3F0E8] px-4">
-        <div className="rounded-3xl border border-[#D9D1C2] bg-[#F7F0E3] px-10 py-8 text-center shadow-sm">
-          <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-[#D9D1C2] border-t-[#174B3B]" />
-
-          <p className="text-sm font-bold text-[#416353]">
+      <main className="flex min-h-screen items-center justify-center bg-[var(--seller-bg)] px-4">
+        <div className="flex flex-col items-center rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] px-10 py-8 shadow-sm">
+          <div className="h-9 w-9 animate-spin rounded-full border-2 border-[var(--seller-border)] border-t-[var(--seller-text)]" />
+          <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)]">
             Loading property details...
           </p>
         </div>
@@ -528,31 +451,27 @@ export default function OwnerPropertyDetailsPage({
   }
 
   /* ===================================================
-     ERROR
+     ERROR STATE
   =================================================== */
 
   if (errorMessage || !property) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#F3F0E8] px-4">
-        <div className="w-full max-w-lg rounded-3xl border border-red-200 bg-[#F7F0E3] p-8 text-center shadow-sm">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-xl font-bold text-red-600">
+      <main className="flex min-h-screen items-center justify-center bg-[var(--seller-bg)] px-4">
+        <div className="w-full max-w-md rounded-2xl border border-red-200/50 bg-[var(--seller-surface)] p-8 text-center shadow-sm dark:border-red-900/40">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 text-red-500 font-bold">
             !
           </div>
-
-          <h1 className="mt-5 text-2xl font-extrabold text-[#123F32]">
+          <h1 className="mt-4 text-xl font-bold text-[var(--seller-text)]">
             Unable to load property
           </h1>
-
-          <p className="mt-3 text-sm leading-6 text-[#718177]">
-            {errorMessage ||
-              "Property information could not be found."}
+          <p className="mt-2 text-xs leading-relaxed text-[var(--seller-text-muted)]">
+            {errorMessage || "Property information could not be found."}
           </p>
-
           <Link
             href="/owner/properties"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#174B3B] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#123F32]"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[var(--seller-primary)] px-5 py-2.5 text-xs font-bold text-[var(--seller-surface)] transition hover:opacity-90"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={14} />
             Back to My Properties
           </Link>
         </div>
@@ -561,134 +480,57 @@ export default function OwnerPropertyDetailsPage({
   }
 
   /* ===================================================
-     PROPERTY BASIC DATA
+     PROPERTY DATA PARSING
   =================================================== */
 
-  const propertyId =
-    property?.documentId ||
-    property?.id;
-
-  const title = safeText(
-    property?.Title,
-    "Untitled Property"
-  );
-
-  const description = safeText(
-    property?.Description,
-    ""
-  );
-
-  const purpose = safeText(
-    property?.Purpose,
-    "Sale"
-  );
-
-  const propertyType = safeText(
-    property?.Property_Type,
-    "Property"
-  );
-
-  const category = safeText(
-    property?.Category,
-    ""
-  );
-
-  const city = safeText(
-    property?.City,
-    ""
-  );
-
-  const area = safeText(
-    property?.Area,
-    ""
-  );
-
-  const address = safeText(
-    property?.Address,
-    ""
-  );
-
-  const state = safeText(
-    property?.State,
-    ""
-  );
-
-  const pinCode = safeText(
-    property?.PinCode,
-    ""
-  );
-
-  const status = safeText(
-    property?.PropertyStatus,
-    "Available"
-  );
-
-  /* ===================================================
-     DETAIL COMPONENTS
-  =================================================== */
+  const propertyId = property?.documentId || property?.id;
+  const title = safeText(property?.Title, "Untitled Property");
+  const description = safeText(property?.Description, "");
+  const purpose = safeText(property?.Purpose, "Sale");
+  const propertyType = safeText(property?.Property_Type, "Property");
+  const category = safeText(property?.Category, "");
+  const city = safeText(property?.City, "");
+  const area = safeText(property?.Area, "");
+  const address = safeText(property?.Address, "");
+  const state = safeText(property?.State, "");
+  const pinCode = safeText(property?.PinCode, "");
+  const status = safeText(property?.PropertyStatus, "Available");
 
   const commonDetails =
-    property?.PropertyCommonDetails &&
-    typeof property.PropertyCommonDetails ===
-      "object"
+    property?.PropertyCommonDetails && typeof property.PropertyCommonDetails === "object"
       ? property.PropertyCommonDetails
       : {};
 
   const residentialDetails =
-    property?.ResidentialDetails &&
-    typeof property.ResidentialDetails ===
-      "object"
+    property?.ResidentialDetails && typeof property.ResidentialDetails === "object"
       ? property.ResidentialDetails
       : {};
 
   const commercialDetails =
-    property?.CommercialDetails &&
-    typeof property.CommercialDetails ===
-      "object"
+    property?.CommercialDetails && typeof property.CommercialDetails === "object"
       ? property.CommercialDetails
       : {};
 
   const industrialDetails =
-    property?.IndustrialDetails &&
-    typeof property.IndustrialDetails ===
-      "object"
+    property?.IndustrialDetails && typeof property.IndustrialDetails === "object"
       ? property.IndustrialDetails
       : {};
 
   const amenities =
-    property?.PropertyAmenities &&
-    typeof property.PropertyAmenities ===
-      "object"
+    property?.PropertyAmenities && typeof property.PropertyAmenities === "object"
       ? property.PropertyAmenities
-      : property?.Amenities &&
-          typeof property.Amenities ===
-            "object"
-        ? property.Amenities
-        : {};
-
-  /* ===================================================
-     PRICE
-  =================================================== */
+      : property?.Amenities && typeof property.Amenities === "object"
+      ? property.Amenities
+      : {};
 
   const rawPrice =
-    property?.Price ??
-    commonDetails?.Price ??
-    commonDetails?.price;
-
+    property?.Price ?? commonDetails?.Price ?? commonDetails?.price;
   const priceUnits =
     property?.PriceUnits ??
     property?.Price_Units ??
     commonDetails?.PriceUnits ??
     commonDetails?.Price_Units;
-
-  const price = formatPrice(
-    rawPrice,
-    priceUnits
-  );
-
-  /* ===================================================
-     QUICK DETAILS
-  =================================================== */
+  const price = formatPrice(rawPrice, priceUnits);
 
   const bedrooms =
     residentialDetails?.Bedrooms ??
@@ -733,166 +575,90 @@ export default function OwnerPropertyDetailsPage({
     property?.Floor ??
     null;
 
-  /* ===================================================
-     IMAGES
-  =================================================== */
-
-  const coverImages = getMediaArray(
-    property?.CoverImage
-  );
-
+  // IMAGES
+  const coverImages = getMediaArray(property?.CoverImage);
   const propertyImages = getMediaArray(
     property?.PropertyImage || property?.PropertyImages
   );
-
-  const allImages = [
-    ...coverImages,
-    ...propertyImages,
-  ];
-
+  const allImages = [...coverImages, ...propertyImages];
   const uniqueImages = [];
 
-  allImages.forEach((image) => {
-    const imageUrl =
-      image?.url ||
-      image?.data?.attributes?.url ||
-      image?.data?.url ||
-      "";
-
-    const alreadyExists =
-      uniqueImages.some(
-        (existing) => {
-          const existingUrl =
-            existing?.url ||
-            existing?.data?.attributes?.url ||
-            existing?.data?.url ||
-            "";
-
-          return (
-            existingUrl &&
-            existingUrl === imageUrl
-          );
-        }
-      );
-
-    if (!alreadyExists) {
-      uniqueImages.push(image);
-    }
+  allImages.forEach((img) => {
+    const url =
+      img?.url || img?.data?.attributes?.url || img?.data?.url || "";
+    const exists = uniqueImages.some((e) => {
+      const eUrl = e?.url || e?.data?.attributes?.url || e?.data?.url || "";
+      return eUrl && eUrl === url;
+    });
+    if (!exists) uniqueImages.push(img);
   });
 
-  const galleryImages =
-    uniqueImages.length > 0
-      ? uniqueImages
-      : [null];
-
-  /* ===================================================
-     RESET ACTIVE IMAGE IF NEEDED
-  =================================================== */
-
+  const galleryImages = uniqueImages.length > 0 ? uniqueImages : [null];
   const safeActiveImage =
-    activeImage >= galleryImages.length
-      ? 0
-      : activeImage;
-
-  /* ===================================================
-     LISTED DATE
-  =================================================== */
+    activeImage >= galleryImages.length ? 0 : activeImage;
 
   const listedDate = formatDate(
-    property?.createdAt ||
-      property?.publishedAt
+    property?.createdAt || property?.publishedAt
   );
 
-  /* ===================================================
-     AMENITIES
-  =================================================== */
+  const amenityEntries = Object.entries(amenities).filter(
+    ([, val]) =>
+      val === true || val === "true" || val === "Yes" || val === "yes"
+  );
 
-  const amenityEntries =
-    Object.entries(amenities).filter(
-      ([, value]) =>
-        value === true ||
-        value === "true" ||
-        value === "Yes" ||
-        value === "yes"
-    );
-
-  /* ===================================================
-     PROPERTY FEATURES
-
-     If Strapi has PropertyFeatures component,
-     show those also.
-  =================================================== */
-
-  const propertyFeatures =
-    Array.isArray(property?.PropertyFeatures)
-      ? property.PropertyFeatures
-      : Array.isArray(
-            property?.PropertyFeatures?.data
-          )
-        ? property.PropertyFeatures.data
-        : [];
-
-  /* ===================================================
-     LOCATION
-  =================================================== */
+  const propertyFeatures = Array.isArray(property?.PropertyFeatures)
+    ? property.PropertyFeatures
+    : Array.isArray(property?.PropertyFeatures?.data)
+    ? property.PropertyFeatures.data
+    : [];
 
   const locationText =
-    address ||
-    [area, city, state]
-      .filter(Boolean)
-      .join(", ");
-
+    address || [area, city, state].filter(Boolean).join(", ");
   const lat = property?.Latitude;
   const lng = property?.Longitude;
+  const fullAddressToEncode = [address, area, city, state, pinCode]
+    .filter(Boolean)
+    .join(", ");
 
-  const fullAddressToEncode = [address, area, city, state, pinCode].filter(Boolean).join(", ");
-  
   let googleMapsUrl = property?.GoogleMapLink || null;
   if (!googleMapsUrl) {
     if (lat && lng) {
       googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
     } else if (fullAddressToEncode) {
-      googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddressToEncode)}`;
+      googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        fullAddressToEncode
+      )}`;
     }
   }
 
+  const statusBadge = getStatusBadge(status);
+
   /* ===================================================
-     PAGE
+     RENDER VIEW
   =================================================== */
 
   return (
-    <div className="min-h-screen bg-[#F3F0E8]">
-      {/* =================================================
-          HEADER
-      ================================================= */}
-
-      <Header
-        headerData={dashboard?.header}
-      />
-
-      {/* =================================================
-          MAIN
-      ================================================= */}
+    <div className="seller-page-wrapper min-h-screen bg-[var(--seller-bg)] text-[var(--seller-text)] transition-colors duration-200">
+      {/* FLOATING HEADER */}
+      <Header headerData={dashboard?.header} />
 
       <main className="mx-auto w-full max-w-[1240px] px-4 py-6 sm:px-6 lg:px-8">
-        {/* =================================================
-            TOP BAR
-        ================================================= */}
-
-        <div className="mb-5 flex items-center justify-between gap-3">
+        {/* TOP BAR / BREADCRUMB + ACTIONS */}
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <Link
             href={backLink}
-            className="inline-flex items-center gap-2 rounded-xl border border-[#D9D1C2] bg-[#F7F0E3] px-4 py-2.5 text-sm font-bold text-[#174B3B] transition hover:border-[#B99852]"
+            className="inline-flex items-center gap-2 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3.5 py-2 text-xs font-semibold text-[var(--seller-text)] shadow-xs transition hover:border-[var(--seller-border-focus)] hover:bg-[var(--seller-surface-hover)]"
           >
-            <ArrowLeft size={16} />
-            {backLabel}
+            <ArrowLeft size={14} />
+            <span>{backLabel}</span>
           </Link>
 
           <div className="flex items-center gap-2">
             {status?.toLowerCase() !== "inactive" && (
               <button
+                type="button"
                 onClick={() => setShowDeactivateModal(true)}
-                className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-extrabold text-red-600 transition hover:bg-red-100"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-500/20 dark:text-red-400"
               >
                 Deactivate
               </button>
@@ -900,29 +666,23 @@ export default function OwnerPropertyDetailsPage({
 
             <Link
               href={`/owner/properties/${propertyId}/edit`}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#D7AE62] px-5 py-2.5 text-sm font-extrabold text-[#123F32] transition hover:bg-[#C99D4C]"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--seller-primary)] px-4 py-2 text-xs font-semibold text-[var(--seller-surface)] shadow-xs transition hover:opacity-90 active:scale-95"
             >
-              <Pencil size={16} />
-              Edit Property
+              <Pencil size={13} />
+              <span>Edit Property</span>
             </Link>
           </div>
         </div>
 
         {/* =================================================
-            MAIN DARK PROPERTY PANEL
-
-            THIS IS THE IMPORTANT UI CHANGE.
-            Similar structure to your 1st reference image.
+            HERO PROPERTY SHOWCASE: GALLERY & OVERVIEW
+            GetSiteGo Inspired Sophisticated Monochrome Panel
         ================================================= */}
-
-        <section className="overflow-hidden rounded-3xl border border-[#2B2925] bg-[#12110F] p-4 shadow-[0_18px_50px_rgba(18,17,15,0.22)] sm:p-5 lg:p-6">
-          <div className="grid gap-5 lg:grid-cols-[70px_minmax(0,1fr)_300px]">
-            {/* =================================================
-                LEFT THUMBNAILS
-            ================================================= */}
-
-            <div className="order-2 flex gap-3 overflow-x-auto lg:order-1 lg:flex-col">
-              {galleryImages.length > 1 && (
+        <section className="overflow-hidden rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] shadow-[var(--seller-shadow)] transition-all">
+          <div className="grid gap-0 lg:grid-cols-12">
+            {/* LEFT / THUMBNAILS COLUMN (Desktop only if multiple images) */}
+            {galleryImages.length > 1 && (
+              <div className="hidden lg:col-span-1 lg:flex lg:flex-col lg:items-center lg:gap-2.5 lg:border-r lg:border-[var(--seller-border)] lg:bg-[var(--seller-bg-subtle)] lg:p-3">
                 <button
                   type="button"
                   onClick={() =>
@@ -932,695 +692,509 @@ export default function OwnerPropertyDetailsPage({
                         : safeActiveImage - 1
                     )
                   }
-                  className="hidden h-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-[#1B1916] text-[#D7AE62] transition hover:bg-[#25211C] lg:flex"
-                  aria-label="Previous image"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+                  aria-label="Previous thumbnail"
                 >
-                  <ChevronUp size={18} />
+                  <ChevronUp size={14} />
                 </button>
-              )}
 
-              {galleryImages.map(
-                (image, index) => (
-                  <button
-                    key={
-                      image?.id ||
-                      image?.url ||
-                      index
-                    }
-                    type="button"
-                    onClick={() =>
-                      setActiveImage(index)
-                    }
-                    className={`relative h-16 w-24 shrink-0 overflow-hidden rounded-xl border-2 transition lg:h-[58px] lg:w-[70px] ${
-                      safeActiveImage === index
-                        ? "border-[#D7AE62] opacity-100"
-                        : "border-transparent opacity-55 hover:opacity-90"
-                    }`}
-                  >
-                    <Image
-                      src={getImageUrl(image)}
-                      alt={`${title} ${index + 1}`}
-                      fill
-                      sizes="80px"
-                      className="object-cover"
-                      unoptimized
-                    />
+                <div className="flex flex-col gap-2 overflow-y-auto max-h-[380px] pr-0.5">
+                  {galleryImages.map((img, idx) => (
+                    <button
+                      key={img?.id || img?.url || idx}
+                      type="button"
+                      onClick={() => setActiveImage(idx)}
+                      className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition ${
+                        safeActiveImage === idx
+                          ? "border-[var(--seller-text)] shadow-xs opacity-100 ring-1 ring-[var(--seller-text)]"
+                          : "border-transparent opacity-60 hover:opacity-100"
+                      }`}
+                    >
+                      <Image
+                        src={getImageUrl(img)}
+                        alt={`${title} preview ${idx + 1}`}
+                        fill
+                        sizes="56px"
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </button>
+                  ))}
+                </div>
 
-                    {safeActiveImage === index && (
-                      <div className="absolute inset-0 bg-[#D7AE62]/10" />
-                    )}
-                  </button>
-                )
-              )}
-
-              {galleryImages.length > 1 && (
                 <button
                   type="button"
                   onClick={() =>
                     setActiveImage(
-                      safeActiveImage ===
-                        galleryImages.length - 1
+                      safeActiveImage === galleryImages.length - 1
                         ? 0
                         : safeActiveImage + 1
                     )
                   }
-                  className="hidden h-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-[#1B1916] text-[#D7AE62] transition hover:bg-[#25211C] lg:flex"
-                  aria-label="Next image"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+                  aria-label="Next thumbnail"
                 >
-                  <ChevronDown size={18} />
+                  <ChevronDown size={14} />
                 </button>
-              )}
-            </div>
+              </div>
+            )}
 
-            {/* =================================================
-                MAIN IMAGE
-            ================================================= */}
-
-            <div className="order-1 min-w-0 lg:order-2">
-              <div className="relative h-[280px] overflow-hidden rounded-2xl bg-[#1B1916] sm:h-[390px] lg:h-[430px]">
+            {/* MAIN PROPERTY IMAGE CONTAINER */}
+            <div
+              className={`relative ${
+                galleryImages.length > 1
+                  ? "lg:col-span-6"
+                  : "lg:col-span-7"
+              } bg-[var(--seller-bg-subtle)] min-h-[300px] sm:min-h-[400px] lg:min-h-[460px]`}
+            >
+              <div className="relative h-full w-full min-h-[300px] sm:min-h-[400px] lg:min-h-[460px] overflow-hidden">
                 <Image
-                  src={getImageUrl(
-                    galleryImages[
-                      safeActiveImage
-                    ]
-                  )}
+                  src={getImageUrl(galleryImages[safeActiveImage])}
                   alt={title}
                   fill
                   priority
-                  sizes="(max-width: 1024px) 100vw, 60vw"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                   unoptimized
                 />
 
-                {/* IMAGE DARK OVERLAY */}
+                {/* Subtle scrim for badge readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/10" />
-
-                {/* BOOKMARK */}
-
-                <div className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-xl bg-black/45 text-white backdrop-blur-sm">
-                  <Bookmark size={18} />
+                {/* Status Badges Overlay */}
+                <div className="absolute left-4 top-4 flex flex-wrap items-center gap-1.5">
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-bold tracking-wide uppercase shadow-xs backdrop-blur-md ${statusBadge.classes}`}
+                  >
+                    <span className={`h-1.5 w-1.5 rounded-full ${statusBadge.dot}`} />
+                    {statusBadge.label}
+                  </span>
+                  <span className="rounded-md border border-white/20 bg-black/40 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-white backdrop-blur-md">
+                    {purpose}
+                  </span>
                 </div>
 
-                {/* PHOTO COUNT */}
-
+                {/* Photo counter */}
                 {galleryImages.length > 1 && (
-                  <div className="absolute bottom-4 right-4 rounded-lg bg-black/55 px-3 py-1.5 text-xs font-bold text-white backdrop-blur-sm">
-                    {safeActiveImage + 1} /{" "}
-                    {galleryImages.length}
+                  <div className="absolute bottom-4 right-4 rounded-md border border-white/20 bg-black/50 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-md">
+                    {safeActiveImage + 1} / {galleryImages.length}
+                  </div>
+                )}
+              </div>
+
+              {/* Mobile thumbnail strip */}
+              {galleryImages.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto p-3 lg:hidden bg-[var(--seller-bg-subtle)] border-t border-[var(--seller-border)]">
+                  {galleryImages.map((img, idx) => (
+                    <button
+                      key={img?.id || img?.url || idx}
+                      type="button"
+                      onClick={() => setActiveImage(idx)}
+                      className={`relative h-12 w-16 shrink-0 overflow-hidden rounded-md border-2 transition ${
+                        safeActiveImage === idx
+                          ? "border-[var(--seller-text)] opacity-100"
+                          : "border-transparent opacity-60"
+                      }`}
+                    >
+                      <Image
+                        src={getImageUrl(img)}
+                        alt={`${title} thumb ${idx + 1}`}
+                        fill
+                        sizes="64px"
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* RIGHT SUMMARY COLUMN */}
+            <div
+              className={`flex flex-col justify-between p-6 sm:p-7 ${
+                galleryImages.length > 1
+                  ? "lg:col-span-5"
+                  : "lg:col-span-5"
+              } lg:border-l lg:border-[var(--seller-border)]`}
+            >
+              <div>
+                {/* CATEGORY & PROPERTY TYPE TAG */}
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--seller-text-muted)]">
+                    {propertyType}
+                  </span>
+                  {category && (
+                    <>
+                      <span className="text-[var(--seller-text-subtle)]">•</span>
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--seller-text-muted)]">
+                        {category}
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                {/* TITLE */}
+                <h1 className="mt-2 text-2xl font-bold tracking-tight text-[var(--seller-text)] sm:text-3xl leading-snug">
+                  {title}
+                </h1>
+
+                {/* LOCATION */}
+                <div className="mt-3 flex items-start gap-2 text-xs text-[var(--seller-text-muted)]">
+                  <MapPin size={15} className="mt-0.5 shrink-0 text-[var(--seller-text)]" />
+                  <span className="leading-relaxed">
+                    {locationText || "Location not specified"}
+                  </span>
+                </div>
+
+                {googleMapsUrl && (
+                  <div className="mt-1 ml-5">
+                    <a
+                      href={googleMapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--seller-text)] hover:underline"
+                    >
+                      <span>View on Google Maps</span>
+                      <ExternalLink size={11} />
+                    </a>
                   </div>
                 )}
 
-                {/* IMAGE TITLE */}
-
-                <div className="absolute bottom-5 left-5 right-5">
-                  <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-[#D7AE62]">
-                    {category ||
-                      propertyType}
+                {/* PRICING BLOCK */}
+                <div className="mt-6 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg-subtle)] p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--seller-text-muted)]">
+                    {purpose.toLowerCase().includes("rent")
+                      ? "Monthly Rental Price"
+                      : "Asking Price"}
                   </p>
-
-                  <h1 className="max-w-2xl text-2xl font-extrabold leading-tight text-white sm:text-3xl">
-                    {title}
-                  </h1>
-
-                  {locationText && (
-                    <p className="mt-2 flex items-center gap-2 text-sm text-white/80">
-                      <MapPin size={15} />
-                      {locationText}
-                    </p>
+                  <p className="mt-1 text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--seller-text)]">
+                    {price}
+                  </p>
+                  {purpose.toLowerCase().includes("rent") && (
+                    <span className="text-[11px] font-medium text-[var(--seller-text-muted)]">
+                      / month
+                    </span>
                   )}
                 </div>
-              </div>
-            </div>
 
-            {/* =================================================
-                RIGHT PROPERTY SUMMARY
-            ================================================= */}
-
-            <div className="order-3 flex flex-col justify-center border-t border-white/10 pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
-              {/* STATUS / TYPE */}
-
-              <div className="flex flex-wrap gap-2">
-                <span
-                  className={`rounded-md px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wide ${getStatusClass(
-                    status
-                  )}`}
-                >
-                  {status}
-                </span>
-
-                <span className="rounded-md bg-[#E5E8DE] px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wide text-[#174B3B]">
-                  {propertyType}
-                </span>
-
-                <span className="rounded-md bg-[#F4E7C7] px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wide text-[#3C311C]">
-                  {purpose}
-                </span>
-              </div>
-
-              {/* TITLE */}
-
-              <h2 className="mt-6 text-2xl font-extrabold leading-tight text-white">
-                {title}
-              </h2>
-
-              {/* LOCATION */}
-
-              <div className="mt-3 flex flex-col gap-3">
-                <p className="flex items-start gap-2 text-sm text-white/65">
-                  <MapPin
-                    size={17}
-                    className="mt-0.5 shrink-0 text-[#D7AE62]"
-                  />
-
-                  <span>
-                    {locationText ||
-                      "Location not available"}
-                  </span>
-                </p>
-
-                {googleMapsUrl && (
-                  <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#D7AE62] hover:text-[#F4E7C7] transition-colors ml-6">
-                    <span>📍 View on Google Maps</span>
-                  </a>
+                {/* LISTING DATE METADATA */}
+                {listedDate && (
+                  <div className="mt-4 flex items-center gap-2 text-xs text-[var(--seller-text-muted)]">
+                    <CalendarDays size={14} className="text-[var(--seller-text-subtle)]" />
+                    <span>Listed on {listedDate}</span>
+                  </div>
                 )}
               </div>
 
-              {/* PRICE */}
+              {/* ACTION BUTTONS */}
+              <div className="mt-6 border-t border-[var(--seller-border)] pt-5">
+                <div className="grid grid-cols-2 gap-2.5">
+                  <Link
+                    href={`/owner/properties/${propertyId}/edit`}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--seller-primary)] px-4 py-2.5 text-xs font-bold text-[var(--seller-surface)] shadow-xs transition hover:opacity-90 active:scale-95"
+                  >
+                    <Pencil size={14} />
+                    <span>Edit Property</span>
+                  </Link>
 
-              <div className="mt-7 border-t border-white/10 pt-6">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#D7AE62]">
-                  Asking Price
-                </p>
-
-                <p className="mt-2 text-3xl font-extrabold text-[#4FC69A]">
-                  {price}
-                </p>
-
-                {purpose
-                  .toLowerCase()
-                  .includes("rent") && (
-                  <p className="mt-1 text-xs text-white/50">
-                    per month
-                  </p>
-                )}
-              </div>
-
-              {/* DATE */}
-
-              {listedDate && (
-                <div className="mt-6 flex items-center gap-2 border-t border-white/10 pt-5 text-xs text-white/60">
-                  <CalendarDays
-                    size={15}
-                    className="text-[#D7AE62]"
-                  />
-
-                  Listed on {listedDate}
+                  <Link
+                    href="/owner/properties"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] px-4 py-2.5 text-xs font-semibold text-[var(--seller-text)] shadow-xs transition hover:bg-[var(--seller-surface-hover)]"
+                  >
+                    <span>All Listings</span>
+                  </Link>
                 </div>
-              )}
-
-              {/* EDIT */}
-
-              <Link
-                href={`/owner/properties/${propertyId}/edit`}
-                className="mt-7 flex items-center justify-center gap-2 rounded-xl bg-[#D7AE62] px-4 py-3 text-sm font-extrabold text-[#123F32] transition hover:bg-[#C99D4C]"
-              >
-                <Pencil size={16} />
-                Edit Property
-              </Link>
+              </div>
             </div>
           </div>
         </section>
 
         {/* =================================================
-            QUICK PROPERTY DETAILS
+            KEY PROPERTY HIGHLIGHTS
+            Compact outline cards: Beds, Baths, Parking, Area, Floor
         ================================================= */}
-
         <section className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          <OverviewCard
-            icon={<BedDouble size={20} />}
+          <HighlightCard
+            icon={<BedDouble size={18} />}
             label="Bedrooms"
-            value={
-              bedrooms !== null &&
-              bedrooms !== undefined
-                ? bedrooms
-                : "--"
-            }
+            value={bedrooms !== null && bedrooms !== undefined ? bedrooms : null}
           />
-
-          <OverviewCard
-            icon={<Bath size={20} />}
+          <HighlightCard
+            icon={<Bath size={18} />}
             label="Bathrooms"
-            value={
-              bathrooms !== null &&
-              bathrooms !== undefined
-                ? bathrooms
-                : "--"
-            }
+            value={bathrooms !== null && bathrooms !== undefined ? bathrooms : null}
           />
-
-          <OverviewCard
-            icon={<Car size={20} />}
+          <HighlightCard
+            icon={<Car size={18} />}
             label="Parking"
-            value={
-              parking !== null &&
-              parking !== undefined
-                ? parking
-                : "--"
-            }
+            value={parking !== null && parking !== undefined ? parking : null}
           />
-
-          <OverviewCard
-            icon={<Maximize size={20} />}
+          <HighlightCard
+            icon={<Maximize size={18} />}
             label="Built-up Area"
             value={
               builtUpArea
-                ? `${safeText(
-                    builtUpArea
-                  )} ${
-                    safeText(
-                      commonDetails?.Area_Unit,
-                      "sq.ft"
-                    )
-                  }`
-                : "--"
+                ? `${safeText(builtUpArea)} ${safeText(
+                    commonDetails?.Area_Unit,
+                    "sq.ft"
+                  )}`
+                : null
             }
           />
-
-          <OverviewCard
-            icon={<Building2 size={20} />}
+          <HighlightCard
+            icon={<Building2 size={18} />}
             label="Floor"
-            value={
-              floor !== null &&
-              floor !== undefined
-                ? floor
-                : "--"
-            }
+            value={floor !== null && floor !== undefined ? floor : null}
           />
         </section>
 
         {/* =================================================
-            LOWER CONTENT
+            MAIN CONTENT & SIDEBAR GRID
         ================================================= */}
-
-        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
-          {/* =================================================
-              LEFT
-          ================================================= */}
-
-          <div className="min-w-0">
-            {/* =================================================
-                ABOUT
-            ================================================= */}
-
+        <div className="mt-6 grid gap-6 lg:grid-cols-12">
+          {/* LEFT 8 COLUMNS: MAIN SECTIONS */}
+          <div className="space-y-6 lg:col-span-8">
+            {/* 1. ABOUT THIS PROPERTY */}
             {description && (
-              <section className="rounded-3xl border border-[#D9D1C2] bg-[#F7F0E3] p-6 shadow-sm sm:p-7">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E5E8DE] text-[#174B3B]">
-                    <Home size={19} />
+              <section className="rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-6 shadow-xs">
+                <div className="flex items-center gap-3 border-b border-[var(--seller-border)] pb-4">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--seller-border)] bg-[var(--seller-bg-subtle)] text-[var(--seller-text)]">
+                    <Home size={16} />
                   </div>
-
                   <div>
-                    <h2 className="text-xl font-extrabold text-[#123F32]">
+                    <h2 className="text-base font-bold text-[var(--seller-text)]">
                       About This Property
                     </h2>
-
-                    <p className="text-xs text-[#718177]">
-                      Property description
+                    <p className="text-[11px] text-[var(--seller-text-muted)]">
+                      Detailed listing overview
                     </p>
                   </div>
                 </div>
 
-                <p className="mt-5 whitespace-pre-line text-sm leading-7 text-[#5F6F66]">
+                <div className="mt-4 text-xs sm:text-sm leading-relaxed text-[var(--seller-text-muted)] whitespace-pre-line">
                   {description}
-                </p>
+                </div>
               </section>
             )}
 
-            {/* =================================================
-                AMENITIES
-            ================================================= */}
-
-            {(amenityEntries.length > 0 ||
-              propertyFeatures.length > 0) && (
-              <section className="mt-5 rounded-3xl border border-[#D9D1C2] bg-[#F7F0E3] p-6 shadow-sm sm:p-7">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E5E8DE] text-[#174B3B]">
-                    <CheckCircle2 size={19} />
+            {/* 2. AMENITIES & FEATURES */}
+            {(amenityEntries.length > 0 || propertyFeatures.length > 0) && (
+              <section className="rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-6 shadow-xs">
+                <div className="flex items-center gap-3 border-b border-[var(--seller-border)] pb-4">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--seller-border)] bg-[var(--seller-bg-subtle)] text-[var(--seller-text)]">
+                    <CheckCircle2 size={16} />
                   </div>
-
                   <div>
-                    <h2 className="text-xl font-extrabold text-[#123F32]">
-                      Amenities
+                    <h2 className="text-base font-bold text-[var(--seller-text)]">
+                      Amenities & Features
                     </h2>
-
-                    <p className="text-xs text-[#718177]">
-                      Available property features
+                    <p className="text-[11px] text-[var(--seller-text-muted)]">
+                      Facilities available with this listing
                     </p>
                   </div>
                 </div>
 
-                {/* BOOLEAN AMENITIES */}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {amenityEntries.map(([key]) => (
+                    <div
+                      key={key}
+                      className="inline-flex items-center gap-2 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg-subtle)] px-3 py-2 text-xs font-medium text-[var(--seller-text)] transition hover:border-[var(--seller-border-focus)]"
+                    >
+                      {getAmenityIcon(key)}
+                      <span>{formatAmenityName(key)}</span>
+                    </div>
+                  ))}
 
-                {amenityEntries.length > 0 && (
-                  <div className="mt-5 flex flex-wrap gap-2.5">
-                    {amenityEntries.map(
-                      ([key]) => (
-                        <span
-                          key={key}
-                          className="inline-flex items-center gap-2 rounded-xl border border-[#B99852]/40 bg-white px-4 py-2.5 text-[13px] font-bold text-[#123F32] shadow-sm transition hover:border-[#B99852] hover:shadow-md"
-                        >
-                          {(() => {
-                            const k = key.toLowerCase();
-                            if (k.includes("park")) return <Car size={16} className="text-[#0E7658]" />;
-                            if (k.includes("lift") || k.includes("elev")) return <Building2 size={16} className="text-[#0E7658]" />;
-                            if (k.includes("secur")) return <Shield size={16} className="text-[#0E7658]" />;
-                            if (k.includes("cctv")) return <Cctv size={16} className="text-[#0E7658]" />;
-                            if (k.includes("power") || k.includes("backup")) return <Zap size={16} className="text-[#0E7658]" />;
-                            if (k.includes("gym") || k.includes("fit")) return <Dumbbell size={16} className="text-[#0E7658]" />;
-                            if (k.includes("swim") || k.includes("pool") || k.includes("water")) return <Waves size={16} className="text-[#0E7658]" />;
-                            if (k.includes("garden") || k.includes("tree")) return <TreePine size={16} className="text-[#0E7658]" />;
-                            return <CheckCircle2 size={16} className="text-[#0E7658]" />;
-                          })()}
-
-                          {formatAmenityName(
-                            key
-                          )}
-                        </span>
-                      )
-                    )}
-                  </div>
-                )}
-
-                {/* PROPERTY FEATURES */}
-
-                {propertyFeatures.length >
-                  0 && (
-                  <div className="mt-4 flex flex-wrap gap-2.5">
-                    {propertyFeatures.map(
-                      (feature, index) => {
-                        const featureTitle =
-                          safeText(
-                            feature?.Title ||
-                              feature?.title ||
-                              feature?.name,
-                            ""
-                          );
-
-                        if (!featureTitle) {
-                          return null;
-                        }
-
-                        return (
-                          <span
-                            key={
-                              feature?.id ||
-                              index
-                            }
-                            className="inline-flex items-center gap-2 rounded-xl border border-[#B99852]/40 bg-white px-4 py-2.5 text-[13px] font-bold text-[#123F32] shadow-sm transition hover:border-[#B99852] hover:shadow-md"
-                          >
-                            {(() => {
-                              const k = featureTitle.toLowerCase();
-                              if (k.includes("park")) return <Car size={16} className="text-[#0E7658]" />;
-                              if (k.includes("lift") || k.includes("elev")) return <Building2 size={16} className="text-[#0E7658]" />;
-                              if (k.includes("secur")) return <Shield size={16} className="text-[#0E7658]" />;
-                              if (k.includes("cctv")) return <Cctv size={16} className="text-[#0E7658]" />;
-                              if (k.includes("power") || k.includes("backup")) return <Zap size={16} className="text-[#0E7658]" />;
-                              if (k.includes("gym") || k.includes("fit")) return <Dumbbell size={16} className="text-[#0E7658]" />;
-                              if (k.includes("swim") || k.includes("pool") || k.includes("water")) return <Waves size={16} className="text-[#0E7658]" />;
-                              if (k.includes("garden") || k.includes("tree")) return <TreePine size={16} className="text-[#0E7658]" />;
-                              return <CheckCircle2 size={16} className="text-[#0E7658]" />;
-                            })()}
-
-                            {featureTitle}
-                          </span>
-                        );
-                      }
-                    )}
-                  </div>
-                )}
+                  {propertyFeatures.map((feat, idx) => {
+                    const featName = safeText(
+                      feat?.Title || feat?.title || feat?.name,
+                      ""
+                    );
+                    if (!featName) return null;
+                    return (
+                      <div
+                        key={feat?.id || idx}
+                        className="inline-flex items-center gap-2 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg-subtle)] px-3 py-2 text-xs font-medium text-[var(--seller-text)] transition hover:border-[var(--seller-border-focus)]"
+                      >
+                        {getAmenityIcon(featName)}
+                        <span>{featName}</span>
+                      </div>
+                    );
+                  })}
+                </div>
               </section>
             )}
 
-            {/* =================================================
-                PROPERTY INFORMATION
-            ================================================= */}
-
-            <section className="mt-5 rounded-3xl border border-[#D9D1C2] bg-[#F7F0E3] p-6 shadow-sm sm:p-7">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E5E8DE] text-[#174B3B]">
-                  <Building2 size={19} />
+            {/* 3. PROPERTY SPECIFICATIONS / INFORMATION */}
+            <section className="rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-6 shadow-xs">
+              <div className="flex items-center gap-3 border-b border-[var(--seller-border)] pb-4">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--seller-border)] bg-[var(--seller-bg-subtle)] text-[var(--seller-text)]">
+                  <Building2 size={16} />
                 </div>
-
                 <div>
-                  <h2 className="text-xl font-extrabold text-[#123F32]">
-                    Property Information
+                  <h2 className="text-base font-bold text-[var(--seller-text)]">
+                    Property Specifications
                   </h2>
-
-                  <p className="text-xs text-[#718177]">
-                    Details entered in your property listing
+                  <p className="text-[11px] text-[var(--seller-text-muted)]">
+                    Listing attributes and technical facts
                   </p>
                 </div>
               </div>
 
-              <div className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
-                <InfoRow
-                  label="Property Type"
-                  value={propertyType}
-                />
-
-                <InfoRow
-                  label="Purpose"
-                  value={purpose}
-                />
-
-                <InfoRow
-                  label="Category"
-                  value={
-                    category || "--"
-                  }
-                />
-
-                <InfoRow
-                  label="Status"
-                  value={status}
-                />
-
-                <InfoRow
-                  label="Area / Locality"
-                  value={
-                    area || "--"
-                  }
-                />
-
-                <InfoRow
-                  label="City"
-                  value={
-                    city || "--"
-                  }
-                />
-
-                <InfoRow
-                  label="State"
-                  value={
-                    state || "--"
-                  }
-                />
-
-                <InfoRow
-                  label="PIN Code"
-                  value={
-                    pinCode || "--"
-                  }
-                />
-
-                <InfoRow
-                  label="Address"
-                  value={
-                    address || "--"
-                  }
-                />
-
-                <InfoRow
+              <div className="mt-5 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
+                <SpecRow label="Property Type" value={propertyType} />
+                <SpecRow label="Purpose" value={purpose} />
+                <SpecRow label="Category" value={category || "--"} />
+                <SpecRow label="Status" value={status} />
+                <SpecRow label="Locality / Area" value={area || "--"} />
+                <SpecRow label="City" value={city || "--"} />
+                <SpecRow label="State" value={state || "--"} />
+                <SpecRow label="PIN Code" value={pinCode || "--"} />
+                <SpecRow label="Complete Address" value={address || "--"} />
+                <SpecRow
                   label="Property Age"
-                  value={
-                    commonDetails?.PropertyAge ||
-                    "--"
-                  }
+                  value={commonDetails?.PropertyAge || "--"}
                 />
-
-                <InfoRow
+                <SpecRow
                   label="Facing"
-                  value={
-                    commonDetails?.Facing ||
-                    "--"
-                  }
+                  value={commonDetails?.Facing || "--"}
                 />
-
-                <InfoRow
+                <SpecRow
                   label="Area Unit"
-                  value={
-                    commonDetails?.Area_Unit ||
-                    "--"
-                  }
+                  value={commonDetails?.Area_Unit || "sq.ft"}
                 />
               </div>
             </section>
 
-            {/* =================================================
-                LOCATION
-            ================================================= */}
-
-            <section className="mt-5 rounded-3xl border border-[#D9D1C2] bg-[#F7F0E3] p-6 shadow-sm sm:p-7">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E5E8DE] text-[#174B3B]">
-                  <MapPin size={19} />
+            {/* 4. LOCATION DETAILS */}
+            <section className="rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-6 shadow-xs">
+              <div className="flex items-center gap-3 border-b border-[var(--seller-border)] pb-4">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--seller-border)] bg-[var(--seller-bg-subtle)] text-[var(--seller-text)]">
+                  <MapPin size={16} />
                 </div>
-
                 <div>
-                  <h2 className="text-xl font-extrabold text-[#123F32]">
-                    Location
+                  <h2 className="text-base font-bold text-[var(--seller-text)]">
+                    Location & Map
                   </h2>
-
-                  <p className="text-xs text-[#718177]">
-                    Property location
+                  <p className="text-[11px] text-[var(--seller-text-muted)]">
+                    Verified property address & directions
                   </p>
                 </div>
               </div>
 
-              <p className="mt-5 text-sm leading-7 text-[#5F6F66]">
-                {locationText ||
-                  "Location information not available."}
-              </p>
+              <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="text-xs sm:text-sm text-[var(--seller-text-muted)] leading-relaxed">
+                  <p className="font-semibold text-[var(--seller-text)]">
+                    {locationText || "Address not provided"}
+                  </p>
+                  {pinCode && (
+                    <p className="mt-0.5 text-xs text-[var(--seller-text-subtle)]">
+                      PIN: {pinCode}
+                    </p>
+                  )}
+                </div>
 
-              {googleMapsUrl && (
-                <a
-                  href={googleMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-5 inline-flex items-center gap-2 rounded-xl border border-[#D9D1C2] bg-[#F3F0E8] px-4 py-2.5 text-sm font-bold text-[#174B3B] transition hover:border-[#B99852]"
-                >
-                  <MapPin size={16} />
-                  Open in Google Maps
-                </a>
-              )}
+                {googleMapsUrl && (
+                  <a
+                    href={googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg-subtle)] px-4 py-2.5 text-xs font-semibold text-[var(--seller-text)] transition hover:border-[var(--seller-border-focus)] hover:bg-[var(--seller-surface-hover)] shrink-0"
+                  >
+                    <MapPin size={14} />
+                    <span>Open in Google Maps</span>
+                    <ExternalLink size={12} className="text-[var(--seller-text-muted)]" />
+                  </a>
+                )}
+              </div>
             </section>
 
-            {/* =================================================
-                PROPERTY ACTIVITY
-            ================================================= */}
+            {/* 5. BUYER ACTIVITY WITH REAL BACKEND COUNTS */}
             <PropertyActivitySection propertyDocumentId={propertyId} />
-
           </div>
 
-          {/* =================================================
-              RIGHT OWNER PANEL
-          ================================================= */}
+          {/* RIGHT 4 COLUMNS: OWNER MANAGEMENT SIDEBAR */}
+          <aside className="space-y-5 lg:col-span-4 lg:sticky lg:top-24 lg:self-start">
+            {/* MANAGE PROPERTY CARD */}
+            <div className="rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-5 shadow-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--seller-text-muted)]">
+                  Management
+                </span>
+                <span
+                  className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-bold uppercase ${statusBadge.classes}`}
+                >
+                  <span className={`h-1.5 w-1.5 rounded-full ${statusBadge.dot}`} />
+                  {statusBadge.label}
+                </span>
+              </div>
 
-          <aside className="lg:sticky lg:top-6 lg:self-start">
-            <div className="rounded-3xl bg-[#174B3B] p-6 text-white shadow-[0_12px_35px_rgba(23,75,59,0.18)]">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#D7AE62]">
-                Owner Panel
+              <h3 className="mt-2 text-base font-bold text-[var(--seller-text)]">
+                Manage Listing
+              </h3>
+
+              <p className="mt-1 text-xs text-[var(--seller-text-muted)] leading-relaxed">
+                Update specifications, pricing, gallery photos or toggle listing visibility.
               </p>
 
-              <h2 className="mt-2 text-2xl font-extrabold">
-                Manage Property
-              </h2>
+              <div className="mt-5 space-y-2.5">
+                <Link
+                  href={`/owner/properties/${propertyId}/edit`}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--seller-primary)] px-4 py-2.5 text-xs font-bold text-[var(--seller-surface)] shadow-xs transition hover:opacity-90 active:scale-95"
+                >
+                  <Pencil size={13} />
+                  <span>Edit Property Details</span>
+                </Link>
 
-              <p className="mt-3 text-sm leading-6 text-white/70">
-                Review all the information you
-                entered and update your property
-                whenever required.
-              </p>
+                <Link
+                  href="/owner/properties"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg-subtle)] px-4 py-2 text-xs font-semibold text-[var(--seller-text)] transition hover:border-[var(--seller-border-focus)] hover:bg-[var(--seller-surface-hover)]"
+                >
+                  <ArrowLeft size={13} />
+                  <span>All My Properties</span>
+                </Link>
+              </div>
 
-              <Link
-                href={`/owner/properties/${propertyId}/edit`}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#D7AE62] px-4 py-3.5 text-sm font-extrabold text-[#123F32] transition hover:bg-[#C99D4C]"
-              >
-                <Pencil size={16} />
-                Edit Property
-              </Link>
-
-              <Link
-                href="/owner/properties"
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-white/20 px-4 py-3 text-sm font-bold text-white transition hover:bg-white/10"
-              >
-                <ArrowLeft size={16} />
-                All My Properties
-              </Link>
-
-              <div className="mt-6 border-t border-white/10 pt-5">
-                <p className="text-xs text-white/50">
+              <div className="mt-5 border-t border-[var(--seller-border)] pt-4">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--seller-text-subtle)]">
                   Property ID
                 </p>
-
-                <p className="mt-1 break-all text-xs font-semibold text-white/80">
-                  {safeText(
-                    propertyId,
-                    "--"
-                  )}
+                <p className="mt-1 font-mono text-xs text-[var(--seller-text-muted)] break-all select-all">
+                  {safeText(propertyId, "--")}
                 </p>
               </div>
             </div>
 
-            {/* =================================================
-                LISTING SUMMARY
-            ================================================= */}
+            {/* LISTING SUMMARY CARD */}
+            <div className="rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-5 shadow-xs">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--seller-text-muted)]">
+                Listing Overview
+              </span>
 
-            <div className="mt-4 rounded-3xl border border-[#D9D1C2] bg-[#F7F0E3] p-5 shadow-sm">
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#B99852]">
-                Listing Summary
-              </p>
-
-              <div className="mt-4 space-y-3">
-                <SummaryRow
-                  label="Purpose"
-                  value={purpose}
-                />
-
-                <SummaryRow
-                  label="Type"
-                  value={propertyType}
-                />
-
-                <SummaryRow
-                  label="Category"
-                  value={
-                    category || "--"
-                  }
-                />
-
-                <SummaryRow
-                  label="Status"
-                  value={status}
-                />
-
-                <SummaryRow
-                  label="City"
-                  value={
-                    city || "--"
-                  }
-                />
+              <div className="mt-3 space-y-2.5">
+                <SidebarSummaryRow label="Purpose" value={purpose} />
+                <SidebarSummaryRow label="Type" value={propertyType} />
+                <SidebarSummaryRow label="Category" value={category || "--"} />
+                <SidebarSummaryRow label="City" value={city || "--"} />
+                <SidebarSummaryRow label="Status" value={status} />
               </div>
             </div>
 
-            {/* =================================================
-                PRICE SUMMARY
-            ================================================= */}
-
-            <div className="mt-4 rounded-3xl border border-[#D9D1C2] bg-[#F7F0E3] p-5 shadow-sm">
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#B99852]">
+            {/* PROPERTY VALUE CARD */}
+            <div className="rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-5 shadow-xs">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--seller-text-muted)]">
                 Property Value
-              </p>
+              </span>
 
-              <p className="mt-2 text-2xl font-extrabold text-[#174B3B]">
+              <p className="mt-2 text-2xl font-extrabold tracking-tight text-[var(--seller-text)]">
                 {price}
               </p>
 
               {listedDate && (
-                <div className="mt-4 flex items-center gap-2 text-xs text-[#718177]">
-                  <CalendarDays size={14} />
-                  Listed {listedDate}
+                <div className="mt-3 flex items-center gap-1.5 text-xs text-[var(--seller-text-muted)]">
+                  <CalendarDays size={13} className="text-[var(--seller-text-subtle)]" />
+                  <span>Listed on {listedDate}</span>
                 </div>
               )}
             </div>
@@ -1628,30 +1202,33 @@ export default function OwnerPropertyDetailsPage({
         </div>
       </main>
 
-      {/* =================================================
-          DEACTIVATE MODAL
-      ================================================= */}
+      {/* DEACTIVATE MODAL */}
       {showDeactivateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="text-xl font-bold text-gray-900">Deactivate Property</h3>
-            <p className="mt-2 text-sm text-gray-600">
-              Are you sure you want to deactivate <strong>{title}</strong>? The property will be
-              set to <strong>INACTIVE</strong> and will no longer be visible to buyers. Your property
-              data, images, and ownership will be fully preserved.
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-6 shadow-xl">
+            <h3 className="text-lg font-bold text-[var(--seller-text)]">
+              Deactivate Property
+            </h3>
+            <p className="mt-2 text-xs leading-relaxed text-[var(--seller-text-muted)]">
+              Are you sure you want to deactivate <strong>{title}</strong>? The
+              property will be set to <strong>INACTIVE</strong> and will no
+              longer be visible to buyers. Your property data, images, and
+              ownership will remain safely preserved.
             </p>
-            <div className="mt-6 flex justify-end gap-3">
+            <div className="mt-6 flex justify-end gap-2.5">
               <button
+                type="button"
                 disabled={isDeactivating}
                 onClick={() => setShowDeactivateModal(false)}
-                className="rounded-xl px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-100 transition"
+                className="rounded-xl border border-[var(--seller-border)] px-4 py-2 text-xs font-semibold text-[var(--seller-text)] hover:bg-[var(--seller-surface-hover)] transition"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 disabled={isDeactivating}
                 onClick={handleDeactivate}
-                className="flex items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-red-700 disabled:opacity-60"
+                className="flex items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-red-700 disabled:opacity-60"
               >
                 {isDeactivating ? "Deactivating..." : "Deactivate Property"}
               </button>
@@ -1660,62 +1237,30 @@ export default function OwnerPropertyDetailsPage({
         </div>
       )}
 
-      {/* =================================================
-          FOOTER
-      ================================================= */}
-
-      <Footer
-        data={
-          dashboard?.Footer ||
-          dashboard?.footer ||
-          null
-        }
-      />
+      {/* FOOTER */}
+      <Footer data={dashboard?.Footer || dashboard?.footer || null} />
     </div>
   );
 }
 
 /* =====================================================
-   OVERVIEW CARD
+   HIGHLIGHT CARD (Bedrooms, Bathrooms, Area, etc.)
 ===================================================== */
 
-function OverviewCard({
-  icon,
-  label,
-  value,
-}) {
-  return (
-    <div className="rounded-2xl border border-[#D9D1C2] bg-[#F7F0E3] p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#B99852]">
-      <div className="flex items-center gap-2 text-[#174B3B]">
-        {icon}
+function HighlightCard({ icon, label, value }) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
 
-        <span className="text-lg font-extrabold text-[#123F32]">
-          {safeText(value, "--")}
+  return (
+    <div className="flex flex-col justify-between rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-3.5 shadow-xs transition hover:border-[var(--seller-border-focus)]">
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] font-medium text-[var(--seller-text-muted)]">
+          {label}
         </span>
+        <div className="text-[var(--seller-text-muted)]">{icon}</div>
       </div>
-
-      <p className="mt-2 text-[11px] font-semibold text-[#718177]">
-        {label}
-      </p>
-    </div>
-  );
-}
-
-/* =====================================================
-   INFO ROW
-===================================================== */
-
-function InfoRow({
-  label,
-  value,
-}) {
-  return (
-    <div className="border-b border-[#E2DBCE] pb-4">
-      <p className="text-[10px] font-bold uppercase tracking-wider text-[#8A968D]">
-        {label}
-      </p>
-
-      <p className="mt-1 text-sm font-bold text-[#123F32]">
+      <p className="mt-2 text-base font-bold tracking-tight text-[var(--seller-text)]">
         {safeText(value, "--")}
       </p>
     </div>
@@ -1723,22 +1268,31 @@ function InfoRow({
 }
 
 /* =====================================================
-   SUMMARY ROW
+   SPECIFICATION ROW (2-Column Key/Value)
 ===================================================== */
 
-function SummaryRow({
-  label,
-  value,
-}) {
+function SpecRow({ label, value }) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-[#E2DBCE] pb-3 last:border-0 last:pb-0">
-      <span className="text-xs font-semibold text-[#718177]">
+    <div className="flex items-center justify-between border-b border-[var(--seller-border)] py-2.5 text-xs">
+      <span className="font-medium text-[var(--seller-text-muted)]">
         {label}
       </span>
-
-      <span className="text-right text-xs font-extrabold text-[#174B3B]">
+      <span className="font-semibold text-[var(--seller-text)] text-right">
         {safeText(value, "--")}
       </span>
     </div>
   );
-}
+}
+
+/* =====================================================
+   SIDEBAR SUMMARY ROW
+===================================================== */
+
+function SidebarSummaryRow({ label, value }) {
+  return (
+    <div className="flex items-center justify-between border-b border-[var(--seller-border)] pb-2 text-xs last:border-0 last:pb-0">
+      <span className="text-[var(--seller-text-muted)]">{label}</span>
+      <span className="font-semibold text-[var(--seller-text)]">{safeText(value, "--")}</span>
+    </div>
+  );
+}

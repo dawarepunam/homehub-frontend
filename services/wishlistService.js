@@ -357,13 +357,15 @@ export async function getUserWishlist() {
      * Wishlist is a component.
      * properties is a many-way relation to Property.
      *
-     * We populate the component first,
-     * then populate the properties relation.
+     * Use explicit field selectors to avoid Strapi v5 CoverImage validation error.
+     * Only fetch id and documentId of each wishlist property.
      */
 
     const query =
         `filters[users_permissions_user][id][$eq]=${user.id}` +
-        `&populate[Wishlist][populate][properties]=true`;
+        `&populate[Wishlist][populate][properties][fields][0]=id` +
+        `&populate[Wishlist][populate][properties][fields][1]=documentId` +
+        `&fields[0]=id&fields[1]=documentId`;
 
     const response = await fetch(`${API_URL}/user-profiles?${query}`, {
         method: "GET",
@@ -426,25 +428,44 @@ export async function addToWishlist(propertyDocumentId) {
         throw new Error("Property documentId is required.");
     }
 
-    const profile = await getUserWishlist();
-
-    if (!profile ? .documentId) {
-        throw new Error("User profile not found.");
+    const user = await getLoggedInUser();
+    if (!user?.id) {
+        throw new Error("Please login to save properties.");
     }
 
-    const wishlist = profile ? .Wishlist;
+    let profile = await getUserWishlist();
 
-    if (!wishlist) {
-        throw new Error("Wishlist not found.");
+    // AUTO-CREATE user-profile if it doesn't exist yet
+    if (!profile?.documentId) {
+        const createRes = await fetch(`${API_URL}/user-profiles`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...getAuthHeaders(),
+            },
+            body: JSON.stringify({
+                data: {
+                    users_permissions_user: user.id,
+                    Wishlist: {
+                        properties: {
+                            set: [propertyDocumentId],
+                        },
+                    },
+                },
+            }),
+        });
+        await parseResponse(createRes);
+        return true;
     }
 
-    const currentProperties = wishlist ? .properties || [];
+    const wishlist = profile?.Wishlist;
+    const currentProperties = wishlist?.properties || [];
 
     const existingIds = currentProperties
-        .map((property) => property ? .documentId)
+        .map((property) => property?.documentId)
         .filter(Boolean);
 
-    // Already exists
+    // Already exists in wishlist
     if (existingIds.some((id) => String(id) === String(propertyDocumentId))) {
         return true;
     }
@@ -493,20 +514,21 @@ export async function removeFromWishlist(propertyDocumentId) {
 
     const profile = await getUserWishlist();
 
-    if (!profile ? .documentId) {
-        throw new Error("User profile not found.");
+    // If no profile or no wishlist, there's nothing to remove
+    if (!profile?.documentId) {
+        return true;
     }
 
-    const wishlist = profile ? .Wishlist;
+    const wishlist = profile?.Wishlist;
 
     if (!wishlist) {
-        throw new Error("Wishlist not found.");
+        return true;
     }
 
-    const currentProperties = wishlist ? .properties || [];
+    const currentProperties = wishlist?.properties || [];
 
     const remainingIds = currentProperties
-        .map((property) => property ? .documentId)
+        .map((property) => property?.documentId)
         .filter((id) => id && String(id) !== String(propertyDocumentId));
 
     const response = await fetch(

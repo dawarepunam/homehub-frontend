@@ -10,20 +10,20 @@ export default function PropertySection({ properties = [] }) {
   if (!Array.isArray(properties) || properties.length === 0) {
     return (
       <section className="mt-10 w-full">
-        <div className="flex min-h-[300px] flex-col items-center justify-center rounded-3xl border border-[#D9D1C2] bg-[#F7F0E3] px-6 py-12 text-center shadow-[0_10px_30px_rgba(30,61,48,0.06)]">
-          <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E5E8DE]">
-            <span className="text-2xl">🏠</span>
+        <div className="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] px-6 py-12 text-center shadow-[var(--seller-shadow)]">
+          <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--seller-gold-subtle)] text-2xl text-[var(--seller-gold)]">
+            🏠
           </div>
-          <h2 className="text-xl font-extrabold text-[#123F32]">
+          <h2 className="text-xl font-bold text-[var(--seller-text)]">
             No Properties Found
           </h2>
-          <p className="mt-2 max-w-md text-sm leading-6 text-[#718177]">
+          <p className="mt-2 max-w-md text-sm leading-6 text-[var(--seller-text-muted)]">
             You have not added any properties yet. Once you add a
             property, it will appear here automatically.
           </p>
           <Link
-            href="/owner/properties/add"
-            className="mt-6 inline-flex items-center rounded-xl bg-[#174B3B] px-5 py-3 text-sm font-bold text-[#F7F0E3] transition hover:bg-[#123F32]"
+            href="/add-property"
+            className="mt-6 inline-flex items-center rounded-xl bg-[var(--seller-primary)] px-6 py-3 text-sm font-bold text-[var(--seller-bg)] shadow-sm transition hover:opacity-90"
           >
             + Add Property
           </Link>
@@ -38,14 +38,14 @@ export default function PropertySection({ properties = [] }) {
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-extrabold text-[#123F32]">
+            <h2 className="text-xl font-bold tracking-tight text-[var(--seller-text)]">
               Your Properties
             </h2>
-            <span className="rounded-full bg-[#E5E8DE] px-3 py-1 text-xs font-bold text-[#416353]">
+            <span className="rounded-full border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 py-0.5 text-xs font-bold text-[var(--seller-text-muted)]">
               {properties.length}
             </span>
           </div>
-          <p className="mt-1 text-sm text-[#718177]">
+          <p className="mt-1 text-sm text-[var(--seller-text-muted)]">
             Manage properties listed by you
           </p>
         </div>
@@ -55,7 +55,7 @@ export default function PropertySection({ properties = [] }) {
           <div className="hidden sm:block">
             <Link
               href="/owner/properties"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#D7AE62] px-6 py-2.5 text-sm font-extrabold text-[#123F32] shadow-sm transition hover:bg-[#C99D4C]"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] px-5 py-2.5 text-sm font-bold text-[var(--seller-text)] shadow-xs transition hover:bg-[var(--seller-surface-hover)]"
             >
               View All Properties
               <ArrowRight size={16} />

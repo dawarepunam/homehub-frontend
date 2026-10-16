@@ -6,6 +6,17 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "../../Footer";
 import {
+  Search,
+  Tag,
+  MapPin,
+  ArrowUpDown,
+  ChevronDown,
+  X,
+  MessageSquare,
+  ArrowLeft,
+  Filter,
+} from "lucide-react";
+import {
   getOwnerEnquiries,
   updateOwnerEnquiryFields,
 } from "@/services/enquiry";
@@ -205,6 +216,14 @@ export default function ContactedPage() {
   // Metric 1: Total Contacted
   const countTotalContacted = contactedBucket.length;
 
+  // New enquiries count for tabs
+  const countNewEnquiries = useMemo(() => {
+    return allEnquiries.filter((item) => {
+      const s = getStatus(item).toLowerCase();
+      return s === "new" || s === "pending";
+    }).length;
+  }, [allEnquiries]);
+
   // Metric 2: Follow-ups Due
   const countFollowUpsDue = useMemo(() => {
     return allEnquiries.filter((item) => {
@@ -217,7 +236,7 @@ export default function ContactedPage() {
   const countSiteVisitPending = useMemo(() => {
     return allEnquiries.filter((item) => {
       const s = getStatus(item).toLowerCase();
-      return s === "site visit pending";
+      return s === "site visit pending" || s === "site visit scheduled" || s === "site visit";
     }).length;
   }, [allEnquiries]);
 
@@ -608,8 +627,7 @@ export default function ContactedPage() {
     <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
       <Header />
 
-      <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
 
           {/* SUCCESS TOAST NOTIFICATION */}
           {successMessage && (
@@ -629,177 +647,124 @@ export default function ContactedPage() {
             </div>
           )}
 
-          {/* BREADCRUMB & PAGE HEADER */}
-          <div className="mb-8">
-            <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#c99838] uppercase tracking-wider mb-1">
-              <Link href="/owner/enquiries" className="hover:underline">
-                Enquiries
-              </Link>
-              <span>›</span>
-              <span>Contacted Enquiries</span>
+          {/* Navigation Breadcrumb / Back Link */}
+          <div className="mb-6 flex items-center justify-between">
+            <Link
+              href="/owner"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+            >
+              <ArrowLeft size={14} />
+              Back to Dashboard
+            </Link>
+          </div>
+
+          {/* =================================================
+              1. HORIZONTALLY CENTERED HEADING & DESCRIPTION
+          ================================================= */}
+          <header className="mx-auto mb-8 max-w-2xl text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3.5 py-1 text-[11px] font-semibold text-[var(--seller-text-muted)] shadow-xs">
+              <MessageSquare size={12} strokeWidth={2} />
+              <span>Seller Portal</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#064d3b]">
-              Contacted Enquiries
+            <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--seller-text)] sm:text-4xl lg:text-[40px]">
+              Enquiries
             </h1>
 
-            <p className="text-sm sm:text-base text-gray-600 mt-1">
+            <p className="mt-2.5 text-sm text-[var(--seller-text-muted)] sm:text-base sm:leading-relaxed">
               Enquiries you have already contacted and are following up on.
             </p>
+          </header>
+
+          {/* Tab switcher: New, Contacted, Site Visits, Closed */}
+          <div className="mb-6 flex justify-center overflow-x-auto pb-1">
+            <div className="inline-flex rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-1 shadow-xs">
+              {[
+                { label: `New (${countNewEnquiries})`, href: "/owner/enquiries/new", active: false },
+                { label: `Contacted (${countTotalContacted})`, href: "/owner/enquiries/contacted", active: true },
+                { label: `Closed`, href: "/owner/enquiries/closed", active: false },
+              ].map((tab) => (
+                <Link
+                  key={tab.label}
+                  href={tab.href}
+                  className={`rounded-lg px-4 py-2 text-xs font-bold transition-all whitespace-nowrap ${
+                    tab.active
+                      ? "bg-[var(--seller-primary)] text-[var(--seller-bg)] shadow-xs"
+                      : "text-[var(--seller-text-muted)] hover:text-[var(--seller-text)]"
+                  }`}
+                >
+                  {tab.label}
+                </Link>
+              ))}
+            </div>
           </div>
 
-          {/* 1. TOP SUMMARY CARDS — each card is a same-page filter button */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5 mb-8">
-
-            {/* Card 1: Total Contacted — default/all filter */}
-            <button
-              type="button"
-              onClick={() => setCardFilter("all")}
-              className={`bg-white rounded-2xl border-2 p-5 shadow-sm relative overflow-hidden flex flex-col justify-between text-left w-full transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#064d3b]/50 ${
-                cardFilter === "all"
-                  ? "border-[#064d3b] ring-2 ring-[#064d3b]/10 bg-[#f0f7f4]"
-                  : "border-[#064d3b] hover:shadow-md hover:bg-[#f6fbf8]"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-[#e6f2ed] text-[#064d3b] flex items-center justify-center text-lg font-bold">
-                  📞
-                </div>
-                <span className="text-[10px] font-bold text-[#064d3b] bg-[#e6f2ed] px-2 py-0.5 rounded-full uppercase tracking-wider">
-                  {cardFilter === "all" ? "Active" : "All"}
-                </span>
-              </div>
-              <div className="mt-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-500">
-                  Total Contacted
-                </p>
-                <h3 className="text-2xl sm:text-3xl font-black text-[#064d3b] mt-0.5">
-                  {countTotalContacted}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  {cardFilter === "all" ? "Showing all →" : "All contacted enquiries"}
-                </p>
-              </div>
-            </button>
-
-            {/* Card 2: Follow-ups Due */}
-            <button
-              type="button"
-              onClick={() => setCardFilter(cardFilter === "follow-ups" ? "all" : "follow-ups")}
-              className={`bg-white rounded-2xl border p-5 shadow-sm flex flex-col justify-between text-left w-full transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c99838]/50 ${
-                cardFilter === "follow-ups"
-                  ? "border-[#c99838] ring-2 ring-[#c99838]/20 bg-[#fffdf6]"
-                  : "border-gray-200 hover:border-[#c99838] hover:shadow-md"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-[#fef6e7] text-[#c99838] flex items-center justify-center text-lg font-bold">
-                  ⏰
-                </div>
-              </div>
-              <div className="mt-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-500">
-                  Follow-ups Due
-                </p>
-                <h3 className="text-2xl sm:text-3xl font-black text-gray-800 mt-0.5">
-                  {countFollowUpsDue}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  {cardFilter === "follow-ups" ? "Showing due ↑" : "Need your follow-up"}
-                </p>
-              </div>
-            </button>
-
-            {/* Card 3: Site Visit Pending */}
-            <button
-              type="button"
-              onClick={() => setCardFilter(cardFilter === "site-visit" ? "all" : "site-visit")}
-              className={`bg-white rounded-2xl border p-5 shadow-sm flex flex-col justify-between text-left w-full transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-300/50 ${
-                cardFilter === "site-visit"
-                  ? "border-purple-400 ring-2 ring-purple-100 bg-purple-50/30"
-                  : "border-gray-200 hover:border-purple-300 hover:shadow-md"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg font-bold">
-                  📅
-                </div>
-              </div>
-              <div className="mt-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-500">
-                  Site Visit Pending
-                </p>
-                <h3 className="text-2xl sm:text-3xl font-black text-gray-800 mt-0.5">
-                  {countSiteVisitPending}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  {cardFilter === "site-visit" ? "Showing pending ↑" : "Visits to be scheduled"}
-                </p>
-              </div>
-            </button>
-
-            {/* Card 4: Converted */}
-            <button
-              type="button"
-              onClick={() => setCardFilter(cardFilter === "converted" ? "all" : "converted")}
-              className={`bg-white rounded-2xl border p-5 shadow-sm flex flex-col justify-between text-left w-full transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-300/50 ${
-                cardFilter === "converted"
-                  ? "border-emerald-400 ring-2 ring-emerald-100 bg-emerald-50/30"
-                  : "border-gray-200 hover:border-emerald-300 hover:shadow-md"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg font-bold">
-                  ✅
-                </div>
-              </div>
-              <div className="mt-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-500">
-                  Converted
-                </p>
-                <h3 className="text-2xl sm:text-3xl font-black text-gray-800 mt-0.5">
-                  {countConverted}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  {cardFilter === "converted" ? "Showing converted ↑" : "Successfully converted"}
-                </p>
-              </div>
-            </button>
-
+          {/* Sub-filter chips for Contacted */}
+          <div className="mb-6 flex justify-center overflow-x-auto pb-1">
+            <div className="inline-flex gap-2">
+              {[
+                { id: "all", label: `All Contacted (${countTotalContacted})` },
+                { id: "follow-ups", label: `Follow-ups Due (${countFollowUpsDue})` },
+                { id: "site-visit", label: `Site Visit Pending (${countSiteVisitPending})` },
+                { id: "converted", label: `Converted (${countConverted})` },
+              ].map((chip) => (
+                <button
+                  key={chip.id}
+                  type="button"
+                  onClick={() => setCardFilter(chip.id)}
+                  className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition border ${
+                    cardFilter === chip.id
+                      ? "bg-[var(--seller-primary)] text-[var(--seller-bg)] border-[var(--seller-primary)]"
+                      : "bg-[var(--seller-surface)] text-[var(--seller-text-muted)] border-[var(--seller-border)] hover:border-[var(--seller-border-focus)] hover:text-[var(--seller-text)]"
+                  }`}
+                >
+                  {chip.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* 2. SEARCH & FILTER BAR */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 mb-6 shadow-sm">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+          {/* =================================================
+              2. CLEAN, COMPACT ENQUIRIES TOOLBAR
+          ================================================= */}
+          <section className="mb-6 rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-3 sm:p-4 shadow-[var(--seller-shadow)]">
+            <div className="flex flex-1 flex-wrap items-center justify-between gap-2.5">
 
               {/* Search */}
-              <div className="relative lg:col-span-2">
+              <div className="relative min-w-[200px] flex-1 sm:min-w-[260px]">
+                <Search
+                  size={15}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search by name, phone, property..."
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-[#064d3b] focus:bg-white transition"
+                  className="h-10 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-9 pr-8 text-xs font-medium text-[var(--seller-text)] outline-none transition placeholder:text-[var(--seller-text-subtle)] focus:border-[var(--seller-border-focus)]"
                 />
-                <span className="absolute left-3 top-2.5 text-gray-400 text-sm">
-                  🔍
-                </span>
                 {search && (
                   <button
+                    type="button"
                     onClick={() => setSearch("")}
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 text-xs bg-gray-200 rounded-full w-4 h-4 flex items-center justify-center"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1 text-[var(--seller-text-subtle)] hover:text-[var(--seller-text)]"
+                    aria-label="Clear search"
                   >
-                    ✕
+                    <X size={13} />
                   </button>
                 )}
               </div>
 
               {/* Property filter */}
-              <div>
+              <div className="relative w-auto min-w-[130px]">
+                <Tag
+                  size={13}
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
                 <select
                   value={propertyFilter}
                   onChange={(e) => setPropertyFilter(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 outline-none focus:border-[#064d3b] focus:bg-white transition cursor-pointer"
+                  className="h-10 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-8 pr-7 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer"
                 >
                   {propertyOptions.map((opt) => (
                     <option key={opt} value={opt}>
@@ -807,14 +772,22 @@ export default function ContactedPage() {
                     </option>
                   ))}
                 </select>
+                <ChevronDown
+                  size={13}
+                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
               </div>
 
               {/* Purpose filter */}
-              <div>
+              <div className="relative w-auto min-w-[120px]">
+                <Filter
+                  size={13}
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
                 <select
                   value={purposeFilter}
                   onChange={(e) => setPurposeFilter(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 outline-none focus:border-[#064d3b] focus:bg-white transition cursor-pointer"
+                  className="h-10 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-8 pr-7 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer"
                 >
                   {purposeOptions.map((opt) => (
                     <option key={opt} value={opt}>
@@ -822,14 +795,22 @@ export default function ContactedPage() {
                     </option>
                   ))}
                 </select>
+                <ChevronDown
+                  size={13}
+                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
               </div>
 
               {/* Status filter */}
-              <div>
+              <div className="relative w-auto min-w-[120px]">
+                <Tag
+                  size={13}
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 outline-none focus:border-[#064d3b] focus:bg-white transition cursor-pointer"
+                  className="h-10 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-8 pr-7 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer"
                 >
                   {statusOptions.map((opt) => (
                     <option key={opt} value={opt}>
@@ -837,24 +818,36 @@ export default function ContactedPage() {
                     </option>
                   ))}
                 </select>
+                <ChevronDown
+                  size={13}
+                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
               </div>
 
               {/* Sort dropdown */}
-              <div>
+              <div className="relative w-auto min-w-[140px]">
+                <ArrowUpDown
+                  size={13}
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 outline-none focus:border-[#064d3b] focus:bg-white transition cursor-pointer font-medium"
+                  className="h-10 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-8 pr-7 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer"
                 >
                   <option value="Latest Contacted">Latest Contacted</option>
                   <option value="Follow-up Date">Follow-up Date</option>
                   <option value="Property">Property</option>
                   <option value="Name">Name</option>
                 </select>
+                <ChevronDown
+                  size={13}
+                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
               </div>
 
             </div>
-          </div>
+          </section>
 
           {/* 3. RESULTS COUNTER */}
           <div className="flex items-center justify-between mb-4 px-1">
@@ -1155,7 +1148,6 @@ export default function ContactedPage() {
             )}
           </div>
 
-        </div>
       </main>
 
       {/* =====================================================

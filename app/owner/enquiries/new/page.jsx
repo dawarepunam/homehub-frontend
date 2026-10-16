@@ -6,6 +6,16 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "../../Footer";
 import {
+  Search,
+  Tag,
+  MapPin,
+  ArrowUpDown,
+  ChevronDown,
+  X,
+  MessageSquare,
+  ArrowLeft,
+} from "lucide-react";
+import {
   getOwnerEnquiries,
   markOwnerEnquiryAsContacted,
 } from "@/services/enquiry";
@@ -283,29 +293,29 @@ export default function NewEnquiriesPage() {
   // =====================================================
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
+      <div className="seller-page-wrapper flex flex-col font-sans">
         <Header />
 
         <main className="flex-1">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-            <p className="text-xs sm:text-sm font-semibold text-[#c99838] uppercase tracking-wider">
-              Owner Portal
+            <p className="text-xs sm:text-sm font-semibold text-[#D7AE62] uppercase tracking-wider">
+              Seller Portal
             </p>
 
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#064d3b] mt-1">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--seller-text)] mt-1">
               New Enquiries
             </h1>
 
-            <p className="text-sm sm:text-base text-gray-600 mt-1">
+            <p className="text-sm sm:text-base text-[var(--seller-text-muted)] mt-1">
               Respond to enquiries received for your properties.
             </p>
 
-            <div className="mt-8 bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm">
-              <div className="inline-block w-10 h-10 border-4 border-[#064d3b] border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-[#064d3b] font-semibold mt-4">
+            <div className="mt-8 rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-12 text-center shadow-sm">
+              <div className="inline-block w-10 h-10 border-4 border-[#0D3326] border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-[var(--seller-text)] font-semibold mt-4">
                 Loading enquiries...
               </p>
-              <p className="text-gray-500 text-sm mt-1">
+              <p className="text-[var(--seller-text-muted)] text-sm mt-1">
                 Fetching real-time property enquiries from Strapi.
               </p>
             </div>
@@ -322,24 +332,24 @@ export default function NewEnquiriesPage() {
   // =====================================================
   if (error) {
     return (
-      <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
+      <div className="seller-page-wrapper flex flex-col font-sans">
         <Header />
 
         <main className="flex-1">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-            <p className="text-xs sm:text-sm font-semibold text-[#c99838] uppercase tracking-wider">
-              Owner Portal
+            <p className="text-xs sm:text-sm font-semibold text-[#D7AE62] uppercase tracking-wider">
+              Seller Portal
             </p>
 
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#064d3b] mt-1">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--seller-text)] mt-1">
               New Enquiries
             </h1>
 
-            <p className="text-sm sm:text-base text-gray-600 mt-1">
+            <p className="text-sm sm:text-base text-[var(--seller-text-muted)] mt-1">
               Respond to enquiries received for your properties.
             </p>
 
-            <div className="mt-8 bg-white rounded-2xl border border-red-200 p-10 text-center shadow-sm">
+            <div className="mt-8 rounded-2xl border border-red-200 bg-[var(--seller-surface)] p-10 text-center shadow-sm">
               <div className="w-14 h-14 mx-auto rounded-full bg-red-50 text-red-500 flex items-center justify-center text-2xl font-bold mb-3">
                 ⚠️
               </div>
@@ -348,7 +358,7 @@ export default function NewEnquiriesPage() {
                 Unable to load enquiries
               </h2>
 
-              <p className="text-gray-600 mt-2 max-w-md mx-auto text-sm sm:text-base">
+              <p className="text-[var(--seller-text-muted)] mt-2 max-w-md mx-auto text-sm sm:text-base">
                 Something went wrong while loading your enquiries. Please check your connection or Strapi server status.
               </p>
 
@@ -359,7 +369,7 @@ export default function NewEnquiriesPage() {
               <button
                 type="button"
                 onClick={loadEnquiries}
-                className="mt-6 px-6 py-3 rounded-xl bg-[#064d3b] text-white font-semibold hover:bg-[#053d30] transition shadow"
+                className="mt-6 px-6 py-3 rounded-xl bg-[#0D3326] text-[#F6F0E5] font-semibold hover:bg-[#134534] transition shadow"
               >
                 Try Again
               </button>
@@ -376,11 +386,10 @@ export default function NewEnquiriesPage() {
   // MAIN NEW ENQUIRIES PAGE UI
   // =====================================================
   return (
-    <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
+    <div className="seller-page-wrapper flex flex-col font-sans">
       <Header />
 
-      <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
 
           {/* SUCCESS TOAST NOTIFICATION */}
           {successMessage && (
@@ -400,175 +409,99 @@ export default function NewEnquiriesPage() {
             </div>
           )}
 
-          {/* PAGE HEADER */}
-          <div className="mb-8">
-            <button onClick={() => router.push("/owner")} className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-[#064d3b] transition">
-              <span className="text-xl leading-none">←</span> Back to Dashboard
-            </button>
-            <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#c99838] uppercase tracking-wider mb-1">
-              <Link href="/owner" className="hover:underline">Dashboard</Link>
-              <span>›</span>
-              <Link href="/owner/enquiries" className="hover:underline">Enquiries</Link>
-              <span>›</span>
-              <span>New</span>
+          {/* Navigation Breadcrumb / Back Link */}
+          <div className="mb-6 flex items-center justify-between">
+            <Link
+              href="/owner"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+            >
+              <ArrowLeft size={14} />
+              Back to Dashboard
+            </Link>
+          </div>
+
+          {/* =================================================
+              1. HORIZONTALLY CENTERED HEADING & DESCRIPTION
+          ================================================= */}
+          <header className="mx-auto mb-8 max-w-2xl text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3.5 py-1 text-[11px] font-semibold text-[var(--seller-text-muted)] shadow-xs">
+              <MessageSquare size={12} strokeWidth={2} />
+              <span>Seller Portal</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#064d3b] mt-1">
-              New Enquiries
+            <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--seller-text)] sm:text-4xl lg:text-[40px]">
+              Enquiries
             </h1>
 
-            <p className="text-sm sm:text-base text-gray-600 mt-1">
-              Respond to enquiries received for your properties.
+            <p className="mt-2.5 text-sm text-[var(--seller-text-muted)] sm:text-base sm:leading-relaxed">
+              Respond to enquiries received for your properties and track buyer interest.
             </p>
+          </header>
+
+          {/* Tab switcher: New, Contacted, Site Visits, Closed */}
+          <div className="mb-6 flex justify-center overflow-x-auto pb-1">
+            <div className="inline-flex rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-1 shadow-xs">
+              {[
+                { label: `New (${countNew})`, href: "/owner/enquiries/new", active: true },
+                { label: `Contacted (${countContacted})`, href: "/owner/enquiries/contacted", active: false },
+                { label: `Closed (${countClosed})`, href: "/owner/enquiries/closed", active: false },
+              ].map((tab) => (
+                <Link
+                  key={tab.label}
+                  href={tab.href}
+                  className={`rounded-lg px-4 py-2 text-xs font-bold transition-all whitespace-nowrap ${
+                    tab.active
+                      ? "bg-[var(--seller-primary)] text-[var(--seller-bg)] shadow-xs"
+                      : "text-[var(--seller-text-muted)] hover:text-[var(--seller-text)]"
+                  }`}
+                >
+                  {tab.label}
+                </Link>
+              ))}
+            </div>
           </div>
 
-          {/* 1. SUMMARY CARDS (DYNAMIC API COUNTS) */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5 mb-8">
-
-            {/* Card 1: New Enquiries — same-page, resets all filters to show all new enquiries */}
-            <button
-              type="button"
-              onClick={() => {
-                // Same page — just reset all filters to show the full new enquiries list
-                setSearch("");
-                setPropertyFilter("All Properties");
-                setCityFilter("All Cities");
-              }}
-              className="bg-white rounded-2xl border-2 border-[#064d3b] p-5 shadow-sm relative overflow-hidden flex flex-col justify-between text-left w-full cursor-pointer hover:shadow-md hover:bg-[#f6fbf8] transition focus:outline-none focus:ring-2 focus:ring-[#064d3b]/50"
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-[#e6f2ed] text-[#064d3b] flex items-center justify-center text-lg font-bold">
-                  💬
-                </div>
-                <span className="text-xs font-bold text-[#064d3b] bg-[#e6f2ed] px-2.5 py-1 rounded-full uppercase tracking-wider">
-                  Active
-                </span>
-              </div>
-              <div className="mt-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-500">
-                  New Enquiries
-                </p>
-                <h3 className="text-2xl sm:text-3xl font-black text-[#064d3b] mt-0.5">
-                  {countNew}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  Unresponded enquiries
-                </p>
-              </div>
-            </button>
-
-            {/* Card 2: Contacted — navigates to contacted section */}
-            <Link
-              href="/owner/enquiries/contacted"
-              className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:border-[#c99838] transition flex flex-col justify-between cursor-pointer hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#c99838]/50 rounded-2xl"
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-[#fef6e7] text-[#c99838] flex items-center justify-center text-lg font-bold">
-                  📞
-                </div>
-                <span className="text-xs font-bold text-[#c99838]">
-                  View →
-                </span>
-              </div>
-              <div className="mt-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-500">
-                  Contacted
-                </p>
-                <h3 className="text-2xl sm:text-3xl font-black text-gray-800 mt-0.5">
-                  {countContacted}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  Enquiries already contacted
-                </p>
-              </div>
-            </Link>
-
-            {/* Card 3: Site Visits — navigates to site-visits section */}
-            <Link
-              href="/owner/enquiries/site-visits"
-              className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:border-purple-300 transition flex flex-col justify-between cursor-pointer hover:shadow-md focus:outline-none focus:ring-2 focus:ring-purple-300/50 rounded-2xl"
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg font-bold">
-                  📅
-                </div>
-                <span className="text-xs font-bold text-purple-600">
-                  View →
-                </span>
-              </div>
-              <div className="mt-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-500">
-                  Site Visits
-                </p>
-                <h3 className="text-2xl sm:text-3xl font-black text-gray-800 mt-0.5">
-                  {countSiteVisit}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  Visits scheduled
-                </p>
-              </div>
-            </Link>
-
-            {/* Card 4: Closed — navigates to closed section */}
-            <Link
-              href="/owner/enquiries/closed"
-              className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:border-blue-300 transition flex flex-col justify-between cursor-pointer hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-300/50 rounded-2xl"
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg font-bold">
-                  ✅
-                </div>
-                <span className="text-xs font-bold text-blue-600">
-                  View →
-                </span>
-              </div>
-              <div className="mt-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-500">
-                  Closed
-                </p>
-                <h3 className="text-2xl sm:text-3xl font-black text-gray-800 mt-0.5">
-                  {countClosed}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  Closed enquiries
-                </p>
-              </div>
-            </Link>
-
-          </div>
-
-          {/* 2. SEARCH & FILTER AREA */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 mb-6 shadow-sm">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {/* =================================================
+              2. CLEAN, COMPACT ENQUIRIES TOOLBAR
+          ================================================= */}
+          <section className="mb-6 rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-3 sm:p-4 shadow-[var(--seller-shadow)]">
+            <div className="flex flex-1 flex-wrap items-center justify-between gap-2.5">
 
               {/* Search input */}
-              <div className="relative">
+              <div className="relative min-w-[200px] flex-1 sm:min-w-[260px]">
+                <Search
+                  size={15}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search by name, phone, property..."
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-[#064d3b] focus:bg-white transition"
+                  className="h-10 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-9 pr-8 text-xs font-medium text-[var(--seller-text)] outline-none transition placeholder:text-[var(--seller-text-subtle)] focus:border-[var(--seller-border-focus)]"
                 />
-                <span className="absolute left-3 top-2.5 text-gray-400 text-sm">
-                  🔍
-                </span>
                 {search && (
                   <button
+                    type="button"
                     onClick={() => setSearch("")}
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 text-xs bg-gray-200 rounded-full w-4 h-4 flex items-center justify-center"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1 text-[var(--seller-text-subtle)] hover:text-[var(--seller-text)]"
+                    aria-label="Clear search"
                   >
-                    ✕
+                    <X size={13} />
                   </button>
                 )}
               </div>
 
               {/* Property filter */}
-              <div>
+              <div className="relative w-auto min-w-[140px]">
+                <Tag
+                  size={13}
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
                 <select
                   value={propertyFilter}
                   onChange={(e) => setPropertyFilter(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 outline-none focus:border-[#064d3b] focus:bg-white transition cursor-pointer"
+                  className="h-10 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-8 pr-7 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer"
                 >
                   {propertyOptions.map((propName) => (
                     <option key={propName} value={propName}>
@@ -576,14 +509,22 @@ export default function NewEnquiriesPage() {
                     </option>
                   ))}
                 </select>
+                <ChevronDown
+                  size={13}
+                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
               </div>
 
               {/* City filter */}
-              <div>
+              <div className="relative w-auto min-w-[130px]">
+                <MapPin
+                  size={13}
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
                 <select
                   value={cityFilter}
                   onChange={(e) => setCityFilter(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 outline-none focus:border-[#064d3b] focus:bg-white transition cursor-pointer"
+                  className="h-10 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-8 pr-7 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer"
                 >
                   {cityOptions.map((cityName) => (
                     <option key={cityName} value={cityName}>
@@ -591,22 +532,34 @@ export default function NewEnquiriesPage() {
                     </option>
                   ))}
                 </select>
+                <ChevronDown
+                  size={13}
+                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
               </div>
 
               {/* Sort dropdown */}
-              <div>
+              <div className="relative w-auto min-w-[140px]">
+                <ArrowUpDown
+                  size={13}
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 outline-none focus:border-[#064d3b] focus:bg-white transition cursor-pointer font-medium"
+                  className="h-10 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-8 pr-7 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer"
                 >
                   <option value="Newest First">Newest First</option>
                   <option value="Oldest First">Oldest First</option>
                 </select>
+                <ChevronDown
+                  size={13}
+                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                />
               </div>
 
             </div>
-          </div>
+          </section>
 
           {/* 3. RESULTS HEADER */}
           <div className="flex items-center justify-between mb-4 px-1">
@@ -794,7 +747,6 @@ export default function NewEnquiriesPage() {
             )}
           </div>
 
-        </div>
       </main>
 
       {/* =====================================================

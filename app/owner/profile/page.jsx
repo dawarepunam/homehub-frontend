@@ -451,13 +451,13 @@ export default function OwnerProfilePage() {
   const footerData = dashboard?.Footer || dashboard?.footer || null;
 
   if (loading) return (
-    <div className="flex min-h-screen flex-col bg-[#F7F4EF]">
+    <div className="seller-page-wrapper flex min-h-screen flex-col">
       <Header headerData={headerData} /><main className="flex-1 py-8"><div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"><ProfileSkeleton /></div></main><Footer data={footerData} />
     </div>
   );
 
   if (pageError) return (
-    <div className="flex min-h-screen flex-col bg-[#F7F4EF]">
+    <div className="seller-page-wrapper flex min-h-screen flex-col">
       <Header headerData={headerData} />
       <main className="flex flex-1 items-center justify-center p-8">
         <div className="flex max-w-sm flex-col items-center text-center">
@@ -472,7 +472,7 @@ export default function OwnerProfilePage() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F7F4EF]">
+    <div className="seller-page-wrapper flex min-h-screen flex-col">
       <Toaster position="top-right" />
       <Header headerData={headerData} />
 

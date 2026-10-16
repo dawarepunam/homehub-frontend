@@ -7,62 +7,51 @@ export default function SummaryCards({ counts }) {
       title: "Residential",
       count: counts?.residential ?? 0,
       icon: Home,
-      accent: "#D7AE62",
       href: "/owner/properties/residential",
     },
     {
       title: "Commercial",
       count: counts?.commercial ?? 0,
       icon: Building2,
-      accent: "#78A894",
       href: "/owner/properties/commercial",
     },
     {
       title: "Industrial",
       count: counts?.industrial ?? 0,
       icon: Factory,
-      accent: "#B8C9BC",
       href: "/owner/properties/industrial",
     },
   ];
 
   return (
-    <section className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+    <section className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
       {cards.map((card) => (
         <Link
           key={card.title}
           href={card.href}
-          className="group"
+          className="group block"
         >
-          <div className="relative overflow-hidden rounded-lg border border-[#D9D1C2] bg-[#F7F0E3] p-5 shadow-[0_8px_24px_rgba(30,61,48,0.07)] transition-all duration-300 group-hover:-translate-y-1 group-hover:border-[#B99852] group-hover:shadow-[0_16px_30px_rgba(30,61,48,0.13)]">
-            <div
-              className="absolute -right-8 -top-8 h-28 w-28 rounded-full border opacity-40"
-              style={{ borderColor: card.accent }}
-            />
-
-            <div className="relative flex items-start justify-between gap-4">
-              <span
-                className="flex h-11 w-11 items-center justify-center rounded-lg text-[#123F32]"
-                style={{ backgroundColor: `${card.accent}55` }}
-              >
-                <card.icon size={21} strokeWidth={1.8} />
+          <div className="relative overflow-hidden rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-6 shadow-[var(--seller-shadow)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--seller-border-focus)] hover:shadow-[var(--seller-shadow-hover)]">
+            <div className="relative flex items-center justify-between gap-4">
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg-subtle)] text-[var(--seller-text)] transition-transform duration-300 group-hover:scale-105">
+                <card.icon size={22} strokeWidth={1.8} />
               </span>
 
-              <span className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#718177]">
-                Property type
+              <span className="rounded-full border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--seller-text-subtle)]">
+                Property Type
               </span>
             </div>
 
-            <h3 className="relative mt-6 text-lg font-extrabold text-[#123F32]">
+            <h3 className="relative mt-5 text-base font-bold text-[var(--seller-text)]">
               {card.title}
             </h3>
 
             <div className="relative mt-2 flex items-baseline gap-2">
-              <p className="text-4xl font-extrabold text-[#174B3B]">
+              <p className="text-3xl font-black tracking-tight text-[var(--seller-text)]">
                 {card.count}
               </p>
-              <span className="text-sm font-semibold text-[#718177]">
-                {card.count === 1 ? "Property" : "Properties"}
+              <span className="text-xs font-semibold text-[var(--seller-text-muted)]">
+                {card.count === 1 ? "Listed Property" : "Listed Properties"}
               </span>
             </div>
           </div>

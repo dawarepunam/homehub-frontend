@@ -6,6 +6,15 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "../../Footer";
 import {
+  ArrowLeft,
+  Archive,
+  Search,
+  Tag,
+  ArrowUpDown,
+  ChevronDown,
+  X,
+} from "lucide-react";
+import {
   getOwnerEnquiries,
   updateOwnerEnquiryStatus,
 } from "@/services/enquiry";
@@ -302,34 +311,37 @@ export default function ClosedEnquiriesPage() {
   // =====================================================
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
+      <div className="seller-page-wrapper flex flex-col font-sans">
         <Header />
 
-        <main className="flex-1">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-            <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#c99838] uppercase tracking-wider mb-1">
-              <span>Enquiries</span>
-              <span>›</span>
-              <span>Closed Enquiries</span>
+        <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
+          <div className="mb-6">
+            <Link
+              href="/owner"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+            >
+              <ArrowLeft size={14} />
+              Back to Dashboard
+            </Link>
+          </div>
+
+          <header className="mx-auto mb-8 max-w-2xl text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3.5 py-1 text-[11px] font-semibold text-[var(--seller-text-muted)] shadow-xs">
+              <Archive size={12} strokeWidth={2} />
+              <span>Seller Portal</span>
             </div>
-
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#064d3b]">
-              Closed Enquiries
+            <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--seller-text)] sm:text-4xl lg:text-[40px]">
+              Enquiries
             </h1>
-
-            <p className="text-sm sm:text-base text-gray-600 mt-1">
+            <p className="mt-2.5 text-sm text-[var(--seller-text-muted)] sm:text-base sm:leading-relaxed">
               View enquiries that are no longer active.
             </p>
+          </header>
 
-            <div className="mt-8 bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm">
-              <div className="inline-block w-10 h-10 border-4 border-[#064d3b] border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-[#064d3b] font-semibold mt-4">
-                Loading closed enquiries...
-              </p>
-              <p className="text-gray-500 text-sm mt-1">
-                Fetching real-time data from Strapi backend.
-              </p>
-            </div>
+          <div className="mt-8 rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-12 text-center shadow-sm">
+            <div className="inline-block w-10 h-10 border-4 border-[#0D3326] border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-[var(--seller-text)] font-semibold mt-4">Loading closed enquiries...</p>
+            <p className="text-[var(--seller-text-muted)] text-sm mt-1">Fetching real-time data from Strapi backend.</p>
           </div>
         </main>
 
@@ -343,46 +355,44 @@ export default function ClosedEnquiriesPage() {
   // =====================================================
   if (error) {
     return (
-      <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
+      <div className="seller-page-wrapper flex flex-col font-sans">
         <Header />
 
-        <main className="flex-1">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-            <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#c99838] uppercase tracking-wider mb-1">
-              <span>Enquiries</span>
-              <span>›</span>
-              <span>Closed Enquiries</span>
-            </div>
+        <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
+          <div className="mb-6">
+            <Link
+              href="/owner"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+            >
+              <ArrowLeft size={14} />
+              Back to Dashboard
+            </Link>
+          </div>
 
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#064d3b]">
-              Closed Enquiries
+          <header className="mx-auto mb-8 max-w-2xl text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3.5 py-1 text-[11px] font-semibold text-[var(--seller-text-muted)] shadow-xs">
+              <Archive size={12} strokeWidth={2} />
+              <span>Seller Portal</span>
+            </div>
+            <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--seller-text)] sm:text-4xl lg:text-[40px]">
+              Enquiries
             </h1>
+          </header>
 
-            <div className="mt-8 bg-white rounded-2xl border border-red-200 p-10 text-center shadow-sm">
-              <div className="w-14 h-14 mx-auto rounded-full bg-red-50 text-red-500 flex items-center justify-center text-2xl font-bold mb-3">
-                ⚠️
-              </div>
-
-              <h2 className="text-xl font-bold text-red-700">
-                Unable to load closed enquiries
-              </h2>
-
-              <p className="text-gray-600 mt-2 max-w-md mx-auto text-sm sm:text-base">
-                Something went wrong while loading your closed enquiries. Please try again.
-              </p>
-
-              <p className="text-xs font-mono bg-red-50 text-red-800 p-2 rounded mt-3 max-w-lg mx-auto overflow-x-auto">
-                {error}
-              </p>
-
-              <button
-                type="button"
-                onClick={loadEnquiries}
-                className="mt-6 px-6 py-3 rounded-xl bg-[#064d3b] text-white font-semibold hover:bg-[#053d30] transition shadow"
-              >
-                Try Again
-              </button>
-            </div>
+          <div className="mt-8 rounded-2xl border border-red-200 bg-[var(--seller-surface)] p-10 text-center shadow-sm">
+            <div className="w-14 h-14 mx-auto rounded-full bg-red-50 text-red-500 flex items-center justify-center text-2xl font-bold mb-3">⚠️</div>
+            <h2 className="text-xl font-bold text-red-700">Unable to load closed enquiries</h2>
+            <p className="text-[var(--seller-text-muted)] mt-2 max-w-md mx-auto text-sm sm:text-base">
+              Something went wrong while loading your closed enquiries. Please try again.
+            </p>
+            <p className="text-xs font-mono bg-red-50 text-red-800 p-2 rounded mt-3 max-w-lg mx-auto overflow-x-auto">{error}</p>
+            <button
+              type="button"
+              onClick={loadEnquiries}
+              className="mt-6 px-6 py-3 rounded-xl bg-[#0D3326] text-[#F6F0E5] font-semibold hover:bg-[#134534] transition shadow"
+            >
+              Try Again
+            </button>
           </div>
         </main>
 
@@ -395,20 +405,17 @@ export default function ClosedEnquiriesPage() {
   // MAIN CLOSED ENQUIRIES PAGE UI
   // =====================================================
   return (
-    <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
+    <div className="seller-page-wrapper flex flex-col font-sans">
       <Header />
 
-      <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
 
           {/* SUCCESS TOAST */}
           {successMessage && (
             <div className="mb-6 p-4 rounded-xl bg-emerald-700 text-white flex items-center justify-between shadow-lg animate-bounce">
               <div className="flex items-center gap-3">
                 <span className="text-xl">✓</span>
-                <span className="font-semibold text-sm sm:text-base">
-                  {successMessage}
-                </span>
+                <span className="font-semibold text-sm sm:text-base">{successMessage}</span>
               </div>
               <button
                 onClick={() => setSuccessMessage("")}
@@ -419,32 +426,54 @@ export default function ClosedEnquiriesPage() {
             </div>
           )}
 
-          {/* PAGE HEADER */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-            <div>
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#c99838] uppercase tracking-wider mb-1">
-                <Link href="/owner/enquiries" className="hover:underline">
-                  Enquiries
-                </Link>
-                <span>›</span>
-                <span>Closed Enquiries</span>
-              </div>
+          {/* Navigation Back Link */}
+          <div className="mb-6 flex items-center justify-between">
+            <Link
+              href="/owner"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+            >
+              <ArrowLeft size={14} />
+              Back to Dashboard
+            </Link>
+          </div>
 
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-[#064d3b]">
-                Closed Enquiries
-              </h1>
-
-              <p className="text-sm sm:text-base text-gray-600 mt-1">
-                View enquiries that are no longer active.
-              </p>
+          {/* CENTERED PAGE HEADING */}
+          <header className="mx-auto mb-8 max-w-2xl text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3.5 py-1 text-[11px] font-semibold text-[var(--seller-text-muted)] shadow-xs">
+              <Archive size={12} strokeWidth={2} />
+              <span>Seller Portal</span>
             </div>
 
-            <Link
-              href="/owner/enquiries/new"
-              className="px-5 py-2.5 rounded-xl border border-[#064d3b] text-[#064d3b] font-bold text-xs sm:text-sm hover:bg-[#e6f2ed] transition self-start sm:self-auto"
-            >
-              Back to Enquiries
-            </Link>
+            <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--seller-text)] sm:text-4xl lg:text-[40px]">
+              Enquiries
+            </h1>
+
+            <p className="mt-2.5 text-sm text-[var(--seller-text-muted)] sm:text-base sm:leading-relaxed">
+              View enquiries that are no longer active.
+            </p>
+          </header>
+
+          {/* Tab switcher: New, Contacted, Site Visits, Closed */}
+          <div className="mb-6 flex justify-center overflow-x-auto pb-1">
+            <div className="inline-flex rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-1 shadow-xs">
+              {[
+                { label: `New`, href: "/owner/enquiries/new", active: false },
+                { label: `Contacted`, href: "/owner/enquiries/contacted", active: false },
+                { label: `Closed`, href: "/owner/enquiries/closed", active: true },
+              ].map((tab) => (
+                <Link
+                  key={tab.label}
+                  href={tab.href}
+                  className={`rounded-lg px-4 py-2 text-xs font-bold transition-all whitespace-nowrap ${
+                    tab.active
+                      ? "bg-[var(--seller-primary)] text-[var(--seller-bg)] shadow-xs"
+                      : "text-[var(--seller-text-muted)] hover:text-[var(--seller-text)]"
+                  }`}
+                >
+                  {tab.label}
+                </Link>
+              ))}
+            </div>
           </div>
 
           {/* 1. SUMMARY CARDS */}
@@ -802,7 +831,6 @@ export default function ClosedEnquiriesPage() {
             )}
           </div>
 
-        </div>
       </main>
 
       {/* =====================================================

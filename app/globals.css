@@ -1796,3 +1796,424 @@ body {
   display: none;
 }
 
+/* =========================================================
+   HOMEHUB SELLER PORTAL DESIGN TOKENS (Monochrome GetSiteGo Inspired)
+   Light: White / Off-white / Silver / Charcoal (#111111, #222222, #666666, #E5E5E5)
+   Dark:  Black / Charcoal / Graphite (#0A0A0A, #141414, #1C1C1C, #2A2A2A, #FAFAFA)
+   ========================================================= */
+
+:root {
+  --seller-bg: #F8F9FA;
+  --seller-bg-subtle: #F1F3F5;
+  --seller-surface: #FFFFFF;
+  --seller-surface-card: #FFFFFF;
+  --seller-surface-hover: #F8F9FA;
+  --seller-border: #E5E7EB;
+  --seller-border-subtle: #ECEEF1;
+  --seller-border-focus: #111827;
+  --seller-text: #111827;
+  --seller-text-muted: #6B7280;
+  --seller-text-subtle: #9CA3AF;
+  --seller-primary: #111827;
+  --seller-primary-hover: #1F2937;
+  --seller-gold: #111827;
+  --seller-gold-hover: #374151;
+  --seller-gold-subtle: rgba(17, 24, 39, 0.06);
+  --seller-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  --seller-shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -3px rgba(0, 0, 0, 0.04);
+}
+
+:root[data-theme="dark"] {
+  --seller-bg: #0C0D0E;
+  --seller-bg-subtle: #141618;
+  --seller-surface: #181A1D;
+  --seller-surface-card: #181A1D;
+  --seller-surface-hover: #222529;
+  --seller-border: #2A2E33;
+  --seller-border-subtle: #1F2327;
+  --seller-border-focus: #FAFAFA;
+  --seller-text: #F3F4F6;
+  --seller-text-muted: #9CA3AF;
+  --seller-text-subtle: #6B7280;
+  --seller-primary: #FAFAFA;
+  --seller-primary-hover: #E5E7EB;
+  --seller-gold: #FAFAFA;
+  --seller-gold-hover: #E5E7EB;
+  --seller-gold-subtle: rgba(250, 250, 250, 0.1);
+  --seller-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  --seller-shadow-hover: 0 12px 30px -4px rgba(0, 0, 0, 0.7);
+}
+
+/* Seller smooth surface styles */
+.seller-page-wrapper {
+  background-color: var(--seller-bg);
+  color: var(--seller-text);
+  min-height: 100vh;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.seller-card {
+  background-color: var(--seller-surface);
+  border: 1px solid var(--seller-border);
+  border-radius: 1rem;
+  box-shadow: var(--seller-shadow);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.seller-card:hover {
+  box-shadow: var(--seller-shadow-hover);
+  border-color: var(--seller-border-focus);
+}
+
+/* =========================================================
+   OWNER / SELLER DASHBOARD HERO SECTION
+   Refined Premium Design:
+   - Borderless, larger, taller centered hero image
+   - Globe artwork clearly centered and seamless
+   - Exactly 3 small, compact cards placed DIRECTLY OVER
+     the lower portion of the hero image
+   - Subtle, elegant borders and shadows (Light & Dark themes)
+   ========================================================= */
+
+/* ── Section wrapper ── */
+.owner-hero-section {
+  position: relative;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 12px;
+  margin-bottom: 36px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 0;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .owner-hero-section {
+    padding-left: 24px;
+    padding-right: 24px;
+    margin-top: 16px;
+    margin-bottom: 40px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .owner-hero-section {
+    padding-left: 40px;
+    padding-right: 40px;
+    margin-top: 20px;
+    margin-bottom: 48px;
+  }
+}
+
+/* ── Hero image container (TALLER, BORDERLESS, centered horizontally) ── */
+.owner-hero-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 20px;
+  overflow: hidden;
+  background-color: #08090a;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+@media (min-width: 640px) {
+  .owner-hero-image-wrap {
+    height: 440px;
+    border-radius: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .owner-hero-image-wrap {
+    height: 500px;
+    border-radius: 28px;
+  }
+}
+
+/* ── Next.js Image inside the wrapper: centered, cover ── */
+.owner-hero-img {
+  object-fit: cover !important;
+  object-position: center 38% !important;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* ── Theme-aware gradient overlay (preserves centered globe visual, softens bottom for cards) ── */
+.owner-hero-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Light theme: soft vignette preserving the central artwork */
+  background:
+    radial-gradient(
+      ellipse 85% 70% at 50% 40%,
+      transparent 0%,
+      rgba(248, 249, 250, 0.15) 70%,
+      rgba(248, 249, 250, 0.45) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(248, 249, 250, 0.0) 0%,
+      rgba(248, 249, 250, 0.10) 65%,
+      rgba(248, 249, 250, 0.50) 100%
+    );
+  transition: background 0.3s ease;
+}
+
+:root[data-theme="dark"] .owner-hero-overlay {
+  /* Dark theme: subtle edge shadow grounding the visual */
+  background:
+    radial-gradient(
+      ellipse 90% 75% at 50% 40%,
+      transparent 0%,
+      rgba(10, 11, 12, 0.25) 70%,
+      rgba(10, 11, 12, 0.65) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(10, 11, 12, 0.0) 0%,
+      rgba(10, 11, 12, 0.25) 65%,
+      rgba(10, 11, 12, 0.70) 100%
+    );
+}
+
+/* ── Cards wrapper: positioned ON TOP of the lower portion of the image ── */
+.owner-hero-cards-wrapper {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 24px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@media (min-width: 640px) {
+  .owner-hero-cards-wrapper {
+    bottom: 28px;
+    padding: 0 36px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .owner-hero-cards-wrapper {
+    bottom: 32px;
+    padding: 0 48px;
+  }
+}
+
+/* ── Cards row: one centered row, compact max width ── */
+.owner-hero-cards-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 760px;
+  pointer-events: auto;
+}
+
+@media (min-width: 640px) {
+  .owner-hero-cards-row {
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .owner-hero-cards-row {
+    gap: 18px;
+  }
+}
+
+/* ── Single small, compact metric card ── */
+.owner-hero-card {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 235px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  /* Light theme: clean crisp white, subtle light-grey border, soft shadow */
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(229, 231, 235, 0.90);
+  box-shadow:
+    0 4px 14px -2px rgba(0, 0, 0, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.owner-hero-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(203, 213, 225, 1);
+  box-shadow:
+    0 8px 20px -3px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Dark theme card styles: elegant dark surface, thin subtle border, soft shadow ── */
+:root[data-theme="dark"] .owner-hero-card {
+  background: rgba(18, 20, 23, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 24px -4px rgba(0, 0, 0, 0.60),
+    0 2px 6px rgba(0, 0, 0, 0.40);
+}
+
+:root[data-theme="dark"] .owner-hero-card:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow:
+    0 12px 28px -4px rgba(0, 0, 0, 0.75),
+    0 3px 8px rgba(0, 0, 0, 0.50);
+}
+
+/* ── Small, Compact Icon Container ── */
+.owner-hero-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+:root[data-theme="dark"] .owner-hero-card__icon {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Compact Card Text Body ── */
+.owner-hero-card__body {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.owner-hero-card__label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6B7280;
+  margin: 0 0 1px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+:root[data-theme="dark"] .owner-hero-card__label {
+  color: #9CA3AF;
+}
+
+.owner-hero-card__value {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #111827;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:root[data-theme="dark"] .owner-hero-card__value {
+  color: #F3F4F6;
+}
+
+/* ── Responsive Mobile Adjustments ── */
+@media (max-width: 639px) {
+  .owner-hero-section {
+    margin-top: 10px;
+    margin-bottom: 24px;
+  }
+
+  .owner-hero-image-wrap {
+    height: 320px;
+    border-radius: 16px;
+  }
+
+  .owner-hero-cards-wrapper {
+    bottom: 16px;
+    padding: 0 16px;
+  }
+
+  .owner-hero-cards-row {
+    gap: 8px;
+    max-width: 100%;
+  }
+
+  .owner-hero-card {
+    padding: 8px 10px;
+    gap: 6px;
+    border-radius: 10px;
+    max-width: none;
+  }
+
+  .owner-hero-card__icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+  }
+
+  .owner-hero-card__icon svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .owner-hero-card__label {
+    font-size: 8.5px;
+    letter-spacing: 0.02em;
+  }
+
+  .owner-hero-card__value {
+    font-size: 15px;
+  }
+}
+
+/* Extra small devices (< 380px): stacked card layout to prevent overflow */
+@media (max-width: 379px) {
+  .owner-hero-cards-wrapper {
+    bottom: 12px;
+    padding: 0 12px;
+  }
+
+  .owner-hero-cards-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .owner-hero-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px 12px;
+  }
+}
+
+

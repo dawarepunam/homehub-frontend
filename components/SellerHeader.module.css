@@ -1,0 +1,297 @@
+.headerWrapper {
+  position: sticky;
+  top: 14px;
+  z-index: 1000;
+  width: 100%;
+  padding: 0 20px;
+  pointer-events: none;
+}
+
+.pillContainer {
+  pointer-events: auto;
+  max-width: 1240px;
+  margin: 0 auto;
+  background: var(--header-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 9999px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s ease;
+  padding: 8px 14px 8px 18px;
+}
+
+:global(:root[data-theme="dark"]) .pillContainer {
+  background: rgba(14, 14, 14, 0.9);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.pillInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 44px;
+}
+
+/* Brand Section: Flex row with explicit gap and zero overlap */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.brandLogo {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.brandMark {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--text-primary);
+  color: var(--bg-page);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+
+.brandTextGroup {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.brandName {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+/* Pill-style badge that sits side-by-side with brand name cleanly */
+.brandBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2.5px 8px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  line-height: 1;
+}
+
+/* Navigation Links */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 auto;
+}
+
+.navItemWrapper {
+  position: relative;
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 15px;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  white-space: nowrap;
+  text-decoration: none;
+  user-select: none;
+}
+
+.navButton:hover {
+  color: var(--text-primary);
+  background: var(--header-hover-bg);
+}
+
+.navButton:focus-visible {
+  outline: 2px solid var(--accent, #0D3326);
+  outline-offset: 2px;
+}
+
+.navButtonActive {
+  color: var(--text-primary);
+  background: var(--border-subtle);
+  border-color: var(--border-subtle);
+}
+
+.dropdownPanelWrapper {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  animation: dropFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Invisible bridge so mouse moving from button to dropdown doesn't lose hover */
+.dropdownPanelWrapper::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 14px;
+}
+
+@keyframes dropFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Actions Section */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.actionPillBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.actionPillBtn:hover {
+  background: var(--border-subtle);
+  border-color: var(--border-focus);
+}
+
+/* Solid CTA button for Add Property matching Buyer's loginBtn styling */
+.actionPrimaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 9999px;
+  background: var(--btn-primary-bg, var(--text-primary));
+  color: var(--btn-primary-text, var(--bg-page));
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.actionPrimaryBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.iconBtn:hover {
+  background: var(--border-subtle);
+  border-color: var(--border-focus);
+  transform: scale(1.04);
+}
+
+/* Hamburger button */
+.hamburgerBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 1180px) {
+  .pillContainer {
+    max-width: 100%;
+    padding: 6px 12px 6px 16px;
+  }
+  .nav {
+    display: none;
+  }
+  .hamburgerBtn {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .headerWrapper {
+    top: 10px;
+    padding: 0 12px;
+  }
+  .pillContainer {
+    padding: 6px 10px 6px 14px;
+    border-radius: 9999px;
+  }
+}

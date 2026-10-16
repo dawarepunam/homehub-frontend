@@ -1,265 +1,186 @@
 "use client";
 
 import Link from "next/link";
-
 import styles from "./Footer.module.css";
 
-export default function Footer({
-  data,
-  footerData,
-  copyrightData,
-}) {
-  const rawFooter =
-    data ?? footerData ?? copyrightData;
+export default function Footer({ data, footerData, copyrightData }) {
+  const rawFooter = data ?? footerData ?? copyrightData;
+  const footer = Array.isArray(rawFooter) ? rawFooter[0] : rawFooter;
 
-  const footer = Array.isArray(rawFooter)
-    ? rawFooter[0]
-    : rawFooter;
-
-  // ── Fallback footer when no Strapi data is provided ──────────────────────
-  if (!footer) {
-    return (
-      <footer style={{
-        backgroundColor: "#064d3b",
-        color: "#e8e2d6",
-        padding: "40px 24px 20px",
-        marginTop: "auto",
-        fontFamily: "inherit",
-      }}>
-        <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "40px", justifyContent: "space-between", marginBottom: "32px" }}>
-            {/* Brand */}
-            <div style={{ minWidth: "200px" }}>
-              <a href="/owner" style={{ fontSize: "22px", fontWeight: 800, color: "#c99838", textDecoration: "none", letterSpacing: "-0.5px" }}>
-                HomeHub
-              </a>
-              <p style={{ marginTop: "10px", fontSize: "13px", color: "#a0b5ae", lineHeight: "1.6", maxWidth: "260px" }}>
-                Your trusted real-estate owner portal for managing properties, enquiries and site visits.
-              </p>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h3 style={{ fontSize: "13px", fontWeight: 700, color: "#c99838", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px" }}>
-                Owner Portal
-              </h3>
-              <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
-                {[
-                  { label: "Dashboard", href: "/owner" },
-                  { label: "My Properties", href: "/owner/properties" },
-                  { label: "Enquiries", href: "/owner/enquiries" },
-                  { label: "Site Visits", href: "/owner/site-visits" },
-                  { label: "Insights", href: "/owner/insights" },
-                ].map((link) => (
-                  <li key={link.href}>
-                    <a href={link.href} style={{ color: "#c8d8d0", fontSize: "13px", textDecoration: "none", transition: "color 0.2s" }}
-                      onMouseEnter={(e) => e.target.style.color = "#c99838"}
-                      onMouseLeave={(e) => e.target.style.color = "#c8d8d0"}>
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Insights */}
-            <div>
-              <h3 style={{ fontSize: "13px", fontWeight: 700, color: "#c99838", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px" }}>
-                Insights
-              </h3>
-              <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
-                {[
-                  { label: "Performance", href: "/owner/insights/performance" },
-                  { label: "Reports", href: "/owner/insights/reports" },
-                  { label: "Market Trends", href: "/owner/insights/market-trends" },
-                ].map((link) => (
-                  <li key={link.href}>
-                    <a href={link.href} style={{ color: "#c8d8d0", fontSize: "13px", textDecoration: "none" }}
-                      onMouseEnter={(e) => e.target.style.color = "#c99838"}
-                      onMouseLeave={(e) => e.target.style.color = "#c8d8d0"}>
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom bar */}
-          <div style={{ borderTop: "1px solid #1a5c47", paddingTop: "20px", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "12px" }}>
-            <p style={{ fontSize: "12px", color: "#6a8f82", margin: 0 }}>
-              © {new Date().getFullYear()} HomeHub. All rights reserved.
-            </p>
-            <div style={{ display: "flex", gap: "16px" }}>
-              {[{ label: "Privacy", href: "/privacy" }, { label: "Terms", href: "/terms" }].map((link) => (
-                <a key={link.href} href={link.href} style={{ fontSize: "12px", color: "#6a8f82", textDecoration: "none" }}
-                  onMouseEnter={(e) => e.target.style.color = "#c99838"}
-                  onMouseLeave={(e) => e.target.style.color = "#6a8f82"}>
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-      </footer>
-    );
-  }
+  const brandName = footer?.BrandName || "HomeHub";
+  const description =
+    footer?.Description ||
+    "India's trusted property platform. Empowering owners and sellers to manage listings, track enquiries, and close verified deals nationwide.";
 
   const sortLinks = (links) => {
-    if (!Array.isArray(links)) {
-      return [];
-    }
-
+    if (!Array.isArray(links)) return [];
     return [...links]
       .filter((item) => item?.IsActive !== false)
-      .sort(
-        (a, b) =>
-          (a?.DisplayOrder ?? 999) -
-          (b?.DisplayOrder ?? 999)
-      );
+      .sort((a, b) => (a?.DisplayOrder ?? 999) - (b?.DisplayOrder ?? 999));
   };
 
-  const quickLinks = sortLinks(footer?.QuickLinks);
-  const propertyLinks = sortLinks(footer?.PropertyLinks);
-  const supportLinks = sortLinks(footer?.SupportLinks);
+  const rawQuick = sortLinks(footer?.QuickLinks);
+  const rawProperty = sortLinks(footer?.PropertyLinks);
+  const rawSupport = sortLinks(footer?.SupportLinks);
   const socialLinks = sortLinks(footer?.SocialLinks);
+
+  // Fallback defaults tailored specifically for Seller / Owner Portal
+  const quickLinks =
+    rawQuick.length > 0
+      ? rawQuick
+      : [
+          { Title: "Seller Dashboard", Link: "/owner" },
+          { Title: "My Properties", Link: "/owner/properties" },
+          { Title: "Post New Property", Link: "/add-property" },
+          { Title: "Active Listings", Link: "/owner/properties/active" },
+        ];
+
+  const propertyLinks =
+    rawProperty.length > 0
+      ? rawProperty
+      : [
+          { Title: "Buyer Enquiries", Link: "/owner/enquiries" },
+          { Title: "Site Visits", Link: "/owner/site-visits" },
+          { Title: "Performance Insights", Link: "/owner/insights" },
+          { Title: "Property Promotions", Link: "/owner/promotions" },
+        ];
+
+  const supportLinks =
+    rawSupport.length > 0
+      ? rawSupport
+      : [
+          { Title: "Owner Profile", Link: "/owner/profile" },
+          { Title: "Boost Listings", Link: "/owner/promotions/boost" },
+          { Title: "Market Trends", Link: "/owner/insights/market-trends" },
+          { Title: "Help & Support", Link: "/owner/profile" },
+        ];
 
   const renderLinks = (links) => {
     return links.map((item, index) => (
-      <li
-        key={
-          item?.id ||
-          item?.documentId ||
-          index
-        }
-      >
-        <a href={item?.Link || "#"}>
-          {item?.Title || "Link"}
-        </a>
+      <li key={item?.id || item?.documentId || index}>
+        <Link href={item?.Link || "#"}>{item?.Title || "Link"}</Link>
       </li>
     ));
   };
 
   const getSocialIcon = (platform, icon) => {
-    const value = (
-      icon ||
-      platform ||
-      ""
-    )
-      .toLowerCase()
-      .trim();
-
+    const value = (icon || platform || "").toLowerCase().trim();
     switch (value) {
-      case "instagram":
-        return "IG";
-      case "facebook":
-        return "f";
-      case "linkedin":
-        return "in";
-      case "youtube":
-        return "YT";
+      case "instagram": return "IG";
+      case "facebook": return "f";
+      case "linkedin": return "in";
+      case "youtube": return "YT";
       case "twitter":
-      case "x":
-        return "X";
-      default:
-        return "->";
+      case "x": return "X";
+      default: return "→";
     }
   };
 
+  const currentYear = new Date().getFullYear();
+  const rawCopyright = footer?.CopyrightText || `© {year} HomeHub. All rights reserved.`;
+  const copyrightText = rawCopyright.replace("{year}", currentYear).replace("2026", currentYear.toString());
+
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} aria-label="Seller Footer">
+      {/* ── Flowing Fine Curved Wireframe Topography Mesh Inspired by GetSiteGo ── */}
+      <div className={styles.meshContainer} aria-hidden="true">
+        <svg
+          className={styles.meshSvg}
+          viewBox="0 0 1000 650"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="sellerFooterMeshGrad" x1="0%" y1="0%" x2="100%" y2="80%">
+              <stop offset="0%" stopColor="var(--seller-text)" stopOpacity="0.0" />
+              <stop offset="40%" stopColor="var(--seller-text)" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="var(--seller-text)" stopOpacity="0.32" />
+            </linearGradient>
+          </defs>
+
+          {/* Natural flowing contour curves sweeping across right & bottom */}
+          <path d="M 120 650 C 350 560, 600 620, 1000 420" className={styles.meshLine} />
+          <path d="M 180 650 C 400 520, 650 580, 1000 370" className={styles.meshLine} />
+          <path d="M 240 650 C 450 480, 700 540, 1000 320" className={styles.meshLine} />
+          <path d="M 300 650 C 500 440, 750 500, 1000 270" className={styles.meshLine} />
+          <path d="M 370 650 C 550 400, 800 460, 1000 220" className={styles.meshLine} />
+          <path d="M 440 650 C 600 360, 850 420, 1000 170" className={styles.meshLineAccent} />
+          <path d="M 520 650 C 660 320, 900 380, 1000 120" className={styles.meshLine} />
+          <path d="M 600 650 C 720 280, 940 330, 1000 70" className={styles.meshLine} />
+          <path d="M 700 650 C 790 240, 970 280, 1000 20" className={styles.meshLine} />
+
+          {/* Sweeping cross-mesh longitudinal lines */}
+          <path d="M 380 650 C 520 500, 720 320, 980 90" className={styles.meshCrossLine} />
+          <path d="M 500 650 C 640 480, 810 270, 990 40" className={styles.meshCrossLine} />
+          <path d="M 620 650 C 740 460, 880 230, 1000 0" className={styles.meshCrossLine} />
+          <path d="M 280 650 C 440 490, 640 330, 880 140" className={styles.meshCrossLine} />
+        </svg>
+      </div>
+
       <div className={styles.container}>
         <div className={styles.top}>
+          {/* SECTION A — BRAND & MISSION */}
           <div className={styles.brandSection}>
-            <Link
-              href="/owner"
-              className={styles.brand}
-            >
-              {footer?.BrandName || "HomeHub"}
+            <Link href="/owner" className={styles.brand}>
+              <div className={styles.brandMark}>H</div>
+              <span className={styles.brandNameText}>{brandName}</span>
             </Link>
 
-            {footer?.Description && (
-              <p className={styles.description}>
-                {footer.Description}
-              </p>
-            )}
+            <p className={styles.description}>{description}</p>
 
-            {socialLinks.length > 0 && (
-              <div className={styles.socials}>
-                {socialLinks.map(
-                  (social, index) => (
-                    <a
-                      key={
-                        social?.id ||
-                        social?.documentId ||
-                        index
-                      }
-                      href={
-                        social?.Link || "#"
-                      }
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={
-                        styles.socialButton
-                      }
-                      aria-label={
-                        social?.Platform ||
-                        "Social media"
-                      }
-                    >
-                      {getSocialIcon(
-                        social?.Platform,
-                        social?.Icon
-                      )}
-                    </a>
-                  )
-                )}
-              </div>
-            )}
+            <div className={styles.socials}>
+              {socialLinks.length > 0 ? (
+                socialLinks.map((social, index) => (
+                  <a
+                    key={social?.id || social?.documentId || index}
+                    href={social?.Link || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.socialButton}
+                    aria-label={social?.Platform || "Social media"}
+                  >
+                    {getSocialIcon(social?.Platform, social?.Icon)}
+                  </a>
+                ))
+              ) : (
+                <>
+                  <a href="#" className={styles.socialButton} aria-label="X">X</a>
+                  <a href="#" className={styles.socialButton} aria-label="LinkedIn">in</a>
+                  <a href="#" className={styles.socialButton} aria-label="Instagram">IG</a>
+                </>
+              )}
+            </div>
           </div>
 
-          {quickLinks.length > 0 && (
-            <div className={styles.column}>
-              <h3>Quick Links</h3>
-              <ul>
-                {renderLinks(quickLinks)}
-              </ul>
-            </div>
-          )}
+          {/* SECTION B — QUICK LINKS */}
+          <div className={styles.column}>
+            <h3>Owner Portal</h3>
+            <ul>{renderLinks(quickLinks)}</ul>
+          </div>
 
-          {propertyLinks.length > 0 && (
-            <div className={styles.column}>
-              <h3>Properties</h3>
-              <ul>
-                {renderLinks(propertyLinks)}
-              </ul>
-            </div>
-          )}
+          {/* SECTION C — PROPERTIES & LEADS */}
+          <div className={styles.column}>
+            <h3>Manage & Leads</h3>
+            <ul>{renderLinks(propertyLinks)}</ul>
+          </div>
 
-          {supportLinks.length > 0 && (
-            <div className={styles.column}>
-              <h3>Support</h3>
-              <ul>
-                {renderLinks(supportLinks)}
-              </ul>
-            </div>
-          )}
+          {/* SECTION D — TOOLS & SUPPORT */}
+          <div className={styles.column}>
+            <h3>Tools & Support</h3>
+            <ul>{renderLinks(supportLinks)}</ul>
+          </div>
         </div>
 
+        {/* SECTION E — LEGAL & COPYRIGHT */}
         <div className={styles.bottom}>
-          <p>
-            {footer?.CopyrightText ||
-              "(c) 2026 HomeHub. All rights reserved."}
-          </p>
+          <p>{copyrightText}</p>
 
           <div className={styles.bottomLinks}>
-            <Link href="/privacy">
-              Privacy
-            </Link>
+            <Link href="/privacy">Privacy Policy</Link>
             <span>&middot;</span>
-            <Link href="/terms">
-              Terms
-            </Link>
+            <Link href="/terms">Terms of Service</Link>
+            <span>&middot;</span>
+            <Link href="/owner/profile">Security</Link>
           </div>
         </div>
       </div>

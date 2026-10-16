@@ -2596,14 +2596,14 @@ export default function PropertyCard({
           overflow-hidden
           rounded-2xl
           border
-          border-[var(--border-subtle)]
-          bg-[var(--bg-section)]
-          shadow-[0_12px_35px_rgba(0,0,0,0.16)]
+          border-[var(--seller-border)]
+          bg-[var(--seller-surface)]
+          shadow-[var(--seller-shadow)]
           transition-all
           duration-300
           hover:-translate-y-1
-          hover:border-[var(--border-subtle)]
-          hover:shadow-[0_20px_45px_rgba(0,0,0,0.25)]
+          hover:border-[var(--seller-border-focus)]
+          hover:shadow-[var(--seller-shadow-hover)]
         "
         >
           {/* =================================================
@@ -2616,7 +2616,7 @@ export default function PropertyCard({
             h-[215px]
             w-full
             overflow-hidden
-            bg-[var(--bg-section)]
+            bg-[var(--seller-bg-subtle)]
           "
           >
             <Image
@@ -2649,7 +2649,7 @@ export default function PropertyCard({
               bg-gradient-to-t
               from-black/75
               via-black/10
-              to-black/5
+              to-transparent
             "
             />
 
@@ -2661,15 +2661,18 @@ export default function PropertyCard({
               left-3
               top-3
               rounded-md
-              px-3
-              py-1.5
+              px-2.5
+              py-1
               text-[10px]
-              font-extrabold
-              tracking-wide
-              shadow-lg
-              ${getStatusClass(
-                ownerStatus
-              )}
+              font-bold
+              tracking-wider
+              uppercase
+              shadow-sm
+              border
+              border-white/20
+              bg-black/60
+              text-white
+              backdrop-blur-sm
             `}
             >
               {ownerStatus}
@@ -2697,7 +2700,7 @@ export default function PropertyCard({
             "
               aria-label="Bookmark property"
             >
-              <Bookmark size={16} />
+              <Bookmark size={15} />
             </button>
 
             {/* SOLD */}
@@ -2722,7 +2725,7 @@ export default function PropertyCard({
                   rounded-full
                   border-2
                   border-white
-                  bg-black/25
+                  bg-black/40
                   text-2xl
                   font-bold
                   text-white
@@ -2749,11 +2752,12 @@ export default function PropertyCard({
                 <div
                   className="
                   rounded-xl
-                  bg-black/50
+                  bg-black/60
                   px-6
                   py-3
-                  text-lg
-                  font-extrabold
+                  text-sm
+                  font-bold
+                  tracking-widest
                   text-white
                   backdrop-blur-sm
                 "
@@ -2778,11 +2782,12 @@ export default function PropertyCard({
                 <div
                   className="
                   rounded-xl
-                  bg-black/50
+                  bg-black/60
                   px-6
                   py-3
-                  text-lg
-                  font-extrabold
+                  text-sm
+                  font-bold
+                  tracking-widest
                   text-white
                   backdrop-blur-sm
                 "
@@ -2807,10 +2812,10 @@ export default function PropertyCard({
                 <div
                   className="
                   rounded-xl
-                  bg-black/45
+                  bg-black/60
                   px-5
-                  py-3
-                  text-sm
+                  py-2.5
+                  text-xs
                   font-bold
                   text-white
                   backdrop-blur-sm
@@ -2833,9 +2838,9 @@ export default function PropertyCard({
             <h2
               className="
               line-clamp-1
-              text-[16px]
-              font-extrabold
-              text-white
+              text-[15px]
+              font-bold
+              text-[var(--seller-text)]
             "
             >
               {title}
@@ -2845,17 +2850,17 @@ export default function PropertyCard({
 
             <p
               className="
-              mt-2
+              mt-1.5
               flex
               items-center
               gap-1.5
               text-xs
-              text-[var(--text-primary)]
+              text-[var(--seller-text-muted)]
             "
             >
               <MapPin
                 size={13}
-                className="shrink-0 text-[var(--text-primary)]"
+                className="shrink-0 text-[var(--seller-text-subtle)]"
               />
 
               <span className="line-clamp-1">
@@ -2867,12 +2872,13 @@ export default function PropertyCard({
 
             {/* PRICE */}
 
-            <div className="mt-3">
+            <div className="mt-2.5">
               <span
                 className="
                 text-lg
-                font-extrabold
-                text-[var(--text-primary)]
+                font-black
+                tracking-tight
+                text-[var(--seller-text)]
               "
               >
                 {price}
@@ -2885,7 +2891,7 @@ export default function PropertyCard({
                   ml-1
                   text-[11px]
                   font-medium
-                  text-[var(--text-primary)]
+                  text-[var(--seller-text-muted)]
                 "
                   >
                     / month
@@ -2901,9 +2907,9 @@ export default function PropertyCard({
               flex
               flex-wrap
               gap-x-3
-              gap-y-2
-              text-[10px]
-              text-[var(--text-primary)]
+              gap-y-1.5
+              text-[11px]
+              text-[var(--seller-text-muted)]
             "
             >
               {bedrooms !== null && (
@@ -2941,13 +2947,15 @@ export default function PropertyCard({
               <div className="mt-3">
                 <span
                   className="
-                  rounded
-                  bg-[var(--bg-section)]
-                  px-2
+                  rounded-md
+                  border
+                  border-[var(--seller-border)]
+                  bg-[var(--seller-bg-subtle)]
+                  px-2.5
                   py-1
                   text-[10px]
                   font-semibold
-                  text-[var(--text-primary)]
+                  text-[var(--seller-text)]
                 "
                 >
                   {category}
@@ -2963,7 +2971,7 @@ export default function PropertyCard({
               grid
               grid-cols-3
               border-t
-              border-[var(--border-subtle)]
+              border-[var(--seller-border)]
               pt-3
             "
             >
@@ -2974,13 +2982,13 @@ export default function PropertyCard({
                   items-center
                   gap-1
                   text-xs
-                  font-semibold
-                  text-[var(--text-primary)]
+                  font-bold
+                  text-[var(--seller-text)]
                 "
                 >
-                  <Eye size={13} />
+                  <Eye size={13} className="text-[var(--seller-text-subtle)]" />
                   {statsLoading ? (
-                    <Loader2 size={13} className="animate-spin text-[var(--text-muted)]" />
+                    <Loader2 size={13} className="animate-spin text-[var(--seller-text-muted)]" />
                   ) : (
                     safeValue(views, "0")
                   )}
@@ -2988,9 +2996,10 @@ export default function PropertyCard({
 
                 <p
                   className="
-                  mt-1
+                  mt-0.5
                   text-[9px]
-                  text-[var(--text-primary)]
+                  font-medium
+                  text-[var(--seller-text-muted)]
                 "
                 >
                   Views
@@ -3004,13 +3013,13 @@ export default function PropertyCard({
                   items-center
                   gap-1
                   text-xs
-                  font-semibold
-                  text-[var(--text-primary)]
+                  font-bold
+                  text-[var(--seller-text)]
                 "
                 >
-                  <Heart size={13} />
+                  <Heart size={13} className="text-[var(--seller-text-subtle)]" />
                   {statsLoading ? (
-                    <Loader2 size={13} className="animate-spin text-[var(--text-muted)]" />
+                    <Loader2 size={13} className="animate-spin text-[var(--seller-text-muted)]" />
                   ) : (
                     safeValue(saves, "0")
                   )}
@@ -3018,9 +3027,10 @@ export default function PropertyCard({
 
                 <p
                   className="
-                  mt-1
+                  mt-0.5
                   text-[9px]
-                  text-[var(--text-primary)]
+                  font-medium
+                  text-[var(--seller-text-muted)]
                 "
                 >
                   Saves
@@ -3034,13 +3044,13 @@ export default function PropertyCard({
                   items-center
                   gap-1
                   text-xs
-                  font-semibold
-                  text-[var(--text-primary)]
+                  font-bold
+                  text-[var(--seller-text)]
                 "
                 >
-                  <MessageSquare size={13} />
+                  <MessageSquare size={13} className="text-[var(--seller-text-subtle)]" />
                   {statsLoading ? (
-                    <Loader2 size={13} className="animate-spin text-[var(--text-muted)]" />
+                    <Loader2 size={13} className="animate-spin text-[var(--seller-text-muted)]" />
                   ) : (
                     safeValue(enquiries, "0")
                   )}
@@ -3048,9 +3058,10 @@ export default function PropertyCard({
 
                 <p
                   className="
-                  mt-1
+                  mt-0.5
                   text-[9px]
-                  text-[var(--text-primary)]
+                  font-medium
+                  text-[var(--seller-text-muted)]
                 "
                 >
                   Enquiries
@@ -3063,9 +3074,10 @@ export default function PropertyCard({
             {listedDate && (
               <p
                 className="
-                mt-3
+                mt-2.5
                 text-[9px]
-                text-[var(--text-primary)]
+                font-medium
+                text-[var(--seller-text-subtle)]
               "
               >
                 Listed on {listedDate}
@@ -3088,21 +3100,20 @@ export default function PropertyCard({
                 items-center
                 justify-center
                 gap-1.5
-                rounded-lg
+                rounded-xl
                 border
-                border-[var(--border-subtle)]
-                bg-[var(--bg-section)]
+                border-[var(--seller-border)]
+                bg-[var(--seller-surface)]
                 px-2
                 py-2.5
-                text-[11px]
+                text-xs
                 font-bold
-                text-white
+                text-[var(--seller-text)]
                 transition
-                hover:border-[var(--border-subtle)]
-                hover:bg-[var(--bg-section)]
+                hover:bg-[var(--seller-surface-hover)]
               "
               >
-                <Eye size={14} />
+                <Eye size={13} />
                 View
               </Link>
 
@@ -3116,18 +3127,18 @@ export default function PropertyCard({
                 items-center
                 justify-center
                 gap-1.5
-                rounded-lg
-                bg-[var(--bg-section)]
+                rounded-xl
+                bg-[var(--seller-primary)]
                 px-2
                 py-2.5
-                text-[11px]
+                text-xs
                 font-bold
-                text-[var(--text-primary)]
+                text-[var(--seller-bg)]
                 transition
-                hover:bg-[var(--bg-section)]
+                hover:opacity-90
               "
               >
-                <Pencil size={14} />
+                <Pencil size={13} />
                 Edit
               </Link>
 
