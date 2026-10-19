@@ -8,6 +8,8 @@ import Footer from "../../../../Footer";
 import {
   getOwnerPropertiesForInsights,
   getOwnerEnquiriesForInsights,
+  getOwnerPropertyViewsForInsights,
+  getOwnerPropertySavesForInsights,
   calculatePerformanceScore,
   generateChartData,
   STRAPI_MEDIA_URL,
@@ -53,6 +55,8 @@ export default function PropertyPerformanceDetailPage({ params }) {
 
   const [property, setProperty] = useState(null);
   const [propEnquiries, setPropEnquiries] = useState([]);
+  const [propViews, setPropViews] = useState([]);
+  const [propSavesCount, setPropSavesCount] = useState(0);
   const [score, setScore] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -71,12 +75,22 @@ export default function PropertyPerformanceDetailPage({ params }) {
       );
       if (!found) throw new Error("Property not found or not owned by you.");
 
-      const enq = await getOwnerEnquiriesForInsights([String(found?.id)]);
+      const propIds = [String(found?.id), String(found?.documentId)].filter(Boolean);
+
+      const [enq, viewsRecords, { savesByProp }] = await Promise.all([
+        getOwnerEnquiriesForInsights([String(found?.id)]),
+        getOwnerPropertyViewsForInsights(propIds),
+        getOwnerPropertySavesForInsights(propIds),
+      ]);
+
       setProperty(found);
       setPropEnquiries(enq);
+      setPropViews(viewsRecords);
 
-      const views = Number(found?.Views) || 0;
-      const saves = Number(found?.Saves) || 0;
+      const realViews = viewsRecords.length;
+      const realSaves = savesByProp[String(found?.documentId)] || savesByProp[String(found?.id)] || 0;
+      setPropSavesCount(realSaves);
+
       const siteVisits = enq.filter((e) => {
         const s = (e?.Statuss || "").toLowerCase();
         return s.includes("site visit") || s === "scheduled" || s === "completed";
@@ -87,9 +101,9 @@ export default function PropertyPerformanceDetailPage({ params }) {
       const hasDescription = !!(found?.Description);
 
       const computed = calculatePerformanceScore({
-        views,
+        views: realViews,
         enquiries: enq.length,
-        saves,
+        saves: realSaves,
         siteVisits,
         hasImages,
         hasDescription,
@@ -115,7 +129,9 @@ export default function PropertyPerformanceDetailPage({ params }) {
   else if (Array.isArray(property?.PropertyImage) && property.PropertyImage.length)
     coverImg = `${STRAPI_MEDIA_URL}${property.PropertyImage[0]?.url}`;
 
-  const chartData = property ? generateChartData(Number(property?.Views) || 0, period, chartTab) : [];
+  const chartData = property
+    ? generateChartData(propViews.length, period, chartTab, propViews)
+    : [];
 
   const recentEnquiries = [...propEnquiries]
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -242,9 +258,9 @@ export default function PropertyPerformanceDetailPage({ params }) {
               {/* KPI mini cards */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
-                  { icon: <Eye size={16} />, label: "Views", value: property?.Views || 0, color: "bg-[#e6f2ed] text-[#064d3b]" },
+                  { icon: <Eye size={16} />, label: "Views", value: propViews.length, color: "bg-[#e6f2ed] text-[#064d3b]" },
                   { icon: <MessageSquare size={16} />, label: "Enquiries", value: propEnquiries.length, color: "bg-[#fef6e7] text-[#c99838]" },
-                  { icon: <Heart size={16} />, label: "Saves", value: property?.Saves || 0, color: "bg-pink-50 text-pink-600" },
+                  { icon: <Heart size={16} />, label: "Saves", value: propSavesCount, color: "bg-pink-50 text-pink-600" },
                   { icon: <Calendar size={16} />, label: "Site Visits", value: propEnquiries.filter(e => (e?.Statuss || "").toLowerCase().includes("site visit")).length, color: "bg-purple-50 text-purple-600" },
                 ].map((kpi) => (
                   <div key={kpi.label} className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">

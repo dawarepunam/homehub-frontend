@@ -15,6 +15,8 @@ import {
   MessageSquare,
   ArrowLeft,
   Filter,
+  History,
+  Clock,
 } from "lucide-react";
 import {
   getOwnerEnquiries,
@@ -35,6 +37,7 @@ export default function ContactedPage() {
   const [error, setError] = useState("");
   const [actionLoadingId, setActionLoadingId] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Filters & Sorting state
   const [search, setSearch] = useState("");
@@ -52,6 +55,12 @@ export default function ContactedPage() {
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
   const [activeDropdownId, setActiveDropdownId] = useState(null);
 
+  // History modal state
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [historySearch, setHistorySearch] = useState("");
+  const [historyStatusFilter, setHistoryStatusFilter] = useState("All Status");
+  const [historyPropertyFilter, setHistoryPropertyFilter] = useState("All Properties");
+
   // Sub-modals
   const [noteModalEnquiry, setNoteModalEnquiry] = useState(null);
   const [noteContent, setNoteContent] = useState("");
@@ -66,6 +75,9 @@ export default function ContactedPage() {
   const [notInterestedModalEnquiry, setNotInterestedModalEnquiry] = useState(null);
   const [notInterestedReason, setNotInterestedReason] = useState("Price is high");
   const [notInterestedNote, setNotInterestedNote] = useState("");
+
+  const [archiveModalEnquiry, setArchiveModalEnquiry] = useState(null);
+  const [archiveReason, setArchiveReason] = useState("Archived by Owner");
 
   // =====================================================
   // FETCH ENQUIRIES FROM STRAPI API
@@ -103,6 +115,40 @@ export default function ContactedPage() {
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
+
+  // Clear error toast after 5 seconds
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => setErrorMessage(""), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
+  // Lock background body scroll when any modal is open to prevent duplicate competing scrollbars
+  useEffect(() => {
+    const isAnyModalOpen = Boolean(
+      selectedEnquiry ||
+      historyModalOpen ||
+      noteModalEnquiry ||
+      followUpModalEnquiry ||
+      notInterestedModalEnquiry ||
+      archiveModalEnquiry
+    );
+
+    if (isAnyModalOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [
+    selectedEnquiry,
+    historyModalOpen,
+    noteModalEnquiry,
+    followUpModalEnquiry,
+    notInterestedModalEnquiry,
+  ]);
 
   // =====================================================
   // HELPER FUNCTIONS FOR STRAPI DATA PARSING
@@ -199,16 +245,14 @@ export default function ContactedPage() {
   // =====================================================
   // FILTERED LIST & CALCULATED METRICS
   // =====================================================
-  // Contacted status bucket includes: Contacted, Interested, Follow-up Required, Site Visit Pending
+  // Contacted status bucket includes: Contacted, Follow-up Required
   const contactedBucket = useMemo(() => {
     return allEnquiries.filter((item) => {
       const s = getStatus(item).toLowerCase();
       return (
         s === "contacted" ||
-        s === "interested" ||
         s === "follow-up required" ||
-        s === "followup required" ||
-        s === "site visit pending"
+        s === "followup required"
       );
     });
   }, [allEnquiries]);
@@ -224,27 +268,41 @@ export default function ContactedPage() {
     }).length;
   }, [allEnquiries]);
 
-  // Metric 2: Follow-ups Due
+  // Metric 2: Follow-ups Due — scoped to contactedBucket only
   const countFollowUpsDue = useMemo(() => {
-    return allEnquiries.filter((item) => {
+    return contactedBucket.filter((item) => {
       const s = getStatus(item).toLowerCase();
       return s === "follow-up required" || s === "followup required" || Boolean(item?.FollowUpDate);
     }).length;
-  }, [allEnquiries]);
+  }, [contactedBucket]);
 
-  // Metric 3: Site Visit Pending
+  // Metric 3: Site Visit Pending — scoped to contactedBucket
   const countSiteVisitPending = useMemo(() => {
-    return allEnquiries.filter((item) => {
+    return contactedBucket.filter((item) => {
       const s = getStatus(item).toLowerCase();
       return s === "site visit pending" || s === "site visit scheduled" || s === "site visit";
     }).length;
-  }, [allEnquiries]);
+  }, [contactedBucket]);
 
-  // Metric 4: Converted
+  // Metric 4: Converted — scoped to contactedBucket, exclude "closed"
   const countConverted = useMemo(() => {
+    return contactedBucket.filter((item) => {
+      const s = getStatus(item).toLowerCase();
+      return s === "converted" || s === "interested";
+    }).length;
+  }, [contactedBucket]);
+
+  // Closed count for tabs (matches isClosedItem: closed, not interested, converted, archived)
+  const countClosedEnquiries = useMemo(() => {
     return allEnquiries.filter((item) => {
       const s = getStatus(item).toLowerCase();
-      return s === "converted" || s === "closed";
+      return (
+        s === "closed" ||
+        s === "not interested" ||
+        s === "notinterested" ||
+        s === "converted" ||
+        s === "archived"
+      );
     }).length;
   }, [allEnquiries]);
 
@@ -262,10 +320,76 @@ export default function ContactedPage() {
   const statusOptions = [
     "All Status",
     "Contacted",
+    "Follow-up Required",
+  ];
+
+  // History property options
+  const historyPropertyOptions = useMemo(() => {
+    const titles = allEnquiries.map(getPropertyName).filter(Boolean);
+    return ["All Properties", ...Array.from(new Set(titles))];
+  }, [allEnquiries]);
+
+  // History status options
+  const historyStatusOptions = [
+    "All Status",
+    "Pending",
+    "Contacted",
     "Interested",
     "Follow-up Required",
     "Site Visit Pending",
+    "Converted",
+    "Not Interested",
+    "Closed",
   ];
+
+  // History filtered list (all enquiries across New, Contacted, Site Visits, Closed)
+  const filteredHistoryEnquiries = useMemo(() => {
+    let result = [...allEnquiries];
+
+    if (historySearch.trim()) {
+      const q = historySearch.toLowerCase().trim();
+      result = result.filter((item) => {
+        const name = String(item?.Name || item?.name || "").toLowerCase();
+        const phone = String(item?.Phone || item?.phone || "").toLowerCase();
+        const email = String(item?.Email || item?.email || "").toLowerCase();
+        const propTitle = getPropertyName(item).toLowerCase();
+        const city = getPropertyCity(item).toLowerCase();
+        const msg = String(item?.Message || item?.message || "").toLowerCase();
+        const status = getStatus(item).toLowerCase();
+
+        return (
+          name.includes(q) ||
+          phone.includes(q) ||
+          email.includes(q) ||
+          propTitle.includes(q) ||
+          city.includes(q) ||
+          msg.includes(q) ||
+          status.includes(q)
+        );
+      });
+    }
+
+    if (historyPropertyFilter !== "All Properties") {
+      result = result.filter(
+        (item) => getPropertyName(item) === historyPropertyFilter
+      );
+    }
+
+    if (historyStatusFilter !== "All Status") {
+      result = result.filter(
+        (item) => getStatus(item).toLowerCase() === historyStatusFilter.toLowerCase()
+      );
+    }
+
+    // Sort newest first
+    result.sort((a, b) => {
+      const timeA = new Date(a?.createdAt || a?.created_at || 0).getTime();
+      const timeB = new Date(b?.createdAt || b?.created_at || 0).getTime();
+      return timeB - timeA;
+    });
+
+    return result;
+  }, [allEnquiries, historySearch, historyPropertyFilter, historyStatusFilter]);
 
   // =====================================================
   // CARD FILTER LABELS (for empty-state messaging)
@@ -273,8 +397,6 @@ export default function ContactedPage() {
   const cardFilterLabel = {
     all: "All Contacted",
     "follow-ups": "Follow-ups Due",
-    "site-visit": "Site Visit Pending",
-    converted: "Converted",
   };
 
   // Applied Filtering and Sorting logic
@@ -292,18 +414,6 @@ export default function ContactedPage() {
           s === "followup required" ||
           Boolean(item?.FollowUpDate)
         );
-      });
-    } else if (cardFilter === "site-visit") {
-      result = result.filter((item) => {
-        const s = getStatus(item).toLowerCase();
-        // Site Visit Pending = status is "site visit pending"
-        return s === "site visit pending";
-      });
-    } else if (cardFilter === "converted") {
-      result = result.filter((item) => {
-        const s = getStatus(item).toLowerCase();
-        // Converted = existing project logic: "converted" or "closed"
-        return s === "converted" || s === "closed";
       });
     }
     // "all" = no additional card filter
@@ -393,10 +503,11 @@ export default function ContactedPage() {
       setActionLoadingId(docId);
       console.log(`Updating enquiry ${docId} to status: ${newStatus}`, extraFields);
 
-      // Normalize status values to match actual Strapi enum (some have whitespace quirks in schema)
+      // Normalize status values to match actual Strapi enum (some have whitespace or casing quirks in schema)
       let mappedStatus = newStatus;
       if (newStatus === "Confirmed") mappedStatus = " Confirmed";
       if (newStatus === "Cancelled") mappedStatus = "Cancelled ";
+      if (newStatus === "Not Interested" || newStatus === "not interested") mappedStatus = "NotInterested";
 
       // Send status + extra fields in ONE call so the backend controller
       // receives all data together and can trigger the correct email.
@@ -414,7 +525,7 @@ export default function ContactedPage() {
               ...item,
               Status: newStatus,
               status: newStatus,
-              Statuss: newStatus,
+              Statuss: mappedStatus,
               ...extraFields,
             };
           }
@@ -431,7 +542,7 @@ export default function ContactedPage() {
           ...prev,
           Status: newStatus,
           status: newStatus,
-          Statuss: newStatus,
+          Statuss: mappedStatus,
           ...extraFields,
         };
       });
@@ -440,7 +551,7 @@ export default function ContactedPage() {
     } catch (err) {
       console.error("STATUS UPDATE ERROR:", err);
       setSuccessMessage("");
-      alert(err?.message || "Failed to update enquiry. Please try again.");
+      setErrorMessage(err?.message || "Failed to update enquiry. Please try again.");
       return false;
     } finally {
       setActionLoadingId(null);
@@ -470,7 +581,7 @@ export default function ContactedPage() {
     const docId = followUpModalEnquiry?.documentId || followUpModalEnquiry?.id;
 
     if (!followUpDate) {
-      alert("Please select a follow-up date.");
+      setErrorMessage("Please select a follow-up date.");
       return;
     }
 
@@ -500,7 +611,7 @@ export default function ContactedPage() {
     const docId = notInterestedModalEnquiry?.documentId || notInterestedModalEnquiry?.id;
 
     // ClosedReason exists in the schema; the optional note goes into OwnerResponse.
-    const success = await updateEnquiryStatusInStrapi(docId, "Closed", {
+    const success = await updateEnquiryStatusInStrapi(docId, "Not Interested", {
       ClosedReason: notInterestedReason,
       OwnerResponse: notInterestedNote || undefined,
     });
@@ -513,10 +624,28 @@ export default function ContactedPage() {
     }
   }
 
+  // Action: Archive Enquiry (Moves to Closed/Archived)
+  async function handleArchiveEnquiry() {
+    if (!archiveModalEnquiry) return;
+    const docId = archiveModalEnquiry?.documentId || archiveModalEnquiry?.id;
+
+    // Use "Closed" status in Strapi enum with ClosedReason = "Archived"
+    const success = await updateEnquiryStatusInStrapi(docId, "Closed", {
+      ClosedReason: archiveReason || "Archived by Owner",
+    });
+
+    if (success) {
+      setSuccessMessage("Enquiry archived and moved to Closed Enquiries.");
+      setArchiveModalEnquiry(null);
+      setSelectedEnquiry(null);
+    }
+  }
+
   // Action: Move to Site Visit
   async function handleMoveToSiteVisit(enquiry) {
     const docId = enquiry?.documentId || enquiry?.id;
-    const success = await updateEnquiryStatusInStrapi(docId, "Site Visit");
+    // Use the exact Strapi enum value: "Site Visit Pending"
+    const success = await updateEnquiryStatusInStrapi(docId, "Site Visit Pending");
     if (success) {
       setSuccessMessage("Site visit scheduled! The buyer will be notified via email.");
       setActiveDropdownId(null);
@@ -528,34 +657,37 @@ export default function ContactedPage() {
   // =====================================================
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
+      <div className="seller-page-wrapper flex min-h-screen flex-col font-sans">
         <Header />
 
         <main className="flex-1">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-            <button onClick={() => router.push("/owner/enquiries")} className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-[#064d3b] transition">
-              <span className="text-xl leading-none">←</span> Back to Enquiries
+            <button
+              onClick={() => router.push("/owner")}
+              className="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+            >
+              <ArrowLeft size={14} /> Back to Dashboard
             </button>
-            <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#c99838] uppercase tracking-wider mb-1">
-              <Link href="/owner/enquiries" className="hover:underline">Enquiries</Link>
-              <span>›</span>
-              <span>Contacted Enquiries</span>
-            </div>
 
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#064d3b]">
-              Contacted Enquiries
-            </h1>
+            <header className="mx-auto mb-8 max-w-2xl text-center">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3.5 py-1 text-[11px] font-semibold text-[var(--seller-text-muted)] shadow-xs">
+                <MessageSquare size={12} strokeWidth={2} />
+                <span>Seller Portal</span>
+              </div>
+              <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--seller-text)] sm:text-4xl lg:text-[40px]">
+                Contacted Enquiries
+              </h1>
+              <p className="mt-2.5 text-sm text-[var(--seller-text-muted)] sm:text-base">
+                Enquiries you have already contacted and are following up on.
+              </p>
+            </header>
 
-            <p className="text-sm sm:text-base text-gray-600 mt-1">
-              Enquiries you have already contacted and are following up on.
-            </p>
-
-            <div className="mt-8 bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm">
-              <div className="inline-block w-10 h-10 border-4 border-[#064d3b] border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-[#064d3b] font-semibold mt-4">
+            <div className="seller-card p-12 text-center">
+              <div className="inline-block w-9 h-9 border-3 border-[var(--seller-primary)] border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-[var(--seller-text)] font-semibold mt-4 text-sm">
                 Loading contacted enquiries...
               </p>
-              <p className="text-gray-500 text-sm mt-1">
+              <p className="text-[var(--seller-text-muted)] text-xs mt-1">
                 Fetching real-time data from Strapi backend.
               </p>
             </div>
@@ -572,42 +704,49 @@ export default function ContactedPage() {
   // =====================================================
   if (error) {
     return (
-      <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
+      <div className="seller-page-wrapper flex min-h-screen flex-col font-sans">
         <Header />
 
         <main className="flex-1">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-            <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#c99838] uppercase tracking-wider mb-1">
-              <span>Enquiries</span>
-              <span>›</span>
-              <span>Contacted Enquiries</span>
-            </div>
+            <button
+              onClick={() => router.push("/owner")}
+              className="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+            >
+              <ArrowLeft size={14} /> Back to Dashboard
+            </button>
 
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#064d3b]">
-              Contacted Enquiries
-            </h1>
+            <header className="mx-auto mb-8 max-w-2xl text-center">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3.5 py-1 text-[11px] font-semibold text-[var(--seller-text-muted)] shadow-xs">
+                <MessageSquare size={12} strokeWidth={2} />
+                <span>Seller Portal</span>
+              </div>
+              <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--seller-text)] sm:text-4xl lg:text-[40px]">
+                Contacted Enquiries
+              </h1>
+            </header>
 
-            <div className="mt-8 bg-white rounded-2xl border border-red-200 p-10 text-center shadow-sm">
-              <div className="w-14 h-14 mx-auto rounded-full bg-red-50 text-red-500 flex items-center justify-center text-2xl font-bold mb-3">
+            <div className="seller-card p-10 text-center">
+              <div className="w-12 h-12 mx-auto rounded-full bg-red-500/10 text-red-500 flex items-center justify-center text-xl font-bold mb-3">
                 ⚠️
               </div>
 
-              <h2 className="text-xl font-bold text-red-700">
+              <h2 className="text-lg font-bold text-[var(--seller-text)]">
                 Unable to load contacted enquiries
               </h2>
 
-              <p className="text-gray-600 mt-2 max-w-md mx-auto text-sm sm:text-base">
+              <p className="text-[var(--seller-text-muted)] mt-2 max-w-md mx-auto text-xs sm:text-sm">
                 Something went wrong while loading your enquiries. Please try again.
               </p>
 
-              <p className="text-xs font-mono bg-red-50 text-red-800 p-2 rounded mt-3 max-w-lg mx-auto overflow-x-auto">
+              <p className="text-xs font-mono bg-[var(--seller-bg)] border border-[var(--seller-border)] text-red-500 p-2.5 rounded-xl mt-3 max-w-lg mx-auto overflow-x-auto">
                 {error}
               </p>
 
               <button
                 type="button"
                 onClick={loadEnquiries}
-                className="mt-6 px-6 py-3 rounded-xl bg-[#064d3b] text-white font-semibold hover:bg-[#053d30] transition shadow"
+                className="mt-6 px-6 py-2.5 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-semibold text-xs hover:opacity-90 transition shadow-xs"
               >
                 Try Again
               </button>
@@ -624,23 +763,37 @@ export default function ContactedPage() {
   // MAIN CONTACTED ENQUIRIES PAGE UI
   // =====================================================
   return (
-    <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
+    <div className="seller-page-wrapper flex min-h-screen flex-col font-sans">
       <Header />
 
       <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
 
           {/* SUCCESS TOAST NOTIFICATION */}
           {successMessage && (
-            <div className="mb-6 p-4 rounded-xl bg-emerald-700 text-white flex items-center justify-between shadow-lg animate-bounce">
+            <div className="mb-6 flex items-center justify-between rounded-xl border border-[var(--seller-border-focus)] bg-[var(--seller-surface)] p-3.5 shadow-sm text-xs font-semibold text-[var(--seller-text)] animate-in fade-in slide-in-from-top-2">
               <div className="flex items-center gap-3">
-                <span className="text-xl">✓</span>
-                <span className="font-semibold text-sm sm:text-base">
-                  {successMessage}
-                </span>
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--seller-primary)] text-[var(--seller-bg)] text-[10px] font-black">✓</span>
+                <span>{successMessage}</span>
               </div>
               <button
                 onClick={() => setSuccessMessage("")}
-                className="text-white hover:text-gray-200 font-bold px-2"
+                className="text-[var(--seller-text-muted)] hover:text-[var(--seller-text)] font-bold px-1"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          {/* ERROR TOAST NOTIFICATION */}
+          {errorMessage && (
+            <div className="mb-6 flex items-center justify-between rounded-xl border border-red-500/30 bg-red-500/10 p-3.5 shadow-sm text-xs font-semibold text-red-600 dark:text-red-400 animate-in fade-in slide-in-from-top-2">
+              <div className="flex items-center gap-3">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-white text-[10px] font-black">!</span>
+                <span>{errorMessage}</span>
+              </div>
+              <button
+                onClick={() => setErrorMessage("")}
+                className="text-red-500 hover:text-red-700 dark:hover:text-red-300 font-bold px-1"
               >
                 ✕
               </button>
@@ -682,7 +835,7 @@ export default function ContactedPage() {
               {[
                 { label: `New (${countNewEnquiries})`, href: "/owner/enquiries/new", active: false },
                 { label: `Contacted (${countTotalContacted})`, href: "/owner/enquiries/contacted", active: true },
-                { label: `Closed`, href: "/owner/enquiries/closed", active: false },
+                { label: `Closed (${countClosedEnquiries})`, href: "/owner/enquiries/closed", active: false },
               ].map((tab) => (
                 <Link
                   key={tab.label}
@@ -705,8 +858,6 @@ export default function ContactedPage() {
               {[
                 { id: "all", label: `All Contacted (${countTotalContacted})` },
                 { id: "follow-ups", label: `Follow-ups Due (${countFollowUpsDue})` },
-                { id: "site-visit", label: `Site Visit Pending (${countSiteVisitPending})` },
-                { id: "converted", label: `Converted (${countConverted})` },
               ].map((chip) => (
                 <button
                   key={chip.id}
@@ -731,7 +882,7 @@ export default function ContactedPage() {
             <div className="flex flex-1 flex-wrap items-center justify-between gap-2.5">
 
               {/* Search */}
-              <div className="relative min-w-[200px] flex-1 sm:min-w-[260px]">
+              <div className="relative min-w-[180px] flex-1 sm:min-w-[220px]">
                 <Search
                   size={15}
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
@@ -754,6 +905,20 @@ export default function ContactedPage() {
                   </button>
                 )}
               </div>
+
+              {/* History button beside search bar */}
+              <button
+                type="button"
+                onClick={() => setHistoryModalOpen(true)}
+                className="h-10 inline-flex items-center gap-1.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3.5 text-xs font-semibold text-[var(--seller-text)] hover:border-[var(--seller-border-focus)] hover:bg-[var(--seller-surface-hover,var(--seller-surface))] transition shadow-2xs whitespace-nowrap"
+                title="View All Enquiry History"
+              >
+                <History size={14} className="text-[var(--seller-text-muted)]" />
+                <span>History</span>
+                <span className="ml-1 rounded-full bg-[var(--seller-border)] px-1.5 py-0.2 text-[10px] font-bold text-[var(--seller-text-muted)]">
+                  {allEnquiries.length}
+                </span>
+              </button>
 
               {/* Property filter */}
               <div className="relative w-auto min-w-[130px]">
@@ -852,21 +1017,21 @@ export default function ContactedPage() {
           {/* 3. RESULTS COUNTER */}
           <div className="flex items-center justify-between mb-4 px-1">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-bold text-[#064d3b]">
+              <h2 className="text-base sm:text-lg font-bold text-[var(--seller-text)]">
                 {cardFilterLabel[cardFilter] ?? "Contacted Customers"}
               </h2>
-              <span className="text-xs font-extrabold bg-[#064d3b] text-white px-2.5 py-0.5 rounded-full">
+              <span className="text-xs font-extrabold bg-[var(--seller-primary)] text-[var(--seller-bg)] px-2.5 py-0.5 rounded-full">
                 {filteredAndSortedEnquiries.length}
               </span>
             </div>
 
-            <p className="text-xs sm:text-sm text-gray-500">
+            <p className="text-xs sm:text-sm text-[var(--seller-text-muted)]">
               {filteredAndSortedEnquiries.length === 1 ? "1 enquiry" : `${filteredAndSortedEnquiries.length} enquiries`}
               {cardFilter !== "all" && (
                 <button
                   type="button"
                   onClick={() => setCardFilter("all")}
-                  className="ml-2 text-[#c99838] font-semibold hover:underline"
+                  className="ml-2 font-semibold text-[var(--seller-text)] hover:underline"
                 >
                   ✕ Clear
                 </button>
@@ -875,30 +1040,30 @@ export default function ContactedPage() {
           </div>
 
           {/* 4. CONTACTED ENQUIRY LIST (CARDS) */}
-          <div className="space-y-4">
+          <div className="space-y-3.5">
             {filteredAndSortedEnquiries.length === 0 ? (
               /* EMPTY STATE */
-              <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm">
-                <div className="w-16 h-16 mx-auto rounded-full bg-[#f2ead7] flex items-center justify-center text-3xl mb-4">
-                  📞
+              <div className="seller-card p-10 sm:p-12 text-center">
+                <div className="w-12 h-12 mx-auto rounded-2xl bg-[var(--seller-bg)] border border-[var(--seller-border)] flex items-center justify-center text-[var(--seller-text-muted)] mb-3">
+                  <MessageSquare size={20} />
                 </div>
 
-                <h3 className="text-xl font-bold text-[#064d3b]">
+                <h3 className="text-base sm:text-lg font-bold text-[var(--seller-text)]">
                   No {cardFilterLabel[cardFilter] ?? "Contacted"} Enquiries
                 </h3>
 
-                <p className="text-gray-500 text-sm sm:text-base mt-1 max-w-md mx-auto">
+                <p className="text-[var(--seller-text-muted)] text-xs sm:text-sm mt-1 max-w-md mx-auto">
                   {cardFilter === "all"
                     ? "You don't have any contacted enquiries matching your criteria."
                     : `No enquiries match the "${cardFilterLabel[cardFilter]}" filter.`}
                 </p>
 
-                <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <div className="mt-5 flex flex-wrap justify-center gap-2.5">
                   {cardFilter !== "all" && (
                     <button
                       type="button"
                       onClick={() => setCardFilter("all")}
-                      className="px-5 py-2.5 rounded-xl bg-[#064d3b] text-white text-sm font-semibold hover:bg-[#053d30] transition shadow"
+                      className="px-4 py-2 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] text-xs font-semibold hover:opacity-90 transition shadow-2xs"
                     >
                       Show All Contacted
                     </button>
@@ -906,7 +1071,7 @@ export default function ContactedPage() {
 
                   <Link
                     href="/owner/enquiries/new"
-                    className="px-5 py-2.5 rounded-xl border border-[#064d3b] text-[#064d3b] text-sm font-semibold hover:bg-[#f0f7f4] transition"
+                    className="px-4 py-2 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] text-xs font-semibold hover:border-[var(--seller-border-focus)] transition"
                   >
                     View New Enquiries
                   </Link>
@@ -920,7 +1085,7 @@ export default function ContactedPage() {
                         setPurposeFilter("All Purposes");
                         setStatusFilter("All Status");
                       }}
-                      className="px-5 py-2.5 rounded-xl border border-[#c99838] text-[#064d3b] text-sm font-semibold hover:bg-[#faf4e5] transition"
+                      className="px-4 py-2 rounded-xl border border-[var(--seller-border)] text-[var(--seller-text-muted)] text-xs font-semibold hover:text-[var(--seller-text)] transition"
                     >
                       Reset Filters
                     </button>
@@ -963,97 +1128,87 @@ export default function ContactedPage() {
 
                 const isDropdownOpen = activeDropdownId === docId;
 
-                // Dynamic Status Badge Color
-                let statusBadgeStyle = "bg-amber-100 text-amber-800 border-amber-200";
-                if (status.toLowerCase() === "interested") {
-                  statusBadgeStyle = "bg-emerald-100 text-emerald-800 border-emerald-200";
-                } else if (status.toLowerCase().includes("follow")) {
-                  statusBadgeStyle = "bg-amber-100 text-amber-900 border-amber-300";
-                } else if (status.toLowerCase().includes("visit")) {
-                  statusBadgeStyle = "bg-purple-100 text-purple-800 border-purple-200";
-                }
-
                 return (
                   <div
                     key={docId}
-                    className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 shadow-sm hover:shadow-md hover:border-[#c99838]/40 transition relative"
+                    className="seller-card p-4 sm:p-5 relative"
                   >
-                    <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1.3fr_0.9fr_auto] gap-5 items-center">
+                    <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1.3fr_0.9fr_auto] gap-4 sm:gap-5 items-center">
 
                       {/* CUSTOMER SECTION */}
-                      <div className="flex items-start sm:items-center gap-4">
-                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#fef6e7] text-[#c99838] flex items-center justify-center font-black text-lg flex-shrink-0 border border-[#f5e4c3]">
+                      <div className="flex items-start sm:items-center gap-3.5">
+                        <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[var(--seller-bg)] text-[var(--seller-text)] flex items-center justify-center font-bold text-sm shrink-0 border border-[var(--seller-border)]">
                           {initials}
                         </div>
 
-                        <div>
+                        <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-bold text-base sm:text-lg text-[#064d3b]">
+                            <h3 className="font-bold text-sm sm:text-base text-[var(--seller-text)] truncate">
                               {name}
                             </h3>
-                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border uppercase tracking-wider ${statusBadgeStyle}`}>
-                              {status.toUpperCase()}
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-[var(--seller-border)] bg-[var(--seller-bg)] text-[var(--seller-text-muted)] uppercase tracking-wider">
+                              {status}
                             </span>
                           </div>
 
-                          <p className="text-xs sm:text-sm text-gray-600 mt-1 flex items-center gap-1">
-                            <span>☎</span> {phone}
+                          <p className="text-xs text-[var(--seller-text-muted)] mt-1 truncate">
+                            ☎ {phone}
                           </p>
 
-                          <p className="text-xs sm:text-sm text-gray-600 flex items-center gap-1">
-                            <span>✉</span> {email}
+                          <p className="text-xs text-[var(--seller-text-muted)] truncate">
+                            ✉ {email}
                           </p>
                         </div>
                       </div>
 
                       {/* PROPERTY SECTION */}
-                      <div className="border-t lg:border-t-0 lg:border-l border-gray-100 pt-3 lg:pt-0 lg:pl-5">
-                        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+                      <div className="border-t lg:border-t-0 lg:border-l border-[var(--seller-border)] pt-3 lg:pt-0 lg:pl-5">
+                        <p className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider">
                           Interested in
                         </p>
 
-                        <h4 className="font-bold text-sm sm:text-base text-[#064d3b] mt-0.5 line-clamp-1">
+                        <h4 className="font-bold text-xs sm:text-sm text-[var(--seller-text)] mt-0.5 line-clamp-1">
                           {propTitle}
                         </h4>
 
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-[var(--seller-text-muted)] mt-0.5">
                           📍 {[propArea, propCity].filter(Boolean).join(", ") || "Location not specified"}
                         </p>
 
                         {propPrice && (
-                          <p className="text-xs sm:text-sm font-bold text-[#c99838] mt-1">
+                          <p className="text-xs font-extrabold text-[var(--seller-text)] mt-0.5">
                             {propPrice}
                           </p>
                         )}
                       </div>
 
                       {/* TIMELINE & FOLLOW-UP */}
-                      <div className="border-t lg:border-t-0 lg:border-l border-gray-100 pt-3 lg:pt-0 lg:pl-5">
-                        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+                      <div className="border-t lg:border-t-0 lg:border-l border-[var(--seller-border)] pt-3 lg:pt-0 lg:pl-5">
+                        <p className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider">
                           Contacted On
                         </p>
-                        <p className="text-xs sm:text-sm font-medium text-gray-700 mt-0.5">
+                        <p className="text-xs font-medium text-[var(--seller-text-muted)] mt-0.5">
                           {formattedContactedDate}
                         </p>
 
                         {followUpDateStr && (
-                          <>
-                            <p className="text-[11px] font-semibold text-amber-700 uppercase tracking-wider mt-2">
+                          <div className="mt-2">
+                            <p className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider">
                               Follow-up On
                             </p>
-                            <p className="text-xs sm:text-sm font-bold text-amber-800">
+                            <p className="text-xs font-bold text-[var(--seller-text)]">
                               {followUpDateStr}
                             </p>
-                          </>
+                          </div>
                         )}
                       </div>
 
                       {/* ACTION BUTTONS & MORE MENU */}
-                      <div className="flex sm:flex-row lg:flex-col gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 border-gray-100 lg:min-w-[140px] relative">
+                      <div className="flex sm:flex-row lg:flex-col gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 border-[var(--seller-border)] lg:min-w-[130px] relative">
                         <button
                           type="button"
                           onClick={() => setSelectedEnquiry(enquiry)}
-                          className="flex-1 lg:w-full px-4 py-2.5 rounded-xl bg-[#d6a744] text-[#064d3b] font-bold text-xs sm:text-sm hover:bg-[#c99838] transition shadow-sm"
+                          className="flex-1 lg:w-full px-3.5 py-2 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90 transition shadow-2xs text-center"
                         >
                           View Details
                         </button>
@@ -1065,21 +1220,21 @@ export default function ContactedPage() {
                             onClick={() =>
                               setActiveDropdownId(isDropdownOpen ? null : docId)
                             }
-                            className="w-full px-3 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-semibold text-xs sm:text-sm hover:bg-gray-50 transition flex items-center justify-center gap-1"
+                            className="px-3 py-2 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-semibold text-xs hover:border-[var(--seller-border-focus)] transition flex items-center justify-center gap-1 w-full"
                           >
                             <span>More</span>
-                            <span>⋮</span>
+                            <ChevronDown size={12} />
                           </button>
 
                           {/* Dropdown Menu Popup */}
                           {isDropdownOpen && (
-                            <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-2xl border border-gray-200 shadow-xl z-30 py-2 text-xs font-semibold text-gray-700 animate-in fade-in zoom-in duration-100">
+                            <div className="absolute right-0 bottom-full lg:bottom-auto lg:top-full mb-1 lg:mb-0 lg:mt-1 w-52 bg-[var(--seller-surface)] rounded-2xl shadow-xl border border-[var(--seller-border)] py-1.5 z-20 text-xs font-semibold text-[var(--seller-text)] animate-in fade-in duration-100">
                               <button
                                 onClick={() => {
                                   setActiveDropdownId(null);
                                   setSelectedEnquiry(enquiry);
                                 }}
-                                className="w-full text-left px-4 py-2 hover:bg-[#faf8f5] hover:text-[#064d3b] transition"
+                                className="w-full text-left px-3.5 py-2 hover:bg-[var(--seller-bg)] transition"
                               >
                                 👁️ View Details
                               </button>
@@ -1089,7 +1244,7 @@ export default function ContactedPage() {
                                   setActiveDropdownId(null);
                                   setNoteModalEnquiry(enquiry);
                                 }}
-                                className="w-full text-left px-4 py-2 hover:bg-[#faf8f5] hover:text-[#064d3b] transition"
+                                className="w-full text-left px-3.5 py-2 hover:bg-[var(--seller-bg)] transition"
                               >
                                 📝 Add Contact Note
                               </button>
@@ -1099,7 +1254,7 @@ export default function ContactedPage() {
                                   setActiveDropdownId(null);
                                   setFollowUpModalEnquiry(enquiry);
                                 }}
-                                className="w-full text-left px-4 py-2 hover:bg-[#faf8f5] hover:text-[#064d3b] transition"
+                                className="w-full text-left px-3.5 py-2 hover:bg-[var(--seller-bg)] transition"
                               >
                                 📅 Schedule Follow-up
                               </button>
@@ -1109,7 +1264,7 @@ export default function ContactedPage() {
                                   setActiveDropdownId(null);
                                   updateEnquiryStatusInStrapi(docId, "Interested");
                                 }}
-                                className="w-full text-left px-4 py-2 hover:bg-[#faf8f5] hover:text-emerald-700 transition"
+                                className="w-full text-left px-3.5 py-2 hover:bg-[var(--seller-bg)] transition"
                               >
                                 ⭐ Mark as Interested
                               </button>
@@ -1119,19 +1274,43 @@ export default function ContactedPage() {
                                   setActiveDropdownId(null);
                                   handleMoveToSiteVisit(enquiry);
                                 }}
-                                className="w-full text-left px-4 py-2 hover:bg-[#faf8f5] hover:text-purple-700 transition"
+                                className="w-full text-left px-3.5 py-2 hover:bg-[var(--seller-bg)] transition"
                               >
                                 🚗 Move to Site Visit
                               </button>
 
-                              <hr className="my-1 border-gray-100" />
+                              <button
+                                onClick={async () => {
+                                  setActiveDropdownId(null);
+                                  const success = await updateEnquiryStatusInStrapi(docId, "Converted");
+                                  if (success) {
+                                    setSuccessMessage("Enquiry marked as Converted and moved to Closed Enquiries.");
+                                    if (selectedEnquiry && (selectedEnquiry?.documentId === docId || selectedEnquiry?.id === docId)) {
+                                      setSelectedEnquiry(null);
+                                    }
+                                  }
+                                }}
+                                className="w-full text-left px-3.5 py-2 hover:bg-[var(--seller-bg)] transition text-[var(--seller-text)]"
+                              >
+                                🏆 Mark as Converted
+                              </button>
+
+                              <button
+                                onClick={() => {
+                                  setActiveDropdownId(null);
+                                  setArchiveModalEnquiry(enquiry);
+                                }}
+                                className="w-full text-left px-3.5 py-2 hover:bg-[var(--seller-bg)] transition text-[var(--seller-text)]"
+                              >
+                                📦 Archive Enquiry
+                              </button>
 
                               <button
                                 onClick={() => {
                                   setActiveDropdownId(null);
                                   setNotInterestedModalEnquiry(enquiry);
                                 }}
-                                className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 transition"
+                                className="w-full text-left px-3.5 py-2 hover:bg-red-500/10 text-red-500 transition"
                               >
                                 🚫 Mark as Not Interested
                               </button>
@@ -1155,33 +1334,33 @@ export default function ContactedPage() {
       ===================================================== */}
       {selectedEnquiry && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl relative border border-gray-100 my-8 max-h-[90vh] overflow-y-auto">
+          <div className="bg-[var(--seller-surface)] rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl relative border border-[var(--seller-border)] my-8 max-h-[90vh] overflow-y-auto text-[var(--seller-text)]">
 
             {/* Close Button */}
             <button
               type="button"
               onClick={() => setSelectedEnquiry(null)}
-              className="absolute top-5 right-5 text-gray-400 hover:text-gray-700 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-bold text-base transition"
+              className="absolute top-5 right-5 text-[var(--seller-text-muted)] hover:text-[var(--seller-text)] w-8 h-8 rounded-full bg-[var(--seller-bg)] flex items-center justify-center font-bold text-sm transition border border-[var(--seller-border)]"
             >
               ✕
             </button>
 
             {/* Header / Customer Banner */}
-            <div className="flex items-center gap-4 mb-6 border-b border-gray-100 pb-5">
-              <div className="w-14 h-14 rounded-2xl bg-[#fef6e7] text-[#c99838] flex items-center justify-center font-black text-2xl border border-[#f5e4c3]">
+            <div className="flex items-center gap-4 mb-6 border-b border-[var(--seller-border)] pb-5">
+              <div className="w-12 h-12 rounded-2xl bg-[var(--seller-bg)] text-[var(--seller-text)] flex items-center justify-center font-black text-xl border border-[var(--seller-border)]">
                 {(selectedEnquiry?.Name || "U")[0]}
               </div>
 
               <div>
-                <h3 className="text-2xl font-bold text-[#064d3b]">
+                <h3 className="text-xl sm:text-2xl font-bold text-[var(--seller-text)]">
                   {selectedEnquiry?.Name || selectedEnquiry?.name || "Customer Details"}
                 </h3>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-[var(--seller-text-muted)] mt-0.5">
                   ☎ {selectedEnquiry?.Phone} | ✉ {selectedEnquiry?.Email}
                 </p>
               </div>
 
-              <span className="ml-auto text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 uppercase tracking-wider">
+              <span className="ml-auto text-xs font-bold px-3 py-1 rounded-full bg-[var(--seller-bg)] text-[var(--seller-text)] uppercase tracking-wider border border-[var(--seller-border)]">
                 {getStatus(selectedEnquiry)}
               </span>
             </div>
@@ -1193,28 +1372,28 @@ export default function ContactedPage() {
               <div className="lg:col-span-2 space-y-5 text-sm">
 
                 {/* Customer Details Box */}
-                <div className="bg-[#faf8f5] p-5 rounded-2xl border border-gray-200">
-                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                <div className="bg-[var(--seller-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--seller-border)]">
+                  <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-3">
                     Customer Requirements
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs sm:text-sm">
                     <div>
-                      <span className="text-gray-400 block text-xs">Preferred Location</span>
-                      <span className="font-bold text-gray-800">
+                      <span className="text-[var(--seller-text-subtle)] block text-xs">Preferred Location</span>
+                      <span className="font-bold text-[var(--seller-text)]">
                         {getPropertyCity(selectedEnquiry) || "Pune"}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-gray-400 block text-xs">Purpose</span>
-                      <span className="font-bold text-gray-800">
+                      <span className="text-[var(--seller-text-subtle)] block text-xs">Purpose</span>
+                      <span className="font-bold text-[var(--seller-text)]">
                         {getPropertyPurpose(selectedEnquiry)}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-gray-400 block text-xs">Property Type</span>
-                      <span className="font-bold text-gray-800">
+                      <span className="text-[var(--seller-text-subtle)] block text-xs">Property Type</span>
+                      <span className="font-bold text-[var(--seller-text)]">
                         {getPropertyType(selectedEnquiry)}
                       </span>
                     </div>
@@ -1222,8 +1401,8 @@ export default function ContactedPage() {
                 </div>
 
                 {/* Enquired Property Box */}
-                <div className="bg-[#faf8f5] p-5 rounded-2xl border border-gray-200">
-                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                <div className="bg-[var(--seller-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--seller-border)]">
+                  <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-3">
                     Enquired Property
                   </h4>
 
@@ -1237,16 +1416,16 @@ export default function ContactedPage() {
                     )}
 
                     <div className="space-y-1">
-                      <h5 className="font-bold text-base text-[#064d3b]">
+                      <h5 className="font-bold text-sm sm:text-base text-[var(--seller-text)]">
                         {getPropertyName(selectedEnquiry)}
                       </h5>
 
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-[var(--seller-text-muted)]">
                         📍 {[getPropertyArea(selectedEnquiry), getPropertyCity(selectedEnquiry)].filter(Boolean).join(", ")}
                       </p>
 
                       {getPropertyPrice(selectedEnquiry) && (
-                        <p className="text-sm font-extrabold text-[#c99838] pt-1">
+                        <p className="text-xs sm:text-sm font-extrabold text-[var(--seller-text)] pt-1">
                           {getPropertyPrice(selectedEnquiry)}
                         </p>
                       )}
@@ -1255,28 +1434,28 @@ export default function ContactedPage() {
                 </div>
 
                 {/* Enquiry Message */}
-                <div className="bg-[#faf8f5] p-5 rounded-2xl border border-gray-200">
-                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                <div className="bg-[var(--seller-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--seller-border)]">
+                  <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-2">
                     Enquiry Message
                   </h4>
-                  <p className="text-gray-700 bg-white p-3 rounded-xl border border-gray-100 italic">
+                  <p className="text-[var(--seller-text)] bg-[var(--seller-surface)] p-3 rounded-xl border border-[var(--seller-border)] italic text-xs sm:text-sm">
                     "{selectedEnquiry?.Message || selectedEnquiry?.message || "No message provided."}"
                   </p>
                 </div>
 
                 {/* Contact History */}
-                <div className="bg-[#faf8f5] p-5 rounded-2xl border border-gray-200">
-                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                <div className="bg-[var(--seller-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--seller-border)]">
+                  <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-3">
                     Contact History
                   </h4>
 
                   <div className="space-y-3 pl-2">
                     {getContactHistory(selectedEnquiry).map((item, idx) => (
-                      <div key={idx} className="relative pl-6 border-l-2 border-emerald-500 pb-2">
-                        <span className="absolute -left-[7px] top-0 w-3 h-3 rounded-full bg-emerald-600"></span>
-                        <p className="text-xs font-bold text-gray-500">{item.date}</p>
-                        <p className="font-bold text-gray-800 text-xs sm:text-sm">{item.title}</p>
-                        <p className="text-xs text-gray-600 mt-0.5">{item.note}</p>
+                      <div key={idx} className="relative pl-5 border-l-2 border-[var(--seller-border-focus)] pb-1">
+                        <span className="absolute -left-[5px] top-0.5 w-2 h-2 rounded-full bg-[var(--seller-text)]"></span>
+                        <p className="text-[11px] font-semibold text-[var(--seller-text-muted)]">{item.date}</p>
+                        <p className="font-bold text-[var(--seller-text)] text-xs">{item.title}</p>
+                        <p className="text-xs text-[var(--seller-text-muted)] mt-0.5">{item.note}</p>
                       </div>
                     ))}
                   </div>
@@ -1286,14 +1465,14 @@ export default function ContactedPage() {
 
               {/* Right Column: Quick Actions */}
               <div className="space-y-3">
-                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-2">
                   Quick Actions
                 </h4>
 
                 {selectedEnquiry?.Phone && (
                   <a
                     href={`tel:${selectedEnquiry.Phone}`}
-                    className="w-full text-center px-4 py-3 rounded-xl bg-emerald-700 text-white font-bold text-sm hover:bg-emerald-800 transition block shadow-sm"
+                    className="w-full text-center px-4 py-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-bold text-xs hover:border-[var(--seller-border-focus)] transition block shadow-2xs"
                   >
                     📞 Call Customer
                   </a>
@@ -1302,7 +1481,7 @@ export default function ContactedPage() {
                 {selectedEnquiry?.Email && (
                   <a
                     href={`mailto:${selectedEnquiry.Email}`}
-                    className="w-full text-center px-4 py-3 rounded-xl bg-white border border-gray-300 text-gray-800 font-bold text-sm hover:bg-gray-50 transition block shadow-xs"
+                    className="w-full text-center px-4 py-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-bold text-xs hover:border-[var(--seller-border-focus)] transition block shadow-2xs"
                   >
                     ✉ Send Message
                   </a>
@@ -1311,7 +1490,7 @@ export default function ContactedPage() {
                 <button
                   type="button"
                   onClick={() => setNoteModalEnquiry(selectedEnquiry)}
-                  className="w-full px-4 py-3 rounded-xl bg-[#d6a744] text-[#064d3b] font-bold text-sm hover:bg-[#c99838] transition block shadow-xs"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90 transition block shadow-2xs"
                 >
                   📝 Add Contact Note
                 </button>
@@ -1319,7 +1498,7 @@ export default function ContactedPage() {
                 <button
                   type="button"
                   onClick={() => setFollowUpModalEnquiry(selectedEnquiry)}
-                  className="w-full px-4 py-3 rounded-xl bg-purple-50 border border-purple-200 text-purple-800 font-bold text-sm hover:bg-purple-100 transition block"
+                  className="w-full px-4 py-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-bold text-xs hover:border-[var(--seller-border-focus)] transition block shadow-2xs"
                 >
                   📅 Schedule Follow-up
                 </button>
@@ -1327,15 +1506,38 @@ export default function ContactedPage() {
                 <button
                   type="button"
                   onClick={() => handleMoveToSiteVisit(selectedEnquiry)}
-                  className="w-full px-4 py-3 rounded-xl bg-[#064d3b] text-white font-bold text-sm hover:bg-[#053d30] transition block"
+                  className="w-full px-4 py-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-bold text-xs hover:border-[var(--seller-border-focus)] transition block shadow-2xs"
                 >
                   🚗 Move to Site Visit
                 </button>
 
                 <button
                   type="button"
+                  onClick={async () => {
+                    const docId = selectedEnquiry?.documentId || selectedEnquiry?.id;
+                    const success = await updateEnquiryStatusInStrapi(docId, "Converted");
+                    if (success) {
+                      setSuccessMessage("Enquiry marked as Converted and moved to Closed Enquiries.");
+                      setSelectedEnquiry(null);
+                    }
+                  }}
+                  className="w-full px-4 py-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-bold text-xs hover:border-[var(--seller-border-focus)] transition block shadow-2xs"
+                >
+                  🏆 Mark as Converted
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setArchiveModalEnquiry(selectedEnquiry)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-bold text-xs hover:border-[var(--seller-border-focus)] transition block shadow-2xs"
+                >
+                  📦 Archive Enquiry
+                </button>
+
+                <button
+                  type="button"
                   onClick={() => setNotInterestedModalEnquiry(selectedEnquiry)}
-                  className="w-full px-4 py-3 rounded-xl border border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 transition block"
+                  className="w-full px-4 py-2.5 rounded-xl border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 font-bold text-xs hover:bg-red-50 dark:hover:bg-red-950/20 transition block shadow-2xs"
                 >
                   🚫 Mark as Not Interested
                 </button>
@@ -1352,17 +1554,17 @@ export default function ContactedPage() {
       ===================================================== */}
       {noteModalEnquiry && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 animate-in fade-in zoom-in duration-150">
-            <h3 className="text-xl font-bold text-[#064d3b]">
+          <div className="bg-[var(--seller-surface)] rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[var(--seller-border)] animate-in fade-in zoom-in duration-150 text-[var(--seller-text)]">
+            <h3 className="text-base sm:text-lg font-bold text-[var(--seller-text)]">
               Contact with Customer
             </h3>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-[var(--seller-text-muted)] mt-1">
               {noteModalEnquiry?.Name} (☎ {noteModalEnquiry?.Phone})
             </p>
 
             <div className="mt-4 space-y-4 text-sm">
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[var(--seller-text)] mb-1">
                   Add Note
                 </label>
                 <textarea
@@ -1370,15 +1572,15 @@ export default function ContactedPage() {
                   value={noteContent}
                   onChange={(e) => setNoteContent(e.target.value)}
                   placeholder="Spoke with customer. She liked the flat and wants to visit on Saturday morning..."
-                  className="w-full p-3 rounded-xl border border-gray-300 text-sm outline-none focus:border-[#064d3b]"
+                  className="w-full p-3 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] text-xs text-[var(--seller-text)] outline-none focus:border-[var(--seller-border-focus)]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-2">
+                <label className="block text-xs font-bold text-[var(--seller-text)] mb-2">
                   Outcome of Conversation
                 </label>
-                <div className="space-y-2 text-xs font-semibold text-gray-700">
+                <div className="space-y-2 text-xs font-semibold text-[var(--seller-text)]">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
@@ -1386,7 +1588,7 @@ export default function ContactedPage() {
                       value="Interested"
                       checked={noteOutcome === "Interested"}
                       onChange={(e) => setNoteOutcome(e.target.value)}
-                      className="accent-[#064d3b]"
+                      className="accent-[var(--seller-primary)]"
                     />
                     <span>⭐ Interested</span>
                   </label>
@@ -1398,7 +1600,7 @@ export default function ContactedPage() {
                       value="Follow-up Required"
                       checked={noteOutcome === "Follow-up Required"}
                       onChange={(e) => setNoteOutcome(e.target.value)}
-                      className="accent-[#064d3b]"
+                      className="accent-[var(--seller-primary)]"
                     />
                     <span>⏰ Follow-up Required</span>
                   </label>
@@ -1421,14 +1623,14 @@ export default function ContactedPage() {
                 <button
                   type="button"
                   onClick={() => setNoteModalEnquiry(null)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-gray-300 font-semibold text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-[var(--seller-border)] font-semibold text-[var(--seller-text-muted)] text-xs hover:text-[var(--seller-text)]"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleSaveNote}
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-[#d6a744] text-[#064d3b] font-bold hover:bg-[#c99838]"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90"
                 >
                   Save Note
                 </button>
@@ -1443,50 +1645,36 @@ export default function ContactedPage() {
       ===================================================== */}
       {followUpModalEnquiry && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 animate-in fade-in zoom-in duration-150">
-            <h3 className="text-xl font-bold text-[#064d3b]">
+          <div className="bg-[var(--seller-surface)] rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[var(--seller-border)] animate-in fade-in zoom-in duration-150 text-[var(--seller-text)]">
+            <h3 className="text-base sm:text-lg font-bold text-[var(--seller-text)]">
               Schedule Follow-up
             </h3>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-[var(--seller-text-muted)] mt-1">
               Set a reminder to contact {followUpModalEnquiry?.Name}
             </p>
 
             <div className="mt-4 space-y-3 text-sm">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[var(--seller-text)] mb-1">
                     Follow-up Date
                   </label>
-                  <input
-                    type="date"
-                    value={followUpDate}
-                    onChange={(e) => setFollowUpDate(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:border-[#064d3b]"
-                  />
+                  <input type="date" value={followUpDate} onChange={(e) => setFollowUpDate(e.target.value)} className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 text-xs font-medium text-[var(--seller-text)] outline-none focus:border-[var(--seller-border-focus)]" />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                  <label className="block text-xs font-bold text-[var(--seller-text)] mb-1">
                     Follow-up Time
                   </label>
-                  <input
-                    type="time"
-                    value={followUpTime}
-                    onChange={(e) => setFollowUpTime(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:border-[#064d3b]"
-                  />
+                  <input type="time" value={followUpTime} onChange={(e) => setFollowUpTime(e.target.value)} className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 text-xs font-medium text-[var(--seller-text)] outline-none focus:border-[var(--seller-border-focus)]" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[var(--seller-text)] mb-1">
                   Reminder Type
                 </label>
-                <select
-                  value={reminderType}
-                  onChange={(e) => setReminderType(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:border-[#064d3b]"
-                >
+                <select value={reminderType} onChange={(e) => setReminderType(e.target.value)} className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 text-xs font-semibold text-[var(--seller-text)] outline-none focus:border-[var(--seller-border-focus)]">
                   <option value="Call">Call</option>
                   <option value="Message">Message</option>
                   <option value="WhatsApp">WhatsApp</option>
@@ -1494,30 +1682,24 @@ export default function ContactedPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[var(--seller-text)] mb-1">
                   Note / Reminder
                 </label>
-                <input
-                  type="text"
-                  value={followUpNote}
-                  onChange={(e) => setFollowUpNote(e.target.value)}
-                  placeholder="Confirm site visit and finalize price..."
-                  className="w-full p-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:border-[#064d3b]"
-                />
+                <input type="text" value={followUpNote} onChange={(e) => setFollowUpNote(e.target.value)} placeholder="Confirm site visit and finalize price..." className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 text-xs font-medium text-[var(--seller-text)] outline-none focus:border-[var(--seller-border-focus)]" />
               </div>
 
               <div className="flex gap-3 pt-3">
                 <button
                   type="button"
                   onClick={() => setFollowUpModalEnquiry(null)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-gray-300 font-semibold text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-[var(--seller-border)] font-semibold text-[var(--seller-text-muted)] text-xs hover:text-[var(--seller-text)]"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleScheduleFollowUp}
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-[#d6a744] text-[#064d3b] font-bold hover:bg-[#c99838]"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90"
                 >
                   Schedule Follow-up
                 </button>
@@ -1532,28 +1714,28 @@ export default function ContactedPage() {
       ===================================================== */}
       {notInterestedModalEnquiry && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border border-gray-100 animate-in fade-in zoom-in duration-150">
+          <div className="bg-[var(--seller-surface)] rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border border-[var(--seller-border)] animate-in fade-in zoom-in duration-150 text-[var(--seller-text)]">
             <div className="w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-2xl mx-auto mb-3">
               🚫
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900">
+            <h3 className="text-base sm:text-lg font-bold text-[var(--seller-text)]">
               Mark as Not Interested?
             </h3>
 
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-[var(--seller-text-muted)] mt-1">
               This enquiry will be moved to Closed Enquiries.
             </p>
 
             <div className="mt-4 space-y-3 text-left text-sm">
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[var(--seller-text)] mb-1">
                   Reason
                 </label>
                 <select
                   value={notInterestedReason}
                   onChange={(e) => setNotInterestedReason(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:border-red-500"
+                  className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 text-xs font-semibold text-[var(--seller-text)] outline-none focus:border-[var(--seller-border-focus)]"
                 >
                   <option value="Price is high">Price is high</option>
                   <option value="Location mismatch">Location mismatch</option>
@@ -1563,7 +1745,7 @@ export default function ContactedPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-[var(--seller-text)] mb-1">
                   Additional Note (Optional)
                 </label>
                 <textarea
@@ -1571,7 +1753,7 @@ export default function ContactedPage() {
                   value={notInterestedNote}
                   onChange={(e) => setNotInterestedNote(e.target.value)}
                   placeholder="Budget is not matching..."
-                  className="w-full p-2.5 rounded-xl border border-gray-300 text-xs outline-none focus:border-red-500"
+                  className="w-full p-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] text-xs text-[var(--seller-text)] outline-none focus:border-[var(--seller-border-focus)] placeholder:text-[var(--seller-text-subtle)]"
                 />
               </div>
 
@@ -1579,7 +1761,7 @@ export default function ContactedPage() {
                 <button
                   type="button"
                   onClick={() => setNotInterestedModalEnquiry(null)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-gray-300 font-semibold text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-[var(--seller-border)] font-semibold text-[var(--seller-text-muted)] text-xs hover:text-[var(--seller-text)]"
                 >
                   Cancel
                 </button>
@@ -1587,12 +1769,364 @@ export default function ContactedPage() {
                 <button
                   type="button"
                   onClick={handleMarkNotInterested}
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700"
+                  disabled={actionLoadingId === (notInterestedModalEnquiry?.documentId || notInterestedModalEnquiry?.id)}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 text-white font-bold text-xs hover:bg-red-700 transition disabled:opacity-50"
                 >
-                  Mark as Not Interested
+                  {actionLoadingId === (notInterestedModalEnquiry?.documentId || notInterestedModalEnquiry?.id)
+                    ? "Updating..."
+                    : "Mark as Not Interested"}
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================
+          ARCHIVE ENQUIRY MODAL
+      ===================================================== */}
+      {archiveModalEnquiry && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[var(--seller-surface)] rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border border-[var(--seller-border)] animate-in fade-in zoom-in duration-150 text-[var(--seller-text)]">
+            <div className="w-14 h-14 rounded-full bg-[var(--seller-bg)] text-[var(--seller-text)] border border-[var(--seller-border)] flex items-center justify-center text-2xl mx-auto mb-3">
+              📦
+            </div>
+
+            <h3 className="text-base sm:text-lg font-bold text-[var(--seller-text)]">
+              Archive Enquiry?
+            </h3>
+
+            <p className="text-xs text-[var(--seller-text-muted)] mt-1">
+              This enquiry will be moved to the Archived section under Closed Enquiries.
+            </p>
+
+            <div className="mt-4 space-y-3 text-left text-sm">
+              <div>
+                <label className="block text-xs font-bold text-[var(--seller-text)] mb-1">
+                  Reason for Archiving
+                </label>
+                <select
+                  value={archiveReason}
+                  onChange={(e) => setArchiveReason(e.target.value)}
+                  className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 text-xs font-semibold text-[var(--seller-text)] outline-none focus:border-[var(--seller-border-focus)]"
+                >
+                  <option value="Archived by Owner">Archived by Owner</option>
+                  <option value="Deal completed elsewhere">Deal completed elsewhere</option>
+                  <option value="Property no longer available">Property no longer available</option>
+                  <option value="Inactive for too long">Inactive for too long</option>
+                </select>
+              </div>
+
+              <div className="flex gap-3 pt-3">
+                <button
+                  type="button"
+                  onClick={() => setArchiveModalEnquiry(null)}
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-[var(--seller-border)] font-semibold text-[var(--seller-text-muted)] text-xs hover:text-[var(--seller-text)]"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleArchiveEnquiry}
+                  disabled={actionLoadingId === (archiveModalEnquiry?.documentId || archiveModalEnquiry?.id)}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90 transition disabled:opacity-50"
+                >
+                  {actionLoadingId === (archiveModalEnquiry?.documentId || archiveModalEnquiry?.id)
+                    ? "Archiving..."
+                    : "Confirm Archive"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================
+          ENQUIRY HISTORY MODAL / PANEL
+      ===================================================== */}
+      {historyModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5">
+          <div className="bg-[var(--seller-surface)] rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-[var(--seller-border)] animate-in fade-in zoom-in duration-150 overflow-hidden text-[var(--seller-text)]">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-5 sm:p-6 border-b border-[var(--seller-border)] bg-[var(--seller-surface)]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[var(--seller-bg)] text-[var(--seller-text)] flex items-center justify-center border border-[var(--seller-border)]">
+                  <History size={18} />
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-extrabold text-[var(--seller-text)] flex items-center gap-2">
+                    <span>Enquiry History</span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold">
+                      {filteredHistoryEnquiries.length} of {allEnquiries.length}
+                    </span>
+                  </h3>
+                  <p className="text-xs text-[var(--seller-text-muted)] mt-0.5">
+                    View all past and current enquiries received across properties.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setHistoryModalOpen(false)}
+                className="w-9 h-9 rounded-xl border border-[var(--seller-border)] text-[var(--seller-text-muted)] hover:text-[var(--seller-text)] hover:bg-[var(--seller-bg)] flex items-center justify-center transition"
+                aria-label="Close History Modal"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Modal Filters Toolbar */}
+            <div className="p-4 sm:p-5 border-b border-[var(--seller-border)] bg-[var(--seller-bg)]">
+              <div className="flex flex-wrap items-center gap-2.5">
+                {/* Search */}
+                <div className="relative flex-1 min-w-[200px]">
+                  <Search
+                    size={14}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                  />
+                  <input
+                    type="text"
+                    value={historySearch}
+                    onChange={(e) => setHistorySearch(e.target.value)}
+                    placeholder="Search by buyer, phone, email, property, message..."
+                    className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] pl-8 pr-7 text-xs font-medium text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)]"
+                  />
+                  {historySearch && (
+                    <button
+                      type="button"
+                      onClick={() => setHistorySearch("")}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-[var(--seller-text-subtle)] hover:text-[var(--seller-text)]"
+                    >
+                      <X size={11} />
+                    </button>
+                  )}
+                </div>
+
+                {/* Status Filter */}
+                <div className="relative min-w-[130px]">
+                  <select
+                    value={historyStatusFilter}
+                    onChange={(e) => setHistoryStatusFilter(e.target.value)}
+                    className="h-9 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer pr-7"
+                  >
+                    {historyStatusOptions.map((st) => (
+                      <option key={st} value={st}>
+                        {st}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={12}
+                    className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                  />
+                </div>
+
+                {/* Property Filter */}
+                <div className="relative min-w-[140px]">
+                  <select
+                    value={historyPropertyFilter}
+                    onChange={(e) => setHistoryPropertyFilter(e.target.value)}
+                    className="h-9 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer pr-7 max-w-[200px] truncate"
+                  >
+                    {historyPropertyOptions.map((prop) => (
+                      <option key={prop} value={prop}>
+                        {prop}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={12}
+                    className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                  />
+                </div>
+
+                {/* Reset Filters */}
+                {(historySearch || historyStatusFilter !== "All Status" || historyPropertyFilter !== "All Properties") && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setHistorySearch("");
+                      setHistoryStatusFilter("All Status");
+                      setHistoryPropertyFilter("All Properties");
+                    }}
+                    className="h-9 px-3 rounded-xl border border-dashed border-[var(--seller-border)] text-xs font-semibold text-[var(--seller-text-muted)] hover:text-red-500 hover:border-red-300 transition"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Body: Enquiry List */}
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3">
+              {filteredHistoryEnquiries.length === 0 ? (
+                <div className="text-center py-10 px-4 rounded-2xl border border-dashed border-[var(--seller-border)] bg-[var(--seller-bg)]">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--seller-surface)] text-[var(--seller-text-muted)] border border-[var(--seller-border)] flex items-center justify-center mx-auto mb-2 text-base">
+                    🔍
+                  </div>
+                  <h4 className="font-bold text-xs sm:text-sm text-[var(--seller-text)]">
+                    No enquiries found in history
+                  </h4>
+                  <p className="text-xs text-[var(--seller-text-muted)] mt-1">
+                    Try adjusting your search terms or filters above.
+                  </p>
+                </div>
+              ) : (
+                filteredHistoryEnquiries.map((enq) => {
+                  const docId = enq?.documentId || enq?.id;
+                  const currentStatus = getStatus(enq);
+                  const isNew = currentStatus.toLowerCase() === "new" || currentStatus.toLowerCase() === "pending";
+                  const isContacted = currentStatus.toLowerCase() === "contacted";
+                  const isConverted = currentStatus.toLowerCase() === "converted";
+                  const isNotInterested = currentStatus.toLowerCase() === "not interested";
+
+                  let statusBadgeClass = "bg-[var(--seller-bg)] text-[var(--seller-text-muted)] border-[var(--seller-border)]";
+                  if (isNew) statusBadgeClass = "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20";
+                  else if (isContacted) statusBadgeClass = "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20";
+                  else if (isConverted) statusBadgeClass = "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
+                  else if (isNotInterested) statusBadgeClass = "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20";
+
+                  const createdDate = enq?.createdAt
+                    ? new Date(enq.createdAt).toLocaleString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : "N/A";
+
+                  const updatedDate = enq?.updatedAt && enq.updatedAt !== enq.createdAt
+                    ? new Date(enq.updatedAt).toLocaleString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : null;
+
+                  return (
+                    <div
+                      key={docId}
+                      className="rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-bg)] p-4 sm:p-5 transition hover:border-[var(--seller-border-focus)] hover:shadow-xs"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                        <div className="space-y-1.5 flex-1 min-w-0">
+                          {/* Buyer Name & Status */}
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-extrabold text-sm sm:text-base text-[var(--seller-text)]">
+                              {enq?.Name || enq?.name || "Unknown Enquirer"}
+                            </span>
+                            <span
+                              className={`text-[10px] px-2.5 py-0.5 rounded-full border uppercase tracking-wider font-semibold ${statusBadgeClass}`}
+                            >
+                              {currentStatus}
+                            </span>
+                          </div>
+
+                          {/* Contact Info */}
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--seller-text-muted)]">
+                            {enq?.Phone && (
+                              <span className="inline-flex items-center gap-1 font-semibold text-[var(--seller-text)]">
+                                ☎ {enq.Phone}
+                              </span>
+                            )}
+                            {enq?.Email && (
+                              <span className="inline-flex items-center gap-1">
+                                ✉ {enq.Email}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Property Details */}
+                          <div className="text-xs pt-1 flex flex-wrap items-center gap-2">
+                            <span className="font-bold text-[var(--seller-text)]">
+                              🏢 {getPropertyName(enq)}
+                            </span>
+                            {getPropertyCity(enq) && (
+                              <span className="text-[var(--seller-text-subtle)]">
+                                • 📍 {getPropertyCity(enq)}
+                              </span>
+                            )}
+                            {getPropertyPrice(enq) && (
+                              <span className="font-extrabold text-[var(--seller-text)]">
+                                • {getPropertyPrice(enq)}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Enquiry Message */}
+                          {(enq?.Message || enq?.message) && (
+                            <p className="text-xs italic text-[var(--seller-text-muted)] bg-[var(--seller-surface)] p-2.5 rounded-xl border border-[var(--seller-border)] mt-2">
+                              &ldquo;{enq?.Message || enq?.message}&rdquo;
+                            </p>
+                          )}
+
+                          {/* Timeline / Additional Notes */}
+                          <div className="pt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-[var(--seller-text-subtle)]">
+                            <span>📅 Received: {createdDate}</span>
+                            {updatedDate && (
+                              <span>• Last Activity: {updatedDate}</span>
+                            )}
+                            {enq?.FollowUpDate && (
+                              <span className="text-purple-600 font-semibold">
+                                • Follow-up: {enq.FollowUpDate}
+                              </span>
+                            )}
+                            {enq?.ClosedReason && (
+                              <span className="text-red-500 font-semibold">
+                                • Reason: {enq.ClosedReason}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Owner Response / Notes if present */}
+                          {(enq?.OwnerResponse || enq?.OwnerNote) && (
+                            <div className="mt-2 text-xs bg-[var(--seller-surface)] text-[var(--seller-text)] p-2 rounded-xl border border-[var(--seller-border)]">
+                              <span className="font-bold">Owner Note: </span>
+                              {enq?.OwnerResponse || enq?.OwnerNote}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* View Details Action */}
+                        <div className="pt-2 sm:pt-0 sm:pl-3 flex-shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedEnquiry(enq);
+                            }}
+                            className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90 transition shadow-2xs whitespace-nowrap"
+                          >
+                            View Details
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-[var(--seller-border)] bg-[var(--seller-surface)] flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--seller-text-muted)]">
+              <div className="flex items-center gap-1.5 text-[11px]">
+                <Clock size={12} className="text-[var(--seller-text-subtle)]" />
+                <span>Enquiries are securely synced live from Strapi backend.</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setHistoryModalOpen(false)}
+                className="px-4 py-2 rounded-xl border border-[var(--seller-border)] text-xs font-bold text-[var(--seller-text)] hover:bg-[var(--seller-bg)] transition ml-auto"
+              >
+                Close History
+              </button>
+            </div>
+
           </div>
         </div>
       )}

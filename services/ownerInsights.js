@@ -103,6 +103,94 @@ export async function getOwnerEnquiriesForInsights(propertyIds) {
 }
 
 // =====================================================
+// GET ALL PROPERTY VIEWS (for owner analytics)
+// =====================================================
+
+export async function getOwnerPropertyViewsForInsights(propertyIds) {
+  if (!propertyIds || !propertyIds.length) return [];
+
+  const idSet = new Set(propertyIds.map(String));
+  const viewsList = [];
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    try {
+      const res = await safeFetch(
+        `${API_URL}/property-views?pagination[pageSize]=100&pagination[page]=${page}&populate[property][fields][0]=id&populate[property][fields][1]=documentId&populate[viewer][fields][0]=id&sort=createdAt:desc`
+      );
+      const items = res?.data || [];
+      for (const item of items) {
+        const propId = String(item?.property?.id || "");
+        const propDocId = String(item?.property?.documentId || "");
+        if (idSet.has(propId) || idSet.has(propDocId)) {
+          viewsList.push(item);
+        }
+      }
+      const pageCount = res?.meta?.pagination?.pageCount || 1;
+      if (page >= pageCount || items.length === 0) {
+        hasMore = false;
+      } else {
+        page++;
+      }
+    } catch (e) {
+      console.warn("Could not fetch page of property-views:", e);
+      hasMore = false;
+    }
+  }
+
+  return viewsList;
+}
+
+// =====================================================
+// GET ALL USER SAVES (from buyer wishlists)
+// =====================================================
+
+export async function getOwnerPropertySavesForInsights(propertyIds) {
+  if (!propertyIds || !propertyIds.length) return { savesByProp: {}, savesList: [] };
+
+  const idSet = new Set(propertyIds.map(String));
+  const savesList = [];
+  const savesByProp = {};
+
+  try {
+    const res = await safeFetch(
+      `${API_URL}/user-profiles?pagination[pageSize]=100&populate[Wishlist][populate][properties][populate][CoverImage]=true&populate[users_permissions_user][fields][0]=id&populate[users_permissions_user][fields][1]=username&populate[users_permissions_user][fields][2]=email`
+    );
+    const profiles = res?.data || [];
+
+    for (const profile of profiles) {
+      const buyer = profile?.users_permissions_user;
+      const wishlistProps = profile?.Wishlist?.properties || [];
+
+      for (const prop of wishlistProps) {
+        const propId = String(prop?.id || "");
+        const propDocId = String(prop?.documentId || "");
+
+        if (idSet.has(propId) || idSet.has(propDocId)) {
+          const matchKey = idSet.has(propId) ? propId : propDocId;
+          savesByProp[matchKey] = (savesByProp[matchKey] || 0) + 1;
+          savesByProp[propDocId] = (savesByProp[propDocId] || 0) + 1;
+          savesByProp[propId] = (savesByProp[propId] || 0) + 1;
+
+          savesList.push({
+            id: `${profile.id}_${prop.id}`,
+            savedAt: profile.updatedAt || profile.createdAt,
+            buyerName: buyer?.username || "Buyer",
+            buyerEmail: buyer?.email || "",
+            property: prop,
+          });
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Could not fetch user-profiles for saves:", e);
+  }
+
+  return { savesByProp, savesList };
+}
+
+// =====================================================
 // DATE RANGE HELPERS
 // =====================================================
 
@@ -172,15 +260,15 @@ export function calculatePerformanceScore({
   if (hasDescription) listingQuality += 30;
   if (propertyStatus === "ACTIVE") listingQuality += 20;
 
-  // Normalised views score (benchmark: 500 views = 100)
-  const viewsScore = Math.min(100, Math.round((views / 500) * 100));
+  // Normalised views score (benchmark: 50 views = 100)
+  const viewsScore = Math.min(100, Math.round((views / 50) * 100));
 
   // Engagement: saves / views ratio (benchmark: 10% = 100)
   const engagementScore =
     views > 0 ? Math.min(100, Math.round((saves / views) * 1000)) : 0;
 
-  // Enquiries score (benchmark: 20 = 100)
-  const enquiryScore = Math.min(100, Math.round((enquiries / 20) * 100));
+  // Enquiries score (benchmark: 10 enquiries = 100)
+  const enquiryScore = Math.min(100, Math.round((enquiries / 10) * 100));
 
   // Response rate proxy: site visits / enquiries (benchmark: 50% = 100)
   const responseRate =
@@ -217,24 +305,28 @@ export function calculatePerformanceScore({
 }
 
 // =====================================================
-// GENERATE CHART DATA (distribute across timeline)
+// GENERATE CHART DATA (From ACTUAL recorded views)
 // =====================================================
 
-export function generateChartData(totalValue, period, groupBy = "daily") {
+export function generateChartData(totalValue, period, groupBy = "daily", actualViewRecords = []) {
   const { start, end } = getDateRange(period);
   const points = [];
 
+  // Group actual view records by date bucket
+  const viewTimestamps = (actualViewRecords || []).map((v) => new Date(v.createdAt));
+
   if (groupBy === "daily") {
     const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-    const perDay = totalValue / Math.max(days, 1);
     for (let i = 0; i <= days; i++) {
       const d = new Date(start);
       d.setDate(start.getDate() + i);
-      // add a natural-looking variance
-      const variance = 0.5 + Math.random();
+      const dayStart = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      const dayEnd = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+
+      const count = viewTimestamps.filter((ts) => ts >= dayStart && ts <= dayEnd).length;
       points.push({
         label: d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }),
-        value: Math.max(0, Math.round(perDay * variance)),
+        value: count,
       });
     }
   } else if (groupBy === "weekly") {
@@ -243,10 +335,10 @@ export function generateChartData(totalValue, period, groupBy = "daily") {
     while (cur <= end) {
       const next = new Date(cur);
       next.setDate(cur.getDate() + 7);
-      const variance = 0.6 + Math.random() * 0.8;
+      const count = viewTimestamps.filter((ts) => ts >= cur && ts < next).length;
       points.push({
         label: `Week ${week}`,
-        value: Math.max(0, Math.round((totalValue / 4) * variance)),
+        value: count,
       });
       cur = next;
       week++;
@@ -255,14 +347,16 @@ export function generateChartData(totalValue, period, groupBy = "daily") {
     // monthly
     const cur = new Date(start.getFullYear(), start.getMonth(), 1);
     while (cur <= end) {
-      const variance = 0.7 + Math.random() * 0.6;
+      const nextMonth = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);
+      const count = viewTimestamps.filter((ts) => ts >= cur && ts < nextMonth).length;
       points.push({
         label: cur.toLocaleDateString("en-IN", { month: "short", year: "numeric" }),
-        value: Math.max(0, Math.round((totalValue / 3) * variance)),
+        value: count,
       });
       cur.setMonth(cur.getMonth() + 1);
     }
   }
+
   return points;
 }
 
@@ -277,17 +371,19 @@ export function generateSmartInsights({
   viewsGrowth,
   enquiryGrowth,
   pendingEnquiries,
+  hasViewsData,
+  hasEnquiriesData,
 }) {
   const insights = [];
 
-  if (viewsGrowth > 10) {
+  if (hasViewsData && viewsGrowth !== null && viewsGrowth > 10) {
     insights.push({
       icon: "trending",
       text: `Your property views are ${viewsGrowth.toFixed(1)}% higher compared to the previous period.`,
       type: "positive",
       action: null,
     });
-  } else if (viewsGrowth < -5) {
+  } else if (hasViewsData && viewsGrowth !== null && viewsGrowth < -5) {
     insights.push({
       icon: "warning",
       text: `Property views dropped ${Math.abs(viewsGrowth).toFixed(1)}% vs last period. Consider boosting your listing.`,
@@ -315,13 +411,13 @@ export function generateSmartInsights({
   if (pendingEnquiries > 0) {
     insights.push({
       icon: "message",
-      text: `You have ${pendingEnquiries} enquir${pendingEnquiries > 1 ? "ies" : "y"} waiting for your follow-up.`,
+      text: `You have ${pendingEnquiries} active enquir${pendingEnquiries > 1 ? "ies" : "y"} waiting for your follow-up.`,
       type: "action",
-      action: "/owner/enquiries",
+      action: "/owner/enquiries/new",
     });
   }
 
-  if (enquiryGrowth > 5) {
+  if (hasEnquiriesData && enquiryGrowth !== null && enquiryGrowth > 5) {
     insights.push({
       icon: "chart",
       text: `Enquiry rate improved ${enquiryGrowth.toFixed(1)}% vs previous period. Great progress!`,
@@ -338,7 +434,7 @@ export function generateSmartInsights({
   if (siteVisitEnquiries.length > 0) {
     insights.push({
       icon: "calendar",
-      text: `${siteVisitEnquiries.length} site visit${siteVisitEnquiries.length > 1 ? "s" : ""} are scheduled. Stay prepared!`,
+      text: `${siteVisitEnquiries.length} site visit${siteVisitEnquiries.length > 1 ? "s" : ""} scheduled. Stay prepared!`,
       type: "info",
       action: "/owner/site-visits/upcoming",
     });
@@ -363,7 +459,15 @@ export async function getPerformanceData(period = "30d", selectedPropertyId = nu
     : allProperties;
 
   const propertyIds = properties.map((p) => String(p?.id)).filter(Boolean);
-  const enquiries = await getOwnerEnquiriesForInsights(propertyIds);
+  const propertyDocIds = properties.map((p) => String(p?.documentId)).filter(Boolean);
+  const allTargetIds = [...propertyIds, ...propertyDocIds];
+
+  // Parallel fetch: Enquiries, Property Views, and User Wishlists (Saves)
+  const [enquiries, allViewRecords, { savesByProp, savesList }] = await Promise.all([
+    getOwnerEnquiriesForInsights(propertyIds),
+    getOwnerPropertyViewsForInsights(allTargetIds),
+    getOwnerPropertySavesForInsights(allTargetIds),
+  ]);
 
   const { start, end } = getDateRange(period);
   const { start: prevStart, end: prevEnd } = getPreviousRange(period);
@@ -376,15 +480,26 @@ export async function getPerformanceData(period = "30d", selectedPropertyId = nu
     inRange(e?.createdAt, prevStart, prevEnd)
   );
 
-  // KPI aggregates
-  const totalViews = properties.reduce(
-    (s, p) => s + (Number(p?.Views) || 0),
-    0
+  // Period-filtered views
+  const currentViewRecords = allViewRecords.filter((v) =>
+    inRange(v?.createdAt, start, end)
   );
-  const totalSaves = properties.reduce(
-    (s, p) => s + (Number(p?.Saves) || 0),
-    0
+  const prevViewRecords = allViewRecords.filter((v) =>
+    inRange(v?.createdAt, prevStart, prevEnd)
   );
+
+  // Actual Views counts
+  const totalViews = currentViewRecords.length;
+  const prevTotalViews = prevViewRecords.length;
+
+  // Actual Saves count for selected properties
+  const propertySavesList = savesList.filter((s) => {
+    const pid = String(s?.property?.id || "");
+    const pdoc = String(s?.property?.documentId || "");
+    return allTargetIds.includes(pid) || allTargetIds.includes(pdoc);
+  });
+  const totalSaves = propertySavesList.length;
+
   const totalEnquiries = currentEnquiries.length;
   const prevTotalEnquiries = prevEnquiries.length;
 
@@ -407,24 +522,36 @@ export async function getPerformanceData(period = "30d", selectedPropertyId = nu
 
   // Growth calculations
   function growth(cur, prev) {
-    if (prev === 0) return cur > 0 ? 100 : 0;
+    if (prev === 0 && cur === 0) return null; // Not enough data to fabricate a percentage
+    if (prev === 0) return cur > 0 ? 100 : null;
     return Math.round(((cur - prev) / prev) * 100 * 10) / 10;
   }
 
   const enquiryGrowth = growth(totalEnquiries, prevTotalEnquiries);
-  const viewsGrowth = 0; // Views are lifetime counters — no historical split available yet
+  const viewsGrowth = growth(totalViews, prevTotalViews);
 
   // Enquiry status breakdown for donut chart
   const enquiryStatusMap = {};
-  enquiries.forEach((e) => {
+  currentEnquiries.forEach((e) => {
     const s = e?.Statuss || e?.Status || "Pending";
     enquiryStatusMap[s] = (enquiryStatusMap[s] || 0) + 1;
   });
 
-  // Property-wise performance
+  // Pre-index views by property
+  const viewsByProp = {};
+  for (const v of currentViewRecords) {
+    const pid = String(v?.property?.id || "");
+    const pdoc = String(v?.property?.documentId || "");
+    if (pid) viewsByProp[pid] = (viewsByProp[pid] || 0) + 1;
+    if (pdoc) viewsByProp[pdoc] = (viewsByProp[pdoc] || 0) + 1;
+  }
+
+  // Property-wise performance table
   const propertyPerformance = properties.map((prop) => {
     const propId = String(prop?.id);
-    const propEnquiries = enquiries.filter(
+    const propDocId = String(prop?.documentId || "");
+
+    const propEnquiries = currentEnquiries.filter(
       (e) => String(e?.property?.id ?? e?.property?.data?.id) === propId
     );
     const propSiteVisits = propEnquiries.filter((e) => {
@@ -432,8 +559,9 @@ export async function getPerformanceData(period = "30d", selectedPropertyId = nu
       return s.includes("site visit") || s === "scheduled" || s === "completed";
     });
 
-    const views = Number(prop?.Views) || 0;
-    const saves = Number(prop?.Saves) || 0;
+    const views = viewsByProp[propDocId] || viewsByProp[propId] || 0;
+    const saves = savesByProp[propDocId] || savesByProp[propId] || 0;
+
     const hasImages =
       !!(prop?.CoverImage || (Array.isArray(prop?.PropertyImage) && prop.PropertyImage.length));
     const hasDescription = !!(prop?.Description);
@@ -494,11 +622,13 @@ export async function getPerformanceData(period = "30d", selectedPropertyId = nu
   // Smart insights
   const insights = generateSmartInsights({
     properties,
-    enquiries,
+    enquiries: currentEnquiries,
     period,
     viewsGrowth,
     enquiryGrowth,
     pendingEnquiries,
+    hasViewsData: prevTotalViews > 0,
+    hasEnquiriesData: prevTotalEnquiries > 0,
   });
 
   return {
@@ -509,13 +639,15 @@ export async function getPerformanceData(period = "30d", selectedPropertyId = nu
     kpis: {
       views: { value: totalViews, growth: viewsGrowth },
       enquiries: { value: totalEnquiries, growth: enquiryGrowth },
-      saves: { value: totalSaves, growth: 0 },
-      contactActions: { value: contactActions, growth: 0 },
-      siteVisits: { value: siteVisitEnq.length, growth: 0 },
+      saves: { value: totalSaves, growth: null },
+      contactActions: { value: contactActions, growth: null },
+      siteVisits: { value: siteVisitEnq.length, growth: null },
     },
     enquiryStatusBreakdown: enquiryStatusMap,
     propertyPerformance,
     insights,
     pendingEnquiries,
+    currentViewRecords,
+    savedProperties: propertySavesList,
   };
 }

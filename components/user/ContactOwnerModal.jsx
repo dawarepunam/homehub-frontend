@@ -110,8 +110,21 @@ export default function ContactOwnerModal({ isOpen, onClose, property }) {
       return;
     }
     
-    if (!phone.trim()) {
+    const cleanedPhone = String(phone || "").trim();
+    if (!cleanedPhone) {
       toast.error("Phone number is required.");
+      return;
+    }
+    if (!/^\d+$/.test(cleanedPhone)) {
+      toast.error("Phone number must contain only numeric digits (no letters, spaces, or symbols).");
+      return;
+    }
+    if (cleanedPhone.length !== 10) {
+      toast.error("Phone number must be exactly 10 digits.");
+      return;
+    }
+    if (!/^[6-9]/.test(cleanedPhone)) {
+      toast.error("Phone number must start with 6, 7, 8, or 9.");
       return;
     }
 
@@ -437,9 +450,14 @@ export default function ContactOwnerModal({ isOpen, onClose, property }) {
                           <Phone size={12} className="absolute left-3 text-[var(--text-muted)]" />
                           <input
                             type="tel"
+                            inputMode="numeric"
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            placeholder="Enter 10-digit phone number"
+                            onChange={(e) => {
+                              const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 10);
+                              setPhone(digitsOnly);
+                            }}
+                            placeholder="Enter 10-digit mobile number (e.g. 9876543210)"
+                            maxLength={10}
                             required
                             className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] pl-8 pr-3 py-2 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:border-[var(--text-primary)] transition"
                           />

@@ -213,16 +213,17 @@ import {
 export default function ContactOwnerPage() {
   const params = useParams();
   const router = useRouter();
-
   const documentId = params?.documentId;
 
   const [property, setProperty] = useState(null);
   const [user, setUser] = useState(null);
-
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [message, setMessage] = useState("I am interested in this property.");
 
   useEffect(() => {
     async function loadData() {
@@ -232,6 +233,13 @@ export default function ContactOwnerPage() {
 
         setUser(loggedInUser);
         setProperty(propertyData);
+        // Pre-fill phone if available on user profile
+        if (loggedInUser?.phone || loggedInUser?.phoneNumber) {
+          const raw = String(loggedInUser.phone || loggedInUser.phoneNumber).replace(/\D/g, "");
+          if (raw.length === 10 && /^[6-9]/.test(raw)) {
+            setPhone(raw);
+          }
+        }
       } catch (error) {
         console.error("Contact Owner Error:", error);
         toast.error(error?.message || "Unable to load property.");
@@ -245,16 +253,63 @@ export default function ContactOwnerPage() {
     }
   }, [documentId]);
 
+  function validatePhoneNumber(num) {
+    const cleaned = String(num || "").trim();
+    if (!cleaned) {
+      return "Phone number is required.";
+    }
+    if (!/^\d+$/.test(cleaned)) {
+      return "Phone number must contain only numeric digits (no letters, spaces, or symbols).";
+    }
+    if (cleaned.length !== 10) {
+      return "Phone number must be exactly 10 digits.";
+    }
+    if (!/^[6-9]/.test(cleaned)) {
+      return "Phone number must start with 6, 7, 8, or 9.";
+    }
+    return "";
+  }
+
+  function handlePhoneChange(e) {
+    const rawVal = e.target.value;
+    // Strip non-digits and cap at 10 digits
+    const digitsOnly = rawVal.replace(/\D/g, "").slice(0, 10);
+    setPhone(digitsOnly);
+
+    if (phoneError) {
+      const err = validatePhoneNumber(digitsOnly);
+      setPhoneError(err);
+    }
+  }
+
   function handleContactOwner() {
     if (!user) {
       toast.error("Please login first.");
       return;
     }
+
+    const err = validatePhoneNumber(phone);
+    if (err) {
+      setPhoneError(err);
+      toast.error(err);
+      return;
+    }
+
+    setPhoneError("");
     setShowConfirmation(true);
   }
 
   async function handleSendRequest() {
     if (!property || !user) return;
+
+    // Strict validation check in submission handler
+    const err = validatePhoneNumber(phone);
+    if (err) {
+      setPhoneError(err);
+      toast.error(err);
+      setShowConfirmation(false);
+      return;
+    }
 
     try {
       setSending(true);
@@ -262,9 +317,9 @@ export default function ContactOwnerPage() {
       await sendEnquiry({
         propertyDocumentId: property.documentId,
         name: user.username || "",
-        phone: "",
+        phone: phone.trim(),
         email: user.email || "",
-        message: "I am interested in this property.",
+        message: message.trim() || "I am interested in this property.",
       });
 
       setShowConfirmation(false);
@@ -330,6 +385,59 @@ export default function ContactOwnerPage() {
             </div>
           </div>
 
+          {/* Form fields */}
+          <div className="mt-6 space-y-4">
+            <div>
+              <label htmlFor="buyer-phone-input" className="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-2">
+                Phone Number <span className="text-red-500">*</span>
+              </label>
+              <div className="relative flex items-center">
+                <span className="absolute left-4 text-sm font-bold text-[var(--text-muted)] select-none">
+                  +91
+                </span>
+                <input
+                  id="buyer-phone-input"
+                  type="tel"
+                  inputMode="numeric"
+                  value={phone}
+                  onChange={handlePhoneChange}
+                  onBlur={() => setPhoneError(validatePhoneNumber(phone))}
+                  placeholder="Enter 10-digit mobile number (e.g. 9876543210)"
+                  maxLength={10}
+                  className={`w-full rounded-2xl border bg-[var(--bg-page)] pl-14 pr-4 py-3.5 text-sm font-semibold outline-none transition ${
+                    phoneError
+                      ? "border-red-500 focus:border-red-600 bg-red-50/10"
+                      : "border-[var(--border-subtle)] focus:border-[var(--text-primary)]"
+                  }`}
+                />
+              </div>
+
+              {phoneError ? (
+                <p className="mt-1.5 text-xs font-semibold text-red-500 flex items-center gap-1">
+                  <span>⚠</span> {phoneError}
+                </p>
+              ) : (
+                <p className="mt-1.5 text-[11px] text-[var(--text-muted)]">
+                  Must be exactly 10 digits starting with 6, 7, 8, or 9.
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="buyer-message-input" className="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-2">
+                Message <span className="text-[var(--text-muted)] font-normal text-[11px]">(optional)</span>
+              </label>
+              <textarea
+                id="buyer-message-input"
+                rows={3}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="I am interested in this property."
+                className="w-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-page)] p-4 text-sm font-medium outline-none transition focus:border-[var(--text-primary)] resize-none"
+              />
+            </div>
+          </div>
+
           <button
             onClick={handleContactOwner}
             className="mt-8 w-full rounded-full bg-[var(--text-primary)] text-[var(--bg-page)] py-4 font-extrabold uppercase tracking-widest text-sm hover:opacity-80 transition-opacity"
@@ -347,9 +455,15 @@ export default function ContactOwnerPage() {
               Confirm Enquiry
             </h2>
 
-            <p className="text-[var(--text-muted)] font-medium mb-8">
-              Your contact details will be shared with the property owner. Proceed?
+            <p className="text-[var(--text-muted)] font-medium mb-4">
+              Your contact details will be shared with the property owner:
             </p>
+
+            <div className="bg-[var(--bg-page)] p-4 rounded-xl border border-[var(--border-subtle)] mb-6 text-sm space-y-1">
+              <p><span className="text-[var(--text-muted)]">Name:</span> <strong className="font-bold">{user?.username}</strong></p>
+              <p><span className="text-[var(--text-muted)]">Phone:</span> <strong className="font-bold">+91 {phone}</strong></p>
+              <p><span className="text-[var(--text-muted)]">Email:</span> <strong className="font-bold">{user?.email}</strong></p>
+            </div>
 
             <div className="flex gap-4">
               <button

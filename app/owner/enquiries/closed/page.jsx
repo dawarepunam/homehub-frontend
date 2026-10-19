@@ -6,13 +6,21 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "../../Footer";
 import {
-  ArrowLeft,
-  Archive,
   Search,
   Tag,
   ArrowUpDown,
   ChevronDown,
   X,
+  MessageSquare,
+  ArrowLeft,
+  Filter,
+  History,
+  Clock,
+  Archive,
+  RefreshCw,
+  Eye,
+  Phone,
+  Mail,
 } from "lucide-react";
 import {
   getOwnerEnquiries,
@@ -34,32 +42,37 @@ export default function ClosedEnquiriesPage() {
   const [actionLoadingId, setActionLoadingId] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
 
-  // Search & Filter state
+  // Filters & Sorting state
   const [search, setSearch] = useState("");
   const [propertyFilter, setPropertyFilter] = useState("All Properties");
   const [purposeFilter, setPurposeFilter] = useState("All Purposes");
   const [statusFilter, setStatusFilter] = useState("All Status");
+  const [dateFilter, setDateFilter] = useState("All Time");
   const [sortBy, setSortBy] = useState("Latest Closed");
 
-  // Modal Detail state
+  // Summary filter chips — controls which category is active
+  // Values: "all" | "not-interested" | "converted" | "archived"
+  const [categoryFilter, setCategoryFilter] = useState("all");
+
+  // Modals & Action Drawer state
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
+  const [activeDropdownId, setActiveDropdownId] = useState(null);
+
+  // History modal state
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [historySearch, setHistorySearch] = useState("");
+  const [historyStatusFilter, setHistoryStatusFilter] = useState("All Status");
+  const [historyPropertyFilter, setHistoryPropertyFilter] = useState("All Properties");
 
   // =====================================================
-  // FETCH CLOSED ENQUIRIES FROM STRAPI
+  // FETCH ENQUIRIES FROM STRAPI API
   // =====================================================
   async function loadEnquiries() {
     try {
       setLoading(true);
       setError("");
 
-      console.log("=================================");
-      console.log("CLOSED ENQUIRIES PAGE");
-      console.log("Fetching owner enquiries from Strapi...");
-      console.log("=================================");
-
       const data = await getOwnerEnquiries();
-      console.log("STRAPI ENQUIRIES FOR CLOSED:", data);
-
       setAllEnquiries(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("CLOSED ENQUIRIES ERROR:", err);
@@ -73,7 +86,7 @@ export default function ClosedEnquiriesPage() {
     loadEnquiries();
   }, []);
 
-  // Clear toast timeout
+  // Clear toast message after 4 seconds
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => setSuccessMessage(""), 4000);
@@ -81,8 +94,27 @@ export default function ClosedEnquiriesPage() {
     }
   }, [successMessage]);
 
+  // Lock background body scroll when any modal is open to prevent duplicate competing scrollbars
+  useEffect(() => {
+    const isAnyModalOpen = Boolean(
+      selectedEnquiry ||
+      historyModalOpen
+    );
+
+    if (isAnyModalOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [
+    selectedEnquiry,
+    historyModalOpen,
+  ]);
+
   // =====================================================
-  // STRAPI HELPER PARSERS
+  // HELPER FUNCTIONS FOR STRAPI DATA PARSING
   // =====================================================
   function getStatus(item) {
     return String(
@@ -95,6 +127,7 @@ export default function ClosedEnquiriesPage() {
     return (
       s === "closed" ||
       s === "not interested" ||
+      s === "notinterested" ||
       s === "converted" ||
       s === "archived"
     );
@@ -114,6 +147,11 @@ export default function ClosedEnquiriesPage() {
     return prop?.Title || prop?.title || prop?.Name || prop?.name || "Untitled Property";
   }
 
+  function getPropertyType(item) {
+    const prop = getPropertyRelation(item);
+    return prop?.PropertyType || prop?.propertyType || prop?.Category || prop?.category || "Apartment";
+  }
+
   function getPropertyCity(item) {
     const prop = getPropertyRelation(item);
     return prop?.City || prop?.city || prop?.Location || prop?.location || "";
@@ -127,11 +165,6 @@ export default function ClosedEnquiriesPage() {
   function getPropertyPurpose(item) {
     const prop = getPropertyRelation(item);
     return prop?.Purpose || prop?.purpose || prop?.ListingType || prop?.listingType || "Sale";
-  }
-
-  function getPropertyType(item) {
-    const prop = getPropertyRelation(item);
-    return prop?.PropertyType || prop?.propertyType || prop?.Category || prop?.category || "Apartment";
   }
 
   function getPropertyPrice(item) {
@@ -159,25 +192,65 @@ export default function ClosedEnquiriesPage() {
     return null;
   }
 
+  function getContactHistory(item) {
+    if (Array.isArray(item?.ContactHistory) && item.ContactHistory.length > 0) {
+      return item.ContactHistory;
+    }
+    const history = [];
+    const dateStr = item?.updatedAt || item?.createdAt;
+    if (dateStr) {
+      const formatted = new Date(dateStr).toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      history.push({
+        date: formatted,
+        title: item?.ClosedReason ? `Closed: ${item.ClosedReason}` : "Status Changed",
+        note: item?.OwnerNote || item?.OwnerResponse || item?.Message || "Enquiry archived or closed.",
+      });
+    }
+    return history;
+  }
+
   // =====================================================
-  // METRICS & CARDS
+  // FILTERED LIST & CALCULATED METRICS
   // =====================================================
   const closedBucket = useMemo(() => {
     return allEnquiries.filter(isClosedItem);
   }, [allEnquiries]);
 
-  // Card 1: Total Closed
+  // Tab Counts (matches Contacted and New pages with real Strapi data)
+  const countNewEnquiries = useMemo(() => {
+    return allEnquiries.filter((item) => {
+      const s = getStatus(item).toLowerCase();
+      return s === "new" || s === "pending";
+    }).length;
+  }, [allEnquiries]);
+
+  const countContactedEnquiries = useMemo(() => {
+    return allEnquiries.filter((item) => {
+      const s = getStatus(item).toLowerCase();
+      return (
+        s === "contacted" ||
+        s === "follow-up required" ||
+        s === "followup required"
+      );
+    }).length;
+  }, [allEnquiries]);
+
+  // Category counts from real Strapi data
   const countTotalClosed = closedBucket.length;
 
-  // Card 2: Not Interested
   const countNotInterested = useMemo(() => {
     return closedBucket.filter((item) => {
       const s = getStatus(item).toLowerCase();
-      return s === "not interested";
+      return s === "not interested" || s === "notinterested";
     }).length;
   }, [closedBucket]);
 
-  // Card 3: Converted
   const countConverted = useMemo(() => {
     return closedBucket.filter((item) => {
       const s = getStatus(item).toLowerCase();
@@ -185,7 +258,6 @@ export default function ClosedEnquiriesPage() {
     }).length;
   }, [closedBucket]);
 
-  // Card 4: Archived/Other Closed
   const countArchived = useMemo(() => {
     return closedBucket.filter((item) => {
       const s = getStatus(item).toLowerCase();
@@ -193,7 +265,7 @@ export default function ClosedEnquiriesPage() {
     }).length;
   }, [closedBucket]);
 
-  // Dynamic property options
+  // Dynamic dropdown options
   const propertyOptions = useMemo(() => {
     const names = closedBucket.map(getPropertyName).filter(Boolean);
     return ["All Properties", ...Array.from(new Set(names))];
@@ -204,9 +276,109 @@ export default function ClosedEnquiriesPage() {
     return ["All Purposes", ...Array.from(new Set(purposes))];
   }, [closedBucket]);
 
-  // Filter and Sort logic
+  const statusOptions = [
+    "All Status",
+    "Not Interested",
+    "Converted",
+    "Closed",
+    "Archived",
+  ];
+
+  // History property options
+  const historyPropertyOptions = useMemo(() => {
+    const titles = allEnquiries.map(getPropertyName).filter(Boolean);
+    return ["All Properties", ...Array.from(new Set(titles))];
+  }, [allEnquiries]);
+
+  // History status options
+  const historyStatusOptions = [
+    "All Status",
+    "Pending",
+    "Contacted",
+    "Interested",
+    "Follow-up Required",
+    "Site Visit Pending",
+    "Converted",
+    "Not Interested",
+    "Closed",
+    "Archived",
+  ];
+
+  // History filtered list (all enquiries across New, Contacted, Site Visits, Closed)
+  const filteredHistoryEnquiries = useMemo(() => {
+    let result = [...allEnquiries];
+
+    if (historySearch.trim()) {
+      const q = historySearch.toLowerCase().trim();
+      result = result.filter((item) => {
+        const name = String(item?.Name || item?.name || "").toLowerCase();
+        const phone = String(item?.Phone || item?.phone || "").toLowerCase();
+        const email = String(item?.Email || item?.email || "").toLowerCase();
+        const propTitle = getPropertyName(item).toLowerCase();
+        const city = getPropertyCity(item).toLowerCase();
+        const msg = String(item?.Message || item?.message || "").toLowerCase();
+        const status = getStatus(item).toLowerCase();
+
+        return (
+          name.includes(q) ||
+          phone.includes(q) ||
+          email.includes(q) ||
+          propTitle.includes(q) ||
+          city.includes(q) ||
+          msg.includes(q) ||
+          status.includes(q)
+        );
+      });
+    }
+
+    if (historyPropertyFilter !== "All Properties") {
+      result = result.filter(
+        (item) => getPropertyName(item) === historyPropertyFilter
+      );
+    }
+
+    if (historyStatusFilter !== "All Status") {
+      result = result.filter(
+        (item) => getStatus(item).toLowerCase() === historyStatusFilter.toLowerCase()
+      );
+    }
+
+    // Sort newest first
+    result.sort((a, b) => {
+      const timeA = new Date(a?.createdAt || a?.created_at || 0).getTime();
+      const timeB = new Date(b?.createdAt || b?.created_at || 0).getTime();
+      return timeB - timeA;
+    });
+
+    return result;
+  }, [allEnquiries, historySearch, historyPropertyFilter, historyStatusFilter]);
+
+  // Category labels for chip and title display
+  const categoryLabels = {
+    all: "All Closed",
+    "not-interested": "Not Interested",
+    converted: "Converted",
+    archived: "Archived",
+  };
+
+  // Applied Filtering and Sorting logic
   const filteredAndSortedEnquiries = useMemo(() => {
     let result = [...closedBucket];
+
+    // Stage 1: Chip category filter
+    if (categoryFilter === "not-interested") {
+      result = result.filter((item) => {
+        const s = getStatus(item).toLowerCase();
+        return s === "not interested" || s === "notinterested";
+      });
+    } else if (categoryFilter === "converted") {
+      result = result.filter((item) => getStatus(item).toLowerCase() === "converted");
+    } else if (categoryFilter === "archived") {
+      result = result.filter((item) => {
+        const s = getStatus(item).toLowerCase();
+        return s === "closed" || s === "archived";
+      });
+    }
 
     // Search query
     if (search.trim()) {
@@ -215,15 +387,17 @@ export default function ClosedEnquiriesPage() {
         const name = String(item?.Name || item?.name || "").toLowerCase();
         const phone = String(item?.Phone || item?.phone || "").toLowerCase();
         const email = String(item?.Email || item?.email || "").toLowerCase();
-        const propTitle = getPropertyName(item).toLowerCase();
+        const title = getPropertyName(item).toLowerCase();
         const city = getPropertyCity(item).toLowerCase();
+        const area = getPropertyArea(item).toLowerCase();
 
         return (
           name.includes(q) ||
           phone.includes(q) ||
           email.includes(q) ||
-          propTitle.includes(q) ||
-          city.includes(q)
+          title.includes(q) ||
+          city.includes(q) ||
+          area.includes(q)
         );
       });
     }
@@ -243,6 +417,25 @@ export default function ClosedEnquiriesPage() {
       result = result.filter((item) => getStatus(item).toLowerCase() === statusFilter.toLowerCase());
     }
 
+    // Date filter
+    if (dateFilter !== "All Time") {
+      const now = new Date();
+      result = result.filter((item) => {
+        const itemDate = new Date(item?.updatedAt || item?.createdAt || 0);
+        if (dateFilter === "Today") {
+          return itemDate.toDateString() === now.toDateString();
+        }
+        if (dateFilter === "This Week") {
+          const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          return itemDate >= sevenDaysAgo;
+        }
+        if (dateFilter === "This Month") {
+          return itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear();
+        }
+        return true;
+      });
+    }
+
     // Sort
     result.sort((a, b) => {
       const timeA = new Date(a?.updatedAt || a?.createdAt || 0).getTime();
@@ -254,17 +447,17 @@ export default function ClosedEnquiriesPage() {
       if (sortBy === "Oldest Closed") {
         return timeA - timeB;
       }
-      if (sortBy === "Name") {
-        return (a?.Name || "").localeCompare(b?.Name || "");
-      }
       if (sortBy === "Property") {
         return getPropertyName(a).localeCompare(getPropertyName(b));
+      }
+      if (sortBy === "Name") {
+        return (a?.Name || "").localeCompare(b?.Name || "");
       }
       return 0;
     });
 
     return result;
-  }, [closedBucket, search, propertyFilter, purposeFilter, statusFilter, sortBy]);
+  }, [closedBucket, categoryFilter, search, propertyFilter, purposeFilter, statusFilter, dateFilter, sortBy]);
 
   // =====================================================
   // STRAPI ACTION HANDLERS
@@ -275,9 +468,9 @@ export default function ClosedEnquiriesPage() {
 
     try {
       setActionLoadingId(docId);
-      console.log("Reopening enquiry:", docId);
 
-      await updateOwnerEnquiryStatus(docId, "Contacted");
+      // Reopen returns the existing enquiry to Pending (New) in Strapi without creating duplicates
+      await updateOwnerEnquiryStatus(docId, "Pending");
 
       setAllEnquiries((prev) =>
         prev.map((item) => {
@@ -285,16 +478,16 @@ export default function ClosedEnquiriesPage() {
           if (String(currentId) === String(docId)) {
             return {
               ...item,
-              Status: "Contacted",
-              status: "Contacted",
-              Statuss: "Contacted",
+              Status: "Pending",
+              status: "Pending",
+              Statuss: "Pending",
             };
           }
           return item;
         })
       );
 
-      setSuccessMessage(`Enquiry from ${enquiry?.Name || "Customer"} reopened and moved to Contacted Enquiries!`);
+      setSuccessMessage(`Enquiry from ${enquiry?.Name || "Customer"} reopened and returned to New Enquiries!`);
       if (selectedEnquiry && String(selectedEnquiry?.documentId || selectedEnquiry?.id) === String(docId)) {
         setSelectedEnquiry(null);
       }
@@ -311,7 +504,7 @@ export default function ClosedEnquiriesPage() {
   // =====================================================
   if (loading) {
     return (
-      <div className="seller-page-wrapper flex flex-col font-sans">
+      <div className="seller-page-wrapper flex min-h-screen flex-col font-sans">
         <Header />
 
         <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
@@ -327,21 +520,27 @@ export default function ClosedEnquiriesPage() {
 
           <header className="mx-auto mb-8 max-w-2xl text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3.5 py-1 text-[11px] font-semibold text-[var(--seller-text-muted)] shadow-xs">
-              <Archive size={12} strokeWidth={2} />
+              <MessageSquare size={12} strokeWidth={2} />
               <span>Seller Portal</span>
             </div>
+
             <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--seller-text)] sm:text-4xl lg:text-[40px]">
               Enquiries
             </h1>
+
             <p className="mt-2.5 text-sm text-[var(--seller-text-muted)] sm:text-base sm:leading-relaxed">
               View enquiries that are no longer active.
             </p>
           </header>
 
-          <div className="mt-8 rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-12 text-center shadow-sm">
-            <div className="inline-block w-10 h-10 border-4 border-[#0D3326] border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-[var(--seller-text)] font-semibold mt-4">Loading closed enquiries...</p>
-            <p className="text-[var(--seller-text-muted)] text-sm mt-1">Fetching real-time data from Strapi backend.</p>
+          <div className="seller-card p-12 text-center">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-2 border-[var(--seller-border-focus)] border-t-transparent" />
+            <p className="mt-4 text-sm font-semibold text-[var(--seller-text)]">
+              Loading closed enquiries...
+            </p>
+            <p className="mt-1 text-xs text-[var(--seller-text-muted)]">
+              Syncing live records from Strapi backend.
+            </p>
           </div>
         </main>
 
@@ -355,7 +554,7 @@ export default function ClosedEnquiriesPage() {
   // =====================================================
   if (error) {
     return (
-      <div className="seller-page-wrapper flex flex-col font-sans">
+      <div className="seller-page-wrapper flex min-h-screen flex-col font-sans">
         <Header />
 
         <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
@@ -371,28 +570,42 @@ export default function ClosedEnquiriesPage() {
 
           <header className="mx-auto mb-8 max-w-2xl text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3.5 py-1 text-[11px] font-semibold text-[var(--seller-text-muted)] shadow-xs">
-              <Archive size={12} strokeWidth={2} />
+              <MessageSquare size={12} strokeWidth={2} />
               <span>Seller Portal</span>
             </div>
+
             <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--seller-text)] sm:text-4xl lg:text-[40px]">
               Enquiries
             </h1>
           </header>
 
-          <div className="mt-8 rounded-2xl border border-red-200 bg-[var(--seller-surface)] p-10 text-center shadow-sm">
-            <div className="w-14 h-14 mx-auto rounded-full bg-red-50 text-red-500 flex items-center justify-center text-2xl font-bold mb-3">⚠️</div>
-            <h2 className="text-xl font-bold text-red-700">Unable to load closed enquiries</h2>
-            <p className="text-[var(--seller-text-muted)] mt-2 max-w-md mx-auto text-sm sm:text-base">
-              Something went wrong while loading your closed enquiries. Please try again.
+          <div className="seller-card p-10 text-center border-red-500/20">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-red-500/10 text-red-500 mb-3 text-xl">
+              ⚠️
+            </div>
+
+            <h2 className="text-lg font-bold text-[var(--seller-text)]">
+              Unable to load closed enquiries
+            </h2>
+
+            <p className="mt-1.5 text-xs sm:text-sm text-[var(--seller-text-muted)] max-w-md mx-auto">
+              Something went wrong while loading your closed enquiries. Please check connection and try again.
             </p>
-            <p className="text-xs font-mono bg-red-50 text-red-800 p-2 rounded mt-3 max-w-lg mx-auto overflow-x-auto">{error}</p>
-            <button
-              type="button"
-              onClick={loadEnquiries}
-              className="mt-6 px-6 py-3 rounded-xl bg-[#0D3326] text-[#F6F0E5] font-semibold hover:bg-[#134534] transition shadow"
-            >
-              Try Again
-            </button>
+
+            <p className="mt-3 inline-block max-w-lg overflow-x-auto rounded-lg border border-[var(--seller-border)] bg-[var(--seller-bg)] p-2 font-mono text-[11px] text-[var(--seller-text-muted)]">
+              {error}
+            </p>
+
+            <div className="mt-6">
+              <button
+                type="button"
+                onClick={loadEnquiries}
+                className="inline-flex items-center gap-2 rounded-xl bg-[var(--seller-primary)] px-5 py-2.5 text-xs font-bold text-[var(--seller-bg)] transition hover:opacity-90"
+              >
+                <RefreshCw size={13} />
+                Try Again
+              </button>
+            </div>
           </div>
         </main>
 
@@ -405,431 +618,520 @@ export default function ClosedEnquiriesPage() {
   // MAIN CLOSED ENQUIRIES PAGE UI
   // =====================================================
   return (
-    <div className="seller-page-wrapper flex flex-col font-sans">
+    <div className="seller-page-wrapper flex min-h-screen flex-col font-sans">
       <Header />
 
       <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
 
-          {/* SUCCESS TOAST */}
-          {successMessage && (
-            <div className="mb-6 p-4 rounded-xl bg-emerald-700 text-white flex items-center justify-between shadow-lg animate-bounce">
-              <div className="flex items-center gap-3">
-                <span className="text-xl">✓</span>
-                <span className="font-semibold text-sm sm:text-base">{successMessage}</span>
-              </div>
-              <button
-                onClick={() => setSuccessMessage("")}
-                className="text-white hover:text-gray-200 font-bold px-2"
-              >
-                ✕
-              </button>
+        {/* TOAST NOTIFICATION */}
+        {successMessage && (
+          <div className="mb-6 flex items-center justify-between rounded-xl border border-[var(--seller-border-focus)] bg-[var(--seller-surface)] p-3.5 shadow-sm text-xs font-semibold text-[var(--seller-text)] animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--seller-primary)] text-[var(--seller-bg)] text-[10px] font-black">
+                ✓
+              </span>
+              <span>{successMessage}</span>
             </div>
-          )}
-
-          {/* Navigation Back Link */}
-          <div className="mb-6 flex items-center justify-between">
-            <Link
-              href="/owner"
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+            <button
+              onClick={() => setSuccessMessage("")}
+              className="text-[var(--seller-text-muted)] hover:text-[var(--seller-text)] font-bold px-1"
             >
-              <ArrowLeft size={14} />
-              Back to Dashboard
-            </Link>
+              ✕
+            </button>
+          </div>
+        )}
+
+        {/* Navigation Breadcrumb / Back Link */}
+        <div className="mb-6 flex items-center justify-between">
+          <Link
+            href="/owner"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+          >
+            <ArrowLeft size={14} />
+            Back to Dashboard
+          </Link>
+        </div>
+
+        {/* =================================================
+            1. HORIZONTALLY CENTERED HEADING & DESCRIPTION
+        ================================================= */}
+        <header className="mx-auto mb-8 max-w-2xl text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3.5 py-1 text-[11px] font-semibold text-[var(--seller-text-muted)] shadow-xs">
+            <MessageSquare size={12} strokeWidth={2} />
+            <span>Seller Portal</span>
           </div>
 
-          {/* CENTERED PAGE HEADING */}
-          <header className="mx-auto mb-8 max-w-2xl text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3.5 py-1 text-[11px] font-semibold text-[var(--seller-text-muted)] shadow-xs">
-              <Archive size={12} strokeWidth={2} />
-              <span>Seller Portal</span>
-            </div>
+          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--seller-text)] sm:text-4xl lg:text-[40px]">
+            Enquiries
+          </h1>
 
-            <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--seller-text)] sm:text-4xl lg:text-[40px]">
-              Enquiries
-            </h1>
+          <p className="mt-2.5 text-sm text-[var(--seller-text-muted)] sm:text-base sm:leading-relaxed">
+            View enquiries that are no longer active.
+          </p>
+        </header>
 
-            <p className="mt-2.5 text-sm text-[var(--seller-text-muted)] sm:text-base sm:leading-relaxed">
-              View enquiries that are no longer active.
-            </p>
-          </header>
+        {/* Tab switcher: New, Contacted, Closed */}
+        <div className="mb-6 flex justify-center overflow-x-auto pb-1">
+          <div className="inline-flex rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-1 shadow-xs">
+            {[
+              { label: `New (${countNewEnquiries})`, href: "/owner/enquiries/new", active: false },
+              { label: `Contacted (${countContactedEnquiries})`, href: "/owner/enquiries/contacted", active: false },
+              { label: `Closed (${countTotalClosed})`, href: "/owner/enquiries/closed", active: true },
+            ].map((tab) => (
+              <Link
+                key={tab.label}
+                href={tab.href}
+                className={`rounded-lg px-4 py-2 text-xs font-bold transition-all whitespace-nowrap ${
+                  tab.active
+                    ? "bg-[var(--seller-primary)] text-[var(--seller-bg)] shadow-xs"
+                    : "text-[var(--seller-text-muted)] hover:text-[var(--seller-text)]"
+                }`}
+              >
+                {tab.label}
+              </Link>
+            ))}
+          </div>
+        </div>
 
-          {/* Tab switcher: New, Contacted, Site Visits, Closed */}
-          <div className="mb-6 flex justify-center overflow-x-auto pb-1">
-            <div className="inline-flex rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-1 shadow-xs">
-              {[
-                { label: `New`, href: "/owner/enquiries/new", active: false },
-                { label: `Contacted`, href: "/owner/enquiries/contacted", active: false },
-                { label: `Closed`, href: "/owner/enquiries/closed", active: true },
-              ].map((tab) => (
-                <Link
-                  key={tab.label}
-                  href={tab.href}
-                  className={`rounded-lg px-4 py-2 text-xs font-bold transition-all whitespace-nowrap ${
-                    tab.active
-                      ? "bg-[var(--seller-primary)] text-[var(--seller-bg)] shadow-xs"
-                      : "text-[var(--seller-text-muted)] hover:text-[var(--seller-text)]"
-                  }`}
+        {/* Compact Filter Chips for Closed Categories */}
+        <div className="mb-6 flex justify-center overflow-x-auto pb-1">
+          <div className="inline-flex gap-2">
+            {[
+              { id: "all", label: `All Closed (${countTotalClosed})` },
+              { id: "not-interested", label: `Not Interested (${countNotInterested})` },
+              { id: "converted", label: `Converted (${countConverted})` },
+              { id: "archived", label: `Archived (${countArchived})` },
+            ].map((chip) => (
+              <button
+                key={chip.id}
+                type="button"
+                onClick={() => setCategoryFilter(chip.id)}
+                className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition border ${
+                  categoryFilter === chip.id
+                    ? "bg-[var(--seller-primary)] text-[var(--seller-bg)] border-[var(--seller-primary)]"
+                    : "bg-[var(--seller-surface)] text-[var(--seller-text-muted)] border-[var(--seller-border)] hover:border-[var(--seller-border-focus)] hover:text-[var(--seller-text)]"
+                }`}
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* =================================================
+            2. CLEAN, COMPACT ENQUIRIES TOOLBAR
+        ================================================= */}
+        <section className="mb-6 rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-surface)] p-3 sm:p-4 shadow-[var(--seller-shadow)]">
+          <div className="flex flex-1 flex-wrap items-center justify-between gap-2.5">
+
+            {/* Search */}
+            <div className="relative min-w-[180px] flex-1 sm:min-w-[220px]">
+              <Search
+                size={15}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+              />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by name, phone, property..."
+                className="h-10 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-9 pr-8 text-xs font-medium text-[var(--seller-text)] outline-none transition placeholder:text-[var(--seller-text-subtle)] focus:border-[var(--seller-border-focus)]"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1 text-[var(--seller-text-subtle)] hover:text-[var(--seller-text)]"
+                  aria-label="Clear search"
                 >
-                  {tab.label}
-                </Link>
-              ))}
+                  <X size={13} />
+                </button>
+              )}
             </div>
+
+            {/* History button beside search bar */}
+            <button
+              type="button"
+              onClick={() => setHistoryModalOpen(true)}
+              className="h-10 inline-flex items-center gap-1.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3.5 text-xs font-semibold text-[var(--seller-text)] hover:border-[var(--seller-border-focus)] hover:bg-[var(--seller-surface-hover,var(--seller-surface))] transition shadow-2xs whitespace-nowrap"
+              title="View All Enquiry History"
+            >
+              <History size={14} className="text-[var(--seller-text-muted)]" />
+              <span>History</span>
+              <span className="ml-1 rounded-full bg-[var(--seller-border)] px-1.5 py-0.2 text-[10px] font-bold text-[var(--seller-text-muted)]">
+                {allEnquiries.length}
+              </span>
+            </button>
+
+            {/* Property filter */}
+            <div className="relative w-auto min-w-[130px]">
+              <Tag
+                size={13}
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+              />
+              <select
+                value={propertyFilter}
+                onChange={(e) => setPropertyFilter(e.target.value)}
+                className="h-10 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-8 pr-7 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer"
+              >
+                {propertyOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={13}
+                className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+              />
+            </div>
+
+            {/* Purpose filter */}
+            <div className="relative w-auto min-w-[120px]">
+              <Filter
+                size={13}
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+              />
+              <select
+                value={purposeFilter}
+                onChange={(e) => setPurposeFilter(e.target.value)}
+                className="h-10 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-8 pr-7 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer"
+              >
+                {purposeOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={13}
+                className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+              />
+            </div>
+
+            {/* Status filter */}
+            <div className="relative w-auto min-w-[120px]">
+              <Tag
+                size={13}
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+              />
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="h-10 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-8 pr-7 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer"
+              >
+                {statusOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={13}
+                className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+              />
+            </div>
+
+            {/* Sort dropdown */}
+            <div className="relative w-auto min-w-[140px]">
+              <ArrowUpDown
+                size={13}
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+              />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="h-10 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] pl-8 pr-7 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer"
+              >
+                <option value="Latest Closed">Latest Closed</option>
+                <option value="Oldest Closed">Oldest Closed</option>
+                <option value="Property">Property</option>
+                <option value="Name">Name</option>
+              </select>
+              <ChevronDown
+                size={13}
+                className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+              />
+            </div>
+
+          </div>
+        </section>
+
+        {/* 3. RESULTS COUNTER — Restrained Monochrome GetSiteGo Polish */}
+        <div className="flex items-center justify-between mb-4 px-1">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm sm:text-base font-bold text-[var(--seller-text)] tracking-tight">
+              {categoryLabels[categoryFilter] ?? "Closed Enquiries"}
+            </h2>
+            <span className="text-[11px] font-semibold bg-[var(--seller-surface)] text-[var(--seller-text)] border border-[var(--seller-border)] px-2.5 py-0.5 rounded-full shadow-2xs">
+              {filteredAndSortedEnquiries.length}
+            </span>
           </div>
 
-          {/* 1. SUMMARY CARDS */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5 mb-8">
+          <p className="text-xs text-[var(--seller-text-muted)]">
+            {filteredAndSortedEnquiries.length === 1 ? "1 enquiry" : `${filteredAndSortedEnquiries.length} enquiries`}
+            {categoryFilter !== "all" && (
+              <button
+                type="button"
+                onClick={() => setCategoryFilter("all")}
+                className="ml-2 font-semibold text-[var(--seller-text)] hover:underline"
+              >
+                ✕ Clear
+              </button>
+            )}
+          </p>
+        </div>
 
-            {/* Card 1: Total Closed */}
-            <div className="bg-white rounded-2xl border-2 border-[#064d3b] p-5 shadow-sm relative overflow-hidden flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center text-lg font-bold">
-                  📂
-                </div>
-                <span className="text-[10px] font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                  Closed
-                </span>
+        {/* 4. CLOSED ENQUIRY LIST (CARDS) */}
+        <div className="space-y-3.5">
+          {filteredAndSortedEnquiries.length === 0 ? (
+            /* REDESIGNED PREMIUM EMPTY STATE — Clean, Balanced, GetSiteGo Style */
+            <div className="seller-card p-8 sm:p-10 text-center flex flex-col items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-bg)] text-[var(--seller-text-muted)] flex items-center justify-center mb-3.5 shadow-2xs">
+                <Archive size={20} strokeWidth={1.8} />
               </div>
-              <div className="mt-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-500">
-                  Total Closed
-                </p>
-                <h3 className="text-2xl sm:text-3xl font-black text-[#064d3b] mt-0.5">
-                  {countTotalClosed}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  All inactive enquiries
-                </p>
-              </div>
-            </div>
 
-            {/* Card 2: Not Interested */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:border-red-300 transition flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-lg font-bold">
-                  🚫
-                </div>
-              </div>
-              <div className="mt-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-500">
-                  Not Interested
-                </p>
-                <h3 className="text-2xl sm:text-3xl font-black text-gray-800 mt-0.5">
-                  {countNotInterested}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  Customer not interested
-                </p>
-              </div>
-            </div>
+              <h3 className="text-base sm:text-lg font-bold text-[var(--seller-text)]">
+                No {categoryLabels[categoryFilter] ?? "Closed"} Enquiries
+              </h3>
 
-            {/* Card 3: Converted */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:border-emerald-300 transition flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg font-bold">
-                  🎉
-                </div>
-              </div>
-              <div className="mt-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-500">
-                  Converted
-                </p>
-                <h3 className="text-2xl sm:text-3xl font-black text-gray-800 mt-0.5">
-                  {countConverted}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  Successfully converted
-                </p>
-              </div>
-            </div>
+              <p className="text-[var(--seller-text-muted)] text-xs sm:text-sm mt-1 max-w-sm mx-auto leading-relaxed">
+                {categoryFilter === "all"
+                  ? "You don't have any closed or inactive enquiries matching your current filters."
+                  : `No enquiries match the "${categoryLabels[categoryFilter]}" category filter.`}
+              </p>
 
-            {/* Card 4: Archived / Closed */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:border-blue-300 transition flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg font-bold">
-                  📦
-                </div>
-              </div>
-              <div className="mt-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-500">
-                  Archived
-                </p>
-                <h3 className="text-2xl sm:text-3xl font-black text-gray-800 mt-0.5">
-                  {countArchived}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  Closed / Archived
-                </p>
-              </div>
-            </div>
-
-          </div>
-
-          {/* 2. SEARCH & FILTER BAR */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 mb-6 shadow-sm">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-
-              {/* Search */}
-              <div className="relative lg:col-span-2">
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search by name, phone, property..."
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-[#064d3b] focus:bg-white transition"
-                />
-                <span className="absolute left-3 top-2.5 text-gray-400 text-sm">
-                  🔍
-                </span>
-                {search && (
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+                {categoryFilter !== "all" && (
                   <button
-                    onClick={() => setSearch("")}
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 text-xs bg-gray-200 rounded-full w-4 h-4 flex items-center justify-center"
+                    type="button"
+                    onClick={() => setCategoryFilter("all")}
+                    className="px-4 py-2 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] text-xs font-semibold transition hover:opacity-90 shadow-2xs"
                   >
-                    ✕
+                    Show All Closed
+                  </button>
+                )}
+
+                <Link
+                  href="/owner/enquiries/contacted"
+                  className="px-4 py-2 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] text-xs font-semibold transition hover:opacity-90 shadow-2xs"
+                >
+                  View Contacted Enquiries
+                </Link>
+
+                {(search || propertyFilter !== "All Properties" || purposeFilter !== "All Purposes" || statusFilter !== "All Status") && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearch("");
+                      setPropertyFilter("All Properties");
+                      setPurposeFilter("All Purposes");
+                      setStatusFilter("All Status");
+                    }}
+                    className="px-4 py-2 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] text-xs font-semibold hover:border-[var(--seller-border-focus)] transition shadow-2xs"
+                  >
+                    Reset Filters
                   </button>
                 )}
               </div>
-
-              {/* Property filter */}
-              <div>
-                <select
-                  value={propertyFilter}
-                  onChange={(e) => setPropertyFilter(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 outline-none focus:border-[#064d3b] focus:bg-white transition cursor-pointer"
-                >
-                  {propertyOptions.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Status filter */}
-              <div>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 outline-none focus:border-[#064d3b] focus:bg-white transition cursor-pointer"
-                >
-                  <option value="All Status">All Status</option>
-                  <option value="Closed">Closed</option>
-                  <option value="Not Interested">Not Interested</option>
-                  <option value="Converted">Converted</option>
-                </select>
-              </div>
-
-              {/* Sort dropdown */}
-              <div>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-[#faf8f5] text-sm text-gray-800 outline-none focus:border-[#064d3b] focus:bg-white transition cursor-pointer font-medium"
-                >
-                  <option value="Latest Closed">Latest Closed</option>
-                  <option value="Oldest Closed">Oldest Closed</option>
-                  <option value="Name">Name</option>
-                  <option value="Property">Property</option>
-                </select>
-              </div>
-
             </div>
-          </div>
+          ) : (
+            /* ENQUIRY CARDS */
+            filteredAndSortedEnquiries.map((enquiry) => {
+              const docId = enquiry?.documentId || enquiry?.id;
+              const name = enquiry?.Name || enquiry?.name || "Unknown Customer";
+              const phone = enquiry?.Phone || enquiry?.phone || "Not provided";
+              const email = enquiry?.Email || enquiry?.email || "Not provided";
+              const status = getStatus(enquiry);
 
-          {/* 3. RESULTS COUNTER */}
-          <div className="flex items-center justify-between mb-4 px-1">
-            <div className="flex items-center gap-2">
-              <h2 className="text-lg font-bold text-[#064d3b]">
-                Closed Enquiries List
-              </h2>
-              <span className="text-xs font-extrabold bg-[#064d3b] text-white px-2.5 py-0.5 rounded-full">
-                {filteredAndSortedEnquiries.length}
-              </span>
-            </div>
+              const propTitle = getPropertyName(enquiry);
+              const propCity = getPropertyCity(enquiry);
+              const propArea = getPropertyArea(enquiry);
+              const propPrice = getPropertyPrice(enquiry);
 
-            <p className="text-xs sm:text-sm text-gray-500">
-              Total <span className="font-semibold text-gray-800">{filteredAndSortedEnquiries.length}</span> enquiries
-            </p>
-          </div>
+              const closedDate = enquiry?.updatedAt || enquiry?.createdAt;
+              const formattedClosedDate = closedDate
+                ? new Date(closedDate).toLocaleString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "Date unavailable";
 
-          {/* 4. CLOSED ENQUIRY LIST (CARDS) */}
-          <div className="space-y-4">
-            {filteredAndSortedEnquiries.length === 0 ? (
-              /* EMPTY STATE */
-              <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm">
-                <div className="w-16 h-16 mx-auto rounded-full bg-[#f2ead7] flex items-center justify-center text-3xl mb-4">
-                  📂
-                </div>
+              const initials = name
+                .split(" ")
+                .filter(Boolean)
+                .map((w) => w[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase() || "U";
 
-                <h3 className="text-xl font-bold text-[#064d3b]">
-                  No Closed Enquiries
-                </h3>
+              const isDropdownOpen = activeDropdownId === docId;
+              const isActionLoading = actionLoadingId === docId;
 
-                <p className="text-gray-500 text-sm sm:text-base mt-1 max-w-md mx-auto">
-                  You don't have any closed or inactive enquiries yet.
-                </p>
+              // Restrained, readable status badge styling
+              let statusBadgeStyle = "bg-[var(--seller-bg)] text-[var(--seller-text-muted)] border-[var(--seller-border)]";
+              const sLower = status.toLowerCase();
+              if (sLower === "converted") {
+                statusBadgeStyle = "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
+              } else if (sLower === "not interested" || sLower === "notinterested") {
+                statusBadgeStyle = "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20";
+              }
 
-                <div className="mt-6 flex flex-wrap justify-center gap-3">
-                  <Link
-                    href="/owner/enquiries/contacted"
-                    className="px-5 py-2.5 rounded-xl bg-[#064d3b] text-white text-sm font-semibold hover:bg-[#053d30] transition shadow"
-                  >
-                    View Contacted Enquiries
-                  </Link>
+              return (
+                <div
+                  key={docId}
+                  className="seller-card p-4 sm:p-5 transition hover:border-[var(--seller-border-focus)] relative"
+                >
+                  <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1.3fr_0.9fr_auto] gap-4 sm:gap-5 items-center">
 
-                  {(search || propertyFilter !== "All Properties" || statusFilter !== "All Status") && (
-                    <button
-                      onClick={() => {
-                        setSearch("");
-                        setPropertyFilter("All Properties");
-                        setStatusFilter("All Status");
-                      }}
-                      className="px-5 py-2.5 rounded-xl border border-[#c99838] text-[#064d3b] text-sm font-semibold hover:bg-[#faf4e5] transition"
-                    >
-                      Reset Filters
-                    </button>
-                  )}
-                </div>
-              </div>
-            ) : (
-              /* ENQUIRY CARDS */
-              filteredAndSortedEnquiries.map((enquiry) => {
-                const docId = enquiry?.documentId || enquiry?.id;
-                const name = enquiry?.Name || enquiry?.name || "Unknown Customer";
-                const phone = enquiry?.Phone || enquiry?.phone || "Not provided";
-                const email = enquiry?.Email || enquiry?.email || "Not provided";
-                const status = getStatus(enquiry);
+                    {/* CUSTOMER SECTION */}
+                    <div className="flex items-start sm:items-center gap-3.5">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[var(--seller-bg)] text-[var(--seller-text)] flex items-center justify-center font-bold text-sm sm:text-base flex-shrink-0 border border-[var(--seller-border)]">
+                        {initials}
+                      </div>
 
-                const propTitle = getPropertyName(enquiry);
-                const propCity = getPropertyCity(enquiry);
-                const propArea = getPropertyArea(enquiry);
-                const propPrice = getPropertyPrice(enquiry);
-
-                const closedDate = enquiry?.updatedAt || enquiry?.createdAt;
-                const formattedClosedDate = closedDate
-                  ? new Date(closedDate).toLocaleString("en-IN", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
-                  : "Date unavailable";
-
-                const initials = name
-                  .split(" ")
-                  .filter(Boolean)
-                  .map((w) => w[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase() || "U";
-
-                // Dynamic Status Badge Color
-                let statusBadgeStyle = "bg-gray-100 text-gray-800 border-gray-200";
-                if (status.toLowerCase() === "converted") {
-                  statusBadgeStyle = "bg-emerald-100 text-emerald-800 border-emerald-200";
-                } else if (status.toLowerCase() === "not interested") {
-                  statusBadgeStyle = "bg-red-100 text-red-800 border-red-200";
-                }
-
-                const isActionLoading = actionLoadingId === docId;
-
-                return (
-                  <div
-                    key={docId}
-                    className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 shadow-sm hover:shadow-md hover:border-[#c99838]/40 transition relative"
-                  >
-                    <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1.3fr_0.9fr_auto] gap-5 items-center">
-
-                      {/* CUSTOMER INFO */}
-                      <div className="flex items-start sm:items-center gap-4">
-                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gray-100 text-gray-700 flex items-center justify-center font-black text-lg flex-shrink-0 border border-gray-200">
-                          {initials}
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-bold text-sm sm:text-base text-[var(--seller-text)]">
+                            {name}
+                          </h3>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${statusBadgeStyle}`}>
+                            {status.toUpperCase()}
+                          </span>
                         </div>
 
-                        <div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-bold text-base sm:text-lg text-[#064d3b]">
-                              {name}
-                            </h3>
-                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border uppercase tracking-wider ${statusBadgeStyle}`}>
-                              {status.toUpperCase()}
-                            </span>
+                        <p className="text-xs text-[var(--seller-text-muted)] mt-1 flex items-center gap-1.5">
+                          <Phone size={12} className="text-[var(--seller-text-subtle)]" />
+                          <span>{phone}</span>
+                        </p>
+
+                        <p className="text-xs text-[var(--seller-text-muted)] mt-0.5 flex items-center gap-1.5">
+                          <Mail size={12} className="text-[var(--seller-text-subtle)]" />
+                          <span>{email}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* PROPERTY SECTION */}
+                    <div className="border-t lg:border-t-0 lg:border-l border-[var(--seller-border)] pt-3 lg:pt-0 lg:pl-5">
+                      <p className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider">
+                        Enquired Property
+                      </p>
+
+                      <h4 className="font-bold text-xs sm:text-sm text-[var(--seller-text)] mt-0.5 line-clamp-1">
+                        {propTitle}
+                      </h4>
+
+                      <p className="text-xs text-[var(--seller-text-muted)] mt-0.5">
+                        📍 {[propArea, propCity].filter(Boolean).join(", ") || "Location specified"}
+                      </p>
+
+                      {propPrice && (
+                        <p className="text-xs sm:text-sm font-extrabold text-[var(--seller-text)] mt-1">
+                          {propPrice}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* TIMELINE SECTION */}
+                    <div className="border-t lg:border-t-0 lg:border-l border-[var(--seller-border)] pt-3 lg:pt-0 lg:pl-5">
+                      <p className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider">
+                        Closed On
+                      </p>
+                      <p className="text-xs font-medium text-[var(--seller-text)] mt-0.5">
+                        {formattedClosedDate}
+                      </p>
+
+                      {enquiry?.ClosedReason && (
+                        <p className="text-xs text-[var(--seller-text-muted)] mt-1 italic">
+                          Reason: <span className="text-[var(--seller-text)]">{enquiry.ClosedReason}</span>
+                        </p>
+                      )}
+                    </div>
+
+                    {/* ACTION BUTTONS & MORE MENU — Refined Monochrome Styling */}
+                    <div className="flex sm:flex-row lg:flex-col gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 border-[var(--seller-border)] lg:min-w-[130px] relative">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedEnquiry(enquiry)}
+                        className="flex-1 lg:w-full px-3.5 py-2 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90 transition shadow-2xs"
+                      >
+                        View Details
+                      </button>
+
+                      {/* More dropdown trigger */}
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setActiveDropdownId(isDropdownOpen ? null : docId)
+                          }
+                          className="w-full px-3 py-2 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-semibold text-xs hover:border-[var(--seller-border-focus)] transition flex items-center justify-center gap-1 shadow-2xs"
+                        >
+                          <span>More</span>
+                          <span>⋮</span>
+                        </button>
+
+                        {/* Dropdown Menu Popup */}
+                        {isDropdownOpen && (
+                          <div className="absolute right-0 top-full mt-1.5 w-52 bg-[var(--seller-surface)] rounded-2xl border border-[var(--seller-border)] shadow-xl z-30 py-1.5 text-xs font-semibold text-[var(--seller-text)] animate-in fade-in zoom-in-95 duration-100">
+                            <button
+                              onClick={() => {
+                                setActiveDropdownId(null);
+                                setSelectedEnquiry(enquiry);
+                              }}
+                              className="w-full text-left px-3.5 py-2 hover:bg-[var(--seller-bg)] transition flex items-center gap-2"
+                            >
+                              <Eye size={13} className="text-[var(--seller-text-muted)]" />
+                              <span>View Details</span>
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                setActiveDropdownId(null);
+                                handleReopenEnquiry(enquiry);
+                              }}
+                              disabled={isActionLoading}
+                              className="w-full text-left px-3.5 py-2 hover:bg-[var(--seller-bg)] text-[var(--seller-text)] transition font-bold flex items-center gap-2"
+                            >
+                              <RefreshCw size={13} className="text-[var(--seller-text-muted)]" />
+                              <span>Re-enquiry (Move to New)</span>
+                            </button>
+
+                            {enquiry?.Phone && (
+                              <a
+                                href={`tel:${enquiry.Phone}`}
+                                className="w-full text-left px-3.5 py-2 hover:bg-[var(--seller-bg)] text-[var(--seller-text)] transition flex items-center gap-2"
+                              >
+                                <Phone size={13} className="text-[var(--seller-text-muted)]" />
+                                <span>Call Customer</span>
+                              </a>
+                            )}
+
+                            {enquiry?.Email && (
+                              <a
+                                href={`mailto:${enquiry.Email}`}
+                                className="w-full text-left px-3.5 py-2 hover:bg-[var(--seller-bg)] text-[var(--seller-text)] transition flex items-center gap-2"
+                              >
+                                <Mail size={13} className="text-[var(--seller-text-muted)]" />
+                                <span>Send Email</span>
+                              </a>
+                            )}
                           </div>
-
-                          <p className="text-xs sm:text-sm text-gray-600 mt-1 flex items-center gap-1">
-                            <span>☎</span> {phone}
-                          </p>
-
-                          <p className="text-xs sm:text-sm text-gray-600 flex items-center gap-1">
-                            <span>✉</span> {email}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* PROPERTY INFO */}
-                      <div className="border-t lg:border-t-0 lg:border-l border-gray-100 pt-3 lg:pt-0 lg:pl-5">
-                        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-                          Enquired Property
-                        </p>
-
-                        <h4 className="font-bold text-sm sm:text-base text-[#064d3b] mt-0.5 line-clamp-1">
-                          {propTitle}
-                        </h4>
-
-                        <p className="text-xs text-gray-500 mt-1">
-                          📍 {[propArea, propCity].filter(Boolean).join(", ") || "Location specified"}
-                        </p>
-
-                        {propPrice && (
-                          <p className="text-xs sm:text-sm font-bold text-[#c99838] mt-1">
-                            {propPrice}
-                          </p>
                         )}
-                      </div>
-
-                      {/* TIMELINE */}
-                      <div className="border-t lg:border-t-0 lg:border-l border-gray-100 pt-3 lg:pt-0 lg:pl-5">
-                        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-                          Closed On
-                        </p>
-                        <p className="text-xs sm:text-sm font-medium text-gray-700 mt-0.5">
-                          {formattedClosedDate}
-                        </p>
-
-                        {enquiry?.ClosedReason && (
-                          <p className="text-xs text-red-600 mt-1 italic">
-                            Reason: {enquiry.ClosedReason}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* ACTION BUTTONS */}
-                      <div className="flex sm:flex-row lg:flex-col gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 border-gray-100 lg:min-w-[140px]">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedEnquiry(enquiry)}
-                          className="flex-1 lg:w-full px-4 py-2.5 rounded-xl bg-[#d6a744] text-[#064d3b] font-bold text-xs sm:text-sm hover:bg-[#c99838] transition shadow-sm"
-                        >
-                          View Details
-                        </button>
-
-                        <button
-                          type="button"
-                          disabled={isActionLoading}
-                          onClick={() => handleReopenEnquiry(enquiry)}
-                          className="flex-1 lg:w-full px-4 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-semibold text-xs sm:text-sm hover:bg-gray-50 transition disabled:opacity-50"
-                        >
-                          {isActionLoading ? "Updating..." : "Reopen Enquiry"}
-                        </button>
                       </div>
 
                     </div>
+
                   </div>
-                );
-              })
-            )}
-          </div>
+                </div>
+              );
+            })
+          )}
+        </div>
 
       </main>
 
@@ -838,84 +1140,83 @@ export default function ClosedEnquiriesPage() {
       ===================================================== */}
       {selectedEnquiry && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl relative border border-gray-100 my-8 max-h-[90vh] overflow-y-auto">
+          <div className="bg-[var(--seller-surface)] rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl relative border border-[var(--seller-border)] my-8 max-h-[90vh] overflow-y-auto text-[var(--seller-text)]">
 
             {/* Close Button */}
             <button
               type="button"
               onClick={() => setSelectedEnquiry(null)}
-              className="absolute top-5 right-5 text-gray-400 hover:text-gray-700 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-bold text-base transition"
+              className="absolute top-5 right-5 text-[var(--seller-text-muted)] hover:text-[var(--seller-text)] w-8 h-8 rounded-full bg-[var(--seller-bg)] flex items-center justify-center font-bold text-sm transition border border-[var(--seller-border)]"
             >
               ✕
             </button>
 
-            {/* Header Banner */}
-            <div className="flex items-center gap-4 mb-6 border-b border-gray-100 pb-5">
-              <div className="w-14 h-14 rounded-2xl bg-gray-100 text-gray-700 flex items-center justify-center font-black text-2xl border border-gray-200">
+            {/* Header / Customer Banner */}
+            <div className="flex items-center gap-4 mb-6 border-b border-[var(--seller-border)] pb-5">
+              <div className="w-12 h-12 rounded-2xl bg-[var(--seller-bg)] text-[var(--seller-text)] flex items-center justify-center font-black text-xl border border-[var(--seller-border)]">
                 {(selectedEnquiry?.Name || "U")[0]}
               </div>
 
               <div>
-                <h3 className="text-2xl font-bold text-[#064d3b]">
-                  Closed Enquiry Details
+                <h3 className="text-xl sm:text-2xl font-bold text-[var(--seller-text)]">
+                  {selectedEnquiry?.Name || selectedEnquiry?.name || "Customer Details"}
                 </h3>
-                <p className="text-xs text-gray-500">
-                  {selectedEnquiry?.Name} (☎ {selectedEnquiry?.Phone} | ✉ {selectedEnquiry?.Email})
+                <p className="text-xs text-[var(--seller-text-muted)] mt-0.5">
+                  ☎ {selectedEnquiry?.Phone} | ✉ {selectedEnquiry?.Email}
                 </p>
               </div>
 
-              <span className="ml-auto text-xs font-bold px-3 py-1 rounded-full bg-gray-100 text-gray-800 uppercase tracking-wider border">
+              <span className="ml-auto text-xs font-bold px-3 py-1 rounded-full bg-[var(--seller-bg)] text-[var(--seller-text)] uppercase tracking-wider border border-[var(--seller-border)]">
                 {getStatus(selectedEnquiry)}
               </span>
             </div>
 
-            {/* Grid Layout: Left Details, Right Actions */}
+            {/* Grid Layout: Left Details, Right Actions & Property */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-              {/* Left Column: Details */}
-              <div className="lg:col-span-2 space-y-5 text-sm">
+              {/* Left Column: Customer & Property Details */}
+              <div className="lg:col-span-2 space-y-4 text-sm">
 
                 {/* Customer Details Box */}
-                <div className="bg-[#faf8f5] p-5 rounded-2xl border border-gray-200">
-                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
-                    Customer Details
+                <div className="bg-[var(--seller-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--seller-border)]">
+                  <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-3">
+                    Customer Requirements
                   </h4>
-
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs sm:text-sm">
                     <div>
-                      <span className="text-gray-400 block text-xs">Customer Name</span>
-                      <span className="font-bold text-gray-800">
+                      <span className="text-[var(--seller-text-subtle)] block text-xs">Customer Name</span>
+                      <span className="font-bold text-[var(--seller-text)]">
                         {selectedEnquiry?.Name || selectedEnquiry?.name || "N/A"}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-gray-400 block text-xs">Preferred Location</span>
-                      <span className="font-bold text-gray-800">
+                      <span className="text-[var(--seller-text-subtle)] block text-xs">Preferred Location</span>
+                      <span className="font-bold text-[var(--seller-text)]">
                         {getPropertyCity(selectedEnquiry) || "Pune"}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-gray-400 block text-xs">Purpose</span>
-                      <span className="font-bold text-gray-800">
+                      <span className="text-[var(--seller-text-subtle)] block text-xs">Purpose</span>
+                      <span className="font-bold text-[var(--seller-text)]">
                         {getPropertyPurpose(selectedEnquiry)}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-gray-400 block text-xs">Property Type</span>
-                      <span className="font-bold text-gray-800">
+                      <span className="text-[var(--seller-text-subtle)] block text-xs">Property Type</span>
+                      <span className="font-bold text-[var(--seller-text)]">
                         {getPropertyType(selectedEnquiry)}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Property Details Box */}
-                <div className="bg-[#faf8f5] p-5 rounded-2xl border border-gray-200">
-                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
-                    Target Property
+                {/* Enquired Property Box */}
+                <div className="bg-[var(--seller-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--seller-border)]">
+                  <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-3">
+                    Enquired Property
                   </h4>
 
                   <div className="flex gap-4 items-start">
@@ -923,21 +1224,21 @@ export default function ClosedEnquiriesPage() {
                       <img
                         src={getPropertyImage(selectedEnquiry)}
                         alt="Property"
-                        className="w-24 h-24 rounded-2xl object-cover border border-gray-200 shrink-0"
+                        className="w-20 h-20 rounded-xl object-cover border border-[var(--seller-border)] shrink-0"
                       />
                     )}
 
                     <div className="space-y-1">
-                      <h5 className="font-bold text-base text-[#064d3b]">
+                      <h5 className="font-bold text-sm sm:text-base text-[var(--seller-text)]">
                         {getPropertyName(selectedEnquiry)}
                       </h5>
 
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-[var(--seller-text-muted)]">
                         📍 {[getPropertyArea(selectedEnquiry), getPropertyCity(selectedEnquiry)].filter(Boolean).join(", ")}
                       </p>
 
                       {getPropertyPrice(selectedEnquiry) && (
-                        <p className="text-sm font-extrabold text-[#c99838] pt-1">
+                        <p className="text-xs sm:text-sm font-extrabold text-[var(--seller-text)] pt-1">
                           {getPropertyPrice(selectedEnquiry)}
                         </p>
                       )}
@@ -946,51 +1247,357 @@ export default function ClosedEnquiriesPage() {
                 </div>
 
                 {/* Enquiry Message */}
-                <div className="bg-[#faf8f5] p-5 rounded-2xl border border-gray-200">
-                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                <div className="bg-[var(--seller-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--seller-border)]">
+                  <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-2">
                     Enquiry Message
                   </h4>
-                  <p className="text-gray-700 bg-white p-3 rounded-xl border border-gray-100 italic">
-                    "{selectedEnquiry?.Message || selectedEnquiry?.message || "No message provided."}"
+                  <p className="text-[var(--seller-text)] bg-[var(--seller-surface)] p-3 rounded-xl border border-[var(--seller-border)] italic text-xs sm:text-sm">
+                    &ldquo;{selectedEnquiry?.Message || selectedEnquiry?.message || "No message provided."}&rdquo;
                   </p>
                 </div>
 
                 {/* Contact History */}
-                <div className="bg-[#faf8f5] p-5 rounded-2xl border border-gray-200">
-                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                <div className="bg-[var(--seller-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--seller-border)]">
+                  <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-3">
                     Contact History
                   </h4>
-                  <p className="text-xs text-gray-500 italic">
-                    {selectedEnquiry?.ClosedReason ? `Closed Reason: ${selectedEnquiry.ClosedReason}` : "Enquiry closed."}
-                  </p>
+
+                  <div className="space-y-3 pl-2">
+                    {getContactHistory(selectedEnquiry).map((item, idx) => (
+                      <div key={idx} className="relative pl-5 border-l-2 border-[var(--seller-border-focus)] pb-1">
+                        <span className="absolute -left-[5px] top-0.5 w-2 h-2 rounded-full bg-[var(--seller-text)]"></span>
+                        <p className="text-[11px] font-semibold text-[var(--seller-text-muted)]">{item.date}</p>
+                        <p className="font-bold text-[var(--seller-text)] text-xs">{item.title}</p>
+                        <p className="text-xs text-[var(--seller-text-muted)] mt-0.5">{item.note}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
               </div>
 
-              {/* Right Column: Actions */}
-              <div className="space-y-3">
-                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                  Actions
+              {/* Right Column: Quick Actions */}
+              <div className="space-y-2.5">
+                <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-2">
+                  Quick Actions
                 </h4>
 
                 <button
                   type="button"
                   onClick={() => handleReopenEnquiry(selectedEnquiry)}
-                  className="w-full px-4 py-3 rounded-xl bg-[#064d3b] text-white font-bold text-sm hover:bg-[#053d30] transition block shadow-sm"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90 transition block shadow-2xs"
                 >
-                  🔄 Reopen Enquiry
+                  🔄 Reopen Enquiry (Move to New)
                 </button>
 
                 {selectedEnquiry?.Phone && (
                   <a
                     href={`tel:${selectedEnquiry.Phone}`}
-                    className="w-full text-center px-4 py-3 rounded-xl bg-white border border-gray-300 text-gray-800 font-bold text-sm hover:bg-gray-50 transition block shadow-xs"
+                    className="w-full text-center px-4 py-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-bold text-xs hover:border-[var(--seller-border-focus)] transition block shadow-2xs"
                   >
                     📞 Call Customer
                   </a>
                 )}
+
+                {selectedEnquiry?.Email && (
+                  <a
+                    href={`mailto:${selectedEnquiry.Email}`}
+                    className="w-full text-center px-4 py-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-bold text-xs hover:border-[var(--seller-border-focus)] transition block shadow-2xs"
+                  >
+                    ✉ Send Email
+                  </a>
+                )}
               </div>
 
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================
+          ENQUIRY HISTORY MODAL / PANEL
+      ===================================================== */}
+      {historyModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5">
+          <div className="bg-[var(--seller-surface)] rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-[var(--seller-border)] animate-in fade-in zoom-in duration-150 overflow-hidden text-[var(--seller-text)]">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-5 sm:p-6 border-b border-[var(--seller-border)] bg-[var(--seller-surface)]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[var(--seller-bg)] text-[var(--seller-text)] flex items-center justify-center border border-[var(--seller-border)]">
+                  <History size={18} />
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-extrabold text-[var(--seller-text)] flex items-center gap-2">
+                    <span>Enquiry History</span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold">
+                      {filteredHistoryEnquiries.length} of {allEnquiries.length}
+                    </span>
+                  </h3>
+                  <p className="text-xs text-[var(--seller-text-muted)] mt-0.5">
+                    View all past and current enquiries received across properties.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setHistoryModalOpen(false)}
+                className="w-9 h-9 rounded-xl border border-[var(--seller-border)] text-[var(--seller-text-muted)] hover:text-[var(--seller-text)] hover:bg-[var(--seller-bg)] flex items-center justify-center transition"
+                aria-label="Close History Modal"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Modal Filters Toolbar */}
+            <div className="p-4 sm:p-5 border-b border-[var(--seller-border)] bg-[var(--seller-bg)]">
+              <div className="flex flex-wrap items-center gap-2.5">
+                {/* Search */}
+                <div className="relative flex-1 min-w-[200px]">
+                  <Search
+                    size={14}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                  />
+                  <input
+                    type="text"
+                    value={historySearch}
+                    onChange={(e) => setHistorySearch(e.target.value)}
+                    placeholder="Search by buyer, phone, email, property, message..."
+                    className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] pl-8 pr-7 text-xs font-medium text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)]"
+                  />
+                  {historySearch && (
+                    <button
+                      type="button"
+                      onClick={() => setHistorySearch("")}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-[var(--seller-text-subtle)] hover:text-[var(--seller-text)]"
+                    >
+                      <X size={11} />
+                    </button>
+                  )}
+                </div>
+
+                {/* Status Filter */}
+                <div className="relative min-w-[130px]">
+                  <select
+                    value={historyStatusFilter}
+                    onChange={(e) => setHistoryStatusFilter(e.target.value)}
+                    className="h-9 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer pr-7"
+                  >
+                    {historyStatusOptions.map((st) => (
+                      <option key={st} value={st}>
+                        {st}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={12}
+                    className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                  />
+                </div>
+
+                {/* Property Filter */}
+                <div className="relative min-w-[140px]">
+                  <select
+                    value={historyPropertyFilter}
+                    onChange={(e) => setHistoryPropertyFilter(e.target.value)}
+                    className="h-9 w-full appearance-none rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] px-3 text-xs font-semibold text-[var(--seller-text)] outline-none transition focus:border-[var(--seller-border-focus)] cursor-pointer pr-7 max-w-[200px] truncate"
+                  >
+                    {historyPropertyOptions.map((prop) => (
+                      <option key={prop} value={prop}>
+                        {prop}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={12}
+                    className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--seller-text-subtle)]"
+                  />
+                </div>
+
+                {/* Reset Filters */}
+                {(historySearch || historyStatusFilter !== "All Status" || historyPropertyFilter !== "All Properties") && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setHistorySearch("");
+                      setHistoryStatusFilter("All Status");
+                      setHistoryPropertyFilter("All Properties");
+                    }}
+                    className="h-9 px-3 rounded-xl border border-dashed border-[var(--seller-border)] text-xs font-semibold text-[var(--seller-text-muted)] hover:text-red-500 hover:border-red-300 transition"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Body: Enquiry List */}
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3">
+              {filteredHistoryEnquiries.length === 0 ? (
+                <div className="text-center py-10 px-4 rounded-2xl border border-dashed border-[var(--seller-border)] bg-[var(--seller-bg)]">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--seller-surface)] text-[var(--seller-text-muted)] border border-[var(--seller-border)] flex items-center justify-center mx-auto mb-2 text-base">
+                    🔍
+                  </div>
+                  <h4 className="font-bold text-xs sm:text-sm text-[var(--seller-text)]">
+                    No enquiries found in history
+                  </h4>
+                  <p className="text-xs text-[var(--seller-text-muted)] mt-1">
+                    Try adjusting your search terms or filters above.
+                  </p>
+                </div>
+              ) : (
+                filteredHistoryEnquiries.map((enq) => {
+                  const docId = enq?.documentId || enq?.id;
+                  const currentStatus = getStatus(enq);
+                  const isNew = currentStatus.toLowerCase() === "new" || currentStatus.toLowerCase() === "pending";
+                  const isContacted = currentStatus.toLowerCase() === "contacted";
+                  const isConverted = currentStatus.toLowerCase() === "converted";
+                  const isNotInterested = currentStatus.toLowerCase() === "not interested";
+
+                  let statusBadgeClass = "bg-[var(--seller-bg)] text-[var(--seller-text-muted)] border-[var(--seller-border)]";
+                  if (isNew) statusBadgeClass = "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20";
+                  else if (isContacted) statusBadgeClass = "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20";
+                  else if (isConverted) statusBadgeClass = "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
+                  else if (isNotInterested) statusBadgeClass = "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20";
+
+                  const createdDate = enq?.createdAt
+                    ? new Date(enq.createdAt).toLocaleString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : "N/A";
+
+                  const updatedDate = enq?.updatedAt && enq.updatedAt !== enq.createdAt
+                    ? new Date(enq.updatedAt).toLocaleString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : null;
+
+                  return (
+                    <div
+                      key={docId}
+                      className="rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-bg)] p-4 sm:p-5 transition hover:border-[var(--seller-border-focus)] hover:shadow-xs"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                        <div className="space-y-1.5 flex-1 min-w-0">
+                          {/* Buyer Name & Status */}
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-extrabold text-sm sm:text-base text-[var(--seller-text)]">
+                              {enq?.Name || enq?.name || "Unknown Enquirer"}
+                            </span>
+                            <span
+                              className={`text-[10px] px-2.5 py-0.5 rounded-full border uppercase tracking-wider font-semibold ${statusBadgeClass}`}
+                            >
+                              {currentStatus}
+                            </span>
+                          </div>
+
+                          {/* Contact Info */}
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--seller-text-muted)]">
+                            {enq?.Phone && (
+                              <span className="inline-flex items-center gap-1 font-semibold text-[var(--seller-text)]">
+                                ☎ {enq.Phone}
+                              </span>
+                            )}
+                            {enq?.Email && (
+                              <span className="inline-flex items-center gap-1">
+                                ✉ {enq.Email}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Property Details */}
+                          <div className="text-xs pt-1 flex flex-wrap items-center gap-2">
+                            <span className="font-bold text-[var(--seller-text)]">
+                              🏢 {getPropertyName(enq)}
+                            </span>
+                            {getPropertyCity(enq) && (
+                              <span className="text-[var(--seller-text-subtle)]">
+                                • 📍 {getPropertyCity(enq)}
+                              </span>
+                            )}
+                            {getPropertyPrice(enq) && (
+                              <span className="font-extrabold text-[var(--seller-text)]">
+                                • {getPropertyPrice(enq)}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Enquiry Message */}
+                          {(enq?.Message || enq?.message) && (
+                            <p className="text-xs italic text-[var(--seller-text-muted)] bg-[var(--seller-surface)] p-2.5 rounded-xl border border-[var(--seller-border)] mt-2">
+                              &ldquo;{enq?.Message || enq?.message}&rdquo;
+                            </p>
+                          )}
+
+                          {/* Timeline / Additional Notes */}
+                          <div className="pt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-[var(--seller-text-subtle)]">
+                            <span>📅 Received: {createdDate}</span>
+                            {updatedDate && (
+                              <span>• Last Activity: {updatedDate}</span>
+                            )}
+                            {enq?.FollowUpDate && (
+                              <span className="text-purple-600 font-semibold">
+                                • Follow-up: {enq.FollowUpDate}
+                              </span>
+                            )}
+                            {enq?.ClosedReason && (
+                              <span className="text-red-500 font-semibold">
+                                • Reason: {enq.ClosedReason}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Owner Response / Notes if present */}
+                          {(enq?.OwnerResponse || enq?.OwnerNote) && (
+                            <div className="mt-2 text-xs bg-[var(--seller-surface)] text-[var(--seller-text)] p-2 rounded-xl border border-[var(--seller-border)]">
+                              <span className="font-bold">Owner Note: </span>
+                              {enq?.OwnerResponse || enq?.OwnerNote}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* View Details Action */}
+                        <div className="pt-2 sm:pt-0 sm:pl-3 flex-shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedEnquiry(enq);
+                            }}
+                            className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90 transition shadow-2xs whitespace-nowrap"
+                          >
+                            View Details
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-[var(--seller-border)] bg-[var(--seller-surface)] flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--seller-text-muted)]">
+              <div className="flex items-center gap-1.5 text-[11px]">
+                <Clock size={12} className="text-[var(--seller-text-subtle)]" />
+                <span>Enquiries are securely synced live from Strapi backend.</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setHistoryModalOpen(false)}
+                className="px-4 py-2 rounded-xl border border-[var(--seller-border)] text-xs font-bold text-[var(--seller-text)] hover:bg-[var(--seller-bg)] transition ml-auto"
+              >
+                Close History
+              </button>
             </div>
 
           </div>

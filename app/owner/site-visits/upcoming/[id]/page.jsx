@@ -5,6 +5,18 @@ import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "../../../Footer";
+import {
+  ArrowLeft,
+  CalendarCheck,
+  MapPin,
+  Calendar,
+  Clock,
+  Phone,
+  Mail,
+  CheckCircle2,
+  AlertCircle,
+  XCircle,
+} from "lucide-react";
 import { getOwnerEnquiry, updateOwnerEnquiryFields } from "@/services/enquiry";
 
 const STRAPI_URL =
@@ -22,6 +34,7 @@ export default function SiteVisitDetailsPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Modals
   const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
@@ -51,6 +64,27 @@ export default function SiteVisitDetailsPage() {
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => setErrorMessage(""), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
+  // Lock background body scroll when modal is open
+  useEffect(() => {
+    const isAnyModalOpen = Boolean(
+      rescheduleModalOpen || cancelModalOpen || completeModalOpen || confirmModalOpen
+    );
+    if (isAnyModalOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [rescheduleModalOpen, cancelModalOpen, completeModalOpen, confirmModalOpen]);
 
   async function loadVisit() {
     try {
@@ -132,15 +166,9 @@ export default function SiteVisitDetailsPage() {
     return { date: dateFormatted, time: timeFormatted };
   }
 
-  /**
-   * Core update function — sends status + all extra fields in ONE PUT request.
-   * Two separate calls cause the backend to detect oldStatus === cleanStatus
-   * on the second call and skip the email notification entirely.
-   */
   async function updateVisit(newStatus, extraFields = {}) {
     setActionLoading(true);
     try {
-      // Normalize enum values to match exact Strapi schema (whitespace quirks)
       let mappedStatus = newStatus;
       if (newStatus === "Confirmed") mappedStatus = " Confirmed";
       if (newStatus === "Cancelled") mappedStatus = "Cancelled ";
@@ -150,31 +178,28 @@ export default function SiteVisitDetailsPage() {
         ...extraFields,
       });
 
-      // Reload to get the latest data from Strapi
       await loadVisit();
       return true;
     } catch (err) {
       console.error("SITE VISIT UPDATE ERROR:", err);
-      alert(err?.message || "Failed to update site visit. Please try again.");
+      setErrorMessage(err?.message || "Failed to update site visit.");
       return false;
     } finally {
       setActionLoading(false);
     }
   }
 
-  // Action: Confirm Visit
   async function handleConfirm() {
     const success = await updateVisit("Confirmed");
     if (success) {
-      setSuccessMessage("Site visit confirmed! Buyer has been notified via email.");
+      setSuccessMessage("Site visit confirmed! Customer has been notified.");
       setConfirmModalOpen(false);
     }
   }
 
-  // Action: Reschedule Visit
   async function handleReschedule() {
     if (!rescheduleDate) {
-      alert("Please select a new date.");
+      setErrorMessage("Please select a new date.");
       return;
     }
     const newDateStr = `${rescheduleDate}T${rescheduleTime}:00`;
@@ -183,47 +208,54 @@ export default function SiteVisitDetailsPage() {
       OwnerResponse: rescheduleNote || undefined,
     });
     if (success) {
-      setSuccessMessage("Site visit rescheduled! Buyer has been notified via email.");
+      setSuccessMessage("Site visit rescheduled successfully.");
       setRescheduleModalOpen(false);
       setRescheduleNote("");
       setRescheduleDate("");
     }
   }
 
-  // Action: Cancel Visit
   async function handleCancel() {
     const success = await updateVisit("Cancelled", {
       ClosedReason: cancelReason,
       OwnerResponse: cancelNote || undefined,
     });
     if (success) {
-      setSuccessMessage("Site visit cancelled. Buyer has been notified via email.");
+      setSuccessMessage("Site visit cancelled.");
       setCancelModalOpen(false);
-      // Redirect to cancelled list after a short delay
-      setTimeout(() => router.push("/owner/site-visits/cancelled"), 1500);
+      setTimeout(() => router.push("/owner/site-visits/cancelled"), 1200);
     }
   }
 
-  // Action: Mark as Completed
   async function handleComplete() {
-    const outcome = [completeOutcome ? `Outcome: ${completeOutcome}` : "", completeFeedback].filter(Boolean).join(". ");
     const success = await updateVisit("Completed", {
-      OwnerResponse: outcome || undefined,
+      OwnerResponse: [completeOutcome ? `Outcome: ${completeOutcome}` : "", completeFeedback].filter(Boolean).join(". ") || undefined,
     });
     if (success) {
-      setSuccessMessage("Site visit marked as completed! Buyer has been notified via email.");
+      setSuccessMessage("Site visit marked as completed.");
       setCompleteModalOpen(false);
-      // Redirect to completed list after a short delay
-      setTimeout(() => router.push("/owner/site-visits/completed"), 1500);
+      setTimeout(() => router.push("/owner/site-visits/completed"), 1200);
     }
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
+      <div className="seller-page-wrapper flex min-h-screen flex-col font-sans">
         <Header />
-        <main className="flex-1 p-10 flex items-center justify-center">
-          <div className="inline-block w-10 h-10 border-4 border-[#064d3b] border-t-transparent rounded-full animate-spin"></div>
+        <main className="mx-auto w-full max-w-[1200px] flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
+          <div className="mb-6">
+            <Link
+              href="/owner/site-visits/upcoming"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+            >
+              <ArrowLeft size={14} />
+              Back to Site Visits
+            </Link>
+          </div>
+          <div className="seller-card p-12 text-center">
+            <div className="inline-block w-8 h-8 border-3 border-[var(--seller-primary)] border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-[var(--seller-text)] font-semibold mt-4 text-sm">Loading visit details...</p>
+          </div>
         </main>
         <Footer />
       </div>
@@ -232,12 +264,25 @@ export default function SiteVisitDetailsPage() {
 
   if (error || !visit) {
     return (
-      <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
+      <div className="seller-page-wrapper flex min-h-screen flex-col font-sans">
         <Header />
-        <main className="flex-1 p-10 flex flex-col items-center justify-center text-center">
-          <h2 className="text-2xl font-bold text-red-700">Error</h2>
-          <p className="mt-2 text-gray-600">{error || "Visit not found"}</p>
-          <Link href="/owner/site-visits/upcoming" className="mt-4 px-4 py-2 bg-[#064d3b] text-white rounded-xl">Go Back</Link>
+        <main className="mx-auto w-full max-w-[1200px] flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
+          <div className="mb-6">
+            <Link
+              href="/owner/site-visits/upcoming"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)] transition hover:text-[var(--seller-text)]"
+            >
+              <ArrowLeft size={14} />
+              Back to Site Visits
+            </Link>
+          </div>
+          <div className="seller-card p-10 text-center">
+            <h2 className="text-lg font-bold text-[var(--seller-text)]">Visit Not Found</h2>
+            <p className="text-xs text-[var(--seller-text-muted)] mt-1">{error || "The requested visit could not be loaded."}</p>
+            <Link href="/owner/site-visits/upcoming" className="mt-4 inline-block px-4 py-2 bg-[var(--seller-primary)] text-[var(--seller-bg)] text-xs font-bold rounded-xl">
+              Go Back
+            </Link>
+          </div>
         </main>
         <Footer />
       </div>
@@ -245,129 +290,169 @@ export default function SiteVisitDetailsPage() {
   }
 
   const status = getStatus(visit);
-  const isPending = status.toLowerCase() === "pending" || status.toLowerCase() === "scheduled";
+  const isPending = status.toLowerCase() === "pending" || status.toLowerCase() === "scheduled" || status.toLowerCase() === "site visit" || status.toLowerCase() === "site_visit";
   const isConfirmed = status.toLowerCase() === "confirmed";
 
   return (
-    <div className="min-h-screen bg-[#f7f5ef] flex flex-col font-sans text-gray-800">
+    <div className="seller-page-wrapper flex min-h-screen flex-col font-sans">
       <Header />
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8">
-        
+
+      <main className="mx-auto w-full max-w-[1200px] flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
+
         {successMessage && (
-          <div className="mb-6 p-4 rounded-xl bg-emerald-700 text-white shadow-lg animate-bounce text-sm font-semibold">
-            ✓ {successMessage}
+          <div className="mb-6 flex items-center justify-between rounded-xl border border-[var(--seller-border-focus)] bg-[var(--seller-surface)] p-3.5 shadow-sm text-xs font-semibold text-[var(--seller-text)] animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center gap-3">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--seller-primary)] text-[var(--seller-bg)] text-[10px] font-black">✓</span>
+              <span>{successMessage}</span>
+            </div>
           </div>
         )}
 
-        <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#c99838] uppercase tracking-wider mb-6">
-          <Link href="/owner" className="hover:underline">Home</Link>
+        {errorMessage && (
+          <div className="mb-6 flex items-center justify-between rounded-xl border border-red-500/30 bg-red-500/10 p-3.5 shadow-sm text-xs font-semibold text-red-600 dark:text-red-400">
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
+        {/* Breadcrumb Navigation */}
+        <div className="mb-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--seller-text-muted)]">
+          <Link href="/owner" className="hover:text-[var(--seller-text)]">Home</Link>
           <span>›</span>
-          <Link href="/owner/site-visits/upcoming" className="hover:underline">Site Visits</Link>
+          <Link href="/owner/site-visits/upcoming" className="hover:text-[var(--seller-text)]">Site Visits</Link>
           <span>›</span>
-          <Link href="/owner/site-visits/upcoming" className="hover:underline">Upcoming</Link>
-          <span>›</span>
-          <span>Visit Details</span>
+          <span className="text-[var(--seller-text)]">Visit Details</span>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-4 mb-6 border-b border-gray-100 pb-5">
-            <div className="w-14 h-14 rounded-2xl bg-[#fef6e7] text-[#c99838] flex items-center justify-center font-black text-2xl border border-[#f5e4c3]">
+        {/* Main Card */}
+        <div className="seller-card p-6 sm:p-8">
+          
+          {/* Header Banner */}
+          <div className="flex items-center gap-4 mb-6 border-b border-[var(--seller-border)] pb-5">
+            <div className="w-12 h-12 rounded-2xl bg-[var(--seller-bg)] text-[var(--seller-text)] flex items-center justify-center font-black text-xl border border-[var(--seller-border)]">
               {(visit?.Name || visit?.name || "U")[0]}
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-[#064d3b]">
-                {visit?.Name || visit?.name || "Customer"}
+              <h3 className="text-xl sm:text-2xl font-bold text-[var(--seller-text)]">
+                {visit?.Name || visit?.name || "Customer Visit"}
               </h3>
-              <p className="text-xs text-gray-500">
-                ☎ {visit?.Phone || "N/A"} | ✉ {visit?.Email || "N/A"}
+              <p className="text-xs text-[var(--seller-text-muted)] mt-0.5">
+                ☎ {visit?.Phone || "Not provided"} | ✉ {visit?.Email || "Not provided"}
               </p>
             </div>
-            <span className="ml-auto text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 uppercase tracking-wider">
+            <span className="ml-auto text-xs font-bold px-3 py-1 rounded-full bg-[var(--seller-bg)] text-[var(--seller-text)] uppercase tracking-wider border border-[var(--seller-border)]">
               {status}
             </span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-5">
+            
+            {/* Left Column Details */}
+            <div className="lg:col-span-2 space-y-4">
               
-              <div className="bg-[#faf8f5] p-5 rounded-2xl border border-gray-200">
-                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Visit Schedule</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="bg-[var(--seller-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--seller-border)]">
+                <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-3">Visit Schedule</h4>
+                <div className="grid grid-cols-2 gap-4 text-xs sm:text-sm">
                   <div>
-                    <span className="text-gray-400 block text-xs">Date</span>
-                    <span className="font-bold">{formatVisitDateTime(getVisitDateStr(visit)).date}</span>
+                    <span className="text-[var(--seller-text-subtle)] block text-xs">Date</span>
+                    <span className="font-bold text-[var(--seller-text)]">{formatVisitDateTime(getVisitDateStr(visit)).date}</span>
                   </div>
                   <div>
-                    <span className="text-gray-400 block text-xs">Time</span>
-                    <span className="font-bold">{formatVisitDateTime(getVisitDateStr(visit)).time}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-[#faf8f5] p-5 rounded-2xl border border-gray-200">
-                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Customer Details</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-400 block text-xs">Message</span>
-                    <span className="font-bold">{visit?.Message || "None"}</span>
+                    <span className="text-[var(--seller-text-subtle)] block text-xs">Time</span>
+                    <span className="font-bold text-[var(--seller-text)]">{formatVisitDateTime(getVisitDateStr(visit)).time}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-[#faf8f5] p-5 rounded-2xl border border-gray-200 flex gap-4">
-                {getPropertyImage(visit) && (
-                  <img src={getPropertyImage(visit)} alt="Property" className="w-24 h-24 rounded-2xl object-cover border border-gray-200" />
-                )}
-                <div>
-                  <h5 className="font-bold text-base text-[#064d3b]">{getPropertyName(visit)}</h5>
-                  <p className="text-xs text-gray-600">📍 {[getPropertyArea(visit), getPropertyCity(visit)].filter(Boolean).join(", ")}</p>
-                  <p className="text-sm font-extrabold text-[#c99838] pt-1">{getPropertyPrice(visit)}</p>
+              <div className="bg-[var(--seller-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--seller-border)]">
+                <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-3">Target Property</h4>
+                <div className="flex gap-4 items-start">
+                  {getPropertyImage(visit) && (
+                    <img src={getPropertyImage(visit)} alt="Property" className="w-20 h-20 rounded-xl object-cover border border-[var(--seller-border)] shrink-0" />
+                  )}
+                  <div>
+                    <h5 className="font-bold text-sm sm:text-base text-[var(--seller-text)]">{getPropertyName(visit)}</h5>
+                    <p className="text-xs text-[var(--seller-text-muted)] mt-0.5">📍 {[getPropertyArea(visit), getPropertyCity(visit)].filter(Boolean).join(", ") || "Location specified"}</p>
+                    {getPropertyPrice(visit) && <p className="text-xs sm:text-sm font-extrabold text-[var(--seller-text)] pt-0.5">{getPropertyPrice(visit)}</p>}
+                  </div>
                 </div>
               </div>
+
+              {(visit?.Message || visit?.message) && (
+                <div className="bg-[var(--seller-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--seller-border)]">
+                  <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-2">Customer Note</h4>
+                  <p className="text-xs text-[var(--seller-text)] italic">&quot;{visit.Message || visit.message}&quot;</p>
+                </div>
+              )}
 
             </div>
 
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Actions</h4>
-              
-              {(isPending || isConfirmed) && (
-                <button onClick={() => setRescheduleModalOpen(true)} className="w-full px-4 py-3 rounded-xl bg-gray-100 text-gray-800 font-bold hover:bg-gray-200 block text-sm border border-gray-200 shadow-sm transition">
-                  Reschedule
-                </button>
+            {/* Right Column Actions */}
+            <div className="space-y-2.5">
+              <h4 className="text-[10px] font-bold text-[var(--seller-text-subtle)] uppercase tracking-wider mb-2">Actions</h4>
+
+              {visit?.Phone && (
+                <a
+                  href={`tel:${visit.Phone}`}
+                  className="w-full text-center px-4 py-2.5 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90 transition block shadow-2xs"
+                >
+                  📞 Call Customer
+                </a>
               )}
 
               {isPending && (
-                <button onClick={() => setConfirmModalOpen(true)} className="w-full px-4 py-3 rounded-xl bg-[#d6a744] text-[#064d3b] font-bold hover:bg-[#c99838] block text-sm transition">
-                  Confirm Visit
-                </button>
-              )}
-              
-              {isConfirmed && (
-                <button onClick={() => setCompleteModalOpen(true)} className="w-full px-4 py-3 rounded-xl bg-[#064d3b] text-white font-bold hover:bg-[#053d30] block text-sm transition">
-                  Mark as Completed
+                <button
+                  type="button"
+                  onClick={() => setConfirmModalOpen(true)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-semibold text-xs hover:border-[var(--seller-border-focus)] transition block"
+                >
+                  ✓ Confirm Visit
                 </button>
               )}
 
               {(isPending || isConfirmed) && (
-                <button onClick={() => setCancelModalOpen(true)} className="w-full px-4 py-3 rounded-xl border-2 border-red-200 text-red-600 font-bold hover:bg-red-50 block text-sm transition">
-                  Cancel Visit
+                <button
+                  type="button"
+                  onClick={() => setRescheduleModalOpen(true)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-semibold text-xs hover:border-[var(--seller-border-focus)] transition block"
+                >
+                  📅 Reschedule Visit
                 </button>
               )}
 
+              {isConfirmed && (
+                <button
+                  type="button"
+                  onClick={() => setCompleteModalOpen(true)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] text-[var(--seller-text)] font-semibold text-xs hover:border-[var(--seller-border-focus)] transition block"
+                >
+                  ✓ Mark as Completed
+                </button>
+              )}
+
+              {(isPending || isConfirmed) && (
+                <button
+                  type="button"
+                  onClick={() => setCancelModalOpen(true)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-red-500/20 text-red-500 hover:bg-red-500/10 font-semibold text-xs transition block"
+                >
+                  ✕ Cancel Visit
+                </button>
+              )}
             </div>
+
           </div>
         </div>
       </main>
 
       {/* Confirm Modal */}
       {confirmModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Confirm Site Visit?</h3>
-            <p className="text-sm text-gray-500 mb-6">Are you sure you want to confirm this visit?</p>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[var(--seller-surface)] rounded-3xl p-6 w-full max-w-sm text-center border border-[var(--seller-border)] text-[var(--seller-text)]">
+            <h3 className="text-base font-bold mb-2">Confirm Site Visit?</h3>
+            <p className="text-xs text-[var(--seller-text-muted)] mb-6">Are you sure you want to confirm this scheduled visit?</p>
             <div className="flex gap-3">
-              <button onClick={() => setConfirmModalOpen(false)} className="flex-1 py-2 rounded-xl bg-gray-100 text-gray-700 font-bold">Cancel</button>
-              <button onClick={handleConfirm} className="flex-1 py-2 rounded-xl bg-[#d6a744] text-[#064d3b] font-bold">Confirm Visit</button>
+              <button onClick={() => setConfirmModalOpen(false)} className="flex-1 py-2 rounded-xl border border-[var(--seller-border)] font-semibold text-xs">Cancel</button>
+              <button onClick={handleConfirm} className="flex-1 py-2 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90">Confirm</button>
             </div>
           </div>
         </div>
@@ -375,35 +460,28 @@ export default function SiteVisitDetailsPage() {
 
       {/* Reschedule Modal */}
       {rescheduleModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Reschedule Visit</h3>
-            <input type="date" value={rescheduleDate} onChange={e => setRescheduleDate(e.target.value)} className="w-full mb-3 p-2 border rounded-xl" />
-            <input type="time" value={rescheduleTime} onChange={e => setRescheduleTime(e.target.value)} className="w-full mb-3 p-2 border rounded-xl" />
-            <input type="text" value={rescheduleNote} onChange={e => setRescheduleNote(e.target.value)} placeholder="Note" className="w-full mb-6 p-2 border rounded-xl" />
-            <div className="flex gap-3">
-              <button onClick={() => setRescheduleModalOpen(false)} className="flex-1 py-2 rounded-xl bg-gray-100 font-bold text-gray-700">Cancel</button>
-              <button onClick={handleReschedule} className="flex-1 py-2 rounded-xl bg-[#064d3b] text-white font-bold">Save Changes</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Cancel Modal */}
-      {cancelModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Cancel Site Visit?</h3>
-            <select value={cancelReason} onChange={e => setCancelReason(e.target.value)} className="w-full mb-3 p-2 border rounded-xl">
-              <option>Customer requested cancellation</option>
-              <option>Owner unavailable</option>
-              <option>Property unavailable</option>
-              <option>Other</option>
-            </select>
-            <input type="text" value={cancelNote} onChange={e => setCancelNote(e.target.value)} placeholder="Additional Note" className="w-full mb-6 p-2 border rounded-xl" />
-            <div className="flex gap-3">
-              <button onClick={() => setCancelModalOpen(false)} className="flex-1 py-2 rounded-xl bg-gray-100 font-bold text-gray-700">Keep Visit</button>
-              <button onClick={handleCancel} className="flex-1 py-2 rounded-xl bg-red-600 text-white font-bold">Cancel Visit</button>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[var(--seller-surface)] rounded-3xl max-w-md w-full p-6 border border-[var(--seller-border)] text-[var(--seller-text)]">
+            <h3 className="text-base font-bold">Reschedule Visit</h3>
+            <div className="mt-4 space-y-3 text-sm">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold mb-1">New Date</label>
+                  <input type="date" value={rescheduleDate} onChange={(e) => setRescheduleDate(e.target.value)} className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 text-xs outline-none focus:border-[var(--seller-border-focus)]" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold mb-1">New Time</label>
+                  <input type="time" value={rescheduleTime} onChange={(e) => setRescheduleTime(e.target.value)} className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 text-xs outline-none focus:border-[var(--seller-border-focus)]" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-bold mb-1">Reason / Note</label>
+                <input type="text" value={rescheduleNote} onChange={(e) => setRescheduleNote(e.target.value)} placeholder="Reason for reschedule..." className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 text-xs outline-none focus:border-[var(--seller-border-focus)]" />
+              </div>
+              <div className="flex gap-3 pt-3">
+                <button onClick={() => setRescheduleModalOpen(false)} className="flex-1 py-2 rounded-xl border border-[var(--seller-border)] font-semibold text-xs">Cancel</button>
+                <button onClick={handleReschedule} className="flex-1 py-2 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90">Reschedule</button>
+              </div>
             </div>
           </div>
         </div>
@@ -411,18 +489,58 @@ export default function SiteVisitDetailsPage() {
 
       {/* Complete Modal */}
       {completeModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Complete Visit</h3>
-            <select value={completeOutcome} onChange={e => setCompleteOutcome(e.target.value)} className="w-full mb-3 p-2 border rounded-xl">
-              <option>Interested</option>
-              <option>Follow-up Required</option>
-              <option>Not Interested</option>
-            </select>
-            <input type="text" value={completeFeedback} onChange={e => setCompleteFeedback(e.target.value)} placeholder="Feedback" className="w-full mb-6 p-2 border rounded-xl" />
-            <div className="flex gap-3">
-              <button onClick={() => setCompleteModalOpen(false)} className="flex-1 py-2 rounded-xl bg-gray-100 font-bold text-gray-700">Cancel</button>
-              <button onClick={handleComplete} className="flex-1 py-2 rounded-xl bg-[#064d3b] text-white font-bold">Mark Completed</button>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[var(--seller-surface)] rounded-3xl max-w-md w-full p-6 border border-[var(--seller-border)] text-[var(--seller-text)]">
+            <h3 className="text-base font-bold">Complete Visit</h3>
+            <div className="mt-4 space-y-4 text-xs font-semibold">
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="outcome" value="Interested" checked={completeOutcome === "Interested"} onChange={(e) => setCompleteOutcome(e.target.value)} className="accent-[var(--seller-primary)]" />
+                  <span>⭐ Interested</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="outcome" value="Follow-up Required" checked={completeOutcome === "Follow-up Required"} onChange={(e) => setCompleteOutcome(e.target.value)} className="accent-[var(--seller-primary)]" />
+                  <span>⏰ Follow-up Required</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="outcome" value="Not Interested" checked={completeOutcome === "Not Interested"} onChange={(e) => setCompleteOutcome(e.target.value)} className="accent-[var(--seller-primary)]" />
+                  <span>✕ Not Interested</span>
+                </label>
+              </div>
+              <textarea rows={2} value={completeFeedback} onChange={(e) => setCompleteFeedback(e.target.value)} placeholder="Customer feedback..." className="w-full p-2.5 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] text-xs outline-none focus:border-[var(--seller-border-focus)] resize-none" />
+              <div className="flex gap-3 pt-2">
+                <button onClick={() => setCompleteModalOpen(false)} className="flex-1 py-2 rounded-xl border border-[var(--seller-border)] font-semibold text-xs">Cancel</button>
+                <button onClick={handleComplete} className="flex-1 py-2 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90">Complete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cancel Modal */}
+      {cancelModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[var(--seller-surface)] rounded-3xl max-w-md w-full p-6 text-center border border-[var(--seller-border)] text-[var(--seller-text)]">
+            <div className="w-12 h-12 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center text-xl mx-auto mb-3">✕</div>
+            <h3 className="text-base font-bold">Cancel Visit?</h3>
+            <div className="mt-4 space-y-3 text-left">
+              <div>
+                <label className="block text-xs font-bold mb-1">Reason</label>
+                <select value={cancelReason} onChange={(e) => setCancelReason(e.target.value)} className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 text-xs font-semibold outline-none focus:border-[var(--seller-border-focus)] cursor-pointer">
+                  <option value="Customer cancelled">Customer cancelled</option>
+                  <option value="Owner unavailable">Owner unavailable</option>
+                  <option value="Property unavailable">Property unavailable</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold mb-1">Note (Optional)</label>
+                <input type="text" value={cancelNote} onChange={(e) => setCancelNote(e.target.value)} placeholder="Context..." className="h-9 w-full rounded-xl border border-[var(--seller-border)] bg-[var(--seller-bg)] px-3 text-xs outline-none focus:border-[var(--seller-border-focus)]" />
+              </div>
+              <div className="flex gap-3 pt-3">
+                <button onClick={() => setCancelModalOpen(false)} className="flex-1 py-2 rounded-xl border border-[var(--seller-border)] font-semibold text-xs">Keep</button>
+                <button onClick={handleCancel} className="flex-1 py-2 rounded-xl bg-red-600 text-white font-bold text-xs hover:bg-red-700">Cancel Visit</button>
+              </div>
             </div>
           </div>
         </div>

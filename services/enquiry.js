@@ -348,7 +348,8 @@ export async function sendEnquiry({
           message ||
           "I am interested in this property.",
 
-        Status: "Pending",
+        // Use Statuss (double-s) — the actual Strapi schema field name
+        Statuss: "Pending",
 
         property: property.id,
 
@@ -943,8 +944,8 @@ export async function getOwnerEnquiry(
   const enquiry =
     allEnquiries.find(
       (item) =>
-        String(item?.documentId) ===
-        String(enquiryDocumentId)
+        String(item?.documentId) === String(enquiryDocumentId) ||
+        String(item?.id) === String(enquiryDocumentId)
     );
 
   if (!enquiry) {
@@ -1051,6 +1052,7 @@ export async function updateOwnerEnquiryStatus(
     "Cancelled",
     "Rescheduled",
     "Closed",
+    "Converted",
   ];
 
   if (
@@ -1099,6 +1101,7 @@ export async function updateOwnerEnquiryStatus(
   let mappedStatus = status;
   if (status === "Confirmed") mappedStatus = " Confirmed";
   if (status === "Cancelled") mappedStatus = "Cancelled ";
+  if (status === "Not Interested" || status === "not interested") mappedStatus = "NotInterested";
 
   console.log("==============================================");
   console.log("UPDATE OWNER ENQUIRY");

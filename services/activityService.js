@@ -37,25 +37,30 @@ async function parseResponse(response) {
 
 export async function recordPropertyView(propertyDocumentId) {
   try {
-    if (typeof window === "undefined") return false;
+    if (typeof window === "undefined" || !propertyDocumentId) return false;
 
     // Session-based deduplication: skip if already recorded this session
     const sessionKey = `pv_${propertyDocumentId}`;
     if (sessionStorage.getItem(sessionKey)) return false;
 
     const token = getAuthToken();
+    let userId = null;
 
-    // Allow anonymous views — if no token, skip (can be extended later)
-    if (!token) return false;
-
-    // Get logged-in user
-    const userRes = await fetch(`${API_URL}/users/me`, {
-      headers: getAuthHeaders(),
-      cache: "no-store",
-    });
-    if (!userRes.ok) return false;
-    const user = await userRes.json();
-    if (!user?.id) return false;
+    if (token) {
+      try {
+        const userRes = await fetch(`${API_URL}/users/me`, {
+          headers: getAuthHeaders(),
+          cache: "no-store",
+        });
+        if (userRes.ok) {
+          const user = await userRes.json();
+          userId = user?.id || null;
+        }
+      } catch (e) {
+        // Fallback to anonymous view if user fetch fails
+        userId = null;
+      }
+    }
 
     // Get numeric property id from documentId
     const propRes = await fetch(
@@ -69,19 +74,25 @@ export async function recordPropertyView(propertyDocumentId) {
     const propertyId = propData?.data?.[0]?.id;
     if (!propertyId) return false;
 
-    // Post a view record
+    // Post a view record (viewer is optional; Strapi schema allows null)
+    const postBody = {
+      data: {
+        property: propertyId,
+      },
+    };
+    if (userId) {
+      postBody.data.viewer = userId;
+    }
+
+    const postHeaders = {
+      "Content-Type": "application/json",
+      ...(token ? getAuthHeaders() : {}),
+    };
+
     const postRes = await fetch(`${API_URL}/property-views`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...getAuthHeaders(),
-      },
-      body: JSON.stringify({
-        data: {
-          viewer: user.id,
-          property: propertyId,
-        },
-      }),
+      headers: postHeaders,
+      body: JSON.stringify(postBody),
     });
 
     if (postRes.ok) {

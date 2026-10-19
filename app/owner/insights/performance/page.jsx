@@ -40,6 +40,9 @@ import {
   AlertTriangle,
   ArrowRight,
   Info,
+  X,
+  Clock,
+  ExternalLink,
 } from "lucide-react";
 
 // =====================================================
@@ -296,6 +299,7 @@ export default function PerformancePage() {
   const [chartTab, setChartTab] = useState("daily");
   const [showMoreProps, setShowMoreProps] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [savedModalOpen, setSavedModalOpen] = useState(false);
 
   const fetchData = useCallback(async (p, propId) => {
     try {
@@ -320,10 +324,15 @@ export default function PerformancePage() {
     fetchData(period, selectedPropertyId);
   };
 
-  // ---- CHART DATA (generated from actual totalViews) ----
+  // ---- CHART DATA (generated from actual recorded view records) ----
   const chartData = useMemo(() => {
     if (!data) return [];
-    return generateChartData(data.kpis.views.value, period, chartTab);
+    return generateChartData(
+      data?.kpis?.views?.value || 0,
+      period,
+      chartTab,
+      data?.currentViewRecords || []
+    );
   }, [data, period, chartTab]);
 
   // ---- DONUT CHART DATA ----
@@ -604,7 +613,7 @@ export default function PerformancePage() {
             value={data?.kpis?.enquiries?.value}
             growth={data?.kpis?.enquiries?.growth}
             subtitle="Customer leads"
-            onClick={() => router.push("/owner/enquiries/new")}
+            onClick={() => router.push("/owner/insights/performance/enquiries")}
           />
           <KpiCard
             icon={Bookmark}
@@ -612,7 +621,7 @@ export default function PerformancePage() {
             value={data?.kpis?.saves?.value}
             growth={null}
             subtitle="User wishlists"
-            onClick={() => router.push("/owner/insights/performance")}
+            onClick={() => setSavedModalOpen(true)}
           />
           <KpiCard
             icon={PhoneCall}
@@ -628,7 +637,7 @@ export default function PerformancePage() {
             value={data?.kpis?.siteVisits?.value}
             growth={null}
             subtitle="Booked / Scheduled"
-            onClick={() => router.push("/owner/site-visits/upcoming")}
+            onClick={() => router.push("/owner/insights/performance/site-visits")}
           />
         </div>
 
@@ -695,6 +704,7 @@ export default function PerformancePage() {
                       tick={{ fontSize: 11, fill: "var(--seller-text-muted)" }}
                       tickLine={false}
                       axisLine={false}
+                      allowDecimals={false}
                     />
                     <Tooltip
                       contentStyle={{
@@ -883,7 +893,11 @@ export default function PerformancePage() {
                       </div>
                     )}
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs sm:text-sm font-bold text-[var(--seller-text)] truncate">
+                      <p
+                        onClick={() => router.push(`/property/${prop.documentId || prop.id}`)}
+                        className="text-xs sm:text-sm font-bold text-[var(--seller-text)] truncate cursor-pointer hover:underline"
+                        title="View live property details"
+                      >
                         {prop.title}
                       </p>
                       <p className="text-[11px] text-[var(--seller-text-muted)] truncate">
@@ -1064,6 +1078,152 @@ export default function PerformancePage() {
           </div>
         </div>
       </main>
+
+      {/* =====================================================
+          SAVED PROPERTIES / USER WISHLIST MODAL
+      ===================================================== */}
+      {savedModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-[var(--seller-surface)] rounded-3xl max-w-3xl w-full max-h-[85vh] my-auto flex flex-col shadow-2xl border border-[var(--seller-border)] animate-in fade-in zoom-in duration-150 overflow-hidden text-[var(--seller-text)]">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-5 sm:p-6 border-b border-[var(--seller-border)]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[var(--seller-bg-subtle)] flex items-center justify-center border border-[var(--seller-border)]">
+                  <Bookmark size={18} className="text-[var(--seller-text)]" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-[var(--seller-text)] flex items-center gap-2">
+                    <span>Saved Properties</span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold">
+                      {data?.savedProperties?.length || 0} saves
+                    </span>
+                  </h3>
+                  <p className="text-xs text-[var(--seller-text-muted)] mt-0.5">
+                    Real buyer wishlists containing your property listings
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSavedModalOpen(false)}
+                className="w-9 h-9 rounded-xl border border-[var(--seller-border)] text-[var(--seller-text-muted)] hover:text-[var(--seller-text)] hover:bg-[var(--seller-bg-subtle)] flex items-center justify-center transition"
+                aria-label="Close Saves Modal"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Modal Body: List of Saved Properties */}
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3">
+              {(!data?.savedProperties || data.savedProperties.length === 0) ? (
+                <div className="text-center py-12 px-4 rounded-2xl border border-dashed border-[var(--seller-border)] bg-[var(--seller-bg-subtle)]">
+                  <Bookmark size={28} className="mx-auto mb-2 text-[var(--seller-text-subtle)]" />
+                  <h4 className="font-bold text-sm text-[var(--seller-text)]">No saved properties yet</h4>
+                  <p className="text-xs text-[var(--seller-text-muted)] mt-1 max-w-sm mx-auto">
+                    When buyers add your properties to their wishlist, their saved items will appear here in real time.
+                  </p>
+                </div>
+              ) : (
+                data.savedProperties.map((item) => {
+                  const prop = item.property || {};
+                  const cover = prop.CoverImage;
+                  let img = null;
+                  if (cover?.url) img = `${STRAPI_MEDIA_URL}${cover.url}`;
+                  else if (Array.isArray(prop?.PropertyImage) && prop.PropertyImage.length) {
+                    img = `${STRAPI_MEDIA_URL}${prop.PropertyImage[0]?.url}`;
+                  }
+
+                  const rawPrice = prop.Price;
+                  let priceStr = "Price on Request";
+                  if (rawPrice) {
+                    const num = Number(rawPrice);
+                    const unit = prop.PriceUnits || "";
+                    priceStr = `₹${(num / 100000).toFixed(2)} L${unit ? ` ${unit}` : ""}`;
+                  }
+
+                  const formattedDate = item.savedAt
+                    ? new Date(item.savedAt).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : "Recently";
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="rounded-2xl border border-[var(--seller-border)] bg-[var(--seller-bg-subtle)] p-4 transition hover:border-[var(--seller-border-focus)] hover:shadow-xs"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-3.5 min-w-0">
+                          {img ? (
+                            <img
+                              src={img}
+                              alt={prop.Title || "Property"}
+                              className="h-14 w-14 rounded-xl object-cover border border-[var(--seller-border)] shrink-0"
+                            />
+                          ) : (
+                            <div className="h-14 w-14 rounded-xl border border-[var(--seller-border)] bg-[var(--seller-surface)] flex items-center justify-center text-[var(--seller-text)] shrink-0">
+                              <Building2 size={20} />
+                            </div>
+                          )}
+                          <div className="min-w-0">
+                            <h4 className="text-sm font-bold text-[var(--seller-text)] truncate">
+                              {prop.Title || "Untitled Property"}
+                            </h4>
+                            <p className="text-xs text-[var(--seller-text-muted)] mt-0.5 truncate">
+                              📍 {[prop.Area, prop.City].filter(Boolean).join(", ") || "Location unlisted"}
+                            </p>
+                            <div className="flex items-center gap-2 mt-1 text-[11px] text-[var(--seller-text-subtle)]">
+                              <span className="font-extrabold text-[var(--seller-text)]">{priceStr}</span>
+                              <span>•</span>
+                              <span>Saved by: <strong className="text-[var(--seller-text)]">{item.buyerName}</strong></span>
+                              <span>•</span>
+                              <span>📅 {formattedDate}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="pt-2 sm:pt-0 sm:pl-3 flex-shrink-0 flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSavedModalOpen(false);
+                              router.push(`/property/${prop.documentId || prop.id}`);
+                            }}
+                            className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-[var(--seller-primary)] text-[var(--seller-bg)] font-bold text-xs hover:opacity-90 transition shadow-2xs whitespace-nowrap inline-flex items-center justify-center gap-1.5"
+                          >
+                            <span>Live Property</span>
+                            <ExternalLink size={12} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-[var(--seller-border)] bg-[var(--seller-surface)] flex items-center justify-between gap-3 text-xs text-[var(--seller-text-muted)]">
+              <div className="flex items-center gap-1.5 text-[11px]">
+                <Clock size={12} className="text-[var(--seller-text-subtle)]" />
+                <span>Live data synced from buyer wishlist collections in Strapi.</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSavedModalOpen(false)}
+                className="px-4 py-2 rounded-xl border border-[var(--seller-border)] text-xs font-bold text-[var(--seller-text)] hover:bg-[var(--seller-bg-subtle)] transition"
+              >
+                Close
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>
